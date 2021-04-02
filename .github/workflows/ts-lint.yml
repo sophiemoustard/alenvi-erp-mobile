@@ -1,11 +1,11 @@
-name: Test ESLint
+name: Tests ESLint and Typescript
 
 on:
   - pull_request
 
 jobs:
   build:
-    name: Run ESLint
+    name: Run ESLint and Typescript tests
     runs-on: ubuntu-latest
     steps:
       
@@ -21,4 +21,4 @@ jobs:
       - run: npm ci
 
       # Run ESLint
-      - run: yarn lint
+      - run: npm run ts-lint
