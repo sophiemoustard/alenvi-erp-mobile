@@ -6,7 +6,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "lint": "eslint App.tsx --ext .js,.jsx,.ts,.tsx -c .eslintrc.js"
+    "lint": "eslint App/index.tsx --ext .js,.jsx,.ts,.tsx -c .eslintrc.js"
   },
   "dependencies": {
     "expo": "~40.0.1",
