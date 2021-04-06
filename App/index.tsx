@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import Constants from 'expo-constants';
 import Version from '../src/api/version';
-import { ERP } from '../src/data/constants';
 
 const App = () => {
   const [test, setTest] = useState(false);
 
   const shouldUpdate = async () => {
-    const { mustUpdate } = await Version.shouldUpdate({ mobileVersion: Constants.manifest.version, appName: ERP });
+    const { mustUpdate } = await Version.shouldUpdate();
 
     setTest(mustUpdate);
   };
