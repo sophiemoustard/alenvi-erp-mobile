@@ -27,6 +27,7 @@ const App = () => {
   }, []); // TODO: Pourquoi est-ce que eslint ne casse pas ?
 
   return (
+    // 4. Ajout de la modale
     <View style={styles.container}>
       <Text>Open up App.tsx to start working on your app! {`${test}`}</Text>
       <StatusBar style="auto" />
