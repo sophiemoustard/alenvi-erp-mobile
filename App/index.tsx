@@ -5,7 +5,7 @@ import { ACTIVE_STATE } from '../src/data/constants';
 import UpdateAppModal from '../src/components/modals/UpdateAppModal';
 
 const App = () => {
-  const [updateAppVisible, setUpdateAppVisible] = useState(false);
+  const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
 
   const shouldUpdate = async (nextState: string) => {
     try {
@@ -24,7 +24,7 @@ const App = () => {
     AppState.addEventListener('change', shouldUpdate);
 
     return () => { AppState.removeEventListener('change', shouldUpdate); };
-  }, []); // TODO: Pourquoi est-ce que eslint ne casse pas ?
+  }, []);
 
   return (
     <UpdateAppModal visible={updateAppVisible} />
