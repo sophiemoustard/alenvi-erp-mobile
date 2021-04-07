@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, AppState } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { AppState } from 'react-native';
 import Version from '../src/api/version';
 import { ACTIVE_STATE } from '../src/data/constants';
+import UpdateAppModal from '../src/components/modals/UpdateAppModal';
 
 const App = () => {
-  const [test, setTest] = useState(false);
+  const [updateAppVisible, setUpdateAppVisible] = useState(false);
 
   const shouldUpdate = async (nextState: string) => {
     try {
       if (nextState === ACTIVE_STATE) {
         const { mustUpdate } = await Version.shouldUpdate();
-        setTest(mustUpdate);
+        setUpdateAppVisible(mustUpdate);
       }
     } catch (e) {
-      setTest(false);
+      setUpdateAppVisible(false);
       console.error(e);
     }
   };
@@ -27,21 +27,8 @@ const App = () => {
   }, []); // TODO: Pourquoi est-ce que eslint ne casse pas ?
 
   return (
-    // 4. Ajout de la modale
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app! {`${test}`}</Text>
-      <StatusBar style="auto" />
-    </View>
+    <UpdateAppModal visible={updateAppVisible} />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default App;

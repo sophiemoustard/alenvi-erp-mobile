@@ -1,12 +1,22 @@
-/* eslint-disable max-len */
-/* eslint-disable react/jsx-no-comment-textnodes */
 import React from 'react';
+import { Text } from 'react-native';
 import NiModal from '../Modal';
+import NiButton from '../../Button';
 import styles from './styles';
 
-const UpdateAppModal = () => ( // 2. De quels paramètres avons-nous besoin ?
-  <NiModal> // 1. Quelles sont les paramètres obligatoires ? Avons-nous besoin de definir des parametres non obligatoires ?
-    // 3. Quelles sont les specificités de cette modale ?
+interface UpdateAppModalProps {
+  visible: boolean,
+}
+
+const UpdateAppModal = ({ visible } : UpdateAppModalProps) => (
+  <NiModal visible={visible}>
+    <>
+      <Text style={styles.title}> Nouvelle version de l&apos;app disponible !</Text>
+      <Text style={styles.body}>
+        Merci de mettre à jour votre application pour pouvoir continuer à l&apos;utiliser :)
+      </Text>
+      <NiButton title="Mettre à jour" onPress={() => {}}/>
+    </>
   </NiModal>
 );
 

@@ -4,7 +4,7 @@ import styles from './styles';
 
 interface NiModalProps {
   visible: boolean,
-  children: any,
+  children: JSX.Element,
   onRequestClose?: () => void,
 }
 
