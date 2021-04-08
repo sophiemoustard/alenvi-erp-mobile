@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AppState } from 'react-native';
-import Version from '../src/api/version';
+import Version from '../src/api/versions';
 import { ACTIVE_STATE } from '../src/data/constants';
 import UpdateAppModal from '../src/components/modals/UpdateAppModal';
 

@@ -8,7 +8,7 @@ interface UpdateAppModalProps {
   visible: boolean,
 }
 
-const UpdateAppModal = ({ visible } : UpdateAppModalProps) => (
+const UpdateAppModal = ({ visible }: UpdateAppModalProps) => (
   <NiModal visible={visible}>
     <>
       <Text style={styles.title}> Nouvelle version de l&apos;app disponible !</Text>
