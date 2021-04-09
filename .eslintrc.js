@@ -53,4 +53,8 @@ module.exports = {
     'no-unused-vars': 'off', // Pour ne pas avoir l'erreur en doublon
     'prefer-destructuring': ['error', { VariableDeclarator: { object: true, array: false } }],
   },
+  globals: {
+    __DEV__: true,
+    JSX: true,
+  },
 };

@@ -6,9 +6,10 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "ts-lint": "tsc --noEmit & eslint App/index.tsx --ext .js,.jsx,.ts,.tsx -c .eslintrc.js"
+    "ts-lint": "tsc --noEmit & eslint environment.ts App/index.tsx ./src --ext .js,.jsx,.ts,.tsx -c .eslintrc.js"
   },
   "dependencies": {
+    "axios": "^0.21.1",
     "expo": "~40.0.1",
     "expo-status-bar": "~1.0.3",
     "react": "^16.13.1",

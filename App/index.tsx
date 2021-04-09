@@ -1,21 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { AppState } from 'react-native';
+import Version from '../src/api/versions';
+import { ACTIVE_STATE } from '../src/data/constants';
+import UpdateAppModal from '../src/components/modals/UpdateAppModal';
 
-const App = () => (
-  <View style={styles.container}>
-    <Text>Open up App.tsx to start working on your app!</Text>
-    <StatusBar style="auto" />
-  </View>
-);
+const App = () => {
+  const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const shouldUpdate = async (nextState: string) => {
+    try {
+      if (nextState === ACTIVE_STATE) {
+        const { mustUpdate } = await Version.shouldUpdate();
+        setUpdateAppVisible(mustUpdate);
+      }
+    } catch (e) {
+      setUpdateAppVisible(false);
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    shouldUpdate(ACTIVE_STATE);
+    AppState.addEventListener('change', shouldUpdate);
+
+    return () => { AppState.removeEventListener('change', shouldUpdate); };
+  }, []);
+
+  return (
+    <UpdateAppModal visible={updateAppVisible} />
+  );
+};
 
 export default App;
