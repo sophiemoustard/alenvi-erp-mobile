@@ -8,6 +8,7 @@ export default StyleSheet.create({
     height: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: '10%',
   },
   title: {
     ...FIRA_SANS_BLACK.LG,
