@@ -31,7 +31,7 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
     flex: 1,
   },
   icon: {
-    paddingHorizontal: PADDING.SM,
+    paddingHorizontal: PADDING.MD,
   },
   captionContainer: {
     width: '100%',

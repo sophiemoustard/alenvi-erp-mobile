@@ -9,10 +9,11 @@ interface FeatherButtonProps {
   color?: string,
   size?: number,
   style?: Object,
+  onPress: () => void,
 }
 
-const FeatherButton = ({ name, color = BLACK, size = ICON.XS, style } : FeatherButtonProps) => (
-  <TouchableOpacity style={style}>
+const FeatherButton = ({ name, color = BLACK, size = ICON.XS, style, onPress } : FeatherButtonProps) => (
+  <TouchableOpacity style={style} onPress={onPress}>
     <Feather name={name} color={color} size={size} />
   </TouchableOpacity>
 );
