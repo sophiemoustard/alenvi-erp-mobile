@@ -13,6 +13,14 @@ const fetchFonts = () => Font.loadAsync({
   'nunito-black': require('../../../assets/fonts/Nunito-Black.ttf'),
 });
 
+const fetchImages = async () => ({
+  'android-icon': require('../../../assets/images/android_icon.png'),
+  'authentication-background': require('../../../assets/images/authentication_background_image.jpg'),
+  'ios-icon': require('../../../assets/images/ios_icon.png'),
+  'splash-image': require('../../../assets/images/splash.png'),
+});
+
 export const initializeAssets = async () => {
   await fetchFonts();
+  await fetchImages();
 };
