@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { FIRA_SANS_BLACK } from '../../styles/fonts';
 import { WHITE } from '../../styles/colors';
+import { MARGIN } from '../../styles/metrics';
 
 export default StyleSheet.create({
   container: {
@@ -14,5 +15,9 @@ export default StyleSheet.create({
     ...FIRA_SANS_BLACK.LG,
     textAlign: 'center',
     color: WHITE,
+    marginBottom: MARGIN.XL,
+  },
+  input: {
+    marginBottom: MARGIN.LG,
   },
 });
