@@ -1,4 +1,5 @@
 import * as Font from 'expo-font';
+import { Asset } from 'expo-asset';
 
 const fetchFonts = () => Font.loadAsync({
   'fira-sans-black': require('../../../assets/fonts/FiraSans-Black.ttf'),
@@ -13,12 +14,17 @@ const fetchFonts = () => Font.loadAsync({
   'nunito-black': require('../../../assets/fonts/Nunito-Black.ttf'),
 });
 
-const fetchImages = async () => ({
-  'android-icon': require('../../../assets/images/android_icon.png'),
-  'authentication-background': require('../../../assets/images/authentication_background_image.jpg'),
-  'ios-icon': require('../../../assets/images/ios_icon.png'),
-  'splash-image': require('../../../assets/images/splash.png'),
-});
+const fetchImages = async () => {
+  const cachedImages = [
+    require('../../../assets/images/android_icon.png'),
+    require('../../../assets/images/authentication_background_image.jpg'),
+    require('../../../assets/images/ios_icon.png'),
+    require('../../../assets/images/splash.png'),
+  ];
+
+  const imageAssets = cachedImages.map(img => Asset.fromModule(img).downloadAsync());
+  await Promise.all([...imageAssets]);
+};
 
 export const initializeAssets = async () => {
   await fetchFonts();
