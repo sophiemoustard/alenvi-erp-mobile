@@ -3,6 +3,7 @@ import { View, Text, TextInput } from 'react-native';
 import styles from './styles';
 import NiFeatherButton from '../FeatherButton';
 import { PASSWORD } from '../../data/constants';
+import Shadow from '../design/Shadow';
 
 interface InputProps {
   title: string,
@@ -33,6 +34,7 @@ const Input = ({ title, style, type }: InputProps) => {
               onPress={() => setSecureTextEntry(prevState => !prevState)} />
           }
         </View>
+        {isSelected && <Shadow />}
       </View>
     </View>
   );
