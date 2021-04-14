@@ -5,6 +5,7 @@ import Version from '../src/api/versions';
 import { initializeAssets } from '../src/core/helpers/assets';
 import { ACTIVE_STATE } from '../src/data/constants';
 import UpdateAppModal from '../src/components/modals/UpdateAppModal';
+import MaintenanceModal from '../src/components/modals/MaintenanceModal';
 import Authentication from '../src/screens/Authentication';
 import { WHITE } from '../src/styles/colors';
 import styles from './styles';
@@ -43,6 +44,7 @@ const App = () => {
       <View style={style.statusBar}>
         <StatusBar translucent barStyle="dark-content" backgroundColor={WHITE} />
       </View>
+      <MaintenanceModal />
       <UpdateAppModal visible={updateAppVisible} />
       <Authentication />
     </>
