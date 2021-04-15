@@ -3,6 +3,7 @@ import { AppState, View, StatusBar } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import Version from '../src/api/versions';
 import { initializeAssets } from '../src/core/helpers/assets';
+import AxiosUtils from '../src/api/axios/utils';
 import { ACTIVE_STATE } from '../src/data/constants';
 import UpdateAppModal from '../src/components/modals/UpdateAppModal';
 import MaintenanceModal from '../src/components/modals/MaintenanceModal';
@@ -13,6 +14,7 @@ import styles from './styles';
 const App = () => {
   const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
   const [isAppReady, setIsAppReady] = useState<boolean>(false);
+  const [maintenanceModaleVisible, setMaintenanceModalVisible] = useState<boolean>(false);
 
   const shouldUpdate = async (nextState: string) => {
     try {
@@ -27,6 +29,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    AxiosUtils.setUpAxiosInterceptors(setMaintenanceModalVisible);
     shouldUpdate(ACTIVE_STATE);
     AppState.addEventListener('change', shouldUpdate);
 
@@ -44,7 +47,7 @@ const App = () => {
       <View style={style.statusBar}>
         <StatusBar translucent barStyle="dark-content" backgroundColor={WHITE} />
       </View>
-      <MaintenanceModal />
+      <MaintenanceModal visible={maintenanceModaleVisible} />
       <UpdateAppModal visible={updateAppVisible} />
       <Authentication />
     </>

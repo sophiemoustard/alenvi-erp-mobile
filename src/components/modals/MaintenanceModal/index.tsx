@@ -4,8 +4,12 @@ import Modal from '../Modal';
 import styles from './styles';
 import commonStyles from '../commonStyles';
 
-const MaintenanceModal = () => (
-  <Modal visible={true}>
+interface MaintenanceModalProps {
+  visible: boolean,
+}
+
+const MaintenanceModal = ({ visible }: MaintenanceModalProps) => (
+  <Modal visible={visible}>
     <>
       <Text style={commonStyles.title}> L&apos;application est en maintenance !</Text>
       <Text style={[commonStyles.body, styles.body]}>
