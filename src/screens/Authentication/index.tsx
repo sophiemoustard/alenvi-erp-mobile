@@ -3,7 +3,7 @@ import { ImageBackground, Text, KeyboardAvoidingView, useWindowDimensions, Platf
 import NiButton from '../../components/Button';
 import NiInput from '../../components/Input';
 import styles from './styles';
-import { PASSWORD } from '../../../src/data/constants';
+import { PASSWORD, EMAIL } from '../../../src/data/constants';
 
 const Authentication = () => (
   <ImageBackground
@@ -12,7 +12,7 @@ const Authentication = () => (
   >
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <Text style={styles.title}>Identifiez-vous pour accéder aux informations</Text>
-      <NiInput style={styles.input} title='Email' />
+      <NiInput style={styles.input} title='Email' type={EMAIL} />
       <NiInput style={styles.input} title='Mot de Passe' type={PASSWORD} />
       <NiButton title='Se connecter' onPress={() => {}} />
     </KeyboardAvoidingView>

@@ -4,3 +4,4 @@ export const ERP = 'erp';
 export const ACTIVE_STATE = 'active';
 
 export const PASSWORD = 'password';
+export const EMAIL = 'email';

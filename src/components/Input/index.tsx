@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import styles from './styles';
 import NiFeatherButton from '../FeatherButton';
-import { PASSWORD } from '../../data/constants';
+import { PASSWORD, EMAIL } from '../../data/constants';
 import Shadow from '../design/Shadow';
 
 interface InputProps {
   title: string,
   style: Object,
-  type?: string,
+  type: string,
 }
 
 const Input = ({ title, style, type }: InputProps) => {
   const isPassword = type === PASSWORD;
+  const keyboardType = type === EMAIL ? 'email-address' : 'default';
 
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(isPassword);
@@ -28,7 +29,7 @@ const Input = ({ title, style, type }: InputProps) => {
       <View style={inputStyle.container}>
         <View style={inputStyle.inputContainer}>
           <TextInput style={inputStyle.input} onTouchStart={() => setIsSelected(true)}
-            onBlur={() => setIsSelected(false)} secureTextEntry={secureTextEntry} />
+            onBlur={() => setIsSelected(false)} secureTextEntry={secureTextEntry} keyboardType={keyboardType} />
           {isPassword &&
             <NiFeatherButton name={iconName} style={inputStyle.icon}
               onPress={() => setSecureTextEntry(prevState => !prevState)} />

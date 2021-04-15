@@ -23,7 +23,7 @@ const fetchImages = async () => {
   ];
 
   const imageAssets = cachedImages.map(img => Asset.fromModule(img).downloadAsync());
-  await Promise.all([...imageAssets]);
+  await Promise.all(imageAssets);
 };
 
 export const initializeAssets = async () => {
