@@ -1,12 +1,13 @@
 import axios from 'axios';
 
-const interceptOnMaintenance = (openModal: (arg: boolean) => void) => openModal(true);
-
 const setUpAxiosInterceptors = (openModal: (arg: boolean) => void) => {
   axios.interceptors.response.use(
-    response => response,
+    (response) => {
+      openModal(false);
+      return response;
+    },
     async (error) => {
-      if ([502, 503].includes(error.response.status)) return interceptOnMaintenance(openModal);
+      if ([502, 503].includes(error.response.status)) openModal(true);
       return Promise.reject(error.response);
     }
   );
