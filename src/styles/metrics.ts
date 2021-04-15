@@ -28,4 +28,16 @@ export const BORDER_RADIUS = {
   XXL: 45,
 };
 
+export const ICON = {
+  XS: 16,
+  SM: 20,
+  MD: 24,
+  LG: 26,
+  XL: 32,
+  XXL: 64,
+  XXXL: 72,
+};
+
 export const BUTTON_HEIGHT = 48;
+export const INPUT_HEIGHT = 48;
+export const BORDER_WIDTH = 1;
