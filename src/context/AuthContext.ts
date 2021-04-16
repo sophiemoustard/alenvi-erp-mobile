@@ -1,5 +1,6 @@
 import createAuthContext, { StateType, ActionType } from './createAuthContext';
 import Authentication from '../api/authentication';
+import asyncStorage from '../core/helpers/asyncStorage';
 
 const authReducer = (state: StateType, action: ActionType) => {
   switch (action.type) {
@@ -11,8 +12,10 @@ const authReducer = (state: StateType, action: ActionType) => {
 };
 
 const signIn = (dispatch: any) => async (payload: { email: string, password: string }) => {
-  const { alenviToken } = await Authentication.authenticate(payload);
-  dispatch({ type: 'signin', payload: alenviToken });
+  const { token, tokenExpireDate } = await Authentication.authenticate(payload);
+  await asyncStorage.setAlenviToken(token, tokenExpireDate);
+
+  dispatch({ type: 'signin', payload: { alenviToken: token } });
 };
 
 export const { Provider, Context } = createAuthContext(authReducer, { signIn }, { alenviToken: null });
