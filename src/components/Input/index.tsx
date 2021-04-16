@@ -22,6 +22,8 @@ const Input = ({ title, style, type, setValue }: InputProps) => {
   const iconName = secureTextEntry ? 'eye-off' : 'eye';
   const inputStyle = styles({ isSelected });
 
+  const onPasswordIconPress = () => setSecureTextEntry(prevState => !prevState);
+
   return (
     <View style={style}>
       <View style={inputStyle.captionContainer}>
@@ -31,10 +33,7 @@ const Input = ({ title, style, type, setValue }: InputProps) => {
         <View style={inputStyle.inputContainer}>
           <TextInput style={inputStyle.input} onChangeText={setValue} onTouchStart={() => setIsSelected(true)}
             onBlur={() => setIsSelected(false)} secureTextEntry={secureTextEntry} keyboardType={keyboardType} />
-          {isPassword &&
-            <NiFeatherButton name={iconName} style={inputStyle.icon}
-              onPress={() => setSecureTextEntry(prevState => !prevState)} />
-          }
+          {isPassword && <NiFeatherButton name={iconName} style={inputStyle.icon} onPress={onPasswordIconPress} />}
         </View>
         {isSelected && <Shadow />}
       </View>
