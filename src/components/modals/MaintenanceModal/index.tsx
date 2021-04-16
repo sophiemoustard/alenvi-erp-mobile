@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 import Modal from '../Modal';
 import styles from './styles';
-import commonStyles from '../commonStyles';
+import modalStyles from '../modalStyles';
 
 interface MaintenanceModalProps {
   visible: boolean,
@@ -11,9 +11,9 @@ interface MaintenanceModalProps {
 const MaintenanceModal = ({ visible }: MaintenanceModalProps) => (
   <Modal visible={visible}>
     <>
-      <Text style={commonStyles.title}> L&apos;application est en maintenance !</Text>
-      <Text style={[commonStyles.body, styles.body]}>
-        L&apos;application devrait de nouveau être disponible dans quelques minutes.
+      <Text style={modalStyles.title}> L&apos;application est en maintenance !</Text>
+      <Text style={[modalStyles.body, styles.body]}>
+        Elle sera à nouveau disponible dans quelques minutes.
       </Text>
     </>
   </Modal>

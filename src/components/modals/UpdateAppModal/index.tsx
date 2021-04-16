@@ -3,7 +3,7 @@ import { Text } from 'react-native';
 import NiModal from '../Modal';
 import NiButton from '../../Button';
 import styles from './styles';
-import commonStyles from '../commonStyles';
+import modalStyles from '../modalStyles';
 
 interface UpdateAppModalProps {
   visible: boolean,
@@ -12,8 +12,8 @@ interface UpdateAppModalProps {
 const UpdateAppModal = ({ visible }: UpdateAppModalProps) => (
   <NiModal visible={visible}>
     <>
-      <Text style={commonStyles.title}> Nouvelle version de l&apos;app disponible !</Text>
-      <Text style={[commonStyles.body, styles.body]}>
+      <Text style={modalStyles.title}> Nouvelle version de l&apos;app disponible !</Text>
+      <Text style={[modalStyles.body, styles.body]}>
         Merci de mettre à jour votre application pour pouvoir continuer à l&apos;utiliser :)
       </Text>
       <NiButton title="Mettre à jour" onPress={() => {}}/>
