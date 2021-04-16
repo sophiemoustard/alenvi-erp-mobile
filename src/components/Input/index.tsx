@@ -9,9 +9,10 @@ interface InputProps {
   title: string,
   style: Object,
   type: string,
+  setValue: (value: string) => void,
 }
 
-const Input = ({ title, style, type }: InputProps) => {
+const Input = ({ title, style, type, setValue }: InputProps) => {
   const isPassword = type === PASSWORD;
   const keyboardType = type === EMAIL ? 'email-address' : 'default';
 
@@ -28,7 +29,7 @@ const Input = ({ title, style, type }: InputProps) => {
       </View>
       <View style={inputStyle.container}>
         <View style={inputStyle.inputContainer}>
-          <TextInput style={inputStyle.input} onTouchStart={() => setIsSelected(true)}
+          <TextInput style={inputStyle.input} onChangeText={setValue} onTouchStart={() => setIsSelected(true)}
             onBlur={() => setIsSelected(false)} secureTextEntry={secureTextEntry} keyboardType={keyboardType} />
           {isPassword &&
             <NiFeatherButton name={iconName} style={inputStyle.icon}

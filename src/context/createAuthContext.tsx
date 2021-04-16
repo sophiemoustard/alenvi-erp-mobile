@@ -1,7 +1,7 @@
-import React, { useReducer, createContext, ContextType } from 'react';
+import React, { useReducer, createContext } from 'react';
 
 interface createAuthContextType {
-  Context: ContextType<any>,
+  Context: React.Context<StateType>,
   Provider: (children: {children: React.ReactNode}) => JSX.Element
 }
 
@@ -30,12 +30,12 @@ export default (
     }
 
     return (
-      <Context.Provider value={{ ...state, ...boundActions }}>
+      <Context.Provider value={{ ...state, ...boundActions } as StateType}>
         {children}
       </Context.Provider>
     );
   };
-  const Context = createContext(defaultValue);
+  const Context = createContext<StateType>(defaultValue);
 
   return { Context, Provider };
 };
