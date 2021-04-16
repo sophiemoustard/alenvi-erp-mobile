@@ -6,7 +6,14 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "ts-lint": "tsc --noEmit & eslint environment.ts App/index.tsx ./src --ext .js,.jsx,.ts,.tsx -c .eslintrc.js"
+    "ts-lint": "tsc --noEmit & eslint environment.ts App/index.tsx ./src --ext .js,.jsx,.ts,.tsx -c .eslintrc.js",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
+    ]
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -31,6 +38,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "jest-expo": "^41.0.0",
     "typescript": "^4.0.7"
   },
   "private": true
