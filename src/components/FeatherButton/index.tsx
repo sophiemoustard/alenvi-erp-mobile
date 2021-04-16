@@ -3,9 +3,10 @@ import { TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { BLACK } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
+import { FeatherType } from '../../types/IconType';
 
 interface FeatherButtonProps {
-  name: 'eye' | 'eye-off',
+  name: FeatherType,
   color?: string,
   size?: number,
   style?: Object,
