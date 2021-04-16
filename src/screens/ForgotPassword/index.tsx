@@ -34,7 +34,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
         <View style={styles.content}>
           <NiInput style={styles.input} title='Email' type='email' setValue={setEmail} value={email} />
         </View>
-        <NiButton title='Validexr' onPress={() => {}} />
+        <NiButton title='Valider' onPress={() => {}} />
       </View>
     </KeyboardAvoidingView>
   );
