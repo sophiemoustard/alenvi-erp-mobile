@@ -22,6 +22,7 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     backgroundColor: WHITE,
+    left: -BORDER_RADIUS.XS,
   },
   input: {
     ...FIRA_SANS_MEDIUM.MD,
@@ -38,7 +39,6 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
   caption: {
     ...FIRA_SANS_REGULAR.SM,
     textAlign: 'left',
-    color: WHITE,
     marginBottom: MARGIN.XS,
   },
 });
