@@ -2,10 +2,10 @@ import React, { useReducer, createContext } from 'react';
 
 export type boundFunctionsType = (payload: any) => Promise<void>;
 
-export type StateType = {
+export interface StateType {
   alenviToken: string | null,
   signIn: boundFunctionsType,
-};
+}
 
 export interface ActionType {
   type: string,
