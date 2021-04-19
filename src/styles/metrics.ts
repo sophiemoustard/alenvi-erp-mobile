@@ -41,3 +41,4 @@ export const ICON = {
 export const BUTTON_HEIGHT = 48;
 export const INPUT_HEIGHT = 48;
 export const BORDER_WIDTH = 1;
+export const RADIUS_GAP = 4;

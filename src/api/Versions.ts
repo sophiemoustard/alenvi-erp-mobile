@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
 import getEnvVars from '../../environment';
-import { ERP } from '../data/constants';
+import { ERP } from '../core/data/constants';
 
 export default {
   shouldUpdate: async () => {

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 import axios from 'axios';
-import Version from '../api/versions';
-import { ACTIVE_STATE } from '../data/constants';
+import Version from '../api/Versions';
+import { ACTIVE_STATE } from '../core/data/constants';
 import UpdateAppModal from '../components/modals/UpdateAppModal';
 import MaintenanceModal from '../components/modals/MaintenanceModal';
-import Authentication from '../screens/Authentication';
+import AppNavigation from '../AppNavigation';
 
 const AppContainer = () => {
   const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
@@ -53,7 +53,7 @@ const AppContainer = () => {
     <>
       <MaintenanceModal visible={maintenanceModaleVisible} />
       <UpdateAppModal visible={updateAppVisible} />
-      <Authentication />
+      <AppNavigation />
     </>
   );
 };

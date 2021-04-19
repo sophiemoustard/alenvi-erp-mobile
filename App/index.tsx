@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StatusBar } from 'react-native';
 import AppLoading from 'expo-app-loading';
+import { Provider as AuthProvider } from '../src/context/AuthContext';
 import { initializeAssets } from '../src/core/helpers/assets';
 import { WHITE } from '../src/styles/colors';
 import styles from './styles';
@@ -20,7 +21,9 @@ const App = () => {
       <View style={style.statusBar}>
         <StatusBar translucent barStyle="dark-content" backgroundColor={WHITE} />
       </View>
-      <AppContainer />
+      <AuthProvider>
+        <AppContainer />
+      </AuthProvider>
     </>
   );
 };
