@@ -14,9 +14,19 @@ interface InputProps {
   style?: Object,
   darkMode?: boolean,
   validationMessage?: string,
+  disabled?: boolean,
 }
 
-const Input = ({ title, type, setValue, value, style = {}, darkMode = false, validationMessage = '' }: InputProps) => {
+const Input = ({
+  title,
+  type,
+  setValue,
+  value,
+  style = {},
+  darkMode = false,
+  validationMessage = '',
+  disabled = false,
+}: InputProps) => {
   const isPassword = type === PASSWORD;
   const keyboardType = type === EMAIL ? 'email-address' : 'default';
 
@@ -38,7 +48,7 @@ const Input = ({ title, type, setValue, value, style = {}, darkMode = false, val
         <View style={inputStyle.inputContainer}>
           <TextInput style={inputStyle.input} onChangeText={setValue} onTouchStart={() => setIsSelected(true)}
             onBlur={() => setIsSelected(false)} secureTextEntry={secureTextEntry} keyboardType={keyboardType}
-            value={value} />
+            value={value} editable={!disabled} />
           {isPassword && <NiFeatherButton name={iconName} style={inputStyle.icon} onPress={onPasswordIconPress} />}
         </View>
         {isSelected && <Shadow />}

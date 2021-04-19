@@ -21,6 +21,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
   const [exitConfirmationModal, setExitConfirmationModal] = useState<boolean>(false);
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false);
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setInvalidEmail(!email.match(EMAIL_REGEX));
@@ -37,18 +38,22 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
     setIsValidationAttempted(true);
     try {
       if (!invalidEmail) {
+        setIsLoading(true);
         const exists = await Users.exists({ email });
         if (!exists) setErrorMessage('Oups ! Cet e-mail n\'est pas reconnu.');
       }
     } catch (e) {
       setErrorMessage('Une erreur s\'est produite, veuillez réessayer ultérieurement.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
       <View style={styles.goBack}>
-        <FeatherButton name='x-circle' onPress={() => setExitConfirmationModal(true)} size={ICON.MD} color={GREY[600]}/>
+        <FeatherButton name='x-circle' onPress={() => setExitConfirmationModal(true)} size={ICON.MD} color={GREY[600]}
+          disabled={isLoading} />
         <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
           onPressCancelButton={() => setExitConfirmationModal(false)}
           title={'Êtes-vous sûr de cela ?'} contentText={'Vous reviendrez à la page d\'accueil.'} />
@@ -57,9 +62,9 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
         <View style={styles.content}>
           <Text style={styles.title}>Quelle est votre e-mail ?</Text>
           <NiInput style={styles.input} title='Email' type='email' setValue={setEmail} value={email}
-            validationMessage={errorMessage} />
+            validationMessage={errorMessage} disabled={isLoading} />
         </View>
-        <NiButton title='Valider' onPress={validateEmail} />
+        <NiButton title='Valider' onPress={validateEmail} loading={isLoading} />
       </View>
     </KeyboardAvoidingView>
   );
