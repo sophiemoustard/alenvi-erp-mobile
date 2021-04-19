@@ -1,36 +1,41 @@
 import React, { useReducer, createContext } from 'react';
 
-interface createAuthContextType {
-  Context: React.Context<StateType>,
-  Provider: (children: {children: React.ReactNode}) => JSX.Element
-}
+export type boundFunctionsType = (payload: any) => Promise<void>;
 
-export interface StateType {
+export type StateType = {
   alenviToken: string | null,
-}
+  signIn: boundFunctionsType,
+};
 
 export interface ActionType {
   type: string,
   payload: any,
 }
 
+export type functionType = Record<string, (dispatch: React.Dispatch<ActionType>) => boundFunctionsType>;
+
+interface createAuthContextType {
+  Context: React.Context<StateType>,
+  Provider: (children: {children: React.ReactNode}) => JSX.Element
+}
+
 export default (
   reducer: (state: StateType, actions: ActionType) => StateType,
-  actions: any,
+  functions: functionType,
   defaultValue: StateType
 ): createAuthContextType => {
   const Provider = ({ children }: {children: React.ReactNode}) => {
     const [{ alenviToken }, dispatch] = useReducer(reducer, defaultValue);
     const state = { alenviToken };
 
-    const boundActions: any = {};
+    const boundFunctions: any = {};
     // eslint-disable-next-line guard-for-in, no-restricted-syntax
-    for (const key in actions) {
-      boundActions[key] = actions[key](dispatch);
+    for (const key in functions) {
+      boundFunctions[key] = functions[key](dispatch);
     }
 
     return (
-      <Context.Provider value={{ ...state, ...boundActions } as StateType}>
+      <Context.Provider value={{ ...state, ...boundFunctions } as StateType}>
         {children}
       </Context.Provider>
     );
