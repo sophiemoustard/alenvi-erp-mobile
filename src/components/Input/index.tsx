@@ -10,12 +10,13 @@ interface InputProps {
   value: string,
   title: string,
   type: string,
+  setValue: (value: string) => void,
   style?: Object,
   darkMode?: boolean,
-  setValue: (value: string) => void,
+  validationMessage?: string,
 }
 
-const Input = ({ title, type, setValue, value, style = {}, darkMode = false }: InputProps) => {
+const Input = ({ title, type, setValue, value, style = {}, darkMode = false, validationMessage = '' }: InputProps) => {
   const isPassword = type === PASSWORD;
   const keyboardType = type === EMAIL ? 'email-address' : 'default';
 
@@ -42,6 +43,7 @@ const Input = ({ title, type, setValue, value, style = {}, darkMode = false }: I
         </View>
         {isSelected && <Shadow />}
       </View>
+      <Text style={inputStyle.invalid}>{validationMessage}</Text>
     </View>
   );
 };

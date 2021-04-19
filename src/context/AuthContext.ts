@@ -1,5 +1,5 @@
 import createAuthContext, { StateType, ActionType } from './createAuthContext';
-import Authentication from '../api/authentication';
+import Authentication from '../api/Authentication';
 import asyncStorage from '../core/helpers/asyncStorage';
 
 const authReducer = (state: StateType, action: ActionType) => {
