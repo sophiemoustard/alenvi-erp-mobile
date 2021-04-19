@@ -26,7 +26,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
   const [errorMessageVisible, setErrorMessageVisible] = useState<boolean>(false);
   const errorMessage = 'L\'e-mail et/ou le mot de passe est incorrect';
 
-  const loginValidation = async () => {
+  const login = async () => {
     if (email === '' || password === '') return;
     setErrorMessageVisible(false);
     try {
@@ -54,7 +54,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
         <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={{ top: 12, bottom: 12 }}>
           <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
         </TouchableOpacity>
-        <NiButton style={styles.button} title='Se connecter' onPress={async () => loginValidation()} />
+        <NiButton style={styles.button} title='Se connecter' onPress={login} />
       </KeyboardAvoidingView>
     </ImageBackground>
   );
