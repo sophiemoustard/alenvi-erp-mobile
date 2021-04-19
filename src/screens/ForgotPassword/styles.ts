@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { MARGIN } from '../../styles/metrics';
+import { FIRA_SANS_BOLD } from '../../styles/fonts';
 
 export default StyleSheet.create({
   screen: {
@@ -8,6 +9,10 @@ export default StyleSheet.create({
   body: {
     flexGrow: 1,
     margin: MARGIN.LG,
+  },
+  title: {
+    ...FIRA_SANS_BOLD.LG,
+    marginBottom: MARGIN.LG,
   },
   input: {
     marginBottom: MARGIN.XS,

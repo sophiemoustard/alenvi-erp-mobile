@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, View, Text } from 'react-native';
 import Users from '../../api/Users';
 import NiButton from '../../components/Button';
 import FeatherButton from '../../components/FeatherButton';
@@ -55,6 +55,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
       </View>
       <View style={styles.body}>
         <View style={styles.content}>
+          <Text style={styles.title}>Quelle est votre e-mail ?</Text>
           <NiInput style={styles.input} title='Email' type='email' setValue={setEmail} value={email}
             validationMessage={errorMessage} />
         </View>
