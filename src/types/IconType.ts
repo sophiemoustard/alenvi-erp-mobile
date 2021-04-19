@@ -1,2 +1,1 @@
-export type FeatherType = 'arrow-left' | 'arrow-right' | 'x-circle' | 'play-circle' | 'chevron-up' | 'chevron-down'
-| 'info' | 'edit-2' | 'plus' | 'eye-off' | 'eye';
+export type FeatherType = 'eye-off' | 'eye';

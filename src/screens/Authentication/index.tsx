@@ -32,8 +32,8 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
     >
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
         <Text style={styles.title}>Identifiez-vous pour accéder aux informations</Text>
-        <NiInput style={styles.input} title='Email' type={EMAIL} setValue={setEmail} value={email} darkMode />
-        <NiInput style={styles.input} title='Mot de Passe' type={PASSWORD} setValue={setPassword} value={password}
+        <NiInput title='Email' type={EMAIL} setValue={setEmail} value={email} darkMode />
+        <NiInput title='Mot de Passe' type={PASSWORD} setValue={setPassword} value={password}
           darkMode />
         <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={{ top: 12, bottom: 12 }}>
           <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
