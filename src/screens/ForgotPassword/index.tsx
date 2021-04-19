@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Platform, View, Text } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { KeyboardAvoidingView, Platform, View, Text, BackHandler } from 'react-native';
 import Users from '../../api/Users';
 import NiButton from '../../components/Button';
 import FeatherButton from '../../components/FeatherButton';
@@ -22,6 +22,20 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false);
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const isDisabledBackHandler = useRef(isLoading);
+
+  const hardwareBackPress = () => {
+    if (!isDisabledBackHandler.current) setExitConfirmationModal(true);
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
+
+    return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
+  }, []);
+
+  useEffect(() => { isDisabledBackHandler.current = isLoading; }, [isLoading]);
 
   useEffect(() => {
     setInvalidEmail(!email.match(EMAIL_REGEX));
