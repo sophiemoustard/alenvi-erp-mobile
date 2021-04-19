@@ -25,8 +25,8 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
   const { signIn } = useContext(AuthContext);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('');
   const [errorMessageVisible, setErrorMessageVisible] = useState<boolean>(false);
+  const errorMessage = 'L\'e-mail et/ou le mot de passe est incorrect';
 
   const authenticationValidation = async () => {
     if (email !== '' && password !== '') {
@@ -35,7 +35,6 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
         await axios.get(`${baseURL}/users/authenticate`);
       } catch (e) {
         if (e.status === 401) {
-          setErrorMessage('L\'e-mail et/ou le mot de passe est incorrect');
           setErrorMessageVisible(true);
         }
       }
@@ -60,8 +59,8 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
         </TouchableOpacity>
         <NiButton style={styles.button} title='Se connecter' onPress={() => {
           setErrorMessageVisible(false);
-          signIn({ email, password });
           authenticationValidation();
+          signIn({ email, password });
         }} />
       </KeyboardAvoidingView>
     </ImageBackground>
