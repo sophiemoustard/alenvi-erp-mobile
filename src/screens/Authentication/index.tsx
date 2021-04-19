@@ -7,7 +7,6 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import axios from 'axios';
 import { Context as AuthContext } from '../../context/AuthContext';
 import NiButton from '../../components/Button';
 import NiInput from '../../components/Input';
@@ -15,7 +14,6 @@ import NiErrorMessage from '../../components/ErrorMessage';
 import styles from './styles';
 import { PASSWORD, EMAIL } from '../../core/data/constants';
 import { NavigationType } from '../../types/NavigationType';
-import getEnvVars from '../../../environment';
 
 interface AuthenticationProps {
   navigation: NavigationType,
@@ -28,15 +26,14 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
   const [errorMessageVisible, setErrorMessageVisible] = useState<boolean>(false);
   const errorMessage = 'L\'e-mail et/ou le mot de passe est incorrect';
 
-  const authenticationValidation = async () => {
-    if (email !== '' && password !== '') {
-      try {
-        const { baseURL } = getEnvVars();
-        await axios.get(`${baseURL}/users/authenticate`);
-      } catch (e) {
-        if (e.status === 401) {
-          setErrorMessageVisible(true);
-        }
+  const loginValidation = async () => {
+    if (email === '' || password === '') return;
+    setErrorMessageVisible(false);
+    try {
+      await signIn({ email, password });
+    } catch (e) {
+      if (e.status === 401) {
+        setErrorMessageVisible(true);
       }
     }
   };
@@ -57,11 +54,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
         <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={{ top: 12, bottom: 12 }}>
           <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
         </TouchableOpacity>
-        <NiButton style={styles.button} title='Se connecter' onPress={() => {
-          setErrorMessageVisible(false);
-          authenticationValidation();
-          signIn({ email, password });
-        }} />
+        <NiButton style={styles.button} title='Se connecter' onPress={async () => loginValidation()} />
       </KeyboardAvoidingView>
     </ImageBackground>
   );
