@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AppState } from 'react-native';
 import axios from 'axios';
 import Version from '../api/Versions';
-import { ACTIVE_STATE } from '../data/constants';
+import { ACTIVE_STATE } from '../core/data/constants';
 import UpdateAppModal from '../components/modals/UpdateAppModal';
 import MaintenanceModal from '../components/modals/MaintenanceModal';
 import AppNavigation from '../AppNavigation';

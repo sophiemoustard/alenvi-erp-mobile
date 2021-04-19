@@ -11,7 +11,7 @@ import { Context as AuthContext } from '../../context/AuthContext';
 import NiButton from '../../components/Button';
 import NiInput from '../../components/Input';
 import styles from './styles';
-import { PASSWORD, EMAIL } from '../../data/constants';
+import { PASSWORD, EMAIL } from '../../core/data/constants';
 import { NavigationType } from '../../types/NavigationType';
 
 interface AuthenticationProps {

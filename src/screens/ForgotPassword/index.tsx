@@ -5,6 +5,7 @@ import NiButton from '../../components/Button';
 import FeatherButton from '../../components/FeatherButton';
 import NiInput from '../../components/Input';
 import ExitModal from '../../components/modals/ExitModal';
+import { EMAIL_REGEX } from '../../core/data/constants';
 import { ICON } from '../../styles/metrics';
 import { GREY } from '../../styles/colors';
 import { NavigationType } from '../../types/NavigationType';
@@ -16,24 +17,30 @@ interface EmailFormProps {
 
 const ForgotPassword = ({ navigation }: EmailFormProps) => {
   const [email, setEmail] = useState<string>('');
-  const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitConfirmationModal, setExitConfirmationModal] = useState<boolean>(false);
+  const [invalidEmail, setInvalidEmail] = useState<boolean>(false);
+  const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setInvalidEmail(!email.match(EMAIL_REGEX));
+    if (!email.match(EMAIL_REGEX) && isValidationAttempted) setErrorMessage('Votre e-mail n\'est pas valide');
+    else setErrorMessage('');
+  }, [email, isValidationAttempted]);
 
   const goBack = () => {
     if (exitConfirmationModal) setExitConfirmationModal(false);
     navigation.navigate('Authentication');
   };
 
-  useEffect(() => { if (!error) setErrorMessage(''); }, [error]);
-
   const validateEmail = async () => {
-    setError(false);
+    setIsValidationAttempted(true);
     try {
-      const exists = await Users.exists({ email });
-      if (!exists) setErrorMessage('Oups ! Cet e-mail n\'est pas reconnu.');
+      if (!invalidEmail) {
+        const exists = await Users.exists({ email });
+        if (!exists) setErrorMessage('Oups ! Cet e-mail n\'est pas reconnu.');
+      }
     } catch (e) {
-      setError(true);
       setErrorMessage('Une erreur s\'est produite, veuillez réessayer ultérieurement.');
     }
   };
