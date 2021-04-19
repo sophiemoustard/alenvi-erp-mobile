@@ -22,20 +22,17 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false);
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [backHandlerDisabled, setBackHandlerDisabled] = useState(isLoading);
 
   const hardwareBackPress = useCallback(() => {
-    if (!backHandlerDisabled) setExitConfirmationModal(true);
+    if (!isLoading) setExitConfirmationModal(true);
     return true;
-  }, [backHandlerDisabled]);
+  }, [isLoading]);
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
 
     return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
   }, [hardwareBackPress]);
-
-  useEffect(() => { setBackHandlerDisabled(isLoading); }, [isLoading]);
 
   useEffect(() => {
     setInvalidEmail(!email.match(EMAIL_REGEX));
