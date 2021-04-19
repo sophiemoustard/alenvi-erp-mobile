@@ -1,1 +1,1 @@
-export type FeatherType = 'eye-off' | 'eye';
+export type FeatherType = 'eye-off' | 'eye' | 'x-circle';
