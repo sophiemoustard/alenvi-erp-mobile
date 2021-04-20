@@ -5,6 +5,7 @@ export type boundFunctionsType = (payload: any) => Promise<void>;
 export interface StateType {
   alenviToken: string | null,
   signIn: boundFunctionsType,
+  signOut: boundFunctionsType,
 }
 
 export interface ActionType {
