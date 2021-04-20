@@ -23,6 +23,19 @@
     "ios": { "icon": "./assets/images/ios_icon.png" },
     "android": {
       "adaptiveIcon": { "foregroundImage": "./assets/images/android_icon.png" }
+    },
+    "extra": {
+      "hooks": {
+        "postPublish": [
+          {
+            "file": "sentry-expo/upload-sourcemaps",
+            "config": {
+              "organization": "alenvi",
+              "project": "mobile-erp"
+            }
+          }
+        ]
+      }
     }
   }
 }
