@@ -23,17 +23,16 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
   const { signIn } = useContext(AuthContext);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [errorMessageVisible, setErrorMessageVisible] = useState<boolean>(false);
-  const errorMessage = 'L\'e-mail et/ou le mot de passe est incorrect';
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const login = async () => {
     if (email === '' || password === '') return;
-    setErrorMessageVisible(false);
+    setErrorMessage('');
     try {
       await signIn({ email, password });
     } catch (e) {
       if (e.status === 401) {
-        setErrorMessageVisible(true);
+        setErrorMessage('L\'e-mail et/ou le mot de passe est incorrect');
       }
     }
   };
@@ -50,7 +49,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
         <NiInput title='Email' type={EMAIL} setValue={setEmail} value={email} darkMode />
         <NiInput title='Mot de Passe' type={PASSWORD} setValue={setPassword} value={password}
           darkMode />
-        <NiErrorMessage message={errorMessage} visible={errorMessageVisible} />
+        <NiErrorMessage message={errorMessage}/>
         <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={{ top: 12, bottom: 12 }}>
           <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
         </TouchableOpacity>
