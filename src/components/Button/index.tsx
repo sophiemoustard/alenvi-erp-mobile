@@ -13,7 +13,7 @@ interface ButtonProps {
 }
 
 const Button = ({ title, onPress, style = {}, disabled = false, loading = false } : ButtonProps) => (
-  <TouchableOpacity style={{ ...style, ...styles.button }} onPress={onPress} disabled={loading || disabled}>
+  <TouchableOpacity style={{ ...styles.button, ...style }} onPress={onPress} disabled={loading || disabled}>
     {!loading && <Text style={{ ...styles.textButton }}>{title}</Text>}
     {loading && <ActivityIndicator style={commonStyle.disabled} color={WHITE} size="small" />}
   </TouchableOpacity>

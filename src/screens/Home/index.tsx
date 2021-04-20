@@ -1,6 +1,13 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
+import styles from './style';
+import NiButton from '../../components/Button';
 
-const Home = () => <Text> Welcome to Compani! :)</Text>;
+const Home = () => (
+  <View>
+    <Text> Welcome to Compani! :)</Text>
+    <NiButton style={ styles.button } title='Me deconnecter' onPress={ () => {} } />
+  </View>
+);
 
 export default Home;
