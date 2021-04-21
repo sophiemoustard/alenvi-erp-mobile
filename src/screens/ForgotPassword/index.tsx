@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { KeyboardAvoidingView, Platform, View, Text, BackHandler } from 'react-native';
 import Users from '../../api/Users';
-import NiButton from '../../components/form/Button';
+import NiPrimaryButton from '../../components/form/PrimaryButton';
 import FeatherButton from '../../components/FeatherButton';
 import NiInput from '../../components/form/Input';
 import ExitModal from '../../components/modals/ExitModal';
@@ -75,7 +75,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
           <NiInput style={styles.input} title='Email' type='email' setValue={setEmail} value={email}
             validationMessage={errorMessage} disabled={isLoading} />
         </View>
-        <NiButton title='Valider' onPress={validateEmail} loading={isLoading} />
+        <NiPrimaryButton title='Valider' onPress={validateEmail} loading={isLoading} />
       </View>
     </KeyboardAvoidingView>
   );

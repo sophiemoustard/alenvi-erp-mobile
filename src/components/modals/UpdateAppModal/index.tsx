@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import NiModal from '../Modal';
-import NiButton from '../../form/Button';
+import NiButton from '../../form/PrimaryButton';
 import styles from './styles';
 import modalStyles from '../modalStyles';
 
