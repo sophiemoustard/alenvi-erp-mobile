@@ -4,7 +4,7 @@ import styles from './style';
 import NiButton from '../../components/Button';
 import { Context as AuthContext } from '../../context/AuthContext';
 
-const Home = () => {
+const Profile = () => {
   const { signOut } = useContext(AuthContext);
 
   const goToAuthentication = async () => {
@@ -13,10 +13,11 @@ const Home = () => {
 
   return (
     <View>
-      <Text> Welcome to Compani! :)</Text>
-      <NiButton style={ styles.button } title='Me deconnecter' onPress={ goToAuthentication } />
+      <Text>Welcome to Compani!!</Text>
+      <NiButton customStyles={{ button: styles.button, textButton: styles.textButton }}
+        title='Me déconnecter' onPress={goToAuthentication} />
     </View>
   );
 };
 
-export default Home;
+export default Profile;
