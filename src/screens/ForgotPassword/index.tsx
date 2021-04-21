@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { KeyboardAvoidingView, Platform, View, Text, BackHandler } from 'react-native';
 import Users from '../../api/Users';
-import NiButton from '../../components/Button';
+import NiButton from '../../components/form/Button';
 import FeatherButton from '../../components/FeatherButton';
-import NiInput from '../../components/Input';
+import NiInput from '../../components/form/Input';
 import ExitModal from '../../components/modals/ExitModal';
 import { EMAIL_REGEX } from '../../core/data/constants';
 import { ICON } from '../../styles/metrics';

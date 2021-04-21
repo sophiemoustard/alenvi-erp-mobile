@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Context as AuthContext } from '../../context/AuthContext';
-import NiButton from '../../components/Button';
-import NiInput from '../../components/Input';
+import NiButton from '../../components/form/Button';
+import NiInput from '../../components/form/Input';
 import NiErrorMessage from '../../components/ErrorMessage';
 import styles from './styles';
 import { PASSWORD, EMAIL } from '../../core/data/constants';

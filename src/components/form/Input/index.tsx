@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import styles from './styles';
-import NiFeatherButton from '../FeatherButton';
-import { PASSWORD, EMAIL } from '../../core/data/constants';
-import { WHITE } from '../../styles/colors';
-import Shadow from '../design/Shadow';
+import NiFeatherButton from '../../FeatherButton';
+import { PASSWORD, EMAIL } from '../../../core/data/constants';
+import { WHITE } from '../../../styles/colors';
+import Shadow from '../../design/Shadow';
 
 interface InputProps {
   value: string,

@@ -1,8 +1,8 @@
 import React from 'react';
 import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import styles from './styles';
-import commonStyle from '../../styles/common';
-import { WHITE } from '../../styles/colors';
+import commonStyle from '../../../styles/common';
+import { WHITE } from '../../../styles/colors';
 
 interface ButtonProps {
   title: string,

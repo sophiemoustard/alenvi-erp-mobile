@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Text, View } from 'react-native';
 import styles from './styles';
-import NiButton from '../../components/Button';
+import NiButton from '../../components/form/Button';
 import { Context as AuthContext } from '../../context/AuthContext';
 
 const Profile = () => {
