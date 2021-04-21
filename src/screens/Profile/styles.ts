@@ -3,10 +3,11 @@ import { MARGIN, BORDER_WIDTH } from '../../styles/metrics';
 import { GREY } from '../../styles/colors';
 
 export default StyleSheet.create({
+  view: {
+    marginHorizontal: MARGIN.LG,
+  },
   button: {
-    marginTop: MARGIN.LG,
-    marginBottom: MARGIN.SM,
-    marginLeft: MARGIN.XS,
+    marginVertical: MARGIN.LG,
     backgroundColor: GREY[100],
     borderColor: GREY[600],
     borderWidth: BORDER_WIDTH,

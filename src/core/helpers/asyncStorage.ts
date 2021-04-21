@@ -4,6 +4,7 @@ const setAlenviToken = async (token: string, tokenExpireDate: string): Promise<v
   await AsyncStorage.setItem('alenviToken', token);
   await AsyncStorage.setItem('alenviTokenExpireDate', tokenExpireDate);
 };
+
 const removeAlenviToken = async (): Promise<void> => {
   await AsyncStorage.removeItem('alenviToken');
   await AsyncStorage.removeItem('alenviTokenExpireDate');

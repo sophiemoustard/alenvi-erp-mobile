@@ -8,7 +8,7 @@ const authReducer = (state: StateType, action: ActionType) => {
     case 'signin':
       return { ...state, alenviToken: action.payload };
     case 'signout':
-      return { ...state, alenviToken: action.payload };
+      return { ...state, alenviToken: null };
     default:
       return state;
   }
@@ -18,14 +18,14 @@ const signIn = (dispatch: React.Dispatch<ActionType>) => async (payload: { email
   const { token, tokenExpireDate } = await Authentication.authenticate(payload);
   await asyncStorage.setAlenviToken(token, tokenExpireDate);
 
-  dispatch({ type: 'signin', payload: { alenviToken: token } });
+  dispatch({ type: 'signin', payload: token });
 };
 
 const signOut = (dispatch: React.Dispatch<ActionType>) => async () => {
   await Authentication.logOut();
   await asyncStorage.removeAlenviToken();
 
-  dispatch({ type: 'signout', payload: null });
+  dispatch({ type: 'signout' });
 };
 
 export const { Provider, Context } = createAuthContext(
