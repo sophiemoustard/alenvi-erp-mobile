@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Context as AuthContext } from '../context/AuthContext';
@@ -10,7 +10,10 @@ import ForgotPassword from '../screens/ForgotPassword';
 const MainStack = createStackNavigator();
 
 const AppNavigation = () => {
-  const { alenviToken } = useContext(AuthContext);
+  const { alenviToken, tryLocalSignIn } = useContext(AuthContext);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => { tryLocalSignIn(); }, []);
 
   const authScreens = { Authentication, ForgotPassword };
   const userScreens = { Profile };

@@ -6,6 +6,7 @@ export interface StateType {
   alenviToken: string | null,
   signIn: boundFunctionsType,
   signOut: boundFunctionsType,
+  tryLocalSignIn: boundFunctionsType,
 }
 
 export interface ActionType {
