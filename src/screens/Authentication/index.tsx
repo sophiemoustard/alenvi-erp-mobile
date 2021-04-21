@@ -53,7 +53,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
         <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={{ top: 12, bottom: 12 }}>
           <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
         </TouchableOpacity>
-        <NiButton style={styles.button} title='Se connecter' onPress={login} />
+        <NiButton customStyles={{ button: styles.button }} title='Se connecter' onPress={login} />
       </KeyboardAvoidingView>
     </ImageBackground>
   );
