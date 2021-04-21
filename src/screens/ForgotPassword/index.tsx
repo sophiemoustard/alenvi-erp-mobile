@@ -5,6 +5,7 @@ import NiPrimaryButton from '../../components/form/PrimaryButton';
 import FeatherButton from '../../components/FeatherButton';
 import NiInput from '../../components/form/Input';
 import ExitModal from '../../components/modals/ExitModal';
+import ForgotPasswordModal from '../../components/modals/ForgotPasswordModal';
 import { EMAIL_REGEX } from '../../core/data/constants';
 import { ICON } from '../../styles/metrics';
 import { GREY } from '../../styles/colors';
@@ -22,6 +23,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false);
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [forgotPasswordModal, setForgotPasswordModal] = useState<boolean>(false);
 
   const hardwareBackPress = useCallback(() => {
     if (!isLoading) setExitConfirmationModal(true);
@@ -52,6 +54,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
         setIsLoading(true);
         const exists = await Users.exists({ email });
         if (!exists) setErrorMessage('Oups ! Cet e-mail n\'est pas reconnu.');
+        else setForgotPasswordModal(true);
       }
     } catch (e) {
       setErrorMessage('Une erreur s\'est produite, veuillez réessayer ultérieurement.');
@@ -77,6 +80,8 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
         </View>
         <NiPrimaryButton title='Valider' onPress={validateEmail} loading={isLoading} />
       </View>
+      <ForgotPasswordModal email={email} setForgotPasswordModal={setForgotPasswordModal}
+        visible={forgotPasswordModal} />
     </KeyboardAvoidingView>
   );
 };
