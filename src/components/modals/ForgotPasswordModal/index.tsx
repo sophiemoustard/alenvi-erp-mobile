@@ -4,7 +4,7 @@ import Authentication from '../../../api/Authentication';
 import NiPrimaryButton from '../../form/PrimaryButton';
 import FeatherButton from '../../FeatherButton';
 import { EMAIL, PHONE, MOBILE } from '../../../core/data/constants';
-import { ICON } from '../../../styles/metrics';
+import { ICON, IS_LARGE_SCREEN } from '../../../styles/metrics';
 import { GREY } from '../../../styles/colors';
 import styles from './styles';
 import NiErrorMessage from '../../ErrorMessage';
@@ -28,6 +28,19 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
   ];
   const [code, setCode] = useState<Array<string>>(['', '', '', '']);
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState<boolean>(false);
+
+  const keyboardDidHide = () => setIsKeyboardOpen(false);
+  const keyboardDidShow = () => setIsKeyboardOpen(true);
+
+  useEffect(() => {
+    Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+    Keyboard.addListener('keyboardDidShow', keyboardDidShow);
+    return () => {
+      Keyboard.removeListener('keyboardDidHide', keyboardDidHide);
+      Keyboard.removeListener('keyboardDidShow', keyboardDidShow);
+    };
+  }, []);
 
   useEffect(() => {
     const isCodeInvalid = !(code.every(char => char !== '' && Number.isInteger(Number(char))));
@@ -101,6 +114,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
 
   const onRequestClose = () => {
     setCode(['', '', '', '']);
+    setIsKeyboardOpen(false);
     setIsValidationAttempted(false);
     setErrorMessage('');
     setRecipient('');
@@ -123,6 +137,19 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
 
   const afterCodeSent = () => (
     <>
+      {(IS_LARGE_SCREEN || !isKeyboardOpen) &&
+        <Text style={styles.afterCodeSent}>
+          <Text style={styles.afterCodeSentText}>Nous avons envoyé un </Text>
+          <Text style={styles.afterCodeSentText}>{chosenMethod === EMAIL ? 'email ' : 'sms '}</Text>
+          <Text style={styles.afterCodeSentText}>à </Text>
+          <Text style={styles.recipient}>{recipient} </Text>
+          <Text style={styles.afterCodeSentText}>avec le code temporaire. </Text>
+          {chosenMethod === EMAIL && <Text style={styles.afterCodeSentText}>
+              Si vous ne l’avez pas reçu, vérifiez vos emails indésirables, ou réessayez.
+          </Text>
+          }
+        </Text>
+      }
       <View style={styles.inputContainer}>
         {inputRefs.map((k, idx) => (
           <TextInput ref={(r) => { inputRefs[idx] = r; }} key={`${k}${idx}`} value={code[idx]} keyboardType='number-pad'

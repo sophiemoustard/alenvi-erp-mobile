@@ -50,6 +50,17 @@ const styles = StyleSheet.create({
     ...FIRA_SANS_REGULAR.XXL,
     marginHorizontal: MARGIN.XXS,
   },
+  afterCodeSent: {
+    textAlign: 'center',
+  },
+  afterCodeSentText: {
+    ...FIRA_SANS_REGULAR.MD,
+    color: GREY[800],
+  },
+  recipient: {
+    ...FIRA_SANS_BOLD.MD,
+    color: GREY[800],
+  },
 });
 
 export default styles;

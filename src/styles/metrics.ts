@@ -1,3 +1,7 @@
+import { Dimensions } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
+
 export const PADDING = {
   XS: 2,
   SM: 4,
@@ -42,3 +46,7 @@ export const BUTTON_HEIGHT = 48;
 export const INPUT_HEIGHT = 48;
 export const BORDER_WIDTH = 1;
 export const RADIUS_GAP = 4;
+
+export const SCREEN_HEIGHT = width < height ? height : width;
+export const SMALL_SCREEN_MAX_HEIGHT = 568;
+export const IS_LARGE_SCREEN = SCREEN_HEIGHT > SMALL_SCREEN_MAX_HEIGHT;
