@@ -10,13 +10,15 @@ import ForgotPassword from '../screens/ForgotPassword';
 const MainStack = createStackNavigator();
 
 const AppNavigation = () => {
-  const { alenviToken, tryLocalSignIn } = useContext(AuthContext);
+  const { alenviToken, appIsReady, tryLocalSignIn } = useContext(AuthContext);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { tryLocalSignIn(); }, []);
 
   const authScreens = { Authentication, ForgotPassword };
   const userScreens = { Profile };
+
+  if (!appIsReady) return null;
 
   return (
     <NavigationContainer ref={navigationRef}>
