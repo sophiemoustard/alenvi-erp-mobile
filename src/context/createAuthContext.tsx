@@ -1,15 +1,16 @@
 import React, { useReducer, createContext } from 'react';
 
-export type boundFunctionsType = (payload: any) => Promise<void>;
+export type boundFunctionsType = (payload?: any) => Promise<void>;
 
 export interface StateType {
   alenviToken: string | null,
   signIn: boundFunctionsType,
+  signOut: boundFunctionsType,
 }
 
 export interface ActionType {
   type: string,
-  payload: any,
+  payload?: any,
 }
 
 export type functionType = Record<string, (dispatch: React.Dispatch<ActionType>) => boundFunctionsType>;

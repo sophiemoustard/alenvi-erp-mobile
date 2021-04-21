@@ -7,4 +7,8 @@ export default {
     const response = await axios.post(`${baseURL}/users/authenticate`, payload);
     return response.data.data;
   },
+  logOut: async () => {
+    const { baseURL } = getEnvVars();
+    await axios.post(`${baseURL}/users/logout`);
+  },
 };
