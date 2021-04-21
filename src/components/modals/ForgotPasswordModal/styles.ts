@@ -40,6 +40,16 @@ const styles = StyleSheet.create({
   goBack: {
     alignSelf: 'flex-end',
   },
+  inputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginHorizontal: MARGIN.SM,
+    marginBottom: MARGIN.XL,
+  },
+  input: {
+    ...FIRA_SANS_REGULAR.XXL,
+    marginHorizontal: MARGIN.XXS,
+  },
 });
 
 export default styles;
