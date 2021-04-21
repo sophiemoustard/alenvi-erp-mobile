@@ -18,17 +18,26 @@ const authReducer = (state: StateType, action: ActionType) => {
 };
 
 const signIn = (dispatch: React.Dispatch<ActionType>) => async (payload: { email: string, password: string }) => {
-  const { token, tokenExpireDate } = await Authentication.authenticate(payload);
+  const { token, tokenExpireDate, refreshToken } = await Authentication.authenticate(payload);
   await asyncStorage.setAlenviToken(token, tokenExpireDate);
+  await asyncStorage.setRefreshToken(refreshToken);
 
   dispatch({ type: 'signIn', payload: token });
 };
 
 const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
   const { alenviToken, alenviTokenExpireDate } = await asyncStorage.getAlenviToken();
+  const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
 
-  if (DatesHelper.isSameOrAfter(new Date(), alenviTokenExpireDate)) await signOut(dispatch)();
-  else dispatch({ type: 'signIn', payload: alenviToken });
+  if (DatesHelper.isSameOrAfter(new Date(), alenviTokenExpireDate)) {
+    if (DatesHelper.isSameOrAfter(new Date(), refreshTokenExpireDate))(await signOut(dispatch)());
+    else {
+      const { token: newToken,
+        tokenExpireDate: newExpireDate } = await Authentication.refreshToken({ refreshToken });
+      await asyncStorage.setAlenviToken(newToken, newExpireDate);
+      dispatch({ type: 'signIn', payload: newToken });
+    }
+  } else dispatch({ type: 'signIn', payload: alenviToken });
 
   dispatch({ type: 'render' });
 };

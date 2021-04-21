@@ -20,8 +20,26 @@ const removeAlenviToken = async (): Promise<void> => {
   await AsyncStorage.removeItem('alenviTokenExpireDate');
 };
 
+interface RefreshToken {
+  refreshToken: string | null,
+  refreshTokenExpireDate: string | null,
+}
+
+const setRefreshToken = async (token: string): Promise<void> => {
+  const refreshTokenExpireDate = new Date(Date.now() + 31536000000);
+  await AsyncStorage.setItem('refreshToken', token);
+  await AsyncStorage.setItem('refreshTokenExpireDate', refreshTokenExpireDate.toString());
+};
+
+const getRefreshToken = async (): Promise<RefreshToken> => ({
+  refreshToken: await AsyncStorage.getItem('refreshToken'),
+  refreshTokenExpireDate: await AsyncStorage.getItem('refreshTokenExpireDate'),
+});
+
 export default {
   setAlenviToken,
-  removeAlenviToken,
   getAlenviToken,
+  removeAlenviToken,
+  setRefreshToken,
+  getRefreshToken,
 };
