@@ -1,4 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DatesHelper from '../helpers/dates';
+import { ONE_YEAR_IN_MILLISECONDS } from '../data/constants';
+
+const isTokenValid = (token: string | null, tokenExpireDate: string | null): boolean =>
+  !!token && !!tokenExpireDate && DatesHelper.isBefore(new Date(), tokenExpireDate);
 
 interface AlenviToken {
   alenviToken: string | null,
@@ -26,7 +31,7 @@ interface RefreshToken {
 }
 
 const setRefreshToken = async (token: string): Promise<void> => {
-  const refreshTokenExpireDate = new Date(Date.now() + 31536000000);
+  const refreshTokenExpireDate = new Date(Date.now() + ONE_YEAR_IN_MILLISECONDS);
   await AsyncStorage.setItem('refreshToken', token);
   await AsyncStorage.setItem('refreshTokenExpireDate', refreshTokenExpireDate.toString());
 };
@@ -37,6 +42,7 @@ const getRefreshToken = async (): Promise<RefreshToken> => ({
 });
 
 export default {
+  isTokenValid,
   setAlenviToken,
   getAlenviToken,
   removeAlenviToken,
