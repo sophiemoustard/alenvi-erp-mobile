@@ -1,7 +1,6 @@
 export const WHITE = 'white';
 export const BLACK = 'black';
 export const MODAL_BACKDROP_GREY = '#00000099';
-export const PRIMARY = '#C12862';
 export const TRANSPARENT_PINK = 'rgba(193, 40, 98, 0.2)';
 export const RED = '#FF0000';
 

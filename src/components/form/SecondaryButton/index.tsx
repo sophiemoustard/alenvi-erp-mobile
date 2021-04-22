@@ -9,7 +9,6 @@ interface SecondaryButtonProps {
   onPress?: () => void,
   style?: Object,
   loading?: boolean,
-  color?: string,
   disabled?: boolean,
 }
 
@@ -18,17 +17,12 @@ const SecondaryButton = ({
   onPress = () => {},
   style = {},
   loading = false,
-  color = WHITE,
   disabled = false,
-} : SecondaryButtonProps) => {
-  const buttonStyle = { ...styles.button, borderColor: color };
-
-  return (
-    <TouchableOpacity style={[style, buttonStyle]} onPress={onPress} disabled={loading || disabled}>
-      {!loading && <Text style={{ ...styles.textButton, color }}>{title}</Text>}
-      {loading && <ActivityIndicator style={commonStyle.disabled} color={color} size="small" />}
-    </TouchableOpacity>
-  );
-};
+} : SecondaryButtonProps) => (
+  <TouchableOpacity style={[style, styles.button]} onPress={onPress} disabled={loading || disabled}>
+    {!loading && <Text style={styles.textButton}>{title}</Text>}
+    {loading && <ActivityIndicator style={commonStyle.disabled} color={WHITE} size="small" />}
+  </TouchableOpacity>
+);
 
 export default SecondaryButton;
