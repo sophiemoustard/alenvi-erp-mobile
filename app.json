@@ -20,9 +20,15 @@
       "checkAutomatically": "ON_LOAD",
       "fallbackToCacheTimeout": 3000
     },
-    "ios": { "icon": "./assets/images/ios_icon.png" },
+    "ios": {
+      "bundleIdentifier": "com.alenvi.compani",
+      "icon": "./assets/images/ios_icon.png",
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
     "android": {
-      "adaptiveIcon": { "foregroundImage": "./assets/images/android_icon.png" }
+      "package": "com.alenvi.compani",
+      "adaptiveIcon": { "foregroundImage": "./assets/images/android_icon.png" },
+      "googleServicesFile": "./google-services.json"
     },
     "extra": {
       "hooks": {
