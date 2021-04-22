@@ -18,10 +18,10 @@ const AppContainer = () => {
         setMaintenanceModalVisible(false);
         return response;
       },
-      async (error) => {
-        if ([502, 503].includes(error.response.status)) setMaintenanceModalVisible(true);
-        return Promise.reject(error.response);
-      }
+      async error =>
+        // if ([502, 503].includes(error.response.status)) setMaintenanceModalVisible(true);
+        Promise.reject(error.response)
+
     );
 
     setAxiosInitialized(true);
