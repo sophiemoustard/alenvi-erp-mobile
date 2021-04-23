@@ -1,14 +1,15 @@
-import axios from 'axios';
 import Constants from 'expo-constants';
 import getEnvVars from '../../environment';
 import { ERP } from '../core/data/constants';
 
 export default {
-  shouldUpdate: async () => {
+  shouldUpdate: () => {
     const { baseURL } = getEnvVars();
-    const params = { mobileVersion: Constants.manifest.version, appName: ERP };
 
-    const response = await axios.get(`${baseURL}/version/should-update`, { params });
-    return response.data.data;
+    return {
+      method: 'GET',
+      url: `${baseURL}/version/should-update`,
+      params: { mobileVersion: Constants.manifest.version, appName: ERP },
+    };
   },
 };

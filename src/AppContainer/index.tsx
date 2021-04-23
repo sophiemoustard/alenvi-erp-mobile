@@ -1,36 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { AppState } from 'react-native';
-import axios from 'axios';
 import Version from '../api/Versions';
 import { ACTIVE_STATE } from '../core/data/constants';
 import UpdateAppModal from '../components/modals/UpdateAppModal';
 import MaintenanceModal from '../components/modals/MaintenanceModal';
 import AppNavigation from '../navigation/AppNavigation';
+import { Context as AuthContext } from '../context/AuthContext';
+import { useAxios } from '../hooks/useAxios';
 
 const AppContainer = () => {
   const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
-  const [maintenanceModaleVisible, setMaintenanceModalVisible] = useState<boolean>(false);
-  const [axiosInitialized, setAxiosInitialized] = useState<boolean>(false);
-
-  const initializeAxios = () => {
-    axios.interceptors.response.use(
-      (response) => {
-        setMaintenanceModalVisible(false);
-        return response;
-      },
-      async error =>
-        // if ([502, 503].includes(error.response.status)) setMaintenanceModalVisible(true);
-        Promise.reject(error.response)
-
-    );
-
-    setAxiosInitialized(true);
-  };
+  const { maintenanceModale } = useContext(AuthContext);
+  const { callApi } = useAxios();
 
   const shouldUpdate = async (nextState: string) => {
     try {
       if (nextState === ACTIVE_STATE) {
-        const { mustUpdate } = await Version.shouldUpdate();
+        const { mustUpdate } = await callApi(Version.shouldUpdate());
         setUpdateAppVisible(mustUpdate);
       }
     } catch (e) {
@@ -40,18 +26,15 @@ const AppContainer = () => {
   };
 
   useEffect(() => {
-    initializeAxios();
     shouldUpdate(ACTIVE_STATE);
     AppState.addEventListener('change', shouldUpdate);
 
     return () => { AppState.removeEventListener('change', shouldUpdate); };
   }, []);
 
-  if (!axiosInitialized) return null;
-
   return (
     <>
-      <MaintenanceModal visible={maintenanceModaleVisible} />
+      <MaintenanceModal visible={maintenanceModale} />
       <UpdateAppModal visible={updateAppVisible} />
       <AppNavigation />
     </>
