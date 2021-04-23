@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { MARGIN, BORDER_WIDTH } from '../../styles/metrics';
-import { GREY } from '../../styles/colors';
+import { MARGIN } from '../../styles/metrics';
 
 export default StyleSheet.create({
   view: {
@@ -8,8 +7,5 @@ export default StyleSheet.create({
   },
   button: {
     marginVertical: MARGIN.LG,
-    backgroundColor: GREY[100],
-    borderColor: GREY[600],
-    borderWidth: BORDER_WIDTH,
   },
 });

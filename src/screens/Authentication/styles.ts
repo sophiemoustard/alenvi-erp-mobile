@@ -32,8 +32,11 @@ export default StyleSheet.create({
     textShadowRadius: 4,
     textShadowOffset: { width: 0, height: 1 },
   },
-  button: {
+  primaryButton: {
     marginTop: MARGIN.LG,
-    marginBottom: MARGIN.SM,
   },
+  secondaryButton: {
+    marginVertical: MARGIN.SM,
+  },
+
 });
