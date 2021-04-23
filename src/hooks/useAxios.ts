@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { useContext, useEffect, useRef } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { Context as AuthContext } from '../context/AuthContext';
 
 export const useAxios = () => {
@@ -23,13 +23,13 @@ export const useAxios = () => {
     axiosRef.current = instance;
   }, [setMaintenanceModal]);
 
-  const callApi = async (call: object) => {
+  const callApi = useCallback(async (call: object) => {
     if (!axiosRef.current) return null;
 
     const res = await axiosRef.current(call);
 
     return res.data.data;
-  };
+  }, []);
 
   return { callApi };
 };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { AppState } from 'react-native';
 import Version from '../api/Versions';
 import { ACTIVE_STATE } from '../core/data/constants';
@@ -13,7 +13,7 @@ const AppContainer = () => {
   const { maintenanceModale } = useContext(AuthContext);
   const { callApi } = useAxios();
 
-  const shouldUpdate = async (nextState: string) => {
+  const shouldUpdate = useCallback(async (nextState: string) => {
     try {
       if (nextState === ACTIVE_STATE) {
         const { mustUpdate } = await callApi(Version.shouldUpdate());
@@ -23,14 +23,14 @@ const AppContainer = () => {
       setUpdateAppVisible(false);
       console.error(e);
     }
-  };
+  }, [callApi]);
 
   useEffect(() => {
     shouldUpdate(ACTIVE_STATE);
     AppState.addEventListener('change', shouldUpdate);
 
     return () => { AppState.removeEventListener('change', shouldUpdate); };
-  }, []);
+  }, [shouldUpdate]);
 
   return (
     <>
