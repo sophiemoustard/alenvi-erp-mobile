@@ -7,6 +7,16 @@ interface inputStyleProps{
   isSelected: Boolean,
 }
 
+export interface InputStyleType {
+  container: object,
+  inputContainer: object,
+  input: object,
+  icon: object,
+  captionContainer: object,
+  caption: object,
+  invalid: object,
+}
+
 const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
   container: {
     position: 'relative',
