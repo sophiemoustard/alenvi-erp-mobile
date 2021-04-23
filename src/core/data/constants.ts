@@ -8,3 +8,6 @@ export const EMAIL = 'email';
 
 // REGEX
 export const EMAIL_REGEX = /^[\w-.+]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+// DATE
+export const ONE_YEAR_IN_MILLISECONDS = 31536000000;
