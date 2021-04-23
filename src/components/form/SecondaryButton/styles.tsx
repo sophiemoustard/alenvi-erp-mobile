@@ -9,6 +9,6 @@ export default StyleSheet.create({
   },
   textButton: {
     ...commonStyle.textButton,
-    color: GREY[800],
+    color: GREY[600],
   },
 });
