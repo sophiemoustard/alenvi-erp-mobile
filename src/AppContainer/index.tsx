@@ -10,7 +10,7 @@ import { useAxios } from '../hooks/useAxios';
 
 const AppContainer = () => {
   const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
-  const { maintenanceModale } = useContext(AuthContext);
+  const { maintenanceModal } = useContext(AuthContext);
   const { callApi } = useAxios();
 
   const shouldUpdate = useCallback(async (nextState: string) => {
@@ -34,7 +34,7 @@ const AppContainer = () => {
 
   return (
     <>
-      <MaintenanceModal visible={maintenanceModale} />
+      <MaintenanceModal visible={maintenanceModal} />
       <UpdateAppModal visible={updateAppVisible} />
       <AppNavigation />
     </>

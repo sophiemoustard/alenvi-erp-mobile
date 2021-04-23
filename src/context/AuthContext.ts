@@ -12,7 +12,7 @@ const authReducer = (state: StateType, action: ActionType) => {
     case 'render':
       return { ...state, appIsReady: true };
     case 'maintenance':
-      return { ...state, maintenanceModale: action.payload };
+      return { ...state, maintenanceModal: action.payload };
     default:
       return state;
   }
@@ -68,7 +68,7 @@ export const { Provider, Context } = createAuthContext(
   {
     alenviToken: null,
     appIsReady: false,
-    maintenanceModale: false,
+    maintenanceModal: false,
     signIn: async () => {},
     tryLocalSignIn: async () => {},
     signOut: async () => {},
