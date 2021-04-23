@@ -106,7 +106,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
       await Authentication.forgotPassword({ email, origin: MOBILE, type: EMAIL });
       setRecipient(email);
     } catch (e) {
-      setErrorMessage('Oops, erreur lors de la transmission du numéro de téléphone.');
+      setErrorMessage('Oops, erreur lors de la transmission de l\'email.');
     } finally {
       setIsLoading(false);
     }
