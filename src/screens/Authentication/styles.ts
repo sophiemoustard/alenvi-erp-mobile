@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { FIRA_SANS_BLACK, FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { WHITE, GREY } from '../../styles/colors';
-import { BORDER_WIDTH, MARGIN } from '../../styles/metrics';
+import { MARGIN } from '../../styles/metrics';
 
 export default StyleSheet.create({
   container: {
@@ -37,9 +37,6 @@ export default StyleSheet.create({
   },
   secondaryButton: {
     marginVertical: MARGIN.SM,
-    backgroundColor: GREY[100],
-    borderColor: GREY[600],
-    borderWidth: BORDER_WIDTH,
   },
 
 });
