@@ -28,6 +28,7 @@ const signIn = (dispatch: React.Dispatch<ActionType>) => async (payload: { email
 const signOut = (dispatch: React.Dispatch<ActionType>) => async () => {
   await Authentication.logOut();
   await asyncStorage.removeAlenviToken();
+  await asyncStorage.removeRefreshToken();
 
   dispatch({ type: 'signOut' });
 };

@@ -41,6 +41,11 @@ const getRefreshToken = async (): Promise<RefreshToken> => ({
   refreshTokenExpireDate: await AsyncStorage.getItem('refreshTokenExpireDate'),
 });
 
+const removeRefreshToken = async (): Promise<void> => {
+  await AsyncStorage.removeItem('refreshToken');
+  await AsyncStorage.removeItem('refreshTokenExpireDate');
+};
+
 export default {
   isTokenValid,
   setAlenviToken,
@@ -48,4 +53,5 @@ export default {
   removeAlenviToken,
   setRefreshToken,
   getRefreshToken,
+  removeRefreshToken,
 };
