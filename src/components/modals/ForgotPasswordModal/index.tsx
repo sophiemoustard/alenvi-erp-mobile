@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, Modal, ScrollView, TextInput, Keyboard } from 'react-native';
 import Authentication from '../../../api/Authentication';
 import NiPrimaryButton from '../../form/PrimaryButton';
@@ -43,12 +43,13 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
   }, []);
 
   useEffect(() => {
-    const isCodeInvalid = !(code.every(char => char !== '' && Number.isInteger(Number(char))));
-    if (isCodeInvalid && isValidationAttempted) setErrorMessage('Le format du code est incorrect');
+    const isCodeInvalid = code.some(char => char === '' || !Number.isInteger(Number(char)));
+    if (recipient && isCodeInvalid) setErrorMessage('Le format du code est incorrect');
     else setErrorMessage('');
-  }, [code, isValidationAttempted]);
+  }, [code, recipient]);
 
   const onChangeText = (char: string, index: number) => {
+    setIsValidationAttempted(false);
     setCode(code.map((c, i) => (i === index ? char : c)));
     if (!!char && index + 1 < 4) inputRefs[index + 1].focus();
   };
@@ -67,14 +68,22 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
     }
   };
 
-  const formatAndSendCode = () => {
+  const validateCode = () => {
     Keyboard.dismiss();
-    const formattedCode = `${code[0]}${code[1]}${code[2]}${code[3]}`;
     setIsValidationAttempted(true);
-    if (!errorMessage) sendCode(formattedCode);
   };
 
-  const sendCode = async (formattedCode: string) => {
+  const onRequestClose = useCallback(() => {
+    setCode(['', '', '', '']);
+    setIsKeyboardOpen(false);
+    setIsValidationAttempted(false);
+    setErrorMessage('');
+    setRecipient('');
+    setChosenMethod('');
+    setForgotPasswordModal(false);
+  }, [setForgotPasswordModal]);
+
+  const sendCode = useCallback(async (formattedCode: string) => {
     try {
       setIsLoading(true);
       await Authentication.passwordToken(email, formattedCode);
@@ -84,7 +93,11 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [email, onRequestClose]);
+
+  useEffect(() => {
+    if (!errorMessage && isValidationAttempted) sendCode(`${code[0]}${code[1]}${code[2]}${code[3]}`);
+  }, [sendCode, code, errorMessage, isValidationAttempted]);
 
   const sendEmail = async () => {
     try {
@@ -112,16 +125,6 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
     }
   };
 
-  const onRequestClose = () => {
-    setCode(['', '', '', '']);
-    setIsKeyboardOpen(false);
-    setIsValidationAttempted(false);
-    setErrorMessage('');
-    setRecipient('');
-    setChosenMethod('');
-    setForgotPasswordModal(false);
-  };
-
   const beforeCodeSent = () => (
     <>
       <Text style={styles.beforeCodeSentText}>
@@ -131,7 +134,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
         loading={isLoading && chosenMethod === EMAIL} />
       <NiPrimaryButton title='Recevoir le code par SMS' style={styles.button} onPress={sendSMS}
         loading={isLoading && chosenMethod === PHONE} />
-      <NiErrorMessage message={errorMessage} />
+      {!!chosenMethod && <NiErrorMessage message={errorMessage} />}
     </>
   );
 
@@ -157,7 +160,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
             onKeyPress={({ nativeEvent }) => checkKeyValue(nativeEvent.key, idx)} autoFocus={idx === 0} />
         ))}
       </View>
-      <NiPrimaryButton title='Valider' style={styles.button} onPress={formatAndSendCode} loading={isLoading} />
+      <NiPrimaryButton title='Valider' style={styles.button} onPress={validateCode} loading={isLoading} />
       {isValidationAttempted && <NiErrorMessage message={errorMessage} />}
     </>
   );
