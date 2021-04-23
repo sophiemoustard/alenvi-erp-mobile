@@ -1,10 +1,20 @@
 import { StyleSheet } from 'react-native';
-import { WHITE, GREY, PINK, ORANGE } from '../../styles/colors';
-import { INPUT_HEIGHT, BORDER_RADIUS, PADDING, MARGIN, BORDER_WIDTH, RADIUS_GAP } from '../../styles/metrics';
-import { FIRA_SANS_REGULAR, FIRA_SANS_MEDIUM, FIRA_SANS_ITALIC } from '../../styles/fonts';
+import { WHITE, GREY, PINK, ORANGE } from '../../../styles/colors';
+import { INPUT_HEIGHT, BORDER_RADIUS, PADDING, MARGIN, BORDER_WIDTH, RADIUS_GAP } from '../../../styles/metrics';
+import { FIRA_SANS_REGULAR, FIRA_SANS_MEDIUM, FIRA_SANS_ITALIC } from '../../../styles/fonts';
 
 interface inputStyleProps{
   isSelected: Boolean,
+}
+
+export interface InputStyleType {
+  container: object,
+  inputContainer: object,
+  input: object,
+  icon: object,
+  captionContainer: object,
+  caption: object,
+  invalid: object,
 }
 
 const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({

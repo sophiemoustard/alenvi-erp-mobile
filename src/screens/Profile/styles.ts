@@ -12,7 +12,4 @@ export default StyleSheet.create({
     borderColor: GREY[600],
     borderWidth: BORDER_WIDTH,
   },
-  textButton: {
-    color: GREY[600],
-  },
 });

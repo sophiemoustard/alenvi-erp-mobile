@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Context as AuthContext } from '../../context/AuthContext';
-import NiButton from '../../components/Button';
-import NiInput from '../../components/Input';
+import NiPrimaryButton from '../../components/form/PrimaryButton';
+import NiInput from '../../components/form/Input';
 import NiErrorMessage from '../../components/ErrorMessage';
 import styles from './styles';
 import { PASSWORD, EMAIL } from '../../core/data/constants';
@@ -53,7 +53,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
         <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={{ top: 12, bottom: 12 }}>
           <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
         </TouchableOpacity>
-        <NiButton customStyles={{ button: styles.button }} title='Se connecter' onPress={login} />
+        <NiPrimaryButton style={styles.button} title='Se connecter' onPress={login} />
       </KeyboardAvoidingView>
     </ImageBackground>
   );

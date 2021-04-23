@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text } from 'react-native';
 import NiModal from '../Modal';
-import NiButton from '../../Button';
+import NiPrimaryButton from '../../form/PrimaryButton';
 import styles from './styles';
 import modalStyles from '../modalStyles';
 
@@ -16,7 +16,7 @@ const UpdateAppModal = ({ visible }: UpdateAppModalProps) => (
       <Text style={[modalStyles.body, styles.body]}>
         Merci de mettre à jour votre application pour pouvoir continuer à l&apos;utiliser :)
       </Text>
-      <NiButton title="Mettre à jour" onPress={() => {}}/>
+      <NiPrimaryButton title="Mettre à jour" onPress={() => {}}/>
     </>
   </NiModal>
 );

@@ -16,4 +16,14 @@ export default {
     const refreshToken = await axios.post(`${baseURL}/users/refreshToken`, payload);
     return refreshToken.data.data;
   },
+  forgotPassword: async (payload: { email: string, origin: string, type: string }) => {
+    const { baseURL } = getEnvVars();
+    const response = await axios.post(`${baseURL}/users/forgot-password`, payload);
+    return response.data.data.mailInfo;
+  },
+  passwordToken: async (email: string, token: string) => {
+    const { baseURL } = getEnvVars();
+    const checkToken = await axios.get(`${baseURL}/users/passwordtoken/${token}`, { params: { email } });
+    return checkToken.data.data;
+  },
 };
