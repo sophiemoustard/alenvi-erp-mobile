@@ -3,11 +3,18 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AntDesign } from '@expo/vector-icons';
 import TimeStampingProfile from '../../screens/TimeStampingProfile';
 import Profile from '../../screens/Profile';
+import { GREY } from '../../styles/colors';
+import style from './style';
 
 const Tab = createBottomTabNavigator();
 
 const HomeNavigation = () => (
-  <Tab.Navigator>
+  <Tab.Navigator
+    tabBarOptions={{
+      labelStyle: style.labelStyle,
+      activeTintColor: '#3527AC',
+      inactiveTintColor: GREY[800],
+    }}>
     <Tab.Screen name='Horodatage' component={TimeStampingProfile}
       options={{
         tabBarIcon: () => (
