@@ -9,7 +9,7 @@ import { Context as AuthContext } from '../context/AuthContext';
 import { useAxios } from '../hooks/useAxios';
 
 const AppContainer = () => {
-  const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
+  const [updateAppModal, setUpdateAppModal] = useState<boolean>(false);
   const { maintenanceModal } = useContext(AuthContext);
   const { callApi } = useAxios();
 
@@ -17,10 +17,10 @@ const AppContainer = () => {
     try {
       if (nextState === ACTIVE_STATE) {
         const { mustUpdate } = await callApi(Version.shouldUpdate());
-        setUpdateAppVisible(mustUpdate);
+        setUpdateAppModal(mustUpdate);
       }
     } catch (e) {
-      setUpdateAppVisible(false);
+      setUpdateAppModal(false);
       console.error(e);
     }
   }, [callApi]);
@@ -35,7 +35,7 @@ const AppContainer = () => {
   return (
     <>
       <MaintenanceModal visible={maintenanceModal} />
-      <UpdateAppModal visible={updateAppVisible} />
+      <UpdateAppModal visible={updateAppModal} />
       <AppNavigation />
     </>
   );
