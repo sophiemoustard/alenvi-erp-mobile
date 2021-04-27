@@ -9,6 +9,7 @@
     "ts-lint": "tsc --noEmit & eslint environment.ts App/index.tsx ./src --ext .js,.jsx,.ts,.tsx -c .eslintrc.js"
   },
   "dependencies": {
+    "@expo/vector-icons": "^12.0.0",
     "@react-native-async-storage/async-storage": "^1.13.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "^5.11.10",
@@ -28,8 +29,7 @@
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
     "react-native-web": "^0.16.1",
-    "sentry-expo": "^3.1.4",
-    "@expo/vector-icons": "^12.0.0"
+    "sentry-expo": "^3.1.4"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
