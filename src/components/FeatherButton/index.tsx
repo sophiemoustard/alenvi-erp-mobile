@@ -7,7 +7,7 @@ import { FeatherType } from '../../types/IconType';
 
 interface FeatherButtonProps {
   name: FeatherType,
-  onPress?: () => void,
+  onPress: () => void,
   color?: string,
   size?: number,
   style?: Object,

@@ -6,7 +6,7 @@ import { navigationRef } from '../../navigationRef';
 import Authentication from '../../screens/Authentication';
 import ForgotPassword from '../../screens/ForgotPassword';
 import Analytics from '../../core/helpers/analytics';
-import Home from '../HomeNavigation';
+import Home from '../Home';
 
 const MainStack = createStackNavigator();
 
