@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Context as AuthContext } from '../context/AuthContext';
-import { navigationRef } from '../navigationRef';
-import Authentication from '../screens/Authentication';
-import Profile from '../screens/Profile';
-import ForgotPassword from '../screens/ForgotPassword';
-import Analytics from '../core/helpers/analytics';
+import { Context as AuthContext } from '../../context/AuthContext';
+import { navigationRef } from '../../navigationRef';
+import Authentication from '../../screens/Authentication';
+import ForgotPassword from '../../screens/ForgotPassword';
+import Analytics from '../../core/helpers/analytics';
+import Home from '../Home';
 
 const MainStack = createStackNavigator();
 
@@ -34,7 +34,7 @@ const AppNavigation = () => {
   };
 
   const authScreens = { Authentication, ForgotPassword };
-  const userScreens = { Profile };
+  const userScreens = { Home };
 
   if (!appIsReady) return null;
 
