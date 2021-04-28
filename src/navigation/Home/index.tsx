@@ -1,34 +1,26 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import FeatherButton from '../../components/FeatherButton';
+import { Feather } from '@expo/vector-icons';
 import TimeStampingProfile from '../../screens/TimeStampingProfile';
 import Profile from '../../screens/Profile';
-import { NavigationType } from '../../types/NavigationType';
 import { BLACK, GREY, PINK } from '../../styles/colors';
 import styles from './styles';
 
 const Tab = createBottomTabNavigator();
 
-interface HomeProps {
-  navigation: NavigationType,
-}
-
-const Home = ({ navigation }: HomeProps) => {
+const Home = () => {
   interface tabBarProps{
     focused: Boolean,
   }
 
-  const goToTimeStampingScreen = () => { navigation.navigate('TimeStampingProfile'); };
-  const goToProfileScreen = () => { navigation.navigate('Profile'); };
-
   const timeStampingIcon = ({ focused } : tabBarProps) => (focused
-    ? <FeatherButton name='clock' size={20} color={PINK[500]} onPress={goToTimeStampingScreen}/>
-    : <FeatherButton name='clock' size={20} color={BLACK} onPress={goToTimeStampingScreen}/>
+    ? <Feather name='clock' size={20} color={PINK[500]} />
+    : <Feather name='clock' size={20} color={BLACK} />
   );
 
   const profileIcon = ({ focused } : tabBarProps) => (focused
-    ? <FeatherButton name='user' size={20} color={PINK[500]} onPress={goToProfileScreen}/>
-    : <FeatherButton name='user' size={20} color={BLACK} onPress={goToProfileScreen}/>
+    ? <Feather name='user' size={20} color={PINK[500]} />
+    : <Feather name='user' size={20} color={BLACK} />
   );
 
   return (
