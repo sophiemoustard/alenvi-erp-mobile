@@ -22,21 +22,6 @@ describe('authentication', () => {
     cleanup();
   });
 
-  test('should display authentication page', async () => {
-    axiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
-      .reply(200, { data: { mustUpdate: false } })
-      .onPost(`${baseURL}/users/logout`)
-      .reply(200);
-
-    const element = render(
-      <AuthProvider>
-        <AppContainer />
-      </AuthProvider>
-    );
-
-    await waitFor(() => element.getByTestId('authentication'));
-  });
-
   test('should connect user if right credentials', async () => {
     axiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
       .reply(200, { data: { mustUpdate: false } })
@@ -53,12 +38,39 @@ describe('authentication', () => {
 
     const emailInput = await waitFor(() => element.queryByTestId('Email'));
     const passwordInput = await waitFor(() => element.queryByTestId('Mot de Passe'));
-    const sendButton = await waitFor(() => element.getByTestId('Se connecter'));
+    const sendButton = await waitFor(() => element.queryByTestId('Se connecter'));
 
     await act(async () => fireEvent.changeText(emailInput, 'test@alenvi.io'));
     await act(async () => fireEvent.changeText(passwordInput, '1234567'));
     await act(async () => fireEvent.press(sendButton));
 
-    await waitFor(() => element.getByTestId('ProfilePage'));
+    await waitFor(() => element.queryByTestId('ProfilePage'));
+  });
+
+  test('should not connect user if wrong credentials', async () => {
+    axiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
+      .reply(200, { data: { mustUpdate: false } })
+      .onPost(`${baseURL}/users/logout`)
+      .reply(200)
+      .onPost(`${baseURL}/users/authenticate`, { email: 'test@alenvi.io', password: '1234567' })
+      .reply(401, { response: {} });
+
+    const element = render(
+      <AuthProvider>
+        <AppContainer />
+      </AuthProvider>
+    );
+
+    const emailInput = await waitFor(() => element.queryByTestId('Email'));
+    const passwordInput = await waitFor(() => element.queryByTestId('Mot de Passe'));
+    const sendButton = await waitFor(() => element.queryByTestId('Se connecter'));
+
+    await act(async () => fireEvent.changeText(emailInput, 'test@alenvi.io'));
+    await act(async () => fireEvent.changeText(passwordInput, '1234567'));
+    await act(async () => fireEvent.press(sendButton));
+
+    const errorMessage = await waitFor(() => element.queryByText('L\'e-mail et/ou le mot de passe est incorrect'));
+    console.log(errorMessage);
+    expect(errorMessage).toBeTruthy();
   });
 });
