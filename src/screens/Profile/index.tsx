@@ -17,7 +17,7 @@ const Profile = () => {
   }, [loggedUser?.picture?.link]);
 
   return (
-    <ScrollView>
+    <ScrollView testID='ProfilePage'>
       <Text style={commonStyle.title}>Mon profil</Text>
       <View style={styles.identityContainer}>
         <View style={styles.profilView}>
