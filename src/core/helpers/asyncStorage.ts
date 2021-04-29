@@ -46,6 +46,10 @@ const removeRefreshToken = async (): Promise<void> => {
   await AsyncStorage.removeItem('refreshTokenExpireDate');
 };
 
+const setUserId = async (id: string): Promise<void> => AsyncStorage.setItem('userId', id);
+
+const getUserId = async (): Promise<string|null> => AsyncStorage.getItem('userId');
+
 export default {
   isTokenValid,
   setAlenviToken,
@@ -54,4 +58,6 @@ export default {
   setRefreshToken,
   getRefreshToken,
   removeRefreshToken,
+  setUserId,
+  getUserId,
 };
