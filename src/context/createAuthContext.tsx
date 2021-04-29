@@ -4,7 +4,7 @@ import { UserType } from '../types/UserType';
 export type boundFunctionsType = (payload?: any) => Promise<void>;
 
 export interface StateType {
-  alenviToken: string | null,
+  companiToken: string | null,
   appIsReady: boolean,
   loggedUser: UserType | null,
   signIn: boundFunctionsType,
@@ -30,8 +30,8 @@ export default (
   defaultValue: StateType
 ): createAuthContextType => {
   const Provider = ({ children }: {children: React.ReactNode}) => {
-    const [{ alenviToken, appIsReady, loggedUser }, dispatch] = useReducer(reducer, defaultValue);
-    const state = { alenviToken, appIsReady, loggedUser };
+    const [{ companiToken, appIsReady, loggedUser }, dispatch] = useReducer(reducer, defaultValue);
+    const state = { companiToken, appIsReady, loggedUser };
 
     const boundFunctions: any = {};
     // eslint-disable-next-line guard-for-in, no-restricted-syntax

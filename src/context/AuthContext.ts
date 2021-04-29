@@ -7,9 +7,9 @@ import Users from '../api/Users';
 const authReducer = (state: StateType, action: ActionType) => {
   switch (action.type) {
     case 'signIn':
-      return { ...state, alenviToken: action.payload.token, loggedUser: action.payload.loggedUser };
+      return { ...state, companiToken: action.payload.token, loggedUser: action.payload.loggedUser };
     case 'signOut':
-      return { ...state, alenviToken: null };
+      return { ...state, companiToken: null };
     case 'render':
       return { ...state, appIsReady: true };
     default:
@@ -20,7 +20,7 @@ const authReducer = (state: StateType, action: ActionType) => {
 const signIn = (dispatch: React.Dispatch<ActionType>) => async (payload: { email: string, password: string }) => {
   const { token, tokenExpireDate, refreshToken, user } = await Authentication.authenticate(payload);
 
-  await asyncStorage.setAlenviToken(token, tokenExpireDate);
+  await asyncStorage.setCompaniToken(token, tokenExpireDate);
   await asyncStorage.setRefreshToken(refreshToken);
   await asyncStorage.setUserId(user._id);
 
@@ -31,16 +31,16 @@ const signIn = (dispatch: React.Dispatch<ActionType>) => async (payload: { email
 
 const signOut = (dispatch: React.Dispatch<ActionType>) => async () => {
   await Authentication.logOut();
-  await asyncStorage.removeAlenviToken();
+  await asyncStorage.removeCompaniToken();
   await asyncStorage.removeRefreshToken();
 
   dispatch({ type: 'signOut' });
 };
 
-const refreshAlenviToken = (dispatch: React.Dispatch<ActionType>) => async (refreshToken: string | null) => {
+const refreshCompaniToken = (dispatch: React.Dispatch<ActionType>) => async (refreshToken: string | null) => {
   try {
     const { token, tokenExpireDate } = await Authentication.refreshToken({ refreshToken });
-    await asyncStorage.setAlenviToken(token, tokenExpireDate);
+    await asyncStorage.setCompaniToken(token, tokenExpireDate);
     dispatch({ type: 'signIn', payload: token });
   } catch (e) {
     console.error(e);
@@ -48,14 +48,14 @@ const refreshAlenviToken = (dispatch: React.Dispatch<ActionType>) => async (refr
 };
 
 const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
-  const { alenviToken, alenviTokenExpireDate } = await asyncStorage.getAlenviToken();
+  const { companiToken, companiTokenExpireDate } = await asyncStorage.getCompaniToken();
 
-  if (asyncStorage.isTokenValid(alenviToken, alenviTokenExpireDate)) {
-    dispatch({ type: 'signIn', payload: { token: alenviToken } });
+  if (asyncStorage.isTokenValid(companiToken, companiTokenExpireDate)) {
+    dispatch({ type: 'signIn', payload: { token: companiToken } });
   } else {
     const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
     if (asyncStorage.isTokenValid(refreshToken, refreshTokenExpireDate)) {
-      await refreshAlenviToken(dispatch)(refreshToken);
+      await refreshCompaniToken(dispatch)(refreshToken);
     } else await signOut(dispatch)();
   }
 
@@ -66,7 +66,7 @@ export const { Provider, Context } = createAuthContext(
   authReducer,
   { signIn, tryLocalSignIn, signOut },
   {
-    alenviToken: null,
+    companiToken: null,
     appIsReady: false,
     loggedUser: null,
     signIn: async () => {},

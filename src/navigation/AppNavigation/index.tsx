@@ -11,7 +11,7 @@ import Home from '../Home';
 const MainStack = createStackNavigator();
 
 const AppNavigation = () => {
-  const { alenviToken, appIsReady, tryLocalSignIn } = useContext(AuthContext);
+  const { companiToken, appIsReady, tryLocalSignIn } = useContext(AuthContext);
   const routeNameRef = useRef<string>();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -42,7 +42,7 @@ const AppNavigation = () => {
     <NavigationContainer ref={navigationRef} onReady={handleOnReadyNavigation}
       onStateChange={handleNavigationStateChange}>
       <MainStack.Navigator screenOptions={{ headerShown: false }}>
-        {Object.entries(alenviToken ? userScreens : authScreens)
+        {Object.entries(companiToken ? userScreens : authScreens)
           .map(([name, component]) => <MainStack.Screen key={name} name={name} component={component} />)}
       </MainStack.Navigator>
     </NavigationContainer>
