@@ -4,24 +4,24 @@ import { BORDER_RADIUS, MARGIN, PADDING } from '../../../styles/metrics';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../../styles/fonts';
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flexGrow: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    flexDirection: 'column',
+  modal: {
+    position: 'absolute',
+    height: '100%',
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: MODAL_BACKDROP_GREY,
-  },
-  modalContent: {
     display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  modalContainer: {
+    height: '85%',
     backgroundColor: WHITE,
     borderTopLeftRadius: BORDER_RADIUS.MD,
     borderTopRightRadius: BORDER_RADIUS.MD,
-    width: '100%',
-    height: '85%',
     padding: PADDING.LG,
   },
   button: {
-    marginHorizontal: MARGIN.SM,
     marginBottom: MARGIN.SM,
   },
   title: {

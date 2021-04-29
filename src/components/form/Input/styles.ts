@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { WHITE, GREY, PINK, ORANGE } from '../../../styles/colors';
-import { INPUT_HEIGHT, BORDER_RADIUS, PADDING, MARGIN, BORDER_WIDTH, RADIUS_GAP } from '../../../styles/metrics';
+import { INPUT_HEIGHT, BORDER_RADIUS, PADDING, MARGIN, BORDER_WIDTH } from '../../../styles/metrics';
 import { FIRA_SANS_REGULAR, FIRA_SANS_MEDIUM, FIRA_SANS_ITALIC } from '../../../styles/fonts';
 
 interface inputStyleProps{
@@ -22,7 +22,6 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
     position: 'relative',
     marginHorizontal: MARGIN.XS,
     width: '100%',
-    left: -RADIUS_GAP,
   },
   inputContainer: {
     width: '100%',
