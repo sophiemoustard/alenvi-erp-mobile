@@ -5,9 +5,11 @@ export type boundFunctionsType = (payload?: any) => Promise<void>;
 export interface StateType {
   alenviToken: string | null,
   appIsReady: boolean,
+  maintenanceModal: boolean,
   signIn: boundFunctionsType,
   signOut: boundFunctionsType,
   tryLocalSignIn: boundFunctionsType,
+  setMaintenanceModal: boundFunctionsType,
 }
 
 export interface ActionType {
@@ -28,8 +30,8 @@ export default (
   defaultValue: StateType
 ): createAuthContextType => {
   const Provider = ({ children }: {children: React.ReactNode}) => {
-    const [{ alenviToken, appIsReady }, dispatch] = useReducer(reducer, defaultValue);
-    const state = { alenviToken, appIsReady };
+    const [{ alenviToken, appIsReady, maintenanceModal }, dispatch] = useReducer(reducer, defaultValue);
+    const state = { alenviToken, appIsReady, maintenanceModal };
 
     const boundFunctions: any = {};
     // eslint-disable-next-line guard-for-in, no-restricted-syntax
