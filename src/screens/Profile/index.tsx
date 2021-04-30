@@ -8,6 +8,8 @@ import styles from './styles';
 
 const Profile = () => {
   const { signOut, loggedUser } = useContext(AuthContext);
+  const source = loggedUser?.picture?.link
+    ? { uri: loggedUser?.picture?.link } : require('../../../assets/images/default_avatar.png');
 
   return (
     <>
@@ -15,9 +17,7 @@ const Profile = () => {
         <View style={styles.identityContainer }>
           <Text style={commonStyle.title}>Mon profil</Text>
           <View style={styles.profilView} >
-            <Image
-              source={require('../../../assets/images/default_avatar.png')} style={styles.image}
-            />
+            <Image source={source} style={styles.image}/>
             <View>
               <Text style={styles.name}> {loggedUser?.identity?.lastname} {loggedUser?.identity?.firstname}</Text>
               <Text style={styles.company}>{loggedUser?.company?.name}</Text>

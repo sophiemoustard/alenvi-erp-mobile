@@ -68,6 +68,7 @@ const AppContainer = () => {
 
     initializeLoggedAxios(companiToken);
     if (companiToken) refreshUser();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [companiToken]);
 
   useEffect(() => {

@@ -44,7 +44,6 @@ export default StyleSheet.create({
   },
   contact: {
     ...FIRA_SANS_BOLD.LG,
-    marginBottom: MARGIN.MD,
   },
   infos: {
     ...FIRA_SANS_REGULAR.MD,
