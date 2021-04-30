@@ -1,9 +1,10 @@
+import axios from 'axios';
 import getEnvVars from '../../environment';
 
 export default {
-  exists: (params: { email: string }) => {
+  exists: async (params: { email: string }) => {
     const { baseURL } = getEnvVars();
-
-    return { method: 'GET', url: `${baseURL}/users/exists`, params };
+    const exists = await axios.get(`${baseURL}/users/exists`, { params });
+    return exists.data.data.exists;
   },
 };
