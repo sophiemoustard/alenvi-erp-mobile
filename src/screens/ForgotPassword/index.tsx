@@ -11,7 +11,6 @@ import { ICON } from '../../styles/metrics';
 import { GREY } from '../../styles/colors';
 import { NavigationType } from '../../types/NavigationType';
 import styles from './styles';
-import { useAxios } from '../../hooks/useAxios';
 
 interface EmailFormProps {
   navigation: NavigationType,
@@ -25,7 +24,6 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [forgotPasswordModal, setForgotPasswordModal] = useState<boolean>(false);
-  const { callApi } = useAxios();
 
   const hardwareBackPress = useCallback(() => {
     if (!isLoading) setExitConfirmationModal(true);
@@ -54,7 +52,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
     try {
       if (!invalidEmail) {
         setIsLoading(true);
-        const { exists } = await callApi(Users.exists({ email }));
+        const exists = await Users.exists({ email });
         if (!exists) setErrorMessage('Oups ! Cet e-mail n\'est pas reconnu.');
         else setForgotPasswordModal(true);
       }

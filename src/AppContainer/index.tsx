@@ -1,41 +1,58 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AppState } from 'react-native';
+import axios from 'axios';
 import Version from '../api/Versions';
 import { ACTIVE_STATE } from '../core/data/constants';
 import UpdateAppModal from '../components/modals/UpdateAppModal';
 import MaintenanceModal from '../components/modals/MaintenanceModal';
 import AppNavigation from '../navigation/AppNavigation';
-import { Context as AuthContext } from '../context/AuthContext';
-import { useAxios } from '../hooks/useAxios';
 
 const AppContainer = () => {
-  const [updateAppModal, setUpdateAppModal] = useState<boolean>(false);
-  const { maintenanceModal } = useContext(AuthContext);
-  const { callApi } = useAxios();
+  const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
+  const [maintenanceModaleVisible, setMaintenanceModalVisible] = useState<boolean>(false);
+  const [axiosInitialized, setAxiosInitialized] = useState<boolean>(false);
 
-  const shouldUpdate = useCallback(async (nextState: string) => {
+  const initializeAxios = () => {
+    axios.interceptors.response.use(
+      (response) => {
+        setMaintenanceModalVisible(false);
+        return response;
+      },
+      async (error) => {
+        if ([502, 503].includes(error.response.status)) setMaintenanceModalVisible(true);
+        return Promise.reject(error.response);
+      }
+    );
+
+    setAxiosInitialized(true);
+  };
+
+  const shouldUpdate = async (nextState: string) => {
     try {
       if (nextState === ACTIVE_STATE) {
-        const { mustUpdate } = await callApi(Version.shouldUpdate());
-        setUpdateAppModal(mustUpdate);
+        const { mustUpdate } = await Version.shouldUpdate();
+        setUpdateAppVisible(mustUpdate);
       }
     } catch (e) {
-      setUpdateAppModal(false);
+      setUpdateAppVisible(false);
       console.error(e);
     }
-  }, [callApi]);
+  };
 
   useEffect(() => {
+    initializeAxios();
     shouldUpdate(ACTIVE_STATE);
     AppState.addEventListener('change', shouldUpdate);
 
     return () => { AppState.removeEventListener('change', shouldUpdate); };
-  }, [shouldUpdate]);
+  }, []);
+
+  if (!axiosInitialized) return null;
 
   return (
     <>
-      <MaintenanceModal visible={maintenanceModal} />
-      <UpdateAppModal visible={updateAppModal} />
+      <MaintenanceModal visible={maintenanceModaleVisible} />
+      <UpdateAppModal visible={updateAppVisible} />
       <AppNavigation />
     </>
   );

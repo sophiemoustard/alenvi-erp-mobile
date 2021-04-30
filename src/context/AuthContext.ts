@@ -11,8 +11,6 @@ const authReducer = (state: StateType, action: ActionType) => {
       return { ...state, alenviToken: null };
     case 'render':
       return { ...state, appIsReady: true };
-    case 'maintenance':
-      return { ...state, maintenanceModal: action.payload };
     default:
       return state;
   }
@@ -58,20 +56,14 @@ const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
   dispatch({ type: 'render' });
 };
 
-const setMaintenanceModal = (dispatch: React.Dispatch<ActionType>) => async (maintenanceModal: boolean) => {
-  dispatch({ type: 'maintenance', payload: maintenanceModal });
-};
-
 export const { Provider, Context } = createAuthContext(
   authReducer,
-  { signIn, tryLocalSignIn, signOut, setMaintenanceModal },
+  { signIn, tryLocalSignIn, signOut },
   {
     alenviToken: null,
     appIsReady: false,
-    maintenanceModal: false,
     signIn: async () => {},
     tryLocalSignIn: async () => {},
     signOut: async () => {},
-    setMaintenanceModal: async () => {},
   }
 );
