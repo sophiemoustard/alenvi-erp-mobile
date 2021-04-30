@@ -21,8 +21,8 @@
     "expo-firebase-analytics": "~4.0.2",
     "expo-font": "~9.1.0",
     "expo-status-bar": "~1.0.4",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-safe-area-context": "3.2.0",
@@ -30,10 +30,10 @@
     "sentry-expo": "^3.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.16",
-    "@types/react": "^17.0.4",
-    "@types/react-dom": "^17.0.3",
-    "@types/react-native": "^0.64.4",
+    "@babel/core": "~7.9.0",
+    "@types/react": "~16.9.35",
+    "@types/react-dom": "~16.9.8",
+    "@types/react-native": "~0.63.2",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",
     "eslint": "^7.23.0",
@@ -42,7 +42,7 @@
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "firebase": "8.2.3",
-    "typescript": "^4.2.4"
+    "typescript": "~4.0.0"
   },
   "private": true
 }
