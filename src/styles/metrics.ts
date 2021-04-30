@@ -45,7 +45,6 @@ export const ICON = {
 export const BUTTON_HEIGHT = 48;
 export const INPUT_HEIGHT = 48;
 export const BORDER_WIDTH = 1;
-export const RADIUS_GAP = 4;
 export const TAB_BAR_HEIGHT = 72;
 
 export const SCREEN_HEIGHT = width < height ? height : width;

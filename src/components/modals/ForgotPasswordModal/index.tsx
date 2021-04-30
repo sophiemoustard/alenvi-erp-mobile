@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Text, View, Modal, ScrollView, TextInput, Keyboard } from 'react-native';
+import { Text, View, ScrollView, TextInput, Keyboard } from 'react-native';
 import Authentication from '../../../api/Authentication';
 import NiPrimaryButton from '../../form/PrimaryButton';
 import FeatherButton from '../../FeatherButton';
@@ -166,16 +166,18 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
   );
 
   return (
-    <Modal visible={visible} transparent={true} onRequestClose={onRequestClose}>
-      <ScrollView contentContainerStyle={styles.modalContainer} keyboardShouldPersistTaps='handled'>
-        <View style={styles.modalContent}>
+    <>
+      {visible && <View style={styles.modal} >
+        <View style={styles.modalContainer}>
           <FeatherButton name='x-circle' onPress={onRequestClose} size={ICON.LG} color={GREY[600]}
             style={styles.goBack} />
-          <Text style={styles.title}>Confirmez votre identité</Text>
-          {!recipient ? beforeCodeSent() : afterCodeSent()}
+          <ScrollView keyboardShouldPersistTaps='handled'>
+            <Text style={styles.title}>Confirmez votre identité</Text>
+            {!recipient ? beforeCodeSent() : afterCodeSent()}
+          </ScrollView>
         </View>
-      </ScrollView>
-    </Modal>
+      </View>}
+    </>
   );
 };
 

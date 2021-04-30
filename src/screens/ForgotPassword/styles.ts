@@ -5,6 +5,7 @@ import { FIRA_SANS_BOLD } from '../../styles/fonts';
 export default StyleSheet.create({
   screen: {
     flex: 1,
+    position: 'relative',
   },
   body: {
     flexGrow: 1,
