@@ -46,6 +46,10 @@ export default StyleSheet.create({
     ...FIRA_SANS_BOLD.LG,
     marginBottom: MARGIN.MD,
   },
+  infos: {
+    ...FIRA_SANS_REGULAR.MD,
+    color: GREY[900],
+  },
   subtitle: {
     ...FIRA_SANS_REGULAR.MD,
     marginTop: MARGIN.MD,
@@ -53,6 +57,7 @@ export default StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: MARGIN.LG,
+    marginBottom: MARGIN.MD,
   },
   button: {
     marginVertical: MARGIN.LG,
