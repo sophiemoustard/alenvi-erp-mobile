@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { AppState } from 'react-native';
 import { AxiosRequestConfig } from 'axios';
 import axiosNotLogged from '../api/axios/notLogged';
@@ -14,7 +14,7 @@ const AppContainer = () => {
   const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
   const [maintenanceModaleVisible, setMaintenanceModalVisible] = useState<boolean>(false);
   const [axiosInitialized, setAxiosInitialized] = useState<boolean>(false);
-  const [loggedAxiosInterceptorId, setLoggedAxiosInterceptorId] = useState<number | null>(null);
+  const loggedAxiosInterceptorId = useRef<number | null>(null);
   const { companiToken, refreshLoggedUser } = useContext(AuthContext);
 
   const initializeNotLoggedAxios = () => {
@@ -31,9 +31,11 @@ const AppContainer = () => {
   };
 
   const initializeLoggedAxios = (token: string | null) => {
-    if (loggedAxiosInterceptorId !== null) axiosLogged.interceptors.request.eject(loggedAxiosInterceptorId);
+    if (loggedAxiosInterceptorId.current !== null) {
+      axiosLogged.interceptors.request.eject(loggedAxiosInterceptorId.current);
+    }
 
-    const interceptorId = axiosLogged.interceptors.request.use(
+    loggedAxiosInterceptorId.current = axiosLogged.interceptors.request.use(
       async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
         const newConfig = { ...config };
         newConfig.headers.common['x-access-token'] = token;
@@ -41,8 +43,6 @@ const AppContainer = () => {
       },
       err => Promise.reject(err)
     );
-
-    setLoggedAxiosInterceptorId(interceptorId);
   };
 
   const shouldUpdate = async (nextState: string) => {
