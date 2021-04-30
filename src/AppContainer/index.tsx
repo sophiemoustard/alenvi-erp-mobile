@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AppState } from 'react-native';
-import axios from 'axios';
+import axiosNotLogged from '../api/axios/notLogged';
 import Version from '../api/Versions';
 import { ACTIVE_STATE } from '../core/data/constants';
 import UpdateAppModal from '../components/modals/UpdateAppModal';
@@ -13,7 +13,7 @@ const AppContainer = () => {
   const [axiosInitialized, setAxiosInitialized] = useState<boolean>(false);
 
   const initializeAxios = () => {
-    axios.interceptors.response.use(
+    axiosNotLogged.interceptors.response.use(
       (response) => {
         setMaintenanceModalVisible(false);
         return response;

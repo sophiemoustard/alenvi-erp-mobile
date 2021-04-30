@@ -2,7 +2,6 @@ import React from 'react';
 import createAuthContext, { StateType, ActionType } from './createAuthContext';
 import Authentication from '../api/Authentication';
 import asyncStorage from '../core/helpers/asyncStorage';
-import Users from '../api/Users';
 
 const authReducer = (state: StateType, action: ActionType) => {
   switch (action.type) {
@@ -24,9 +23,7 @@ const signIn = (dispatch: React.Dispatch<ActionType>) => async (payload: { email
   await asyncStorage.setRefreshToken(refreshToken);
   await asyncStorage.setUserId(user._id);
 
-  const loggedUser = await Users.getById(user._id);
-
-  dispatch({ type: 'signIn', payload: { token, loggedUser } });
+  dispatch({ type: 'signIn', payload: { token } });
 };
 
 const signOut = (dispatch: React.Dispatch<ActionType>) => async () => {
