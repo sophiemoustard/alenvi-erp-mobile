@@ -10,7 +10,9 @@ export default {
   },
   getById: async (id : string | null) => {
     const { baseURL } = getEnvVars();
+
     const user = await axiosLogged.get(`${baseURL}/users/${id}`);
+
     return user.data.data.user;
   },
 };

@@ -1,12 +1,15 @@
 import React from 'react';
 import createAuthContext, { StateType, ActionType } from './createAuthContext';
 import Authentication from '../api/Authentication';
+import Users from '../api/Users';
 import asyncStorage from '../core/helpers/asyncStorage';
 
 const authReducer = (state: StateType, action: ActionType) => {
   switch (action.type) {
     case 'signIn':
-      return { ...state, companiToken: action.payload.token, loggedUser: action.payload.loggedUser };
+      return { ...state, companiToken: action.payload };
+    case 'loggedUser':
+      return { ...state, loggedUser: action.payload };
     case 'signOut':
       return { ...state, companiToken: null };
     case 'render':
@@ -23,7 +26,14 @@ const signIn = (dispatch: React.Dispatch<ActionType>) => async (payload: { email
   await asyncStorage.setRefreshToken(refreshToken);
   await asyncStorage.setUserId(user._id);
 
-  dispatch({ type: 'signIn', payload: { token } });
+  dispatch({ type: 'signIn', payload: token });
+};
+
+const refreshLoggedUser = (dispatch: React.Dispatch<ActionType>) => async () => {
+  const userId = await asyncStorage.getUserId();
+  const loggedUser = await Users.getById(userId);
+
+  dispatch({ type: 'loggedUser', payload: loggedUser });
 };
 
 const signOut = (dispatch: React.Dispatch<ActionType>) => async () => {
@@ -48,7 +58,7 @@ const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
   const { companiToken, companiTokenExpireDate } = await asyncStorage.getCompaniToken();
 
   if (asyncStorage.isTokenValid(companiToken, companiTokenExpireDate)) {
-    dispatch({ type: 'signIn', payload: { token: companiToken } });
+    dispatch({ type: 'signIn', payload: companiToken });
   } else {
     const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
     if (asyncStorage.isTokenValid(refreshToken, refreshTokenExpireDate)) {
@@ -61,7 +71,7 @@ const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
 
 export const { Provider, Context } = createAuthContext(
   authReducer,
-  { signIn, tryLocalSignIn, signOut },
+  { signIn, tryLocalSignIn, signOut, refreshLoggedUser },
   {
     companiToken: null,
     appIsReady: false,
@@ -69,5 +79,6 @@ export const { Provider, Context } = createAuthContext(
     signIn: async () => {},
     tryLocalSignIn: async () => {},
     signOut: async () => {},
+    refreshLoggedUser: async () => {},
   }
 );

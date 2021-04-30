@@ -10,6 +10,7 @@ export interface StateType {
   signIn: boundFunctionsType,
   signOut: boundFunctionsType,
   tryLocalSignIn: boundFunctionsType,
+  refreshLoggedUser: boundFunctionsType,
 }
 
 export interface ActionType {
