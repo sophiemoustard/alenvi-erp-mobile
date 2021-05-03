@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { WHITE } from './colors';
 import { FIRA_SANS_BLACK } from './fonts';
-import { BORDER_RADIUS, BUTTON_HEIGHT } from './metrics';
+import { MARGIN, BORDER_RADIUS, BUTTON_HEIGHT } from './metrics';
 
 export default StyleSheet.create({
   container: { flex: 1, backgroundColor: WHITE },
@@ -15,5 +15,9 @@ export default StyleSheet.create({
   },
   textButton: {
     ...FIRA_SANS_BLACK.MD,
+  },
+  title: {
+    ...FIRA_SANS_BLACK.XL,
+    marginVertical: MARGIN.XL,
   },
 });

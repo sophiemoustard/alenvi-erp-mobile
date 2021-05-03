@@ -5,24 +5,24 @@ import { ONE_YEAR_IN_MILLISECONDS } from '../data/constants';
 const isTokenValid = (token: string | null, tokenExpireDate: string | null): boolean =>
   !!token && !!tokenExpireDate && DatesHelper.isBefore(new Date(), tokenExpireDate);
 
-interface AlenviToken {
-  alenviToken: string | null,
-  alenviTokenExpireDate: string | null,
+interface CompaniToken {
+  companiToken: string | null,
+  companiTokenExpireDate: string | null,
 }
 
-const setAlenviToken = async (token: string, tokenExpireDate: string): Promise<void> => {
-  await AsyncStorage.setItem('alenviToken', token);
-  await AsyncStorage.setItem('alenviTokenExpireDate', tokenExpireDate);
+const setCompaniToken = async (token: string, tokenExpireDate: string): Promise<void> => {
+  await AsyncStorage.setItem('companiToken', token);
+  await AsyncStorage.setItem('companiTokenExpireDate', tokenExpireDate);
 };
 
-const getAlenviToken = async (): Promise<AlenviToken> => ({
-  alenviToken: await AsyncStorage.getItem('alenviToken'),
-  alenviTokenExpireDate: await AsyncStorage.getItem('alenviTokenExpireDate'),
+const getCompaniToken = async (): Promise<CompaniToken> => ({
+  companiToken: await AsyncStorage.getItem('companiToken'),
+  companiTokenExpireDate: await AsyncStorage.getItem('companiTokenExpireDate'),
 });
 
-const removeAlenviToken = async (): Promise<void> => {
-  await AsyncStorage.removeItem('alenviToken');
-  await AsyncStorage.removeItem('alenviTokenExpireDate');
+const removeCompaniToken = async (): Promise<void> => {
+  await AsyncStorage.removeItem('companiToken');
+  await AsyncStorage.removeItem('companiTokenExpireDate');
 };
 
 interface RefreshToken {
@@ -46,12 +46,18 @@ const removeRefreshToken = async (): Promise<void> => {
   await AsyncStorage.removeItem('refreshTokenExpireDate');
 };
 
+const setUserId = async (id: string): Promise<void> => AsyncStorage.setItem('userId', id);
+
+const getUserId = async (): Promise<string|null> => AsyncStorage.getItem('userId');
+
 export default {
   isTokenValid,
-  setAlenviToken,
-  getAlenviToken,
-  removeAlenviToken,
+  setCompaniToken,
+  getCompaniToken,
+  removeCompaniToken,
   setRefreshToken,
   getRefreshToken,
   removeRefreshToken,
+  setUserId,
+  getUserId,
 };
