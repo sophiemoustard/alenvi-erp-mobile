@@ -14,7 +14,10 @@ export default StyleSheet.create({
   },
   profilView: {
     flexDirection: 'row',
-    marginBottom: MARGIN.XL,
+  },
+  infosProfilView: {
+    marginHorizontal: MARGIN.MD,
+    marginTop: MARGIN.MD,
   },
   image: {
     width: 80,
@@ -25,28 +28,21 @@ export default StyleSheet.create({
   name: {
     ...FIRA_SANS_BOLD.LG,
     color: GREY[800],
-    marginHorizontal: MARGIN.MD,
-    display: 'flex',
-    alignItems: 'flex-end',
   },
   company: {
     ...FIRA_SANS_REGULAR.MD,
     color: GREY[600],
     marginTop: MARGIN.XS,
-    marginHorizontal: MARGIN.MD,
-    display: 'flex',
-    alignItems: 'flex-end',
   },
   contactContainer: {
     marginHorizontal: MARGIN.XL,
-    marginTop: MARGIN.SM,
-    marginBottom: MARGIN.MD,
   },
   contact: {
     ...FIRA_SANS_BOLD.LG,
   },
   infos: {
     ...FIRA_SANS_REGULAR.MD,
+    marginTop: MARGIN.XS,
     color: GREY[900],
   },
   subtitle: {
@@ -56,9 +52,5 @@ export default StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: MARGIN.LG,
-    marginBottom: MARGIN.MD,
-  },
-  button: {
-    marginVertical: MARGIN.LG,
   },
 });
