@@ -64,25 +64,27 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
-      <View style={styles.goBack}>
-        <FeatherButton name='x-circle' onPress={() => setExitConfirmationModal(true)} size={ICON.MD} color={GREY[600]}
-          disabled={isLoading} />
-        <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
-          onPressCancelButton={() => setExitConfirmationModal(false)}
-          title={'Êtes-vous sûr de cela ?'} contentText={'Vous reviendrez à la page d\'accueil.'} />
-      </View>
-      <View style={styles.body}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Quel est votre e-mail ?</Text>
-          <NiInput style={styles.input} title='Email' type='email' setValue={setEmail} value={email}
-            validationMessage={errorMessage} disabled={isLoading} />
+    <>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
+        <View style={styles.goBack}>
+          <FeatherButton name='x-circle' onPress={() => setExitConfirmationModal(true)} size={ICON.MD} color={GREY[600]}
+            disabled={isLoading} />
+          <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
+            onPressCancelButton={() => setExitConfirmationModal(false)}
+            title={'Êtes-vous sûr de cela ?'} contentText={'Vous reviendrez à la page d\'accueil.'} />
         </View>
-        <NiPrimaryButton title='Valider' onPress={validateEmail} loading={isLoading} />
-      </View>
+        <View style={styles.body}>
+          <View style={styles.content}>
+            <Text style={styles.title}>Quel est votre e-mail ?</Text>
+            <NiInput style={styles.input} title='Email' type='email' setValue={setEmail} value={email}
+              validationMessage={errorMessage} disabled={isLoading} />
+          </View>
+          <NiPrimaryButton title='Valider' onPress={validateEmail} loading={isLoading} />
+        </View>
+      </KeyboardAvoidingView>
       <ForgotPasswordModal email={email} setForgotPasswordModal={setForgotPasswordModal}
         visible={forgotPasswordModal} />
-    </KeyboardAvoidingView>
+    </>
   );
 };
 
