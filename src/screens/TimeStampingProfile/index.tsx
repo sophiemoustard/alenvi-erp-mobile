@@ -3,8 +3,9 @@ import { Text, View, ScrollView } from 'react-native';
 import commonStyle from '../../styles/common';
 import Events from '../../api/Events';
 import { Context as AuthContext } from '../../context/AuthContext';
-import styles from './style';
 import { INTERVENTION } from '../../core/data/constants';
+import { formatTime, formatDate } from '../../core/helpers/utils';
+import styles from './style';
 
 const TimeStampingProfile = () => {
   const currentDate = new Date();
@@ -17,53 +18,35 @@ const TimeStampingProfile = () => {
 
   const { loggedUser } = useContext(AuthContext);
 
-  const formatDate = (date: Date) => {
-    const options = { weekday: 'long', month: 'long', day: 'numeric' };
-    return date.toLocaleDateString('fr-FR', options);
-  };
-
-  const formatTime = (date: Date) => {
-    const options = { hour: '2-digit', minute: '2-digit' };
-    return date.toLocaleTimeString('fr-FR', options);
-  };
-
-  const eventData = async () => {
-    let events = [];
-    let eventsFormat = [];
-
+  const fetchInterventions = async () => {
     try {
-      if (loggedUser?._id) {
-        const params = {
-          auxiliary: loggedUser._id,
-          startDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()),
-          endDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()),
-          type: INTERVENTION,
-        };
-        events = await Events.events(params);
-        if (events === undefined || events === null) {
-          console.error('Events Error');
-        } else {
-          eventsFormat = events.map((event : any) => {
-            const customerFirstName = event.customer.identity.firstname;
-            const customerLastName = event.customer.identity.lastname;
-            const startDate = new Date(event.startDate);
-            const endDate = new Date(event.endDate);
-            return { customerFirstName, customerLastName, startDate, endDate };
-          });
-          setEventNumber(eventsFormat.length);
-          setFirstName(eventsFormat[0].customerFirstName);
-          setLastName(eventsFormat[0].customerLastName);
-          setEndDateEvent(new Date(eventsFormat[0].endDate));
-          setStartDateEvent(new Date(eventsFormat[0].startDate));
-        }
-      }
+      if (!loggedUser || !loggedUser._id) return;
+      const params = {
+        auxiliary: loggedUser._id,
+        startDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()),
+        endDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()),
+        type: INTERVENTION,
+      };
+      const events = await Events.events(params);
+      const eventsFormat = events.map((event : any) => {
+        const customerFirstName = event.customer.identity.firstname;
+        const customerLastName = event.customer.identity.lastname;
+        const startDate = new Date(event.startDate);
+        const endDate = new Date(event.endDate);
+        return { customerFirstName, customerLastName, startDate, endDate };
+      });
+      setEventNumber(eventsFormat.length);
+      setFirstName(eventsFormat[0].customerFirstName);
+      setLastName(eventsFormat[0].customerLastName);
+      setEndDateEvent(new Date(eventsFormat[0].endDate));
+      setStartDateEvent(new Date(eventsFormat[0].startDate));
     } catch (e) {
       console.error(e);
     }
   };
 
   useEffect(() => {
-    eventData();
+    fetchInterventions();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
