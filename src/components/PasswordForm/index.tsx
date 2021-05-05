@@ -65,11 +65,11 @@ const PasswordForm = ({ goBack }: PasswordFormProps) => {
         <Text style={styles.title}>Modifier mon mot de passe</Text>
         <View style={styles.input}>
           <NiInput title="Nouveau mot de passe" value={password.newPassword} type="password"
-            setValue={setPasswordField('newPassword')} />
+            onChangeText={setPasswordField('newPassword')} />
         </View>
         <View style={styles.input}>
           <NiInput title="Confirmer mot de passe" value={password.confirmedPassword} type="password"
-            setValue={setPasswordField('confirmedPassword')} />
+            onChangeText={setPasswordField('confirmedPassword')} />
         </View>
         {/* <View style={styles.footer}>
           <NiErrorMessage message={errorMessage} show={error} />

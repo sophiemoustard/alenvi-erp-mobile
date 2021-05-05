@@ -11,7 +11,7 @@ interface InputProps {
   value: string,
   title: string,
   type: string,
-  setValue: (value: string) => void,
+  onChangeText: (value: string) => void,
   style?: Object,
   darkMode?: boolean,
   validationMessage?: string,
@@ -21,7 +21,7 @@ interface InputProps {
 const Input = ({
   title,
   type,
-  setValue,
+  onChangeText,
   value,
   style = {},
   darkMode = false,
@@ -60,7 +60,7 @@ const Input = ({
       </View>
       <View style={inputStyle.container}>
         <View style={inputStyle.inputContainer}>
-          <TextInput style={inputStyle.input} onChangeText={setValue} onTouchStart={() => setIsSelected(true)}
+          <TextInput style={inputStyle.input} onChangeText={onChangeText} onTouchStart={() => setIsSelected(true)}
             onBlur={() => setIsSelected(false)} secureTextEntry={secureTextEntry} keyboardType={keyboardType}
             value={value} editable={!disabled} autoCapitalize={autoCapitalize} />
           {type === PASSWORD &&
