@@ -38,7 +38,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
     }
   };
 
-  const goToForgotPassword = () => { navigation.navigate('ForgotPassword'); };
+  const goToForgotPassword = () => { navigation.navigate('PasswordReset'); };
 
   return (
     <ImageBackground

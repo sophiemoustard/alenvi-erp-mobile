@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Text, ScrollView, View, Keyboard, KeyboardAvoidingView, Platform, BackHandler } from 'react-native';
 import FeatherButton from '../FeatherButton';
 import NiInput from '../form/Input';
+import NiPrimaryButton from '../form/PrimaryButton';
 import ExitModal from '../modals/ExitModal';
 import { GREY } from '../../styles/colors';
 import { ICON, IS_LARGE_SCREEN, MARGIN } from '../../styles/metrics';
@@ -11,14 +12,26 @@ interface PasswordFormProps {
   goBack: () => void,
 }
 
-type PasswordKeyType = 'newPassword' | 'confirmedPassword'
-
 const PasswordForm = ({ goBack }: PasswordFormProps) => {
   const [behavior, setBehavior] = useState<'padding' | 'height'>('padding');
   const [exitConfirmationModal, setExitConfirmationModal] = useState<boolean>(false);
-  const [password, setPassword] =
-    useState<{ newPassword: string, confirmedPassword: string }>({ newPassword: '', confirmedPassword: '' });
+  const [password, setPassword] = useState<string>('');
+  const [confirmation, setConfirmation] = useState<string>('');
   const scrollRef = useRef<ScrollView>(null);
+  const [passswordError, setPasswordError] = useState<string>('');
+  const [confirmationError, setConfirmationError] = useState<string>('');
+  const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
+
+  const hardwareBackPress = () => {
+    setExitConfirmationModal(true);
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
+
+    return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
+  }, []);
 
   useEffect(() => {
     if (Platform.OS === 'ios') setBehavior('padding');
@@ -32,16 +45,16 @@ const PasswordForm = ({ goBack }: PasswordFormProps) => {
     return () => { Keyboard.removeListener('keyboardDidHide', keyboardDidHide); };
   }, []);
 
-  const hardwareBackPress = () => {
-    setExitConfirmationModal(true);
-    return true;
-  };
+  useEffect(() => {
+    const isValid = isValidationAttempted && password.length < 6;
+    setPasswordError(isValid ? 'Le mot de passe doit comporter au minimum 6 caractères.' : '');
+  }, [password, setPasswordError, isValidationAttempted]);
 
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
-
-    return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
-  }, []);
+    setConfirmationError(password !== confirmation
+      ? 'Votre nouveau mot de passe et sa confirmation ne correspondent pas.'
+      : '');
+  }, [password, confirmation, setConfirmationError, isValidationAttempted]);
 
   const toggleModal = () => setExitConfirmationModal(!exitConfirmationModal);
 
@@ -50,7 +63,7 @@ const PasswordForm = ({ goBack }: PasswordFormProps) => {
     goBack();
   };
 
-  const setPasswordField = (key: PasswordKeyType) => (text: string) => { setPassword({ ...password, [key]: text }); };
+  const savePassword = () => setIsValidationAttempted(true);
 
   return (
     <KeyboardAvoidingView behavior={behavior} style={styles.keyboardAvoidingView}
@@ -63,18 +76,14 @@ const PasswordForm = ({ goBack }: PasswordFormProps) => {
       </View>
       <ScrollView contentContainerStyle={styles.container} ref={scrollRef} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Modifier mon mot de passe</Text>
-        <View style={styles.input}>
-          <NiInput caption="Nouveau mot de passe" value={password.newPassword} type="password"
-            onChangeText={setPasswordField('newPassword')} />
+        <NiInput caption="Nouveau mot de passe" value={password} onChangeText={setPassword} type="password"
+          validationMessage={passswordError} style={styles.input} />
+        <NiInput caption="Confirmer mot de passe" value={confirmation} onChangeText={setConfirmation}
+          type="password" validationMessage={confirmationError} style={styles.input} />
+        <View style={styles.footer}>
+          {/* <NiErrorMessage message={errorMessage} show={error} /> */}
+          <NiPrimaryButton title="Valider" onPress={savePassword} />
         </View>
-        <View style={styles.input}>
-          <NiInput caption="Confirmer mot de passe" value={password.confirmedPassword} type="password"
-            onChangeText={setPasswordField('confirmedPassword')} />
-        </View>
-        {/* <View style={styles.footer}>
-          <NiErrorMessage message={errorMessage} show={error} />
-          <NiPrimaryButton caption="Valider" onPress={savePassword} loading={isLoading} />
-        </View> */}
       </ScrollView>
     </KeyboardAvoidingView>
   );
