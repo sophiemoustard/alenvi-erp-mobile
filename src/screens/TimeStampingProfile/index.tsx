@@ -4,14 +4,16 @@ import commonStyle from '../../styles/common';
 import Events from '../../api/Events';
 import { Context as AuthContext } from '../../context/AuthContext';
 import styles from './style';
+import { INTERVENTION } from '../../core/data/constants';
 
 const TimeStampingProfile = () => {
   const currentDate = new Date();
 
-  const [customerLastName, setCustomerLastName] = useState<string>('');
-  const [customerFirstName, setCustomerFirstName] = useState<string>('');
-  const [eventStartDate, setEventStartDate] = useState<Date>(new Date());
-  const [eventEndDate, setEventEndDate] = useState<Date>(new Date());
+  const [firstName, setFirstName] = useState<string>('');
+  const [lastName, setLastName] = useState<string>('');
+  const [startDateEvent, setStartDateEvent] = useState<Date|null>(new Date());
+  const [endDateEvent, setEndDateEvent] = useState<Date|null>(new Date());
+  const [eventNumber, setEventNumber] = useState<number>(0);
 
   const { loggedUser } = useContext(AuthContext);
 
@@ -25,28 +27,36 @@ const TimeStampingProfile = () => {
     return date.toLocaleTimeString('fr-FR', options);
   };
 
-  const eventData = async (): Promise<any> => {
+  const eventData = async () => {
     let events = [];
-    try {
-      // if (loggedUser?._id) {
-      const params = {
-        // auxiliaryId: loggedUser._id,
-        auxiliary: '5947d1aeff6c27ce07405655',
-        //startDate: new Date(currentDate.getFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate()),
-        startDate: new Date(2021, 4, 6),
-        //endDate: new Date(currentDate.getTime() + 86400000),
-        endDate: new Date(2021, 4, 7),
-      };
-      events = await Events.events(params);
-      console.log('events', events);
-      setCustomerLastName(events[1].customer.identity.lastname);
-      setCustomerFirstName(events[1].customer.identity.firstname);
+    let eventsFormat = [];
 
-      const start = new Date(events[1].startDate);
-      const end = new Date(events[1].endDate);
-      setEventStartDate(start);
-      setEventEndDate(end);
-//}
+    try {
+      if (loggedUser?._id) {
+        const params = {
+          auxiliary: loggedUser._id,
+          startDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()),
+          endDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()),
+          type: INTERVENTION,
+        };
+        events = await Events.events(params);
+        if (events === undefined || events === null) {
+          console.error('Events Error');
+        } else {
+          eventsFormat = events.map((event : any) => {
+            const customerFirstName = event.customer.identity.firstname;
+            const customerLastName = event.customer.identity.lastname;
+            const startDate = new Date(event.startDate);
+            const endDate = new Date(event.endDate);
+            return { customerFirstName, customerLastName, startDate, endDate };
+          });
+          setEventNumber(eventsFormat.length);
+          setFirstName(eventsFormat[0].customerFirstName);
+          setLastName(eventsFormat[0].customerLastName);
+          setEndDateEvent(new Date(eventsFormat[0].endDate));
+          setStartDateEvent(new Date(eventsFormat[0].startDate));
+        }
+      }
     } catch (e) {
       console.error(e);
     }
@@ -54,30 +64,28 @@ const TimeStampingProfile = () => {
 
   useEffect(() => {
     eventData();
-  });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <ScrollView style={styles.screen}>
       <View style={styles.view}>
-        <Text style={[commonStyle.title, styles.title]} > Horodatage </Text>
+        <Text style={[commonStyle.title, styles.title]}>Horodatage </Text>
         <Text style={styles.date}>{formatDate(currentDate)}</Text>
         <Text style={styles.time}>{formatTime(currentDate)}</Text>
       </View>
+      <Text>Aujourd&apos;hui j&apos;ai {eventNumber} interventions</Text>
       <View style={styles.cellEvent}>
-        <Text style={styles.cellText}>{customerFirstName} {customerLastName}</Text>
+        <Text style={styles.cellText}>{firstName} {lastName}</Text>
         <View style={styles.sectionDelimiter} />
         <View>
           <Text style={styles.eventTimeText}>Debut</Text>
-          <Text style={styles.scheduledEvent}>
-            {eventStartDate.getHours()}:{eventStartDate.getMinutes()}
-          </Text>
+          <Text style={styles.scheduledEvent}>{startDateEvent?.getHours()}:{startDateEvent?.getMinutes()}</Text>
         </View>
         <View style={styles.sectionDelimiter} />
         <View>
           <Text style={styles.eventTimeText}>Fin</Text>
-          <Text style={styles.scheduledEvent}>
-            {eventEndDate.getHours()}:{eventEndDate.getMinutes()}
-          </Text>
+          <Text style={styles.scheduledEvent}>{endDateEvent?.getHours()}:{endDateEvent?.getMinutes()}</Text>
         </View>
       </View>
     </ScrollView>
