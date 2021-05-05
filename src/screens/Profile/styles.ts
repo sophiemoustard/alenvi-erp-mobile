@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { MARGIN, BORDER_WIDTH, BORDER_RADIUS } from '../../styles/metrics';
 import { GREY } from '../../styles/colors';
-import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../styles/fonts';
+import { FIRA_SANS_BOLD, FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR } from '../../styles/fonts';
 
 export default StyleSheet.create({
   sectionDelimiter: {
@@ -46,7 +46,7 @@ export default StyleSheet.create({
     color: GREY[900],
   },
   subtitle: {
-    ...FIRA_SANS_REGULAR.MD,
+    ...FIRA_SANS_MEDIUM.MD,
     marginTop: MARGIN.MD,
     color: GREY[600],
   },
