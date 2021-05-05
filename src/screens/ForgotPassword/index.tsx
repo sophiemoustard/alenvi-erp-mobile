@@ -76,7 +76,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
         <View style={styles.body}>
           <View style={styles.content}>
             <Text style={styles.title}>Quel est votre e-mail ?</Text>
-            <NiInput style={styles.input} title='Email' type='email' onChangeText={setEmail} value={email}
+            <NiInput style={styles.input} caption='Email' type='email' onChangeText={setEmail} value={email}
               validationMessage={errorMessage} disabled={isLoading} />
           </View>
           <NiPrimaryButton title='Valider' onPress={validateEmail} loading={isLoading} />

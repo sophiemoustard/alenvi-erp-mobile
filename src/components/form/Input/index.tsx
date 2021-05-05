@@ -9,7 +9,7 @@ import { FeatherType } from '../../../types/IconType';
 
 interface InputProps {
   value: string,
-  title: string,
+  caption: string,
   type: string,
   onChangeText: (value: string) => void,
   style?: Object,
@@ -19,7 +19,7 @@ interface InputProps {
 }
 
 const Input = ({
-  title,
+  caption,
   type,
   onChangeText,
   value,
@@ -56,7 +56,7 @@ const Input = ({
   return (
     <View style={style}>
       <View style={inputStyle.captionContainer}>
-        <Text style={textStyle}>{title}</Text>
+        <Text style={textStyle}>{caption}</Text>
       </View>
       <View style={inputStyle.container}>
         <View style={inputStyle.inputContainer}>
