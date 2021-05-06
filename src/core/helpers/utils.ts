@@ -10,3 +10,5 @@ export const formatTime = (date: Date) => {
   const options: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
   return date.toLocaleTimeString('fr-FR', options);
 };
+
+export const capitalizeFirstLetter = (s: string) => `${s.charAt(0).toUpperCase()}${s.substr(1)}`;
