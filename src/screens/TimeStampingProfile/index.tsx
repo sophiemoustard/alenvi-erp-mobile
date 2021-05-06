@@ -35,13 +35,13 @@ const TimeStampingProfile = () => {
   };
 
   useEffect(() => {
-    fetchInterventions();
+    if (loggedUser?._id) fetchInterventions();
     if (eventsNumber > 1) setIntervention('interventions');
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loggedUser]);
 
-  const renderEvent = (event: any[]) => <TimeStampingCell event={event}/>;
-  const renderSeparator = () => <View style={styles.renderSeparator}></View>;
+  const renderEvent = (event: any[]) => <TimeStampingCell event={event} />;
+  const renderSeparator = () => <View style={styles.renderSeparator} />;
 
   return (
     <ScrollView style={styles.screen}>
@@ -56,7 +56,7 @@ const TimeStampingProfile = () => {
         </View>
       </View>
       <FlatList data={events} keyExtractor={event => event._id} renderItem={({ item }) => renderEvent(item)}
-        ItemSeparatorComponent={renderSeparator}/>
+        ItemSeparatorComponent={renderSeparator} />
     </ScrollView>
   );
 };

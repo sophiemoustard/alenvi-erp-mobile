@@ -11,4 +11,14 @@ export const formatTime = (date: Date) => {
   return date.toLocaleTimeString('fr-FR', options);
 };
 
+export const displayMinutes = (date: Date) => {
+  if (date.getMinutes() < 10) return '0'.concat(date.getMinutes().toString());
+  return date.getMinutes();
+};
+
+export const displayCivility = (civility: string) => {
+  if (civility === 'mrs') return 'Mme';
+  return 'M.';
+};
+
 export const capitalizeFirstLetter = (s: string) => `${s.charAt(0).toUpperCase()}${s.substr(1)}`;
