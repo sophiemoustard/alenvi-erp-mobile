@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { KeyboardAvoidingView, Platform, View, Text, BackHandler } from 'react-native';
+import { KeyboardAvoidingView, View, Text, BackHandler } from 'react-native';
 import Users from '../../api/Users';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
 import FeatherButton from '../../components/FeatherButton';
@@ -7,7 +7,7 @@ import NiInput from '../../components/form/Input';
 import ExitModal from '../../components/modals/ExitModal';
 import ForgotPasswordModal from '../../components/modals/ForgotPasswordModal';
 import { EMAIL_REGEX } from '../../core/data/constants';
-import { ICON } from '../../styles/metrics';
+import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
 import { GREY } from '../../styles/colors';
 import { NavigationType } from '../../types/NavigationType';
 import styles from './styles';
@@ -65,7 +65,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
 
   return (
     <>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.screen}>
+      <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.screen}>
         <View style={styles.goBack}>
           <FeatherButton name='x-circle' onPress={() => setExitConfirmationModal(true)} size={ICON.MD} color={GREY[600]}
             disabled={isLoading} />

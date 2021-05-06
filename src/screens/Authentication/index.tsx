@@ -1,12 +1,5 @@
 import React, { useContext, useState } from 'react';
-import {
-  ImageBackground,
-  Text,
-  KeyboardAvoidingView,
-  useWindowDimensions,
-  Platform,
-  TouchableOpacity,
-} from 'react-native';
+import { ImageBackground, Text, KeyboardAvoidingView, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { Context as AuthContext } from '../../context/AuthContext';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
 import NiSecondaryButton from '../../components/form/SecondaryButton';
@@ -15,6 +8,7 @@ import NiErrorMessage from '../../components/ErrorMessage';
 import styles from './styles';
 import { PASSWORD, EMAIL } from '../../core/data/constants';
 import { NavigationType } from '../../types/NavigationType';
+import { KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
 
 interface AuthenticationProps {
   navigation: NavigationType,
@@ -45,7 +39,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
       style={{ height: useWindowDimensions().height }}
       source={require('../../../assets/images/authentication_background_image.jpg')}
     >
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.container}>
         <Text style={styles.title}>Identifiez-vous pour accéder aux informations</Text>
         <NiInput caption='Email' type={EMAIL} onChangeText={setEmail} value={email} darkMode />
         <NiInput caption='Mot de Passe' type={PASSWORD} onChangeText={setPassword} value={password}

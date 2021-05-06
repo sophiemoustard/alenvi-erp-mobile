@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
@@ -50,3 +50,4 @@ export const TAB_BAR_HEIGHT = 72;
 export const SCREEN_HEIGHT = width < height ? height : width;
 export const SMALL_SCREEN_MAX_HEIGHT = 568;
 export const IS_LARGE_SCREEN = SCREEN_HEIGHT > SMALL_SCREEN_MAX_HEIGHT;
+export const KEYBOARD_AVOIDING_VIEW_BEHAVIOR = Platform.OS === 'ios' ? 'padding' : 'height';
