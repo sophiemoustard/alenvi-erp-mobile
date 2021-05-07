@@ -17,7 +17,7 @@ export default StyleSheet.create({
     ...FIRA_SANS_BLACK.MD,
   },
   title: {
-    ...FIRA_SANS_BLACK.XL,
+    ...FIRA_SANS_BLACK.XXL,
     marginVertical: MARGIN.XL,
   },
 });
