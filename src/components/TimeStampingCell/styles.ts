@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { GREY, WHITE } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
-import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
+import { BORDER_RADIUS, BORDER_WIDTH, MARGIN } from '../../styles/metrics';
 
 export default StyleSheet.create({
   sectionDelimiter: {
@@ -16,24 +16,21 @@ export default StyleSheet.create({
     marginHorizontal: MARGIN.MD,
   },
   view: {
-    marginHorizontal: MARGIN.MD,
+    margin: MARGIN.MD,
   },
   title: {
     ...FIRA_SANS_BOLD.MD,
     color: GREY[900],
     marginVertical: MARGIN.SM,
-    paddingHorizontal: PADDING.LG,
+    marginHorizontal: MARGIN.MD,
   },
   timeTitle: {
     ...FIRA_SANS_REGULAR.SM,
     color: GREY[700],
-    marginTop: MARGIN.MD,
     marginBottom: MARGIN.SM,
   },
   scheduledTime: {
     ...NUNITO_REGULAR.XL,
     color: GREY[900],
-    marginBottom: MARGIN.MD,
-    paddingLeft: PADDING.XS,
   },
 });

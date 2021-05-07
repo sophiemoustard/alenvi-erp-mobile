@@ -42,9 +42,9 @@ const TimeStampingProfile = () => {
 
   return (
     <ScrollView style={styles.screen}>
-      <Text style={[commonStyle.title, styles.title]}>Horodatage</Text>
+      <Text style={commonStyle.title}>Horodatage</Text>
       <View style={styles.container}>
-        <View style={styles.viewDate}>
+        <View>
           <Text style={styles.date}>{capitalizeFirstLetter(formatDate(currentDate))}</Text>
           <Text style={styles.time}>{formatTime(currentDate)}</Text>
         </View>

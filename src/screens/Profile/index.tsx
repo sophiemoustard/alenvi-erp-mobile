@@ -18,8 +18,8 @@ const Profile = () => {
 
   return (
     <ScrollView>
+      <Text style={commonStyle.title}>Mon profil</Text>
       <View style={styles.identityContainer}>
-        <Text style={commonStyle.title}>Mon profil</Text>
         <View style={styles.profilView}>
           <Image source={source} style={styles.image} />
           <View style={styles.infosProfilView}>
