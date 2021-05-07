@@ -1,4 +1,4 @@
-import { EventType } from '../../types/EventType';
+import { EventTypeEnum } from '../../types/EventType';
 
 export const ERP = 'erp';
 
@@ -17,4 +17,14 @@ export const EMAIL_REGEX = /^[\w-.+]+@([\w-]+\.)+[\w-]{2,4}$/;
 export const ONE_YEAR_IN_MILLISECONDS = 31536000000;
 
 // PLANNING
-export const INTERVENTION: EventType = 'intervention';
+export const INTERVENTION: EventTypeEnum = 'intervention';
+
+// CIVILITY
+export const MISTER : string = 'mr';
+export const MRS : string = 'mrs';
+export const COUPLE : string = 'couple';
+export const CIVILITY_OPTIONS = {
+  [MISTER]: 'M.',
+  [MRS]: 'Mme',
+  [COUPLE]: 'Mme et M.',
+};

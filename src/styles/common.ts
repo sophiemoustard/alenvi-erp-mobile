@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { WHITE } from './colors';
 import { FIRA_SANS_BLACK } from './fonts';
-import { MARGIN, BORDER_RADIUS, BUTTON_HEIGHT } from './metrics';
+import { MARGIN, BORDER_RADIUS, BUTTON_HEIGHT, PADDING } from './metrics';
 
 export default StyleSheet.create({
   container: { flex: 1, backgroundColor: WHITE },
@@ -17,7 +17,9 @@ export default StyleSheet.create({
     ...FIRA_SANS_BLACK.MD,
   },
   title: {
-    ...FIRA_SANS_BLACK.XXL,
+    ...FIRA_SANS_BLACK.XL,
+    marginHorizontal: MARGIN.XL,
     marginVertical: MARGIN.XL,
+    paddingBottom: PADDING.LG,
   },
 });
