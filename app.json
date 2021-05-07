@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "erp-mobile",
+    "slug": "erp-mobile",
+    "description": "Interface auxiliaire de l'ERP Compani",
+    "platforms": ["ios", "android"],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/ios_icon.png",
+    "primaryColor": "#FFFFFF",
+    "backgroundColor": "#FFFFFF",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": ["assets/images/*"],
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 3000
+    },
+    "ios": {
+      "bundleIdentifier": "com.alenvi.compani",
+      "icon": "./assets/images/ios_icon.png",
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "android": {
+      "package": "com.alenvi.compani",
+      "adaptiveIcon": { "foregroundImage": "./assets/images/android_icon.png" },
+      "googleServicesFile": "./google-services.json"
+    },
+    "extra": {
+      "hooks": {
+        "postPublish": [
+          {
+            "file": "sentry-expo/upload-sourcemaps",
+            "config": {
+              "organization": "alenvi",
+              "project": "mobile-erp"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
