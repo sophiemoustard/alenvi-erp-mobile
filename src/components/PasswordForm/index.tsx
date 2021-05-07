@@ -33,16 +33,14 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
   };
 
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
-
-    return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
-  }, []);
-
-  useEffect(() => {
     const keyboardDidHide = () => Keyboard.dismiss();
     Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+    BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
 
-    return () => { Keyboard.removeListener('keyboardDidHide', keyboardDidHide); };
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress);
+      Keyboard.removeListener('keyboardDidHide', keyboardDidHide);
+    };
   }, []);
 
   useEffect(() => {
