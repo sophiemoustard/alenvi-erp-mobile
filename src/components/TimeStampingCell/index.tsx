@@ -2,42 +2,43 @@ import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { displayMinutes } from '../../core/helpers/utils';
 import { CIVILITY_OPTIONS } from '../../core/data/constants';
-import styles from './style';
+import styles from './styles';
 import { EventType } from '../../types/EventType';
 
-interface timeStampingProps {
+interface TimeStampingProps {
   event: EventType,
 }
 
-const TimeStampingCell = ({ event }: timeStampingProps) => {
+const TimeStampingCell = ({ event }: TimeStampingProps) => {
   const [civility, setCivility] = useState<string>('M');
   const [lastName, setLastName] = useState<string>('');
-  const [startDateEvent, setStartDateEvent] = useState<Date|null>(null);
-  const [endDateEvent, setEndDateEvent] = useState<Date|null>(null);
+  const [startDate, setStartDate] = useState<Date|null>(null);
+  const [endDate, setEndDate] = useState<Date|null>(null);
 
   useEffect(() => {
-    setCivility(event?.customer?.identity?.title || '');
-    setLastName(event?.customer?.identity?.lastname || '');
     if (event) {
-      setEndDateEvent(new Date(event.endDate));
-      setStartDateEvent(new Date(event.startDate));
+      setCivility(event.customer?.identity?.title || '');
+      setLastName(event.customer?.identity?.lastname || '');
+      setEndDate(new Date(event.endDate));
+      setStartDate(new Date(event.startDate));
     }
-  }, [setCivility, setLastName, setEndDateEvent, setStartDateEvent, event]);
+  }, [setCivility, setLastName, setEndDate, setStartDate, event]);
+
   return (
     <View style={styles.cell}>
-      <Text style={styles.title}>{CIVILITY_OPTIONS.find(opt => opt.value === civility)?.label} {lastName}</Text>
+      <Text style={styles.title}>{CIVILITY_OPTIONS.CIVILITY_LIST[civility]} {lastName}</Text>
       <View style={styles.sectionDelimiter} />
       <View style={styles.view}>
-        <Text style={styles.timeTitle}>Debut</Text>
-        {!!startDateEvent &&
-          <Text style={styles.scheduledTime}>{startDateEvent.getHours()}:{displayMinutes(startDateEvent)}</Text>
+        <Text style={styles.timeTitle}>Début</Text>
+        {!!startDate &&
+          <Text style={styles.scheduledTime}>{startDate.getHours()}:{displayMinutes(startDate)}</Text>
         }
       </View>
       <View style={styles.sectionDelimiter} />
       <View style={styles.view}>
         <Text style={styles.timeTitle}>Fin</Text>
-        {!!endDateEvent &&
-          <Text style={styles.scheduledTime}>{endDateEvent.getHours()}:{displayMinutes(endDateEvent)}</Text>
+        {!!endDate &&
+          <Text style={styles.scheduledTime}>{endDate.getHours()}:{displayMinutes(endDate)}</Text>
         }
       </View>
     </View>
