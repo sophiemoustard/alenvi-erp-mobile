@@ -30,7 +30,7 @@ export default StyleSheet.create({
     color: GREY[800],
   },
   company: {
-    ...FIRA_SANS_REGULAR.MD,
+    ...FIRA_SANS_MEDIUM.MD,
     color: GREY[600],
     marginTop: MARGIN.XS,
   },
@@ -41,12 +41,12 @@ export default StyleSheet.create({
     ...FIRA_SANS_BOLD.LG,
   },
   infos: {
-    ...FIRA_SANS_REGULAR.MD,
+    ...FIRA_SANS_MEDIUM.MD,
     marginTop: MARGIN.XS,
     color: GREY[900],
   },
   subtitle: {
-    ...FIRA_SANS_MEDIUM.MD,
+    ...FIRA_SANS_REGULAR.MD,
     marginTop: MARGIN.MD,
     color: GREY[600],
   },

@@ -1,6 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 export const FIRA_SANS_BLACK = StyleSheet.create({
+  XXL: {
+    fontSize: 28,
+    fontFamily: 'fira-sans-black',
+  },
   XL: {
     fontSize: 24,
     fontFamily: 'fira-sans-black',
