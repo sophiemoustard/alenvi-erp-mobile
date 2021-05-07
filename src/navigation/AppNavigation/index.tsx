@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Context as AuthContext } from '../../context/AuthContext';
 import { navigationRef } from '../../navigationRef';
 import Authentication from '../../screens/Authentication';
+import PasswordReset from '../../screens/PasswordReset';
 import ForgotPassword from '../../screens/ForgotPassword';
 import Analytics from '../../core/helpers/analytics';
 import Home from '../Home';
@@ -33,7 +34,7 @@ const AppNavigation = () => {
     }
   };
 
-  const authScreens = { Authentication, ForgotPassword };
+  const authScreens = { Authentication, ForgotPassword, PasswordReset };
   const userScreens = { Home };
 
   if (!appIsReady) return null;

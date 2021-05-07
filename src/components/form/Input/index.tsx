@@ -9,9 +9,9 @@ import { FeatherType } from '../../../types/IconType';
 
 interface InputProps {
   value: string,
-  title: string,
+  caption: string,
   type: string,
-  setValue: (value: string) => void,
+  onChangeText: (value: string) => void,
   style?: Object,
   darkMode?: boolean,
   validationMessage?: string,
@@ -19,9 +19,9 @@ interface InputProps {
 }
 
 const Input = ({
-  title,
+  caption,
   type,
-  setValue,
+  onChangeText,
   value,
   style = {},
   darkMode = false,
@@ -56,11 +56,11 @@ const Input = ({
   return (
     <View style={style}>
       <View style={inputStyle.captionContainer}>
-        <Text style={textStyle}>{title}</Text>
+        <Text style={textStyle}>{caption}</Text>
       </View>
       <View style={inputStyle.container}>
         <View style={inputStyle.inputContainer}>
-          <TextInput style={inputStyle.input} onChangeText={setValue} onTouchStart={() => setIsSelected(true)}
+          <TextInput style={inputStyle.input} onChangeText={onChangeText} onTouchStart={() => setIsSelected(true)}
             onBlur={() => setIsSelected(false)} secureTextEntry={secureTextEntry} keyboardType={keyboardType}
             value={value} editable={!disabled} autoCapitalize={autoCapitalize} />
           {type === PASSWORD &&

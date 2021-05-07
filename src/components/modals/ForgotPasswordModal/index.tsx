@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, ScrollView, TextInput, Keyboard } from 'react-native';
+import { useNavigation } from '@react-navigation/core';
 import Authentication from '../../../api/Authentication';
 import NiPrimaryButton from '../../form/PrimaryButton';
 import FeatherButton from '../../FeatherButton';
@@ -29,6 +30,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
   const [code, setCode] = useState<Array<string>>(['', '', '', '']);
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState<boolean>(false);
+  const navigation = useNavigation();
 
   const keyboardDidHide = () => setIsKeyboardOpen(false);
   const keyboardDidShow = () => setIsKeyboardOpen(true);
@@ -86,14 +88,15 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
   const sendCode = useCallback(async (formattedCode: string) => {
     try {
       setIsLoading(true);
-      await Authentication.passwordToken(email, formattedCode);
+      const checkToken = await Authentication.passwordToken(email, formattedCode);
       onRequestClose();
+      navigation.navigate('PasswordReset', { userId: checkToken.user._id, email, token: checkToken.token });
     } catch (e) {
       setErrorMessage('Oops, le code n\'est pas valide');
     } finally {
       setIsLoading(false);
     }
-  }, [email, onRequestClose]);
+  }, [email, onRequestClose, navigation]);
 
   useEffect(() => {
     if (!errorMessage && isValidationAttempted) sendCode(`${code[0]}${code[1]}${code[2]}${code[3]}`);
@@ -167,7 +170,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
 
   return (
     <>
-      {visible && <View style={styles.modal} >
+      {visible && <View style={styles.modal}>
         <View style={styles.modalContainer}>
           <FeatherButton name='x-circle' onPress={onRequestClose} size={ICON.LG} color={GREY[600]}
             style={styles.goBack} />
