@@ -36,15 +36,16 @@ describe('authentication', () => {
       </AuthProvider>
     );
 
-    const emailInput = await waitFor(() => element.queryByTestId('Email'));
-    const passwordInput = await waitFor(() => element.queryByTestId('Mot de Passe'));
-    const sendButton = await waitFor(() => element.queryByTestId('Se connecter'));
+    const emailInput = await element.findByText('Email');
+    const passwordInput = await element.findByText('Mot de Passe');
+    const sendButton = await element.findByText('Se connecter');
 
     await act(async () => fireEvent.changeText(emailInput, 'test@alenvi.io'));
     await act(async () => fireEvent.changeText(passwordInput, '1234567'));
     await act(async () => fireEvent.press(sendButton));
 
-    await waitFor(() => element.queryByTestId('ProfilePage'));
+    const page = await element.findByText('ProfilePage');
+    expect(page).toBeInTheDocument();
   });
 
   test('should not connect user if wrong credentials', async () => {
@@ -61,16 +62,15 @@ describe('authentication', () => {
       </AuthProvider>
     );
 
-    const emailInput = await waitFor(() => element.queryByTestId('Email'));
-    const passwordInput = await waitFor(() => element.queryByTestId('Mot de Passe'));
-    const sendButton = await waitFor(() => element.queryByTestId('Se connecter'));
+    const emailInput = await element.findByText('Email');
+    const passwordInput = await element.findByText('Mot de Passe');
+    const sendButton = await element.findByText('Se connecter');
 
     await act(async () => fireEvent.changeText(emailInput, 'test@alenvi.io'));
     await act(async () => fireEvent.changeText(passwordInput, '1234567'));
     await act(async () => fireEvent.press(sendButton));
 
-    const errorMessage = await waitFor(() => element.queryByText('L\'e-mail et/ou le mot de passe est incorrect'));
-    console.log(errorMessage);
+    const errorMessage = await element.findByText('L\'e-mail et/ou le mot de passe est incorrect');
     expect(errorMessage).toBeTruthy();
   });
 });
