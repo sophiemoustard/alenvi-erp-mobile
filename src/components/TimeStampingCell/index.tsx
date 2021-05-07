@@ -26,7 +26,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   return (
     <View style={styles.cell}>
-      <Text style={styles.title}>{CIVILITY_OPTIONS.CIVILITY_LIST[civility]} {lastName}</Text>
+      <Text style={styles.title}>{CIVILITY_OPTIONS[civility]} {lastName}</Text>
       <View style={styles.sectionDelimiter} />
       <View style={styles.view}>
         <Text style={styles.timeTitle}>Début</Text>

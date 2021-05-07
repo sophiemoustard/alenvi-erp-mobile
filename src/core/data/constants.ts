@@ -20,15 +20,11 @@ export const ONE_YEAR_IN_MILLISECONDS = 31536000000;
 export const INTERVENTION: EventTypeEnum = 'intervention';
 
 // CIVILITY
+export const MISTER : string = 'mr';
+export const MRS : string = 'mrs';
+export const COUPLE : string = 'couple';
 export const CIVILITY_OPTIONS = {
-  MISTER: 'mr',
-  MRS: 'mrs',
-  COUPLE: 'couple',
-  get CIVILITY_LIST() {
-    return {
-      [this.MISTER]: 'M.',
-      [this.MRS]: 'Mme',
-      [this.COUPLE]: 'Mme et M.',
-    };
-  },
+  [MISTER]: 'M.',
+  [MRS]: 'Mme',
+  [COUPLE]: 'Mme et M.',
 };
