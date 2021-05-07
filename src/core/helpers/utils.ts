@@ -16,9 +16,6 @@ export const displayMinutes = (date: Date) => {
   return date.getMinutes();
 };
 
-export const displayCivility = (civility: string) => {
-  if (civility === 'mrs') return 'Mme';
-  return 'M.';
-};
-
 export const capitalizeFirstLetter = (s: string) => `${s.charAt(0).toUpperCase()}${s.substr(1)}`;
+
+export const formatWordToPlural = (items: any, text: string) => (items.length > 1 ? `${text}s` : `${text}`);

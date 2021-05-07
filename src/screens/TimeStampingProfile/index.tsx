@@ -1,22 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { Text, View, ScrollView, FlatList } from 'react-native';
 import commonStyle from '../../styles/common';
 import Events from '../../api/Events';
 import { Context as AuthContext } from '../../context/AuthContext';
 import { INTERVENTION } from '../../core/data/constants';
-import { formatTime, formatDate, capitalizeFirstLetter } from '../../core/helpers/utils';
-import styles from './style';
+import { formatTime, formatDate, capitalizeFirstLetter, formatWordToPlural } from '../../core/helpers/utils';
 import TimeStampingCell from '../../components/TimeStampingCell';
+import styles from './styles';
+import { EventType } from '../../types/EventType';
 
 const TimeStampingProfile = () => {
-  const currentDate = new Date();
-  const [events, setEvents] = useState<any[]>([]);
-  const [eventsNumber, setEventsNumber] = useState<number>(0);
-  const [intervention, setIntervention] = useState<string>('intervention');
+  const [currentDate] = useState<Date>(new Date());
+  const [events, setEvents] = useState<EventType[]>([]);
 
   const { loggedUser } = useContext(AuthContext);
 
-  const fetchInterventions = async () => {
+  const fetchInterventions = useCallback(async () => {
     try {
       if (!loggedUser || !loggedUser._id) return;
       const params = {
@@ -27,32 +26,30 @@ const TimeStampingProfile = () => {
       };
       const fetchedEvents = await Events.events(params);
 
-      setEventsNumber(fetchedEvents.length);
       setEvents(fetchedEvents);
     } catch (e) {
       console.error(e);
     }
-  };
+  }, [loggedUser, currentDate]);
 
   useEffect(() => {
     if (loggedUser?._id) fetchInterventions();
-    if (eventsNumber > 1) setIntervention('interventions');
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loggedUser]);
+  }, [loggedUser, fetchInterventions]);
 
-  const renderEvent = (event: any[]) => <TimeStampingCell event={event} />;
-  const renderSeparator = () => <View style={styles.renderSeparator} />;
+  const renderEvent = (event: EventType) => <TimeStampingCell event={event} />;
+
+  const renderSeparator = () => <View style={styles.separator} />;
 
   return (
     <ScrollView style={styles.screen}>
-      <Text style={[commonStyle.title, styles.title]}>Horodatage </Text>
+      <Text style={[commonStyle.title, styles.title]}>Horodatage</Text>
       <View style={styles.container}>
         <View style={styles.viewDate}>
           <Text style={styles.date}>{capitalizeFirstLetter(formatDate(currentDate))}</Text>
           <Text style={styles.time}>{formatTime(currentDate)}</Text>
         </View>
         <View style={styles.viewIntervention}>
-          <Text style={styles.textIntervention}>{eventsNumber} {intervention}</Text>
+          <Text style={styles.textIntervention}>{events.length} {formatWordToPlural(events, 'intervention')}</Text>
         </View>
       </View>
       <FlatList data={events} keyExtractor={event => event._id} renderItem={({ item }) => renderEvent(item)}

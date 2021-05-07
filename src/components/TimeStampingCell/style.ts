@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { GREY, WHITE } from '../../styles/colors';
-import { FIRA_SANS_REGULAR } from '../../styles/fonts';
+import { FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
 
 export default StyleSheet.create({
@@ -8,30 +8,30 @@ export default StyleSheet.create({
     borderWidth: BORDER_WIDTH,
     borderColor: GREY[200],
   },
-  cellEvent: {
-    width: '90%',
+  cell: {
     borderRadius: BORDER_RADIUS.MD,
     borderWidth: BORDER_WIDTH,
     borderColor: GREY[200],
     backgroundColor: WHITE,
-    alignSelf: 'center',
-    marginBottom: MARGIN.MD,
+    marginHorizontal: MARGIN.MD,
   },
-  cellText: {
+  view: {
+    marginHorizontal: MARGIN.MD,
+  },
+  title: {
+    ...NUNITO_REGULAR.XL,
     marginVertical: MARGIN.SM,
     paddingHorizontal: PADDING.MD,
   },
-  eventTimeText: {
+  timeTitle: {
     ...FIRA_SANS_REGULAR.SM,
     color: GREY[700],
-    paddingHorizontal: PADDING.MD,
     marginTop: MARGIN.MD,
     marginBottom: MARGIN.SM,
   },
-  scheduledEvent: {
-    ...FIRA_SANS_REGULAR.XL,
+  scheduledTime: {
+    ...NUNITO_REGULAR.XL,
     color: GREY[900],
-    marginHorizontal: MARGIN.MD,
     marginBottom: MARGIN.MD,
   },
 });

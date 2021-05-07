@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { GREY, PINK } from '../../styles/colors';
-import { FIRA_SANS_REGULAR } from '../../styles/fonts';
+import { FIRA_SANS_MEDIUM, NUNITO_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, MARGIN, PADDING } from '../../styles/metrics';
 
 export default StyleSheet.create({
@@ -21,11 +21,11 @@ export default StyleSheet.create({
     marginTop: MARGIN.XL,
   },
   date: {
-    ...FIRA_SANS_REGULAR.MD,
+    ...FIRA_SANS_MEDIUM.MD,
     color: GREY[800],
   },
   time: {
-    ...FIRA_SANS_REGULAR.XL,
+    ...NUNITO_REGULAR.XL,
     color: PINK[500],
     marginBottom: MARGIN.XL,
   },
@@ -39,7 +39,7 @@ export default StyleSheet.create({
     borderRadius: BORDER_RADIUS.XXL,
     paddingHorizontal: PADDING.MD,
   },
-  renderSeparator: {
+  separator: {
     marginBottom: MARGIN.MD,
   },
 });
