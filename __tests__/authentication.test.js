@@ -58,12 +58,17 @@ describe('authentication', () => {
     const passwordInput = await element.findByTestId('Mot de Passe');
     const sendButton = await element.findByTestId('Se connecter');
 
-    await act(async () => fireEvent.changeText(emailInput, 'test@alenvi.io'));
-    await act(async () => fireEvent.changeText(passwordInput, '1234567'));
-    await act(async () => fireEvent.press(sendButton));
+    const changeEmail = async () => fireEvent.changeText(emailInput, 'test@alenvi.io');
+    const changePassword = async () => fireEvent.changeText(passwordInput, '1234567');
+    const press = async () => fireEvent.press(sendButton);
 
-    const page = await element.findByText('Horodatage');
-    expect(page).toBeInTheDocument();
+    act(() => changeEmail())
+      .then(() => act(() => changePassword())
+        .then(() => act(() => press())
+          .then(async () => {
+            const page = await element.findByText('Horodatage');
+            expect(page).toBeInTheDocument();
+          })));
   });
 
   test('should not connect user if wrong credentials', async () => {
@@ -84,11 +89,16 @@ describe('authentication', () => {
     const passwordInput = await element.findByTestId('Mot de Passe');
     const sendButton = await element.findByTestId('Se connecter');
 
-    await act(async () => fireEvent.changeText(emailInput, 'test@alenvi.io'));
-    await act(async () => fireEvent.changeText(passwordInput, '1234567'));
-    await act(async () => fireEvent.press(sendButton));
+    const changeEmail = async () => fireEvent.changeText(emailInput, 'test@alenvi.io');
+    const changePassword = async () => fireEvent.changeText(passwordInput, '1234567');
+    const press = async () => fireEvent.press(sendButton);
 
-    const errorMessage = await element.findByText('L\'e-mail et/ou le mot de passe est incorrect');
-    expect(errorMessage).toBeTruthy();
+    act(() => changeEmail())
+      .then(() => act(() => changePassword())
+        .then(() => act(() => press())
+          .then(async () => {
+            const errorMessage = await element.findByText('L\'e-mail et/ou le mot de passe est incorrect');
+            expect(errorMessage).toBeTruthy();
+          })));
   });
 });
