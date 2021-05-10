@@ -1,9 +1,16 @@
 import { Platform } from 'react-native';
+import { days, months } from '../data/constants';
 
 export const formatPhone = (phoneNumber : any) => (phoneNumber
   ? phoneNumber.replace(/^(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/, '$1 $2 $3 $4 $5') : '');
 
 export const formatDate = (date: Date) => {
+  if (Platform.OS === 'android') {
+    const day = date.getDay();
+    const month = date.getMonth();
+    const fullDate = days[day].concat(' ') + date.getDate() + ' '.concat(months[month]);
+    return fullDate;
+  }
   const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'long', day: 'numeric' };
   return date.toLocaleDateString('fr-FR', options);
 };
