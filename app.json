@@ -21,12 +21,12 @@
       "fallbackToCacheTimeout": 3000
     },
     "ios": {
-      "bundleIdentifier": "com.alenvi.compani",
+      "bundleIdentifier": "com.compani.erp",
       "icon": "./assets/images/ios_icon.png",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
-      "package": "com.alenvi.compani",
+      "package": "com.compani.erp",
       "adaptiveIcon": { "foregroundImage": "./assets/images/android_icon.png" },
       "googleServicesFile": "./google-services.json"
     },
