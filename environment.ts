@@ -1,7 +1,10 @@
 /* eslint-disable import/extensions */
 import Constants from 'expo-constants';
+// @ts-ignore
 import localEnv from './env/env.local';
+// @ts-ignore
 import devEnv from './env/env.dev';
+// @ts-ignore
 import prodEnv from './env/env.prod';
 
 const getEnvVars = (): { baseURL: string, sentryKey: string } => {
