@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 export const formatPhone = (phoneNumber : any) => (phoneNumber
   ? phoneNumber.replace(/^(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/, '$1 $2 $3 $4 $5') : '');
 
@@ -7,8 +9,13 @@ export const formatDate = (date: Date) => {
 };
 
 export const formatTime = (date: Date) => {
+  if (Platform.OS === 'android') {
+    const hours = date.getHours().toString();
+    const minutes = displayMinutes(date).toString();
+    return hours.concat(':').concat(minutes);
+  }
   const options: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
-  return date.toLocaleTimeString('fr-FR', options);
+  return date.toLocaleTimeString('fr-FR', options).toString();
 };
 
 export const displayMinutes = (date: Date) => {
