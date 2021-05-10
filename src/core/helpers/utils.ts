@@ -1,29 +1,15 @@
-import { Platform } from 'react-native';
-import { days, months } from '../data/constants';
+import { DAYS, MONTHS } from '../data/constants';
 
 export const formatPhone = (phoneNumber : any) => (phoneNumber
   ? phoneNumber.replace(/^(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/, '$1 $2 $3 $4 $5') : '');
 
 export const formatDate = (date: Date) => {
-  if (Platform.OS === 'android') {
-    const day = date.getDay();
-    const month = date.getMonth();
-    const fullDate = days[day].concat(' ') + date.getDate() + ' '.concat(months[month]);
-    return fullDate;
-  }
-  const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'long', day: 'numeric' };
-  return date.toLocaleDateString('fr-FR', options);
+  const day = date.getDay();
+  const month = date.getMonth();
+  return `${DAYS[day]} ${date.getDate()} ${MONTHS[month]}`;
 };
 
-export const formatTime = (date: Date) => {
-  if (Platform.OS === 'android') {
-    const hours = date.getHours().toString();
-    const minutes = displayMinutes(date).toString();
-    return hours.concat(':').concat(minutes);
-  }
-  const options: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit' };
-  return date.toLocaleTimeString('fr-FR', options).toString();
-};
+export const formatTime = (date: Date) => `${date.getHours()}:${displayMinutes(date)}`;
 
 export const displayMinutes = (date: Date) => {
   if (date.getMinutes() < 10) return '0'.concat(date.getMinutes().toString());

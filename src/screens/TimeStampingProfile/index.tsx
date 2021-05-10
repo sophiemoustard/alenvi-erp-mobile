@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
-import { Text, View, ScrollView, FlatList } from 'react-native';
+import { Text, View, FlatList } from 'react-native';
 import commonStyle from '../../styles/common';
 import Events from '../../api/Events';
 import { Context as AuthContext } from '../../context/AuthContext';
@@ -10,10 +10,14 @@ import styles from './styles';
 import { EventType } from '../../types/EventType';
 
 const TimeStampingProfile = () => {
-  const [currentDate] = useState<Date>(new Date());
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<EventType[]>([]);
 
   const { loggedUser } = useContext(AuthContext);
+
+  setInterval(() => {
+    setCurrentDate(new Date());
+  }, 60000);
 
   const fetchInterventions = useCallback(async () => {
     try {
@@ -41,7 +45,7 @@ const TimeStampingProfile = () => {
   const renderSeparator = () => <View style={styles.separator} />;
 
   return (
-    <ScrollView style={styles.screen}>
+    <View style={styles.screen}>
       <Text style={commonStyle.title}>Horodatage</Text>
       <View style={styles.container}>
         <View>
@@ -54,7 +58,7 @@ const TimeStampingProfile = () => {
       </View>
       <FlatList data={events} keyExtractor={event => event._id} renderItem={({ item }) => renderEvent(item)}
         ItemSeparatorComponent={renderSeparator} />
-    </ScrollView>
+    </View>
   );
 };
 
