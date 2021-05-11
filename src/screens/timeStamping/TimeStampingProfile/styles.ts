@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
-import { GREY, PINK } from '../../styles/colors';
-import { FIRA_SANS_MEDIUM, NUNITO_REGULAR, FIRA_SANS_BLACK } from '../../styles/fonts';
-import { BORDER_RADIUS, MARGIN, PADDING } from '../../styles/metrics';
+import { GREY, PINK } from '../../../styles/colors';
+import { FIRA_SANS_MEDIUM, NUNITO_REGULAR, FIRA_SANS_BLACK } from '../../../styles/fonts';
+import { BORDER_RADIUS, MARGIN, PADDING } from '../../../styles/metrics';
 
 export default StyleSheet.create({
   screen: {

@@ -6,6 +6,7 @@ import { navigationRef } from '../../navigationRef';
 import Authentication from '../../screens/Authentication';
 import PasswordReset from '../../screens/PasswordReset';
 import ForgotPassword from '../../screens/ForgotPassword';
+import ManualTimeStamping from '../../screens/timeStamping/ManualTimeStamping';
 import Analytics from '../../core/helpers/analytics';
 import Home from '../Home';
 
@@ -35,7 +36,7 @@ const AppNavigation = () => {
   };
 
   const authScreens = { Authentication, ForgotPassword, PasswordReset };
-  const userScreens = { Home };
+  const userScreens = { Home, ManualTimeStamping };
 
   if (!appIsReady) return null;
 
