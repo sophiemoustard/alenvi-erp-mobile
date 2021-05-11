@@ -11,7 +11,7 @@ const authReducer = (state: StateType, action: ActionType) => {
     case 'loggedUser':
       return { ...state, loggedUser: action.payload };
     case 'signOut':
-      return { ...state, companiToken: null };
+      return { ...state, companiToken: null, loggedUser: null };
     case 'render':
       return { ...state, appIsReady: true };
     default:
