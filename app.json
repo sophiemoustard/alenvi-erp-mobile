@@ -29,6 +29,7 @@
     "android": {
       "package": "com.compani.erp",
       "versionCode": 1,
+      "permissions": [],
       "adaptiveIcon": { "foregroundImage": "./assets/images/android_icon.png" },
       "googleServicesFile": "./google-services.json"
     },
