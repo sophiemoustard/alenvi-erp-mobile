@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
-import { displayMinutes } from '../../core/helpers/utils';
+import { displayMinutes } from '../../core/helpers/dates';
 import { CIVILITY_OPTIONS } from '../../core/data/constants';
 import styles from './styles';
 import { EventType } from '../../types/EventType';

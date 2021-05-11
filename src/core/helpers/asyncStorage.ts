@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DatesHelper from '../helpers/dates';
+import { isBefore } from '../helpers/dates';
 import { ONE_YEAR_IN_MILLISECONDS } from '../data/constants';
 
 const isTokenValid = (token: string | null, tokenExpireDate: string | null): boolean =>
-  !!token && !!tokenExpireDate && DatesHelper.isBefore(new Date(), tokenExpireDate);
+  !!token && !!tokenExpireDate && isBefore(new Date(), tokenExpireDate);
 
 interface CompaniToken {
   companiToken: string | null,

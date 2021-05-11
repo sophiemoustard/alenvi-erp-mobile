@@ -6,8 +6,6 @@ import { BORDER_RADIUS, MARGIN, PADDING } from '../../styles/metrics';
 export default StyleSheet.create({
   screen: {
     backgroundColor: GREY[100],
-    flex: 1,
-    marginBottom: MARGIN.MD,
   },
   title: {
     ...FIRA_SANS_BLACK.XL,
