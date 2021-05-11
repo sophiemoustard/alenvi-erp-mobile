@@ -28,3 +28,8 @@ export const CIVILITY_OPTIONS = {
   [MRS]: 'Mme',
   [COUPLE]: 'Mme et M.',
 };
+
+// DATE
+export const DAYS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+export const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre',
+  'novembre', 'décembre'];

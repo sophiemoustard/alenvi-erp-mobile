@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
-import { displayMinutes } from '../../core/helpers/utils';
+import { displayMinutes } from '../../core/helpers/dates';
 import { CIVILITY_OPTIONS } from '../../core/data/constants';
 import styles from './styles';
 import { EventType } from '../../types/EventType';
@@ -26,7 +26,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   return (
     <View style={styles.cell}>
-      <Text style={styles.title}>{CIVILITY_OPTIONS[civility]} {lastName}</Text>
+      <Text style={styles.title}>{CIVILITY_OPTIONS[civility]} {lastName.toUpperCase()}</Text>
       <View style={styles.sectionDelimiter} />
       <View style={styles.view}>
         <Text style={styles.timeTitle}>Début</Text>
