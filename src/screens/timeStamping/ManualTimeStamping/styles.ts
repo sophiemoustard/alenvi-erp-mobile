@@ -5,13 +5,12 @@ import { BORDER_RADIUS, BORDER_WIDTH, MARGIN } from '../../../styles/metrics';
 
 export default StyleSheet.create({
   screen: {
+    flexGrow: 5,
     marginHorizontal: MARGIN.LG,
-    marginVertical: MARGIN.XXL,
   },
   title: {
     ...FIRA_SANS_BOLD.LG,
-    marginBottom: MARGIN.XL,
-    marginTop: MARGIN.LG,
+    marginVertical: MARGIN.XL,
   },
   container: {
     flexDirection: 'row',
@@ -44,5 +43,12 @@ export default StyleSheet.create({
   reasonsView: {
     marginVertical: MARGIN.XL,
     marginHorizontal: MARGIN.SM,
+  },
+  goBack: {
+    marginTop: MARGIN.MD,
+    marginLeft: MARGIN.MD,
+  },
+  button: {
+    marginTop: MARGIN.XXXL,
   },
 });
