@@ -27,7 +27,10 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     }
   }, [setCivility, setLastName, setEndDate, setStartDate, event]);
 
-  const goToManualTimeStamping = () => navigation.navigate('ManualTimeStamping');
+  const goToManualTimeStamping = () => navigation.navigate('ManualTimeStamping', {
+    name: lastName,
+    civilities: civility,
+  });
 
   return (
     <View style={styles.cell}>
