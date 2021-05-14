@@ -37,18 +37,20 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       <Text style={styles.title}>{CIVILITY_OPTIONS[civility]} {lastName.toUpperCase()}</Text>
       <View style={styles.sectionDelimiter} />
       <View style={styles.container}>
-        <View style={styles.view}>
+        <View>
           <Text style={styles.timeTitle}>Début</Text>
           {!!startDate && <Text style={styles.scheduledTime}>{formatTime(startDate)}</Text>}
         </View>
-        <View style={styles.view}>
+        <View>
           <NiPrimaryButton title='Commencer' onPress={goToManualTimeStamping}/>
         </View>
       </View>
       <View style={styles.sectionDelimiter} />
-      <View style={styles.view}>
-        <Text style={styles.timeTitle}>Fin</Text>
-        {!!endDate && <Text style={styles.scheduledTime}>{formatTime(endDate)}</Text>}
+      <View style={styles.container}>
+        <View>
+          <Text style={styles.timeTitle}>Fin</Text>
+          {!!endDate && <Text style={styles.scheduledTime}>{formatTime(endDate)}</Text>}
+        </View>
       </View>
     </View>
   );
