@@ -12,7 +12,7 @@ import { GREY } from '../../../styles/colors';
 import styles from './styles';
 
 interface ManualTimeStampingProps {
-  route: { params: { name: string, civilities: string } },
+  route: { params: { event: { _id: string, customer: { identity: any } } } },
 }
 
 const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
@@ -47,7 +47,8 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
             <View style={styles.view}>
               <Text style={styles.subtitle}>Bénéficiaire</Text>
               <Text style={styles.info}>
-                {CIVILITY_OPTIONS[route.params.civilities]} {route.params.name.toUpperCase()}
+                {CIVILITY_OPTIONS[route.params.event.customer.identity.title]} {}
+                {route.params.event.customer.identity.lastname.toUpperCase()}
               </Text>
             </View>
             <View style={styles.sectionDelimiter} />

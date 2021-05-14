@@ -29,7 +29,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   const goToManualTimeStamping = () => navigation.navigate(
     'ManualTimeStamping',
-    { name: lastName, civilities: civility }
+    { event: { _id: event._id, customer: { identity: event.customer.identity } } }
   );
 
   return (
@@ -39,8 +39,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       <View style={styles.container}>
         <View style={styles.view}>
           <Text style={styles.timeTitle}>Début</Text>
-          {!!startDate &&
-            <Text style={styles.scheduledTime}>{formatTime(startDate)}</Text>}
+          {!!startDate && <Text style={styles.scheduledTime}>{formatTime(startDate)}</Text>}
         </View>
         <View style={styles.view}>
           <NiPrimaryButton title='Commencer' style={styles.primaryButton} onPress={goToManualTimeStamping}/>
@@ -49,8 +48,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       <View style={styles.sectionDelimiter} />
       <View style={styles.view}>
         <Text style={styles.timeTitle}>Fin</Text>
-        {!!endDate &&
-          <Text style={styles.scheduledTime}>{formatTime(endDate)}</Text>}
+        {!!endDate && <Text style={styles.scheduledTime}>{formatTime(endDate)}</Text>}
       </View>
     </View>
   );
