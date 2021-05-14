@@ -17,6 +17,7 @@ export default StyleSheet.create({
   },
   container: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
   },
   view: {
@@ -39,6 +40,5 @@ export default StyleSheet.create({
   },
   primaryButton: {
     paddingHorizontal: PADDING.XL,
-    marginTop: MARGIN.XS,
   },
 });

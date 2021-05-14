@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { displayMinutes } from '../../core/helpers/dates';
+import { formatTime } from '../../core/helpers/dates';
 import { CIVILITY_OPTIONS } from '../../core/data/constants';
 import styles from './styles';
 import { EventType } from '../../types/EventType';
@@ -27,10 +27,10 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     }
   }, [setCivility, setLastName, setEndDate, setStartDate, event]);
 
-  const goToManualTimeStamping = () => navigation.navigate('ManualTimeStamping', {
-    name: lastName,
-    civilities: civility,
-  });
+  const goToManualTimeStamping = () => navigation.navigate(
+    'ManualTimeStamping',
+    { name: lastName, civilities: civility }
+  );
 
   return (
     <View style={styles.cell}>
@@ -40,8 +40,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         <View style={styles.view}>
           <Text style={styles.timeTitle}>Début</Text>
           {!!startDate &&
-            <Text style={styles.scheduledTime}>{startDate.getHours()}:{displayMinutes(startDate)}</Text>
-          }
+            <Text style={styles.scheduledTime}>{formatTime(startDate)}</Text>}
         </View>
         <View style={styles.view}>
           <NiPrimaryButton title='Commencer' style={styles.primaryButton} onPress={goToManualTimeStamping}/>
@@ -51,8 +50,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       <View style={styles.view}>
         <Text style={styles.timeTitle}>Fin</Text>
         {!!endDate &&
-          <Text style={styles.scheduledTime}>{endDate.getHours()}:{displayMinutes(endDate)}</Text>
-        }
+          <Text style={styles.scheduledTime}>{formatTime(endDate)}</Text>}
       </View>
     </View>
   );

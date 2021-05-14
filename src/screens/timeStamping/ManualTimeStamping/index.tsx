@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import { displayMinutes } from '../../../core/helpers/dates';
+import { formatTime } from '../../../core/helpers/dates';
 import { CIVILITY_OPTIONS } from '../../../core/data/constants';
-import NiRadioButtonList from '../../../components/radioButtonList';
+import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
 import ExitModal from '../../../components/modals/ExitModal';
@@ -12,7 +12,7 @@ import { GREY } from '../../../styles/colors';
 import styles from './styles';
 
 interface ManualTimeStampingProps {
-  route: { params: { name: string, civilities: string} },
+  route: { params: { name: string, civilities: string } },
 }
 
 const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
@@ -21,12 +21,9 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const navigation = useNavigation();
 
   const optionList = [
-    { label: 'Je n\'ai pas accès au code barre',
-      value: 0 },
-    { label: 'Le code barre ne fonctionne pas',
-      value: 1 },
-    { label: 'Mon appareil photo ne fonctionne pas',
-      value: 2 },
+    { label: 'Je n\'ai pas accès au code barre', value: 0 },
+    { label: 'Le code barre ne fonctionne pas', value: 1 },
+    { label: 'Mon appareil photo ne fonctionne pas', value: 2 },
   ];
 
   const goBack = () => {
@@ -35,7 +32,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   };
 
   return (
-    <View>
+    <>
       <View style={styles.goBack}>
         <FeatherButton name='x-circle' onPress={() => setExitConfirmationModal(true)} size={ICON.MD}
           color={GREY[600]} />
@@ -49,25 +46,26 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
           <View style={styles.container}>
             <View style={styles.view}>
               <Text style={styles.subtitle}>Bénéficiaire</Text>
-              <Text style={styles.info}>{CIVILITY_OPTIONS[route.params.civilities]} {route.params.name.toUpperCase()}
+              <Text style={styles.info}>
+                {CIVILITY_OPTIONS[route.params.civilities]} {route.params.name.toUpperCase()}
               </Text>
             </View>
             <View style={styles.sectionDelimiter} />
             <View style={styles.view}>
               <Text style={styles.subtitle}>Heure horodatée</Text>
-              <Text style={styles.info}>{currentTime.getHours()}:{displayMinutes(currentTime)}</Text>
+              <Text style={styles.info}>{formatTime(currentTime)}</Text>
             </View>
           </View>
           <View style={styles.reasonsView}>
             <Text style={styles.question}>Pourquoi horodatez-vous manuellement?</Text>
-            <NiRadioButtonList list={optionList} />
+            <NiRadioButtonList options={optionList} />
           </View>
         </View>
-        <View style={styles.button}>
+        <View>
           <NiPrimaryButton title='Valider et horodater' />
         </View>
       </View>
-    </View>
+    </>
   );
 };
 

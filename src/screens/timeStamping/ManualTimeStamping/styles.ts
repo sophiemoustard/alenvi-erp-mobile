@@ -5,7 +5,6 @@ import { BORDER_RADIUS, BORDER_WIDTH, MARGIN } from '../../../styles/metrics';
 
 export default StyleSheet.create({
   screen: {
-    flexGrow: 5,
     marginHorizontal: MARGIN.LG,
   },
   title: {
@@ -45,10 +44,6 @@ export default StyleSheet.create({
     marginHorizontal: MARGIN.SM,
   },
   goBack: {
-    marginTop: MARGIN.MD,
-    marginLeft: MARGIN.MD,
-  },
-  button: {
-    marginTop: MARGIN.XXXL,
+    margin: MARGIN.MD,
   },
 });

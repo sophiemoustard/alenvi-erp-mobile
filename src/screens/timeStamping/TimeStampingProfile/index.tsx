@@ -10,6 +10,13 @@ import TimeStampingCell from '../../../components/TimeStampingCell';
 import styles from './styles';
 import { EventType } from '../../../types/EventType';
 
+const renderEvent = (event: EventType) => (
+  <View key={event._id}>
+    <TimeStampingCell event={event} />
+    <View style={styles.separator} />
+  </View>
+);
+
 const TimeStampingProfile = () => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<EventType[]>([]);
@@ -41,13 +48,6 @@ const TimeStampingProfile = () => {
   useEffect(() => {
     if (loggedUser?._id) fetchInterventions();
   }, [loggedUser, fetchInterventions]);
-
-  const renderEvent = (event: EventType) => (
-    <View key={event._id}>
-      <TimeStampingCell event={event} />
-      <View style={styles.separator} />
-    </View>
-  );
 
   return (
     <ScrollView style={styles.screen}>
