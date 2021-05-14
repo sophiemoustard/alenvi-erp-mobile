@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { displayMinutes } from '../../../core/helpers/dates';
 import { CIVILITY_OPTIONS } from '../../../core/data/constants';
-import NiRadioButtonList from '../../../components/RadioButtonList';
+import NiRadioButtonList from '../../../components/radioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
 import ExitModal from '../../../components/modals/ExitModal';
@@ -17,7 +17,6 @@ interface ManualTimeStampingProps {
 
 const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [currentTime] = useState<Date>(new Date());
-  const [selected] = useState<boolean>(false);
   const [exitConfirmationModal, setExitConfirmationModal] = useState<boolean>(false);
   const navigation = useNavigation();
 
@@ -61,7 +60,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
           </View>
           <View style={styles.reasonsView}>
             <Text style={styles.question}>Pourquoi horodatez-vous manuellement?</Text>
-            <NiRadioButtonList list={optionList} optionSelected={selected} />
+            <NiRadioButtonList list={optionList} />
           </View>
         </View>
         <View style={styles.button}>
