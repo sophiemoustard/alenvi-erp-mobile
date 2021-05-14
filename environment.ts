@@ -15,4 +15,4 @@ const getEnvVars = (): { baseURL: string, sentryKey: string } => {
   return localEnv;
 };
 
-export default getEnvVars;
+export default { getEnvVars };

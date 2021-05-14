@@ -1,33 +1,39 @@
 import React from 'react';
 import MockAdapter from 'axios-mock-adapter';
+import sinon from 'sinon';
 import { render, cleanup, fireEvent, act } from '@testing-library/react-native';
 import notLoggedAxios from '../src/api/axios/notLogged';
 import loggedAxios from '../src/api/axios/logged';
 import { Provider as AuthProvider } from '../src/context/AuthContext';
 import AppContainer from '../src/AppContainer';
-import getEnvVars from '../environment';
+import Environment from '../environment';
 import { INTERVENTION } from '../src/core/data/constants';
 
 jest.mock('expo-constants', () => ({ manifest: { version: '1.0.0' } }));
 jest.mock('react-native/Libraries/Animated/src/NativeAnimatedHelper');
 
 describe('authentication', () => {
-  const { baseURL } = getEnvVars();
+  const baseURL = 'test';
   let loggedAxiosMock;
   let notLoggedAxiosMock;
+  let getEnvVarsStub;
 
   beforeEach(() => {
     loggedAxiosMock = new MockAdapter(loggedAxios);
     notLoggedAxiosMock = new MockAdapter(notLoggedAxios);
+    getEnvVarsStub = sinon.stub(Environment, 'getEnvVars');
   });
 
   afterEach(() => {
     loggedAxiosMock.restore();
     notLoggedAxiosMock.restore();
+    getEnvVarsStub.restore();
     cleanup();
   });
 
   test('should connect user if right credentials', async () => {
+    getEnvVarsStub.returns({ baseURL: 'test' });
+
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
       .reply(200, { data: { mustUpdate: false } })
       .onPost(`${baseURL}/users/logout`)
@@ -72,6 +78,8 @@ describe('authentication', () => {
   });
 
   test('should not connect user if wrong credentials', async () => {
+    getEnvVarsStub.returns({ baseURL: 'test' });
+
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
       .reply(200, { data: { mustUpdate: false } })
       .onPost(`${baseURL}/users/logout`)
