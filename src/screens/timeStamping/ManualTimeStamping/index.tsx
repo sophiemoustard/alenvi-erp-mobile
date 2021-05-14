@@ -30,34 +30,28 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const goBack = () => navigation.navigate('Home');
 
   return (
-    <>
-      <View style={styles.goBack}>
-        <FeatherButton name='x-circle' onPress={goBack} size={ICON.MD} color={GREY[600]} />
-      </View>
-      <View style={styles.screen}>
+    <View style={styles.screen}>
+      <FeatherButton name='x-circle' onPress={goBack} size={ICON.MD} color={GREY[600]} />
+      <View style={styles.container}>
         <Text style={styles.title}>Début de l&apos;intervention</Text>
-        <View>
-          <View style={styles.container}>
-            <View style={styles.interventionInfo}>
-              <Text style={styles.subtitle}>Bénéficiaire</Text>
-              <Text style={styles.info}>{civility} {lastName}</Text>
-            </View>
-            <View style={styles.sectionDelimiter} />
-            <View style={styles.interventionInfo}>
-              <Text style={styles.subtitle}>Heure horodatée</Text>
-              <Text style={styles.info}>{formatTime(currentTime)}</Text>
-            </View>
+        <View style={styles.cell}>
+          <View style={styles.customerInfo}>
+            <Text style={styles.subtitle}>Bénéficiaire</Text>
+            <Text style={styles.info}>{civility} {lastName}</Text>
           </View>
-          <View style={styles.reasonsView}>
-            <Text style={styles.question}>Pourquoi horodatez-vous manuellement?</Text>
-            <NiRadioButtonList options={optionList} />
+          <View style={styles.sectionDelimiter} />
+          <View>
+            <Text style={styles.subtitle}>Heure horodatée</Text>
+            <Text style={styles.info}>{formatTime(currentTime)}</Text>
           </View>
         </View>
         <View>
-          <NiPrimaryButton title='Valider et horodater' />
+          <Text style={styles.question}>Pourquoi horodatez-vous manuellement?</Text>
+          <NiRadioButtonList options={optionList} />
         </View>
       </View>
-    </>
+      <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} />
+    </View>
   );
 };
 
