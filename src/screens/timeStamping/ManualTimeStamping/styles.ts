@@ -19,7 +19,7 @@ export default StyleSheet.create({
     borderColor: GREY[200],
     backgroundColor: WHITE,
   },
-  view: {
+  interventionInfo: {
     margin: MARGIN.MD,
   },
   sectionDelimiter: {

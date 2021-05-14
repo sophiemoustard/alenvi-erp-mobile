@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { GREY, WHITE } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
-import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
+import { BORDER_RADIUS, BORDER_WIDTH, MARGIN } from '../../styles/metrics';
 
 export default StyleSheet.create({
   sectionDelimiter: {
@@ -37,8 +37,5 @@ export default StyleSheet.create({
   scheduledTime: {
     ...NUNITO_REGULAR.XL,
     color: GREY[900],
-  },
-  primaryButton: {
-    paddingHorizontal: PADDING.XL,
   },
 });

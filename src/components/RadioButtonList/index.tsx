@@ -2,10 +2,10 @@ import React from 'react';
 import { Text, FlatList, View } from 'react-native';
 import styles from './styles';
 
-type RadioButtonListType = { label: string, value: number };
+type RadioButtonOptionType = { label: string, value: number };
 
 interface RadioButtonProps {
-  options: RadioButtonListType[],
+  options: RadioButtonOptionType[],
 }
 
 const renderItem = (item: any) => <Text>{item.label}</Text>;

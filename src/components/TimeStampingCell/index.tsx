@@ -42,7 +42,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           {!!startDate && <Text style={styles.scheduledTime}>{formatTime(startDate)}</Text>}
         </View>
         <View style={styles.view}>
-          <NiPrimaryButton title='Commencer' style={styles.primaryButton} onPress={goToManualTimeStamping}/>
+          <NiPrimaryButton title='Commencer' onPress={goToManualTimeStamping}/>
         </View>
       </View>
       <View style={styles.sectionDelimiter} />
