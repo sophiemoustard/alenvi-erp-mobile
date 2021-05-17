@@ -15,8 +15,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'none',
   },
   icon: {
-    borderColor: GREY[900],
-    borderWidth: 2,
+    borderColor: GREY[100],
   },
 });
 
