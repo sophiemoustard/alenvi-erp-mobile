@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { Text, View, ScrollView } from 'react-native';
-import commonStyle from '../../styles/common';
-import Events from '../../api/Events';
-import { Context as AuthContext } from '../../context/AuthContext';
-import { INTERVENTION } from '../../core/data/constants';
-import { capitalizeFirstLetter, formatWordToPlural } from '../../core/helpers/utils';
-import { formatTime, formatDate } from '../../core/helpers/dates';
-import TimeStampingCell from '../../components/TimeStampingCell';
+import commonStyle from '../../../styles/common';
+import Events from '../../../api/Events';
+import { Context as AuthContext } from '../../../context/AuthContext';
+import { INTERVENTION } from '../../../core/data/constants';
+import { capitalizeFirstLetter, formatWordToPlural } from '../../../core/helpers/utils';
+import { formatTime, formatDate } from '../../../core/helpers/dates';
+import TimeStampingCell from '../../../components/TimeStampingCell';
 import styles from './styles';
-import { EventType } from '../../types/EventType';
+import { EventType } from '../../../types/EventType';
 
 const renderEvent = (event: EventType) => (
   <View key={event._id}>
