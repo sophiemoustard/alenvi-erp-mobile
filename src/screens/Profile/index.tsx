@@ -36,6 +36,9 @@ const Profile = () => {
         <Text style={styles.subtitle}>E-mail</Text>
         <Text style={styles.infos}>{loggedUser?.local?.email}</Text>
       </View>
+      <View style={styles.buttonContainer}>
+        <NiSecondaryButton title='Modifier mon mot de passe' onPress={() => {}} />
+      </View>
       <View style={styles.sectionDelimiter} />
       <View style={styles.buttonContainer}>
         <NiSecondaryButton title='Me déconnecter' onPress={signOut} />
