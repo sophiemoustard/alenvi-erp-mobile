@@ -33,7 +33,7 @@ export default StyleSheet.create({
     marginBottom: MARGIN.SM,
   },
   scheduledTime: {
-    ...NUNITO_REGULAR.XL,
+    ...NUNITO_REGULAR.XXL,
     color: GREY[900],
   },
 });

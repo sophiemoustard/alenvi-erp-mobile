@@ -25,7 +25,7 @@ export default StyleSheet.create({
     color: GREY[800],
   },
   time: {
-    ...NUNITO_REGULAR.XL,
+    ...NUNITO_REGULAR.XXL,
     color: PINK[500],
   },
   textIntervention: {
