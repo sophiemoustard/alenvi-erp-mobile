@@ -4,6 +4,11 @@ import { GREY } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR } from '../../styles/fonts';
 
 export default StyleSheet.create({
+  screen: {
+    flexGrow: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+  },
   sectionDelimiter: {
     borderWidth: BORDER_WIDTH,
     borderColor: GREY[200],
@@ -36,6 +41,7 @@ export default StyleSheet.create({
   },
   contactContainer: {
     marginHorizontal: MARGIN.XL,
+    marginBottom: MARGIN.XL,
   },
   contact: {
     ...FIRA_SANS_BOLD.LG,
@@ -51,7 +57,7 @@ export default StyleSheet.create({
     color: GREY[600],
   },
   buttonContainer: {
-    marginHorizontal: MARGIN.LG,
-    marginTop: MARGIN.MD,
+    marginHorizontal: MARGIN.XL,
+    marginBottom: MARGIN.SM,
   },
 });
