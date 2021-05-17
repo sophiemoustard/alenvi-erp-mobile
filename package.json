@@ -6,7 +6,14 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "ts-lint": "tsc --noEmit & eslint environment.ts App/index.tsx ./src --ext .js,.jsx,.ts,.tsx -c .eslintrc.js"
+    "ts-lint": "tsc --noEmit && eslint environment.ts App/index.tsx ./src --ext .js,.jsx,.ts,.tsx -c .eslintrc.js",
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "jest-expo",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
+    ]
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
@@ -31,17 +38,22 @@
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
+    "@testing-library/react-native": "^7.2.0",
     "@types/react": "~16.9.35",
     "@types/react-dom": "~16.9.8",
     "@types/react-native": "~0.63.2",
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",
+    "axios-mock-adapter": "^1.19.0",
     "eslint": "^7.23.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "firebase": "8.2.3",
+    "jest-expo": "^41.0.0",
+    "react-test-renderer": "^16.14.0",
+    "sinon": "^10.0.0",
     "typescript": "~4.0.0"
   },
   "private": true

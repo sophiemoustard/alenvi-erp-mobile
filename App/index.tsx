@@ -7,10 +7,10 @@ import { initializeAssets } from '../src/core/helpers/assets';
 import { WHITE } from '../src/styles/colors';
 import styles from './styles';
 import AppContainer from '../src/AppContainer';
-import getEnvVars from '../environment';
+import Environment from '../environment';
 import Analytics from '../src/core/helpers/analytics';
 
-const { sentryKey } = getEnvVars();
+const { sentryKey } = Environment.getEnvVars();
 Sentry.init({ dsn: sentryKey, debug: false });
 
 const App = () => {

@@ -50,7 +50,7 @@ const TimeStampingProfile = () => {
   }, [loggedUser, fetchInterventions]);
 
   return (
-    <ScrollView style={styles.screen}>
+    <ScrollView style={styles.screen} testID="TimeStampingProfile">
       <Text style={commonStyle.title}>Horodatage</Text>
       <View style={styles.container}>
         <View>
