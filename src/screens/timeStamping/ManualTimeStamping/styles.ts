@@ -43,7 +43,7 @@ export default StyleSheet.create({
   },
   question: {
     ...FIRA_SANS_MEDIUM.MD,
-    marginBottom: MARGIN.SM,
+    marginBottom: MARGIN.MD,
   },
   submitButton: {
     marginBottom: MARGIN.XL,
