@@ -10,9 +10,15 @@ interface RadioButtonProps {
   options: RadioButtonOptionsType[],
 }
 
+interface RenderItemProps {
+  item: { label: string, value: Number },
+  checkedRadioButton: Number | null,
+  onPressCheckbox: (value: Number) => void
+}
+
 const renderSeparator = () => <View style={styles.separator} />;
 
-const renderItem = (item: any, checkedRadioButton: Number | null, onPressCheckbox: (value: Number) => void) => {
+const renderItem = ({ item, checkedRadioButton, onPressCheckbox }: RenderItemProps) => {
   const iconName = checkedRadioButton === item.value ? 'radio-button-checked' : 'radio-button-unchecked';
   const iconColor = checkedRadioButton === item.value ? BLACK : GREY[600];
   const textStyle = checkedRadioButton === item.value ? styles.text : { ...styles.text, color: GREY[600] };
@@ -32,7 +38,7 @@ const RadioButtonList = ({ options }: RadioButtonProps) => {
 
   return (
     <FlatList data={options} keyExtractor={item => item.label} ItemSeparatorComponent={renderSeparator}
-      renderItem={({ item }) => renderItem(item, checkedRadioButton, onPressCheckbox)} />
+      renderItem={({ item }) => renderItem({ item, checkedRadioButton, onPressCheckbox })} />
   );
 };
 
