@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { BLACK } from '../../styles/colors';
 import { FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { MARGIN } from '../../styles/metrics';
 
@@ -13,6 +14,7 @@ const styles = StyleSheet.create({
   },
   text: {
     ...FIRA_SANS_REGULAR.MD,
+    color: BLACK,
   },
   icon: {
     marginRight: MARGIN.SM,

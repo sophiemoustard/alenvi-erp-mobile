@@ -25,7 +25,7 @@ const RadioButtonList = ({ options }: RadioButtonProps) => {
 
     return (
       <TouchableOpacity style={styles.container} onPress={() => onPressCheckbox(item.value)}>
-        <MaterialIcons style={styles.icon} size={20} name={iconName} color={iconColor}/>
+        <MaterialIcons style={styles.icon} size={20} name={iconName} color={iconColor} />
         <Text style={textStyle}>{item.label}</Text>
       </TouchableOpacity>
     );
