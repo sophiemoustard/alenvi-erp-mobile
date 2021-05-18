@@ -27,9 +27,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     }
   }, [setCivility, setLastName, setEndDate, setStartDate, event]);
 
-  const goToManualTimeStamping = () => navigation.navigate(
+  const goToManualTimeStamping = (eventStart: boolean) => navigation.navigate(
     'ManualTimeStamping',
-    { event: { _id: event._id, customer: { identity: event.customer.identity } } }
+    { event: { _id: event._id, customer: { identity: event.customer.identity } }, eventStart }
   );
 
   return (
@@ -42,7 +42,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           {!!startDate && <Text style={styles.scheduledTime}>{formatTime(startDate)}</Text>}
         </View>
         <View>
-          <NiPrimaryButton title='Commencer' onPress={goToManualTimeStamping}/>
+          <NiPrimaryButton title='Commencer' onPress={() => goToManualTimeStamping(true)} style={styles.button} />
         </View>
       </View>
       <View style={styles.sectionDelimiter} />
@@ -50,6 +50,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         <View>
           <Text style={styles.timeTitle}>Fin</Text>
           {!!endDate && <Text style={styles.scheduledTime}>{formatTime(endDate)}</Text>}
+        </View>
+        <View>
+          <NiPrimaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)} style={styles.button} />
         </View>
       </View>
     </View>
