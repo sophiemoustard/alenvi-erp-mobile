@@ -58,6 +58,8 @@ export default StyleSheet.create({
   },
   buttonContainer: {
     marginHorizontal: MARGIN.XL,
+  },
+  button: {
     marginBottom: MARGIN.SM,
   },
 });
