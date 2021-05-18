@@ -5,6 +5,7 @@ import { Context as AuthContext } from '../../context/AuthContext';
 import { navigationRef } from '../../navigationRef';
 import Authentication from '../../screens/Authentication';
 import PasswordReset from '../../screens/PasswordReset';
+import PasswordEdition from '../../screens/PasswordEdition';
 import ForgotPassword from '../../screens/ForgotPassword';
 import ManualTimeStamping from '../../screens/timeStamping/ManualTimeStamping';
 import Analytics from '../../core/helpers/analytics';
@@ -36,7 +37,7 @@ const AppNavigation = () => {
   };
 
   const authScreens = { Authentication, ForgotPassword, PasswordReset };
-  const userScreens = { Home, ManualTimeStamping };
+  const userScreens = { Home, ManualTimeStamping, PasswordEdition };
 
   if (!appIsReady) return null;
 

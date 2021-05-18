@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { Text, View, Image, ImageSourcePropType } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import NiSecondaryButton from '../../components/form/SecondaryButton';
@@ -10,6 +11,11 @@ import styles from './styles';
 const Profile = () => {
   const { signOut, loggedUser } = useContext(AuthContext);
   const [source, setSource] = useState<ImageSourcePropType>({});
+  const navigation = useNavigation();
+
+  const goToPasswordReset = () => (
+    navigation.navigate('PasswordEdition', { userId: loggedUser?._id })
+  );
 
   useEffect(() => {
     if (loggedUser?.picture?.link) setSource({ uri: loggedUser.picture.link });
@@ -17,7 +23,7 @@ const Profile = () => {
   }, [loggedUser?.picture?.link]);
 
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={styles.screen}>
       <Text style={commonStyle.title}>Mon profil</Text>
       <View style={styles.identityContainer}>
         <View style={styles.profilView}>
@@ -35,6 +41,9 @@ const Profile = () => {
         <Text style={styles.infos}>{formatPhone(loggedUser?.contact?.phone) || 'Non renseigné'}</Text>
         <Text style={styles.subtitle}>E-mail</Text>
         <Text style={styles.infos}>{loggedUser?.local?.email}</Text>
+      </View>
+      <View style={styles.buttonContainer}>
+        <NiSecondaryButton title='Modifier mon mot de passe' onPress={goToPasswordReset} />
       </View>
       <View style={styles.sectionDelimiter} />
       <View style={styles.buttonContainer}>
