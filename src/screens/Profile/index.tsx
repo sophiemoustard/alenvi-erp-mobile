@@ -14,7 +14,7 @@ const Profile = () => {
   const navigation = useNavigation();
 
   const goToPasswordReset = () => (
-    navigation.navigate('PasswordEdition', { userId: loggedUser?._id, email: loggedUser?.local?.email })
+    navigation.navigate('PasswordEdition', { userId: loggedUser?._id })
   );
 
   useEffect(() => {

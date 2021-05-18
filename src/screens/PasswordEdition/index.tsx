@@ -4,7 +4,7 @@ import { NavigationType } from '../../types/NavigationType';
 import Users from '../../api/Users';
 
 interface PasswordEditionProps {
-  route: { params: { userId: string, email?: string } },
+  route: { params: { userId: string } },
   navigation: NavigationType,
 }
 
@@ -18,9 +18,7 @@ const PasswordEdition = ({ route, navigation }: PasswordEditionProps) => {
     goBack();
   };
 
-  return (
-    <PasswordForm goBack={goBack} onPress={savePassword} />
-  );
+  return (<PasswordForm goBack={goBack} onPress={savePassword} />);
 };
 
 export default PasswordEdition;
