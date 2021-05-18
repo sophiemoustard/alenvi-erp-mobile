@@ -5,7 +5,7 @@ import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metri
 
 export default StyleSheet.create({
   sectionDelimiter: {
-    borderWidth: BORDER_WIDTH,
+    borderTopWidth: BORDER_WIDTH,
     borderColor: GREY[200],
   },
   cell: {
