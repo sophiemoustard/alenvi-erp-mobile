@@ -22,4 +22,13 @@ export default {
       await axiosNotLogged.put(`${baseURL}/users/${userId}/password`, data, { headers: { 'x-access-token': token } });
     }
   },
+  setUser: async (params: {
+    id: string | null,
+    identity? : { firstname: string, lastname: string },
+    contact?: { phone: string },
+    local?: { email: string },
+  }) => {
+    const { baseURL } = Environment.getEnvVars();
+    await axiosLogged.put(`${baseURL}/users/${params.id}`, { params });
+  },
 };

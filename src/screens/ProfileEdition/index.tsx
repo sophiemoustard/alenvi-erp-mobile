@@ -9,20 +9,46 @@ import { GREY } from '../../styles/colors';
 import { ICON, IS_LARGE_SCREEN, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../styles/metrics';
 import { Context as AuthContext } from '../../context/AuthContext';
 import styles from './styles';
+import Users from '../../api/Users';
+import asyncStorage from '../../core/helpers/asyncStorage';
+import { UserType } from '../../types/UserType';
 
 const ProfileEdition = () => {
-  const { loggedUser } = useContext(AuthContext);
+  const { loggedUser, refreshLoggedUser } = useContext(AuthContext);
   const [exitConfirmationModal, setExitConfirmationModal] = useState<boolean>(false);
   const [lastname, setLastname] = useState<string>(loggedUser?.identity?.lastname || '');
   const [firstname, setFirstname] = useState<string>(loggedUser?.identity?.firstname || '');
   const [phone, setPhone] = useState<string>(loggedUser?.contact?.phone || '');
   const [email, setEmail] = useState<string>(loggedUser?.local?.email || '');
+  
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const navigation = useNavigation();
 
   const goBack = () => {
     if (exitConfirmationModal) setExitConfirmationModal(false);
     navigation.navigate('Home', { screen: 'Profile' });
+  };
+
+  const saveData = async () => {
+    try {
+      setErrorMessage('');
+      const userId = await asyncStorage.getUserId();
+      console.log('params: ', { id: userId,
+        identity: { firstname, lastname },
+        contact: { phone },
+        local: { email } });
+      await Users.setUser(
+        { id: userId,
+          identity: { firstname, lastname },
+          contact: { phone },
+          local: { email } }
+      );
+      await refreshLoggedUser();
+    } catch (e) {
+      console.error(e);
+      setErrorMessage('Erreur, si le problème persiste, contactez le support technique');
+    }
   };
 
   return (
@@ -44,7 +70,8 @@ const ProfileEdition = () => {
           <NiInput caption='Téléphone' type='phone' value={phone} onChangeText={(text: string) => setPhone(text)} />
           <NiInput caption='E-mail' type='email' value={email} onChangeText={(text: string) => setEmail(text)} />
         </View>
-        <NiPrimaryButton title='Valider' onPress={() => {}}/>
+        <NiPrimaryButton title='Valider' onPress={saveData}/>
+        <Text>{errorMessage}</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );
