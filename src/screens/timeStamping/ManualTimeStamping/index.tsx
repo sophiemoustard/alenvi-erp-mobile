@@ -27,13 +27,13 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     route.params.event?.customer?.identity?.lastname.toUpperCase() || ''
   );
   const navigation = useNavigation();
-
-  const title = route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention';
+  const [title, setTitle] = useState<string>('');
 
   useEffect(() => {
     setCivility(route.params.event?.customer?.identity?.title || '');
     setLastname(route.params.event?.customer?.identity?.lastname.toUpperCase() || '');
-  }, [route.params.event]);
+    setTitle(route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention');
+  }, [route.params]);
 
   const goBack = () => navigation.navigate('Home');
 
