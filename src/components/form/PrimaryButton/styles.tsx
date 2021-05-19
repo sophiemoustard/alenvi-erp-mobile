@@ -8,7 +8,7 @@ export default StyleSheet.create({
     ...commonStyle.button,
     backgroundColor: PINK[500],
     color: WHITE,
-    paddingHorizontal: PADDING.XL,
+    paddingHorizontal: PADDING.LG,
   },
   textButton: {
     ...commonStyle.textButton,
