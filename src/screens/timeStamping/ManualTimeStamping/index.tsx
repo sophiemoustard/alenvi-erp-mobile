@@ -11,7 +11,7 @@ import { GREY } from '../../../styles/colors';
 import styles from './styles';
 
 interface ManualTimeStampingProps {
-  route: { params: { event: { _id: string, customer: { identity: any } } } },
+  route: { params: { event: { _id: string, customer: { identity: any } }, eventStart: boolean, } },
 }
 
 const optionList = [
@@ -22,17 +22,18 @@ const optionList = [
 
 const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [currentTime] = useState<Date>(new Date());
-  const navigation = useNavigation();
-
   const [civility, setCivility] = useState<string>(route.params.event?.customer?.identity?.title || '');
   const [lastname, setLastname] = useState<string>(
     route.params.event?.customer?.identity?.lastname.toUpperCase() || ''
   );
+  const navigation = useNavigation();
+  const [title, setTitle] = useState<string>('');
 
   useEffect(() => {
     setCivility(route.params.event?.customer?.identity?.title || '');
     setLastname(route.params.event?.customer?.identity?.lastname.toUpperCase() || '');
-  }, [route.params.event]);
+    setTitle(route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention');
+  }, [route.params]);
 
   const goBack = () => navigation.navigate('Home');
 
@@ -40,7 +41,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     <View style={styles.screen}>
       <FeatherButton name='x-circle' onPress={goBack} size={ICON.MD} color={GREY[600]} />
       <View style={styles.container}>
-        <Text style={styles.title}>Début de l&apos;intervention</Text>
+        <Text style={styles.title}>{title}</Text>
         <View style={styles.cell}>
           <View style={styles.customerInfo}>
             <Text style={styles.subtitle}>Bénéficiaire</Text>

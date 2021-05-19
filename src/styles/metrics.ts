@@ -46,6 +46,7 @@ export const BUTTON_HEIGHT = 48;
 export const INPUT_HEIGHT = 48;
 export const BORDER_WIDTH = 1;
 export const TAB_BAR_HEIGHT = 72;
+export const BUTTON_INTERVENTION_WIDTH = 128;
 
 export const SCREEN_HEIGHT = width < height ? height : width;
 export const SMALL_SCREEN_MAX_HEIGHT = 568;
