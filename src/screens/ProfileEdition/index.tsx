@@ -22,6 +22,7 @@ const ProfileEdition = () => {
     contact: { phone: loggedUser?.contact?.phone },
     local: { email: loggedUser?.local?.email },
   });
+  const [initialUserInfo] = useState<any>(editedUser);
 
   const navigation = useNavigation();
 
@@ -47,12 +48,17 @@ const ProfileEdition = () => {
     setEditedUser({ ...editedUser, identity: { ...editedUser.identity, [key]: text } })
   );
 
+  const onPressExitModal = () => {
+    if (editedUser === initialUserInfo) goBack();
+    else setExitConfirmationModal(true);
+  };
+
   return (
     <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.keyboardAvoidingView}
       keyboardVerticalOffset={IS_LARGE_SCREEN ? MARGIN.MD : MARGIN.XS} >
       <ScrollView contentContainerStyle={styles.screen}>
         <View style={styles.header}>
-          <FeatherButton name='x-circle' onPress={() => setExitConfirmationModal(true)} size={ICON.MD}
+          <FeatherButton name='x-circle' onPress={onPressExitModal} size={ICON.MD}
             color={GREY[600]} />
           <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
             onPressCancelButton={() => setExitConfirmationModal(false)}
