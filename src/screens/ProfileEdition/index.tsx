@@ -5,13 +5,13 @@ import FeatherButton from '../../components/FeatherButton';
 import ExitModal from '../../components/modals/ExitModal';
 import NiInput from '../../components/form/Input';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
+import NiErrorMessage from '../../components/ErrorMessage';
 import { GREY } from '../../styles/colors';
 import { ICON, IS_LARGE_SCREEN, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../styles/metrics';
 import { Context as AuthContext } from '../../context/AuthContext';
 import styles from './styles';
 import Users from '../../api/Users';
 import asyncStorage from '../../core/helpers/asyncStorage';
-import { formatPhone } from '../../core/helpers/utils';
 
 const ProfileEdition = () => {
   const { loggedUser, refreshLoggedUser } = useContext(AuthContext);
@@ -44,9 +44,13 @@ const ProfileEdition = () => {
     }
   };
 
-  const onChangeIdentity = (key: string, text: string) => (
+  const onChangeIdentity = (key: string) => (text: string) => (
     setEditedUser({ ...editedUser, identity: { ...editedUser.identity, [key]: text } })
   );
+
+  const onChangePhone = (text: string) => setEditedUser({ ...editedUser, contact: { phone: text } });
+
+  const onChangeEmail = (text: string) => setEditedUser({ ...editedUser, local: { email: text } });
 
   const onPressExitModal = () => {
     if (editedUser === initialUserInfo) goBack();
@@ -55,7 +59,7 @@ const ProfileEdition = () => {
 
   return (
     <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.keyboardAvoidingView}
-      keyboardVerticalOffset={IS_LARGE_SCREEN ? MARGIN.MD : MARGIN.XS} >
+      keyboardVerticalOffset={IS_LARGE_SCREEN ? MARGIN.MD : MARGIN.XS}>
       <ScrollView contentContainerStyle={styles.screen}>
         <View style={styles.header}>
           <FeatherButton name='x-circle' onPress={onPressExitModal} size={ICON.MD}
@@ -67,16 +71,14 @@ const ProfileEdition = () => {
         </View>
         <View style={styles.container}>
           <NiInput caption='Nom' value={editedUser.identity.lastname} type='lastname'
-            onChangeText={(text: string) => onChangeIdentity('lastname', text)}/>
+            onChangeText={onChangeIdentity('lastname')}/>
           <NiInput caption='Prénom' type='firstname' value={editedUser.identity.firstname}
-            onChangeText={(text: string) => onChangeIdentity('firstname', text)} />
-          <NiInput caption='Téléphone' type='phone' value={editedUser.contact.phone}
-            onChangeText={(text: string) => setEditedUser({ ...editedUser, contact: { phone: formatPhone(text) } })} />
-          <NiInput caption='E-mail' type='email' value={editedUser.local.email}
-            onChangeText={(text: string) => setEditedUser({ ...editedUser, local: { email: text } })} />
+            onChangeText={onChangeIdentity('firstname')} />
+          <NiInput caption='Téléphone' type='phone' value={editedUser.contact.phone} onChangeText={onChangePhone} />
+          <NiInput caption='E-mail' type='email' value={editedUser.local.email} onChangeText={onChangeEmail} />
         </View>
         <NiPrimaryButton title='Valider' onPress={saveData}/>
-        <Text>{errorMessage}</Text>
+        <NiErrorMessage message={errorMessage} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

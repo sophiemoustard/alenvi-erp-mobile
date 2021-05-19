@@ -17,7 +17,7 @@ const Profile = () => {
     navigation.navigate('PasswordEdition', { userId: loggedUser?._id })
   );
 
-  const goToProfileEdition = () => (navigation.navigate('ProfileEdition'));
+  const goToProfileEdition = () => navigation.navigate('ProfileEdition');
 
   useEffect(() => {
     if (loggedUser?.picture?.link) setSource({ uri: loggedUser.picture.link });
