@@ -11,6 +11,7 @@ import { Context as AuthContext } from '../../context/AuthContext';
 import styles from './styles';
 import Users from '../../api/Users';
 import asyncStorage from '../../core/helpers/asyncStorage';
+import { formatPhone } from '../../core/helpers/utils';
 
 const ProfileEdition = () => {
   const { loggedUser, refreshLoggedUser } = useContext(AuthContext);
@@ -64,7 +65,7 @@ const ProfileEdition = () => {
           <NiInput caption='Prénom' type='firstname' value={editedUser.identity.firstname}
             onChangeText={(text: string) => onChangeIdentity('firstname', text)} />
           <NiInput caption='Téléphone' type='phone' value={editedUser.contact.phone}
-            onChangeText={(text: string) => setEditedUser({ ...editedUser, contact: { phone: text } })} />
+            onChangeText={(text: string) => setEditedUser({ ...editedUser, contact: { phone: formatPhone(text) } })} />
           <NiInput caption='E-mail' type='email' value={editedUser.local.email}
             onChangeText={(text: string) => setEditedUser({ ...editedUser, local: { email: text } })} />
         </View>

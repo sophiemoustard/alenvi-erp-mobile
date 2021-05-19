@@ -17,7 +17,7 @@ const Profile = () => {
     navigation.navigate('PasswordEdition', { userId: loggedUser?._id })
   );
 
-  const goToEditProfil = () => (navigation.navigate('ProfileEdition'));
+  const goToProfileEdition = () => (navigation.navigate('ProfileEdition'));
 
   useEffect(() => {
     if (loggedUser?.picture?.link) setSource({ uri: loggedUser.picture.link });
@@ -45,7 +45,7 @@ const Profile = () => {
         <Text style={styles.infos}>{loggedUser?.local?.email}</Text>
       </View>
       <View style={styles.buttonContainer}>
-        <NiSecondaryButton title='Modifier mes informations' onPress={goToEditProfil} style={styles.button} />
+        <NiSecondaryButton title='Modifier mes informations' onPress={goToProfileEdition} style={styles.button} />
         <NiSecondaryButton title='Modifier mon mot de passe' onPress={goToPasswordReset} />
       </View>
       <View style={styles.sectionDelimiter} />
