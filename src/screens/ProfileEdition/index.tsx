@@ -20,7 +20,6 @@ const ProfileEdition = () => {
   const [firstname, setFirstname] = useState<string>(loggedUser?.identity?.firstname || '');
   const [phone, setPhone] = useState<string>(loggedUser?.contact?.phone || '');
   const [email, setEmail] = useState<string>(loggedUser?.local?.email || '');
-  
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const navigation = useNavigation();
@@ -34,17 +33,14 @@ const ProfileEdition = () => {
     try {
       setErrorMessage('');
       const userId = await asyncStorage.getUserId();
-      console.log('params: ', { id: userId,
+      const data = {
         identity: { firstname, lastname },
         contact: { phone },
-        local: { email } });
-      await Users.setUser(
-        { id: userId,
-          identity: { firstname, lastname },
-          contact: { phone },
-          local: { email } }
-      );
+        local: { email },
+      };
+      await Users.setUser(userId, data);
       await refreshLoggedUser();
+      goBack();
     } catch (e) {
       console.error(e);
       setErrorMessage('Erreur, si le problème persiste, contactez le support technique');
