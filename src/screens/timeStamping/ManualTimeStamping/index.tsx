@@ -6,6 +6,7 @@ import { CIVILITY_OPTIONS } from '../../../core/data/constants';
 import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
+import NiErrorMessage from '../../../components/ErrorMessage';
 import { ICON } from '../../../styles/metrics';
 import { GREY } from '../../../styles/colors';
 import styles from './styles';
@@ -34,6 +35,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   );
   const [title, setTitle] = useState<string>('');
   const [reason, setReason] = useState<string | null>();
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const navigation = useNavigation();
 
@@ -47,12 +49,21 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
 
   const timeStampEvent = async () => {
     try {
+      setErrorMessage('');
+      if (!reason) {
+        setErrorMessage('Merci de selectionner une raison pour l\'horodatage manuel.');
+        return;
+      }
+
       await Events.timeStampEvent(
         route.params?.event?._id,
         { action: MANUAL_TIME_STAMPING, reason, startDate: new Date() }
       );
+      navigation.navigate('Home');
     } catch (e) {
       console.error(e);
+      if (e.response.status === 409) setErrorMessage('L\'évènement est déja horodaté.');
+      else setErrorMessage('Erreur, si le problème persiste, contactez le support technique.');
     }
   };
 
@@ -72,10 +83,11 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
             <Text style={styles.info}>{formatTime(currentTime)}</Text>
           </View>
         </View>
-        <View>
+        <View style={styles.reasons}>
           <Text style={styles.question}>Pourquoi horodatez-vous manuellement?</Text>
           <NiRadioButtonList options={optionList} setOption={setReason} />
         </View>
+        {!!errorMessage && <NiErrorMessage message={errorMessage} />}
       </View>
       <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} onPress={timeStampEvent} />
     </View>
