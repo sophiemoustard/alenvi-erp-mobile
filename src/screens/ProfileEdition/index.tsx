@@ -11,16 +11,16 @@ import { Context as AuthContext } from '../../context/AuthContext';
 import styles from './styles';
 import Users from '../../api/Users';
 import asyncStorage from '../../core/helpers/asyncStorage';
-import { UserType } from '../../types/UserType';
 
 const ProfileEdition = () => {
   const { loggedUser, refreshLoggedUser } = useContext(AuthContext);
   const [exitConfirmationModal, setExitConfirmationModal] = useState<boolean>(false);
-  const [lastname, setLastname] = useState<string>(loggedUser?.identity?.lastname || '');
-  const [firstname, setFirstname] = useState<string>(loggedUser?.identity?.firstname || '');
-  const [phone, setPhone] = useState<string>(loggedUser?.contact?.phone || '');
-  const [email, setEmail] = useState<string>(loggedUser?.local?.email || '');
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [editedUser, setEditedUser] = useState<any>({
+    identity: { firstname: loggedUser?.identity?.firstname, lastname: loggedUser?.identity?.lastname },
+    contact: { phone: loggedUser?.contact?.phone },
+    local: { email: loggedUser?.local?.email },
+  });
 
   const navigation = useNavigation();
 
@@ -33,12 +33,7 @@ const ProfileEdition = () => {
     try {
       setErrorMessage('');
       const userId = await asyncStorage.getUserId();
-      const data = {
-        identity: { firstname, lastname },
-        contact: { phone },
-        local: { email },
-      };
-      await Users.setUser(userId, data);
+      await Users.setUser(userId, editedUser);
       await refreshLoggedUser();
       goBack();
     } catch (e) {
@@ -46,6 +41,10 @@ const ProfileEdition = () => {
       setErrorMessage('Erreur, si le problème persiste, contactez le support technique');
     }
   };
+
+  const onChangeIdentity = (key: string, text: string) => (
+    setEditedUser({ ...editedUser, identity: { ...editedUser.identity, [key]: text } })
+  );
 
   return (
     <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.keyboardAvoidingView}
@@ -60,11 +59,14 @@ const ProfileEdition = () => {
           <Text style={styles.title}>Modifier mes informations</Text>
         </View>
         <View style={styles.container}>
-          <NiInput caption='Nom' value={lastname} type='lastname' onChangeText={(text: string) => setLastname(text)}/>
-          <NiInput caption='Prénom' type='firstname' value={firstname}
-            onChangeText={(text: string) => setFirstname(text)} />
-          <NiInput caption='Téléphone' type='phone' value={phone} onChangeText={(text: string) => setPhone(text)} />
-          <NiInput caption='E-mail' type='email' value={email} onChangeText={(text: string) => setEmail(text)} />
+          <NiInput caption='Nom' value={editedUser.identity.lastname} type='lastname'
+            onChangeText={(text: string) => onChangeIdentity('lastname', text)}/>
+          <NiInput caption='Prénom' type='firstname' value={editedUser.identity.firstname}
+            onChangeText={(text: string) => onChangeIdentity('firstname', text)} />
+          <NiInput caption='Téléphone' type='phone' value={editedUser.contact.phone}
+            onChangeText={(text: string) => setEditedUser({ ...editedUser, contact: { phone: text } })} />
+          <NiInput caption='E-mail' type='email' value={editedUser.local.email}
+            onChangeText={(text: string) => setEditedUser({ ...editedUser, local: { email: text } })} />
         </View>
         <NiPrimaryButton title='Valider' onPress={saveData}/>
         <Text>{errorMessage}</Text>
