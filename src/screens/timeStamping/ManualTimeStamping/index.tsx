@@ -62,7 +62,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       navigation.navigate('Home');
     } catch (e) {
       console.error(e);
-      if (e.response.status === 409) setErrorMessage('L\'évènement est déja horodaté.');
+      if ([409, 422].includes(e.response.status)) setErrorMessage(e.response.data.message);
       else setErrorMessage('Erreur, si le problème persiste, contactez le support technique.');
     }
   };
@@ -84,7 +84,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
           </View>
         </View>
         <View style={styles.reasons}>
-          <Text style={styles.question}>Pourquoi horodatez-vous manuellement?</Text>
+          <Text style={styles.question}>Pourquoi horodatez-vous manuellement ?</Text>
           <NiRadioButtonList options={optionList} setOption={setReason} />
         </View>
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}
