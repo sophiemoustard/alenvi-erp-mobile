@@ -36,6 +36,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [title, setTitle] = useState<string>('');
   const [reason, setReason] = useState<string | null>();
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const navigation = useNavigation();
 
@@ -49,6 +50,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
 
   const timeStampEvent = async () => {
     try {
+      setLoading(true);
       setErrorMessage('');
       if (!reason) {
         setErrorMessage('Merci de selectionner une raison pour l\'horodatage manuel.');
@@ -64,6 +66,8 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       console.error(e);
       if ([409, 422].includes(e.response.status)) setErrorMessage(e.response.data.message);
       else setErrorMessage('Erreur, si le problème persiste, contactez le support technique.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,7 +93,8 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
         </View>
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}
       </View>
-      <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} onPress={timeStampEvent} />
+      <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} onPress={timeStampEvent}
+        loading={loading} />
     </View>
   );
 };
