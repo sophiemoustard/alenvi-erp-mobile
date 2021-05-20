@@ -17,6 +17,8 @@ const Profile = () => {
     navigation.navigate('PasswordEdition', { userId: loggedUser?._id })
   );
 
+  const goToProfileEdition = () => navigation.navigate('ProfileEdition');
+
   useEffect(() => {
     if (loggedUser?.picture?.link) setSource({ uri: loggedUser.picture.link });
     else setSource(require('../../../assets/images/default_avatar.png'));
@@ -43,11 +45,12 @@ const Profile = () => {
         <Text style={styles.infos}>{loggedUser?.local?.email}</Text>
       </View>
       <View style={styles.buttonContainer}>
+        <NiSecondaryButton title='Modifier mes informations' onPress={goToProfileEdition} style={styles.button} />
         <NiSecondaryButton title='Modifier mon mot de passe' onPress={goToPasswordReset} />
       </View>
       <View style={styles.sectionDelimiter} />
       <View style={styles.buttonContainer}>
-        <NiSecondaryButton title='Me déconnecter' onPress={signOut} />
+        <NiSecondaryButton title='Me déconnecter' onPress={signOut} style={styles.button} />
       </View>
     </ScrollView>
   );

@@ -2,6 +2,12 @@ import axiosNotLogged from './axios/notLogged';
 import axiosLogged from './axios/logged';
 import Environment from '../../environment';
 
+type userInfos = {
+  identity? : { firstname: string, lastname: string },
+  contact?: { phone: string },
+  local?: { email: string },
+}
+
 export default {
   exists: async (params: { email: string }) => {
     const { baseURL } = Environment.getEnvVars();
@@ -21,5 +27,9 @@ export default {
     else {
       await axiosNotLogged.put(`${baseURL}/users/${userId}/password`, data, { headers: { 'x-access-token': token } });
     }
+  },
+  setUser: async (userId: string | null, data: userInfos) => {
+    const { baseURL } = Environment.getEnvVars();
+    await axiosLogged.put(`${baseURL}/users/${userId}`, data);
   },
 };
