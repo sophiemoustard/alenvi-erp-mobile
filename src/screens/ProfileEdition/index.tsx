@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useContext, useEffect, useState } from 'react';
-import { ScrollView, View, Text, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, View, Text, KeyboardAvoidingView, BackHandler } from 'react-native';
 import FeatherButton from '../../components/FeatherButton';
 import ExitModal from '../../components/modals/ExitModal';
 import NiInput from '../../components/form/Input';
@@ -13,6 +13,8 @@ import styles from './styles';
 import Users from '../../api/Users';
 import { EMAIL_REGEX, PHONE_REGEX } from '../../core/data/constants';
 
+type editedUserValidType = { lastName: boolean, phone: boolean, email: boolean, emptyEmail: boolean };
+
 const ProfileEdition = () => {
   const { loggedUser, refreshLoggedUser } = useContext(AuthContext);
   const [exitConfirmationModal, setExitConfirmationModal] = useState<boolean>(false);
@@ -22,8 +24,12 @@ const ProfileEdition = () => {
     contact: { phone: loggedUser?.contact?.phone },
     local: { email: loggedUser?.local?.email },
   });
-  const [initialUserInfo] = useState<any>(editedUser);
-  const [unvalid, setUnvalid] = useState<any>({ lastName: false, phone: false, email: false, emptyEmail: false });
+  const [invalid, setInvalid] = useState<editedUserValidType>({
+    lastName: false,
+    phone: false,
+    email: false,
+    emptyEmail: false,
+  });
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -66,39 +72,48 @@ const ProfileEdition = () => {
   const onChangeEmail = (text: string) => setEditedUser({ ...editedUser, local: { email: text } });
 
   const onPressExitModal = () => {
-    if (editedUser === initialUserInfo) goBack();
-    else setExitConfirmationModal(true);
+    setExitConfirmationModal(true);
+    return true;
   };
 
   useEffect(() => {
-    setUnvalid({
+    BackHandler.addEventListener('hardwareBackPress', onPressExitModal);
+
+    return () => { BackHandler.removeEventListener('hardwareBackPress', onPressExitModal); };
+  }, []);
+
+  useEffect(() => {
+    setInvalid({
       lastName: editedUser.identity.lastname === '',
-      phone: !editedUser.contact.phone.match(PHONE_REGEX) && editedUser.contact.phone.length > 0,
+      phone: editedUser.contact.phone &&
+        (!editedUser.contact.phone.match(PHONE_REGEX) && editedUser.contact.phone.length > 0),
       email: !editedUser.local.email.match(EMAIL_REGEX) && editedUser.local.email.length > 0,
       emptyEmail: editedUser.local.email === '',
     });
   }, [editedUser]);
 
   useEffect(() => {
-    const { lastName, phone, email, emptyEmail } = unvalid;
+    const { lastName, phone, email, emptyEmail } = invalid;
     if (lastName || phone || email || emptyEmail) setIsValid(false);
     else setIsValid(true);
-  }, [unvalid]);
+  }, [invalid]);
 
   useEffect(() => {
-    if (unvalid.lastName && isValidationAttempted) setNameError('Ce champ est obligatoire.');
-    if (unvalid.phone && isValidationAttempted) setPhoneError('Votre numéro de téléphone n\'est pas valide.');
-    if (unvalid.email && isValidationAttempted) setEmailError('Votre email n\'est pas valide.');
-    if (unvalid.emptyEmail && isValidationAttempted) setEmailError('Ce champ est obligatoire.');
-  }, [unvalid, isValidationAttempted]);
+    if (invalid.lastName && isValidationAttempted) setNameError('Ce champ est obligatoire.');
+    else setNameError('');
+    if (invalid.phone && isValidationAttempted) setPhoneError('Votre numéro de téléphone n\'est pas valide.');
+    else setPhoneError('');
+    if (invalid.email && isValidationAttempted) setEmailError('Votre email n\'est pas valide.');
+    else if (invalid.emptyEmail && isValidationAttempted) setEmailError('Ce champ est obligatoire.');
+    else setEmailError('');
+  }, [invalid, isValidationAttempted]);
 
   return (
     <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.keyboardAvoidingView}
       keyboardVerticalOffset={IS_LARGE_SCREEN ? MARGIN.MD : MARGIN.XS}>
       <ScrollView contentContainerStyle={styles.screen}>
         <View style={styles.header}>
-          <FeatherButton name='x-circle' onPress={onPressExitModal} size={ICON.MD}
-            color={GREY[600]} />
+          <FeatherButton name='x-circle' onPress={onPressExitModal} size={ICON.MD} color={GREY[600]} />
           <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
             onPressCancelButton={() => setExitConfirmationModal(false)}
             title={'Êtes-vous sûr de cela ?'} contentText={'Vos modifications ne seront pas enregistrées.'} />
