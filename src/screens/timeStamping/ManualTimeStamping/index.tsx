@@ -57,10 +57,12 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
         return;
       }
 
-      await Events.timeStampEvent(
-        route.params?.event?._id,
-        { action: MANUAL_TIME_STAMPING, reason, startDate: new Date() }
-      );
+      interface payloadType { action: string, reason: string, startDate?: Date, endDate?: Date }
+      const payload: payloadType = { action: MANUAL_TIME_STAMPING, reason };
+      if (route.params.eventStart) payload.startDate = new Date();
+      else payload.endDate = new Date();
+
+      await Events.timeStampEvent(route.params?.event?._id, payload);
       navigation.navigate('Home');
     } catch (e) {
       console.error(e);
