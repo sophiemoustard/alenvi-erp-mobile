@@ -6,18 +6,25 @@ import { CIVILITY_OPTIONS } from '../../../core/data/constants';
 import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
+import NiErrorMessage from '../../../components/ErrorMessage';
 import { ICON } from '../../../styles/metrics';
 import { GREY } from '../../../styles/colors';
 import styles from './styles';
+import Events from '../../../api/Events';
 
 interface ManualTimeStampingProps {
   route: { params: { event: { _id: string, customer: { identity: any } }, eventStart: boolean, } },
 }
 
+const MANUAL_TIME_STAMPING = 'manual_time_stamping';
+const QRCODE_MISSING = 'qrcode_missing';
+const QRCODE_ERROR = 'qrcode_error';
+const CAMERA_ERROR = 'camera_error';
+
 const optionList = [
-  { label: 'Je n\'ai pas accès au code barre', value: 0 },
-  { label: 'Le code barre ne fonctionne pas', value: 1 },
-  { label: 'Mon appareil photo ne fonctionne pas', value: 2 },
+  { label: 'Je n\'ai pas accès au code barre', value: QRCODE_MISSING },
+  { label: 'Le code barre ne fonctionne pas', value: QRCODE_ERROR },
+  { label: 'Mon appareil photo ne fonctionne pas', value: CAMERA_ERROR },
 ];
 
 const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
@@ -26,8 +33,12 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [lastname, setLastname] = useState<string>(
     route.params.event?.customer?.identity?.lastname.toUpperCase() || ''
   );
-  const navigation = useNavigation();
   const [title, setTitle] = useState<string>('');
+  const [reason, setReason] = useState<string | null>();
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     setCivility(route.params.event?.customer?.identity?.title || '');
@@ -36,6 +47,29 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   }, [route.params]);
 
   const goBack = () => navigation.navigate('Home');
+
+  const timeStampEvent = async () => {
+    try {
+      setLoading(true);
+      setErrorMessage('');
+      if (!reason) {
+        setErrorMessage('Merci de selectionner une raison pour l\'horodatage manuel.');
+        return;
+      }
+
+      await Events.timeStampEvent(
+        route.params?.event?._id,
+        { action: MANUAL_TIME_STAMPING, reason, startDate: new Date() }
+      );
+      navigation.navigate('Home');
+    } catch (e) {
+      console.error(e);
+      if ([409, 422].includes(e.response.status)) setErrorMessage(e.response.data.message);
+      else setErrorMessage('Erreur, si le problème persiste, contactez le support technique.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.screen}>
@@ -53,12 +87,14 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
             <Text style={styles.info}>{formatTime(currentTime)}</Text>
           </View>
         </View>
-        <View>
-          <Text style={styles.question}>Pourquoi horodatez-vous manuellement?</Text>
-          <NiRadioButtonList options={optionList} />
+        <View style={styles.reasons}>
+          <Text style={styles.question}>Pourquoi horodatez-vous manuellement ?</Text>
+          <NiRadioButtonList options={optionList} setOption={setReason} />
         </View>
+        {!!errorMessage && <NiErrorMessage message={errorMessage} />}
       </View>
-      <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} />
+      <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} onPress={timeStampEvent}
+        loading={loading} />
     </View>
   );
 };

@@ -48,4 +48,7 @@ export default StyleSheet.create({
   submitButton: {
     marginBottom: MARGIN.XL,
   },
+  reasons: {
+    marginBottom: MARGIN.SM,
+  },
 });

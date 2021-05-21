@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, View, TouchableOpacity, Text } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import styles from './styles';
 import { BLACK, GREY } from '../../styles/colors';
 
-type RadioButtonOptionsType = { label: string, value: number };
+type RadioButtonOptionsType = { label: string, value: string };
 
 interface RadioButtonProps {
   options: RadioButtonOptionsType[],
+  setOption: (option: string | null) => void,
 }
 
 interface RenderItemProps {
-  item: { label: string, value: Number },
-  checkedRadioButton: Number | null,
-  onPressCheckbox: (value: Number) => void
+  item: { label: string, value: string },
+  checkedRadioButton: string | null,
+  onPressCheckbox: (value: string) => void
 }
 
 const renderSeparator = () => <View style={styles.separator} />;
@@ -31,10 +32,12 @@ const renderItem = ({ item, checkedRadioButton, onPressCheckbox }: RenderItemPro
   );
 };
 
-const RadioButtonList = ({ options }: RadioButtonProps) => {
-  const [checkedRadioButton, setCheckedRadioButton] = useState<Number | null>(null);
+const RadioButtonList = ({ options, setOption }: RadioButtonProps) => {
+  const [checkedRadioButton, setCheckedRadioButton] = useState<string | null>(null);
 
-  const onPressCheckbox = (value: Number) => setCheckedRadioButton(prevValue => (prevValue === value ? null : value));
+  useEffect(() => setOption(checkedRadioButton), [setOption, checkedRadioButton]);
+
+  const onPressCheckbox = (value: string) => setCheckedRadioButton(prevValue => (prevValue === value ? null : value));
 
   return (
     <FlatList data={options} keyExtractor={item => item.label} ItemSeparatorComponent={renderSeparator}
