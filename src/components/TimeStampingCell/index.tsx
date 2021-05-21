@@ -38,11 +38,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line no-restricted-syntax
-    for (const history of event?.histories) {
-      if (history.action === 'manual_time_stamping' && !!history.update.startHour) setStartTimeStamped(true);
-      else setStartTimeStamped(false);
-    }
+    setStartTimeStamped(
+      event.histories.some((history: any) => history.action === 'manual_time_stamping' && !!history.update.startHour)
+    );
   }, [event.histories]);
 
   return (
