@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { formatTime } from '../../../core/helpers/dates';
-import { CIVILITY_OPTIONS } from '../../../core/data/constants';
+import { CIVILITY_OPTIONS, MANUAL_TIME_STAMPING } from '../../../core/data/constants';
 import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
@@ -16,7 +16,6 @@ interface ManualTimeStampingProps {
   route: { params: { event: { _id: string, customer: { identity: any } }, eventStart: boolean, } },
 }
 
-const MANUAL_TIME_STAMPING = 'manual_time_stamping';
 const QRCODE_MISSING = 'qrcode_missing';
 const QRCODE_ERROR = 'qrcode_error';
 const CAMERA_ERROR = 'camera_error';

@@ -3,9 +3,9 @@ import { View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';
 import { formatTime } from '../../core/helpers/dates';
-import { CIVILITY_OPTIONS } from '../../core/data/constants';
+import { CIVILITY_OPTIONS, MANUAL_TIME_STAMPING } from '../../core/data/constants';
 import styles from './styles';
-import { EventType } from '../../types/EventType';
+import { EventType, EventHistoryType } from '../../types/EventType';
 import NiPrimaryButton from '../form/PrimaryButton';
 import { GREEN } from '../../styles/colors';
 
@@ -39,7 +39,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   useEffect(() => {
     setStartTimeStamped(
-      event.histories.some((history: any) => history.action === 'manual_time_stamping' && !!history.update.startHour)
+      event?.histories?.some(
+        (history: EventHistoryType) => history.action === MANUAL_TIME_STAMPING && !!history.update.startHour
+      )
     );
   }, [event.histories]);
 
@@ -53,13 +55,13 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           {!!startDate && <Text style={styles.scheduledTime}>{formatTime(startDate)}</Text>}
         </View>
         <View>
-          { !startTimeStamped &&
-            <NiPrimaryButton title='Commencer' onPress={() => goToManualTimeStamping(true)} style={styles.button} /> }
-          { startTimeStamped &&
+          {!startTimeStamped &&
+            <NiPrimaryButton title='Commencer' onPress={() => goToManualTimeStamping(true)} style={styles.button} />}
+          {startTimeStamped &&
             <View style= {styles.iconContainer}>
               <AntDesign name='checkcircle' size={20} color={GREEN[600]} />
-              <Text style={styles.text}>horodaté</Text>
-            </View> }
+              <Text style={styles.timeStamping}>Horodaté</Text>
+            </View>}
         </View>
       </View>
       <View style={styles.sectionDelimiter} />

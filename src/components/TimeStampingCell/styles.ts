@@ -39,7 +39,7 @@ export default StyleSheet.create({
   button: {
     width: BUTTON_INTERVENTION_WIDTH,
   },
-  text: {
+  timeStamping: {
     ...FIRA_SANS_REGULAR.MD,
     color: GREEN[600],
     marginLeft: MARGIN.SM,
