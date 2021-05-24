@@ -2,7 +2,7 @@ import axiosLogged from './axios/logged';
 import Environment from '../../environment';
 import { EventTypeEnum } from '../types/EventType';
 
-export interface timeStampEventPayloadType { action: string, reason: string, startDate?: Date, endDate?: Date }
+export type timeStampEventPayloadType = { action: string, reason: string, startDate?: Date, endDate?: Date };
 
 export default {
   events: async (params: { auxiliary: string, startDate: Date, endDate: Date, type: EventTypeEnum }) => {
