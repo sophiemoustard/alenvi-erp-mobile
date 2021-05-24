@@ -10,7 +10,7 @@ import NiErrorMessage from '../../../components/ErrorMessage';
 import { ICON } from '../../../styles/metrics';
 import { GREY } from '../../../styles/colors';
 import styles from './styles';
-import Events from '../../../api/Events';
+import Events, { timeStampEventPayloadType } from '../../../api/Events';
 
 interface ManualTimeStampingProps {
   route: { params: { event: { _id: string, customer: { identity: any } }, eventStart: boolean, } },
@@ -56,10 +56,11 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
         return;
       }
 
-      await Events.timeStampEvent(
-        route.params?.event?._id,
-        { action: MANUAL_TIME_STAMPING, reason, startDate: new Date() }
-      );
+      const payload: timeStampEventPayloadType = { action: MANUAL_TIME_STAMPING, reason };
+      if (route.params.eventStart) payload.startDate = new Date();
+      else payload.endDate = new Date();
+
+      await Events.timeStampEvent(route.params?.event?._id, payload);
       navigation.navigate('Home');
     } catch (e) {
       console.error(e);
