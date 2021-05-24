@@ -15,9 +15,9 @@ interface TimeStampingProps {
 }
 
 const renderTimeStamp = () => (
-  <View style= {styles.timeStampingContainer}>
-    <View style= {styles.iconContainer}>
-      <Ionicons name='ios-checkmark-circle' size={ICON.MD} color={GREEN[600]} style={styles.icon} />
+  <View style={styles.timeStampingContainer}>
+    <View style={styles.iconContainer}>
+      <Ionicons name='ios-checkmark-circle' size={ICON.MD} color={GREEN[600]} />
     </View>
     <Text style={styles.timeStamping}>Horodaté</Text>
   </View>
