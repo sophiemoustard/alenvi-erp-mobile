@@ -50,13 +50,8 @@ export default StyleSheet.create({
   },
   iconContainer: {
     borderRadius: BORDER_RADIUS.LG,
-    backgroundColor: GREEN[200],
-  },
-  icon: {
     borderWidth: BORDER_WIDTH,
     borderColor: GREEN[200],
-    borderRadius: BORDER_RADIUS.LG,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: GREEN[200],
   },
 });

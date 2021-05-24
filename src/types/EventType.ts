@@ -16,5 +16,5 @@ export type EventType = {
 
 export type EventHistoryType = {
   action: string,
-  update: { startHour: Date },
+  update: { startHour?: Date, endHour?: Date },
 };
