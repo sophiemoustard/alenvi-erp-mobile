@@ -14,12 +14,22 @@ interface TimeStampingProps {
   event: EventType,
 }
 
+const renderTimeStamp = () => (
+  <View style= {styles.timeStampingContainer}>
+    <View style= {styles.iconContainer}>
+      <Ionicons name='ios-checkmark-circle' size={ICON.MD} color={GREEN[600]} style={styles.icon} />
+    </View>
+    <Text style={styles.timeStamping}>Horodaté</Text>
+  </View>
+);
+
 const TimeStampingCell = ({ event }: TimeStampingProps) => {
   const [civility, setCivility] = useState<string>('M');
   const [lastName, setLastName] = useState<string>('');
   const [startDate, setStartDate] = useState<Date|null>(null);
   const [endDate, setEndDate] = useState<Date|null>(null);
-  const [startTimeStamped, setStartTimeStamped] = useState<boolean>(false);
+  const [startHourStamped, setStartHourStamped] = useState<boolean>(false);
+  const [endHourStamped, setEndHourStamped] = useState<boolean>(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -40,11 +50,10 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   useEffect(() => {
     if (event.histories) {
-      setStartTimeStamped(
-        event.histories.some(
-          (history: EventHistoryType) => history.action === MANUAL_TIME_STAMPING && !!history.update.startHour
-        )
-      );
+      const timeStampingHistories = event.histories.filter((h: EventHistoryType) => h.action === MANUAL_TIME_STAMPING);
+
+      setStartHourStamped(timeStampingHistories.some((h: EventHistoryType) => !!h.update.startHour));
+      setEndHourStamped(timeStampingHistories.some((h: EventHistoryType) => !!h.update.endHour));
     }
   }, [event.histories]);
 
@@ -57,15 +66,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           <Text style={styles.timeTitle}>Début</Text>
           {!!startDate && <Text style={styles.scheduledTime}>{formatTime(startDate)}</Text>}
         </View>
-        {!startTimeStamped &&
-          <NiPrimaryButton title='Commencer' onPress={() => goToManualTimeStamping(true)} style={styles.button} />}
-        {startTimeStamped &&
-          <View style= {styles.timeStampingContainer}>
-            <View style= {styles.iconContainer}>
-              <Ionicons name='ios-checkmark-circle' size={ICON.MD} color={GREEN[600]} style={styles.icon} />
-            </View>
-            <Text style={styles.timeStamping}>Horodaté</Text>
-          </View>}
+        {startHourStamped
+          ? renderTimeStamp()
+          : <NiPrimaryButton title='Commencer' onPress={() => goToManualTimeStamping(true)} style={styles.button} />}
       </View>
       <View style={styles.sectionDelimiter} />
       <View style={styles.container}>
@@ -73,9 +76,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           <Text style={styles.timeTitle}>Fin</Text>
           {!!endDate && <Text style={styles.scheduledTime}>{formatTime(endDate)}</Text>}
         </View>
-        <View>
-          <NiPrimaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)} style={styles.button} />
-        </View>
+        {endHourStamped
+          ? renderTimeStamp()
+          : <NiPrimaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)} style={styles.button} />}
       </View>
     </View>
   );
