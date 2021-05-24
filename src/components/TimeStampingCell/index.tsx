@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { formatTime } from '../../core/helpers/dates';
@@ -78,7 +79,14 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         </View>
         {endHourStamped
           ? renderTimeStamp()
-          : <NiPrimaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)} style={styles.button} />}
+          : <View>
+            {!startHourStamped &&
+              <TouchableOpacity onPress={() => goToManualTimeStamping(false)} style={styles.greyButton}>
+                <Text style={styles.greyText}>Terminer</Text>
+              </TouchableOpacity>}
+            {startHourStamped &&
+              <NiPrimaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)} style={styles.button} />}
+          </View>}
       </View>
     </View>
   );
