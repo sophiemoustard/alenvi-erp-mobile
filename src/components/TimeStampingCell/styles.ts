@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { GREEN, GREY, WHITE } from '../../styles/colors';
-import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
+import { FIRA_SANS_BOLD, FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING, BUTTON_INTERVENTION_WIDTH } from '../../styles/metrics';
 
 export default StyleSheet.create({
@@ -40,11 +40,23 @@ export default StyleSheet.create({
     width: BUTTON_INTERVENTION_WIDTH,
   },
   timeStamping: {
-    ...FIRA_SANS_REGULAR.MD,
+    ...FIRA_SANS_MEDIUM.MD,
     color: GREEN[600],
     marginLeft: MARGIN.SM,
   },
-  iconContainer: {
+  timeStampingContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    borderRadius: BORDER_RADIUS.LG,
+    backgroundColor: GREEN[200],
+  },
+  icon: {
+    borderWidth: BORDER_WIDTH,
+    borderColor: GREEN[200],
+    borderRadius: BORDER_RADIUS.LG,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

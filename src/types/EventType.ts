@@ -11,12 +11,10 @@ export type EventType = {
   },
   startDate: Date,
   endDate: Date,
-  histories?: EventHistoryType,
+  histories?: EventHistoryType[],
 };
 
 export type EventHistoryType = {
   action: string,
-  update: {
-    startHour: Date,
-  }[],
+  update: { startHour: Date },
 };
