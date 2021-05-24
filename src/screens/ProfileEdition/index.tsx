@@ -50,9 +50,10 @@ const ProfileEdition = () => {
       if (isValid && loggedUser?._id) {
         setErrorMessage('');
         setIsLoading(true);
-        const userId = loggedUser._id;
-        await Users.setUser(userId, editedUser);
+
+        await Users.setUser(loggedUser._id, editedUser);
         await refreshLoggedUser();
+
         goBack();
       }
     } catch (e) {
@@ -101,8 +102,10 @@ const ProfileEdition = () => {
   useEffect(() => {
     if (invalid.lastName && isValidationAttempted) setNameError('Ce champ est obligatoire.');
     else setNameError('');
+
     if (invalid.phone && isValidationAttempted) setPhoneError('Votre numéro de téléphone n\'est pas valide.');
     else setPhoneError('');
+
     if (invalid.email && isValidationAttempted) setEmailError('Votre email n\'est pas valide.');
     else if (invalid.emptyEmail && isValidationAttempted) setEmailError('Ce champ est obligatoire.');
     else setEmailError('');
