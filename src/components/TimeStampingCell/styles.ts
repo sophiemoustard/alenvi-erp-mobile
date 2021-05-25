@@ -40,17 +40,6 @@ export default StyleSheet.create({
   button: {
     width: BUTTON_INTERVENTION_WIDTH,
   },
-  greyButton: {
-    ...commonStyle.button,
-    width: BUTTON_INTERVENTION_WIDTH,
-    backgroundColor: GREY[100],
-    borderWidth: BORDER_WIDTH,
-    borderColor: GREY[500],
-  },
-  greyText: {
-    ...commonStyle.textButton,
-    color: GREY[500],
-  },
   timeStamping: {
     ...FIRA_SANS_MEDIUM.MD,
     color: GREEN[600],
