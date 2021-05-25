@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { formatTime } from '../../core/helpers/dates';

@@ -1,6 +1,5 @@
 import { StyleSheet } from 'react-native';
 import { GREEN, GREY, WHITE } from '../../styles/colors';
-import commonStyle from '../../styles/common';
 import { FIRA_SANS_BOLD, FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING, BUTTON_INTERVENTION_WIDTH } from '../../styles/metrics';
 
