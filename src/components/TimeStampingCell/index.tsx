@@ -7,6 +7,7 @@ import { CIVILITY_OPTIONS, MANUAL_TIME_STAMPING } from '../../core/data/constant
 import styles from './styles';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import NiPrimaryButton from '../form/PrimaryButton';
+import NiSecondaryButton from '../form/SecondaryButton';
 import { GREEN } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
 
@@ -78,7 +79,13 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         </View>
         {endHourStamped
           ? renderTimeStamp()
-          : <NiPrimaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)} style={styles.button} />}
+          : <View>
+            {!startHourStamped &&
+              <NiSecondaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)}
+                style={styles.button} />}
+            {startHourStamped &&
+              <NiPrimaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)} style={styles.button} />}
+          </View>}
       </View>
     </View>
   );

@@ -33,8 +33,8 @@ const TimeStampingProfile = () => {
       if (!loggedUser || !loggedUser._id) return;
       const params = {
         auxiliary: loggedUser._id,
-        startDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()),
-        endDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate()),
+        startDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0, 0),
+        endDate: new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59, 999),
         type: INTERVENTION,
       };
       const fetchedEvents = await Events.events(params);

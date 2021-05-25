@@ -19,7 +19,7 @@ const SecondaryButton = ({
   loading = false,
   disabled = false,
 } : SecondaryButtonProps) => (
-  <TouchableOpacity style={[style, styles.button]} onPress={onPress} disabled={loading || disabled} testID={title}>
+  <TouchableOpacity style={[styles.button, style]} onPress={onPress} disabled={loading || disabled} testID={title}>
     {!loading && <Text style={styles.textButton}>{title}</Text>}
     {loading && <ActivityIndicator style={commonStyle.disabled} color={WHITE} size="small" />}
   </TouchableOpacity>

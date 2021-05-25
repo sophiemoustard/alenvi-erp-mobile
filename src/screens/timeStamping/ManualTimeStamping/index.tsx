@@ -65,6 +65,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     } catch (e) {
       console.error(e);
       if ([409, 422].includes(e.response.status)) setErrorMessage(e.response.data.message);
+      if ([404, 403].includes(e.response.status)) setErrorMessage('Vous ne pouvez pas horodater cet évènement.');
       else setErrorMessage('Erreur, si le problème persiste, contactez le support technique.');
     } finally {
       setLoading(false);
