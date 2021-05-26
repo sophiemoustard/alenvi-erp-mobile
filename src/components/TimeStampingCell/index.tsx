@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { formatTime } from '../../core/helpers/dates';
 import { CIVILITY_OPTIONS, MANUAL_TIME_STAMPING } from '../../core/data/constants';
 import styles from './styles';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import NiPrimaryButton from '../form/PrimaryButton';
 import NiSecondaryButton from '../form/SecondaryButton';
-import { GREEN } from '../../styles/colors';
+import { WHITE } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
 
 interface TimeStampingProps {
@@ -18,7 +18,7 @@ interface TimeStampingProps {
 const renderTimeStamp = () => (
   <View style={styles.timeStampingContainer}>
     <View style={styles.iconContainer}>
-      <Ionicons name='ios-checkmark-circle' size={ICON.MD} color={GREEN[600]} />
+      <Feather name='check' size={ICON.XS} color={WHITE} />
     </View>
     <Text style={styles.timeStamping}>Horodaté</Text>
   </View>
