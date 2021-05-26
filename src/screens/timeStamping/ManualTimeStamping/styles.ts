@@ -29,7 +29,7 @@ export default StyleSheet.create({
     flex: 1,
   },
   sectionDelimiter: {
-    borderWidth: BORDER_WIDTH,
+    borderRightWidth: BORDER_WIDTH,
     borderColor: GREY[200],
     marginHorizontal: MARGIN.MD,
   },

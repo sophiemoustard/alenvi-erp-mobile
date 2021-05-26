@@ -33,7 +33,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     route.params.event?.customer?.identity?.lastname.toUpperCase() || ''
   );
   const [title, setTitle] = useState<string>('');
-  const [reason, setReason] = useState<string | null>();
+  const [reason, setReason] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [color, setColor] = useState<string>(RED);
@@ -64,11 +64,11 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       else payload.endDate = new Date();
 
       await Events.timeStampEvent(route.params?.event?._id, payload);
-      navigation.navigate('Home');
+      goBack();
     } catch (e) {
       console.error(e);
       if ([409, 422].includes(e.response.status)) setErrorMessage(e.response.data.message);
-      if ([404, 403].includes(e.response.status)) setErrorMessage('Vous ne pouvez pas horodater cet évènement.');
+      else if ([404, 403].includes(e.response.status)) setErrorMessage('Vous ne pouvez pas horodater cet évènement.');
       else setErrorMessage('Erreur, si le problème persiste, contactez le support technique.');
     } finally {
       setLoading(false);
