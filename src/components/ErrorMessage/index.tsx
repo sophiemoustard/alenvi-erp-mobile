@@ -4,10 +4,11 @@ import styles from './style';
 
 interface ErrorMessageProps {
   message: string,
+  color?: string,
 }
 
-const ErrorMessage = ({ message } : ErrorMessageProps) => (
-  <Text style={styles.message}>{message}</Text>
+const ErrorMessage = ({ message, color } : ErrorMessageProps) => (
+  <Text style={{ ...styles.message, color }}>{message}</Text>
 );
 
 export default ErrorMessage;

@@ -8,7 +8,7 @@ import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
 import { ICON } from '../../../styles/metrics';
-import { GREY } from '../../../styles/colors';
+import { GREY, ORANGE, RED } from '../../../styles/colors';
 import styles from './styles';
 import Events, { timeStampEventPayloadType } from '../../../api/Events';
 
@@ -36,6 +36,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [reason, setReason] = useState<string | null>();
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [color, setColor] = useState<string>(RED);
 
   const navigation = useNavigation();
 
@@ -51,8 +52,10 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     try {
       setLoading(true);
       setErrorMessage('');
+      setColor(RED);
       if (!reason) {
         setErrorMessage('Merci de selectionner une raison pour l\'horodatage manuel.');
+        setColor(ORANGE[500]);
         return;
       }
 
@@ -92,7 +95,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
           <Text style={styles.question}>Pourquoi horodatez-vous manuellement ?</Text>
           <NiRadioButtonList options={optionList} setOption={setReason} />
         </View>
-        {!!errorMessage && <NiErrorMessage message={errorMessage} />}
+        {!!errorMessage && <NiErrorMessage message={errorMessage} color={color} />}
       </View>
       <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} onPress={timeStampEvent}
         loading={loading} />
