@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { formatTime } from '../../../core/helpers/dates';
 import { CIVILITY_OPTIONS, MANUAL_TIME_STAMPING } from '../../../core/data/constants';
@@ -8,7 +8,8 @@ import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
 import { ICON } from '../../../styles/metrics';
-import { GREY, ORANGE, RED } from '../../../styles/colors';
+import { GREY } from '../../../styles/colors';
+import { errorType } from '../../../types/ErrorType';
 import styles from './styles';
 import Events, { timeStampEventPayloadType } from '../../../api/Events';
 
@@ -36,7 +37,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [reason, setReason] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [color, setColor] = useState<string>(RED);
+  const [type, setType] = useState<errorType>('error');
 
   const navigation = useNavigation();
 
@@ -52,10 +53,9 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     try {
       setLoading(true);
       setErrorMessage('');
-      setColor(RED);
       if (!reason) {
+        setType('warning');
         setErrorMessage('Merci de selectionner une raison pour l\'horodatage manuel.');
-        setColor(ORANGE[500]);
         return;
       }
 
@@ -78,7 +78,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   return (
     <View style={styles.screen}>
       <FeatherButton name='x-circle' onPress={goBack} size={ICON.MD} color={GREY[600]} />
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Text style={styles.title}>{title}</Text>
         <View style={styles.cell}>
           <View style={styles.customerInfo}>
@@ -95,8 +95,8 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
           <Text style={styles.question}>Pourquoi horodatez-vous manuellement ?</Text>
           <NiRadioButtonList options={optionList} setOption={setReason} />
         </View>
-        {!!errorMessage && <NiErrorMessage message={errorMessage} color={color} />}
-      </View>
+        {!!errorMessage && <NiErrorMessage message={errorMessage} type={type} />}
+      </ScrollView>
       <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} onPress={timeStampEvent}
         loading={loading} />
     </View>
