@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { formatTime } from '../../../core/helpers/dates';
-import { CIVILITY_OPTIONS, MANUAL_TIME_STAMPING } from '../../../core/data/constants';
+import { CIVILITY_OPTIONS, ERROR, MANUAL_TIME_STAMPING, WARNING } from '../../../core/data/constants';
 import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
@@ -37,7 +37,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [reason, setReason] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [type, setType] = useState<errorType>('error');
+  const [type, setType] = useState<errorType>(ERROR);
 
   const navigation = useNavigation();
 
@@ -54,11 +54,11 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       setLoading(true);
       setErrorMessage('');
       if (!reason) {
-        setType('warning');
+        setType(WARNING);
         setErrorMessage('Merci de selectionner une raison pour l\'horodatage manuel.');
         return;
       }
-
+      setType(ERROR);
       const payload: timeStampEventPayloadType = { action: MANUAL_TIME_STAMPING, reason };
       if (route.params.eventStart) payload.startDate = new Date();
       else payload.endDate = new Date();

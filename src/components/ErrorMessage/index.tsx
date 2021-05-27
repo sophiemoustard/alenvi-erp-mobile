@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Text } from 'react-native';
-import { ORANGE, RED } from '../../styles/colors';
+import { ERROR } from '../../core/data/constants';
 import { errorType } from '../../types/ErrorType';
 import styles from './styles';
 
@@ -9,14 +9,8 @@ interface ErrorMessageProps {
   type?: errorType,
 }
 
-const ErrorMessage = ({ message, type = 'error' } : ErrorMessageProps) => {
-  const [color, setColor] = useState<string>(RED);
-
-  useEffect(() => {
-    if (type === 'warning') setColor(ORANGE[500]);
-  }, [color, type]);
-
-  return <Text style={{ ...styles.message, color }}>{message}</Text>;
-};
+const ErrorMessage = ({ message, type = ERROR } : ErrorMessageProps) => (
+  <Text style={styles(type).message}>{message}</Text>
+);
 
 export default ErrorMessage;

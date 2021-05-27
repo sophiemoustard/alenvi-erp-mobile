@@ -37,3 +37,7 @@ export const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'j
 
 // EVENT
 export const MANUAL_TIME_STAMPING = 'manual_time_stamping';
+
+// ERROR
+export const ERROR = 'error';
+export const WARNING = 'warning';
