@@ -68,9 +68,9 @@ const ProfileEdition = () => {
     setEditedUser({ ...editedUser, identity: { ...editedUser.identity, [key]: text } })
   );
 
-  const onChangePhone = (text: string) => setEditedUser({ ...editedUser, contact: { phone: text } });
+  const onChangePhone = (text: string) => setEditedUser({ ...editedUser, contact: { phone: text.trim() } });
 
-  const onChangeEmail = (text: string) => setEditedUser({ ...editedUser, local: { email: text } });
+  const onChangeEmail = (text: string) => setEditedUser({ ...editedUser, local: { email: text.trim() } });
 
   const onPressExitModal = () => {
     setExitConfirmationModal(true);
