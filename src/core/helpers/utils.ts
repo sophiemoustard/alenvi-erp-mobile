@@ -2,7 +2,11 @@ export const formatPhone = (phoneNumber : any) => (phoneNumber
   ? phoneNumber.replace(/^(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/, '$1 $2 $3 $4 $5') : '');
 
 export const formatPhoneForPayload = (phoneNumber: Number) => (phoneNumber
-  ? phoneNumber.toString().replace(/[\s\-.]/g, '').trim()
+  ? phoneNumber.toString()
+    .replace('+33', '0')
+    .replace('0033', '0')
+    .replace(/[\s\-.]/g, '')
+    .trim()
   : '');
 
 export const formatEmailForPayload = (email: string) => email.trim();
