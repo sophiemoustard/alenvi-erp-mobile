@@ -5,7 +5,8 @@ import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING } from '../../../styles/me
 
 export default StyleSheet.create({
   screen: {
-    margin: MARGIN.LG,
+    marginVertical: MARGIN.LG,
+    marginHorizontal: MARGIN.MD,
     flex: 1,
     justifyContent: 'space-between',
   },
@@ -29,7 +30,7 @@ export default StyleSheet.create({
     flex: 1,
   },
   sectionDelimiter: {
-    borderWidth: BORDER_WIDTH,
+    borderRightWidth: BORDER_WIDTH,
     borderColor: GREY[200],
     marginHorizontal: MARGIN.MD,
   },

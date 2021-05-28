@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { GREEN, GREY, WHITE } from '../../styles/colors';
-import { FIRA_SANS_BOLD, FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
-import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING, BUTTON_INTERVENTION_WIDTH } from '../../styles/metrics';
+import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
+import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING, BUTTON_INTERVENTION_WIDTH, ICON } from '../../styles/metrics';
 
 export default StyleSheet.create({
   sectionDelimiter: {
@@ -40,7 +40,7 @@ export default StyleSheet.create({
     width: BUTTON_INTERVENTION_WIDTH,
   },
   timeStamping: {
-    ...FIRA_SANS_MEDIUM.MD,
+    ...FIRA_SANS_REGULAR.MD,
     color: GREEN[600],
     marginLeft: MARGIN.SM,
   },
@@ -49,9 +49,13 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   iconContainer: {
+    width: ICON.XL,
+    height: ICON.XL,
+    backgroundColor: GREEN[600],
     borderRadius: BORDER_RADIUS.LG,
-    borderWidth: BORDER_WIDTH,
+    borderWidth: 4 * BORDER_WIDTH,
     borderColor: GREEN[200],
-    backgroundColor: GREEN[200],
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
