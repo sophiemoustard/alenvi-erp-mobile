@@ -19,13 +19,14 @@ const renderEvent = (event: EventType) => (
 );
 
 const TimeStampingProfile = () => {
-  const [displayedDate, setdisplayedDate] = useState<Date>(new Date());
+  const [displayedDate, setDisplayedDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<EventType[]>([]);
   const isActive = useRef<boolean>(true);
   const { loggedUser } = useContext(AuthContext);
 
   useEffect(() => {
-    const interval = setInterval(() => { setdisplayedDate(new Date()); }, 60000);
+    const interval = setInterval(() => { setDisplayedDate(new Date()); }, 60000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -49,10 +50,10 @@ const TimeStampingProfile = () => {
           console.error(e);
         }
       };
+
       fetchInterventions();
-      return () => {
-        isActive.current = false;
-      };
+
+      return () => { isActive.current = false; };
     }, [loggedUser, isActive])
   );
 
