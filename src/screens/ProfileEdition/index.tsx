@@ -9,9 +9,10 @@ import NiErrorMessage from '../../components/ErrorMessage';
 import { GREY } from '../../styles/colors';
 import { ICON, IS_LARGE_SCREEN, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../styles/metrics';
 import { Context as AuthContext } from '../../context/AuthContext';
-import styles from './styles';
 import Users from '../../api/Users';
 import { EMAIL_REGEX, PHONE_REGEX } from '../../core/data/constants';
+import { formatEmailForPayload, formatPhoneForPayload } from '../../core/helpers/utils';
+import styles from './styles';
 
 type editedUserValidType = { lastName: boolean, phone: boolean, email: boolean, emptyEmail: boolean };
 
@@ -51,7 +52,15 @@ const ProfileEdition = () => {
         setErrorMessage('');
         setIsLoading(true);
 
-        await Users.setUser(loggedUser._id, editedUser);
+        await Users.setUser(
+          loggedUser._id,
+          {
+            ...editedUser,
+            contact: { phone: formatPhoneForPayload(editedUser.contact.phone) },
+            local: { email: formatEmailForPayload(editedUser.local.email) },
+          }
+        );
+
         await refreshLoggedUser();
 
         goBack();

@@ -11,8 +11,8 @@ export const PHONE = 'phone';
 export const MOBILE = 'mobile';
 
 // REGEX
-export const EMAIL_REGEX = /^[\w-.+]+@([\w-]+\.)+[\w-]{2,4}$/;
-export const PHONE_REGEX = /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}(?:[\s]*)$/;
+export const EMAIL_REGEX = /^\s*[\w.+]+@([\w-]+\.)+[\w-]{2,4}\s*$/;
+export const PHONE_REGEX = /^\s*(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}(?:[\s]*)$/;
 
 // DATE
 export const ONE_YEAR_IN_MILLISECONDS = 31536000000;
