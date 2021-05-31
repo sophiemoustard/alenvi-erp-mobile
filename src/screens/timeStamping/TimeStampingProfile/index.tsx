@@ -36,13 +36,14 @@ const TimeStampingProfile = () => {
       let appState = AppState.currentState;
 
       const handleBackground = (nextAppState: AppStateStatus) => {
+        setIsAppBackgrounded(false);
         if ((appState === 'background' || appState === 'inactive') && nextAppState === ACTIVE_STATE) {
           setIsAppBackgrounded(true);
         }
         appState = nextAppState;
       };
 
-      handleBackground(ACTIVE_STATE);
+      AppState.addEventListener('change', handleBackground);
 
       const fetchInterventions = async () => {
         const today = new Date();
@@ -66,7 +67,7 @@ const TimeStampingProfile = () => {
 
       return () => {
         isActive = false;
-        setIsAppBackgrounded(false);
+        AppState.removeEventListener('change', handleBackground);
       };
     }, [loggedUser, isAppBackgrounded])
   );
