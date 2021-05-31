@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState, useCallback, useRef } from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
+import { Text, View, ScrollView, AppState, AppStateStatus } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import commonStyle from '../../../styles/common';
 import Events from '../../../api/Events';
 import { Context as AuthContext } from '../../../context/AuthContext';
-import { INTERVENTION } from '../../../core/data/constants';
+import { ACTIVE_STATE, INTERVENTION } from '../../../core/data/constants';
 import { capitalizeFirstLetter, formatWordToPlural } from '../../../core/helpers/utils';
 import { formatTime, formatDate } from '../../../core/helpers/dates';
 import TimeStampingCell from '../../../components/TimeStampingCell';
@@ -21,7 +21,7 @@ const renderEvent = (event: EventType) => (
 const TimeStampingProfile = () => {
   const [displayedDate, setDisplayedDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<EventType[]>([]);
-  const isActive = useRef<boolean>(true);
+  const [isAppBackgrounded, setIsAppBackgrounded] = useState<boolean>(false);
   const { loggedUser } = useContext(AuthContext);
 
   useEffect(() => {
@@ -32,7 +32,18 @@ const TimeStampingProfile = () => {
 
   useFocusEffect(
     useCallback(() => {
-      isActive.current = true;
+      let isActive = true;
+      let appState = AppState.currentState;
+
+      const handleBackground = (nextAppState: AppStateStatus) => {
+        if ((appState === 'background' || appState === 'inactive') && nextAppState === ACTIVE_STATE) {
+          setIsAppBackgrounded(true);
+        }
+        appState = nextAppState;
+      };
+
+      handleBackground(ACTIVE_STATE);
+
       const fetchInterventions = async () => {
         const today = new Date();
         try {
@@ -45,7 +56,7 @@ const TimeStampingProfile = () => {
           };
           const fetchedEvents = await Events.events(params);
 
-          if (isActive) setEvents(fetchedEvents);
+          if (isActive || isAppBackgrounded) setEvents(fetchedEvents);
         } catch (e) {
           console.error(e);
         }
@@ -53,8 +64,11 @@ const TimeStampingProfile = () => {
 
       fetchInterventions();
 
-      return () => { isActive.current = false; };
-    }, [loggedUser, isActive])
+      return () => {
+        isActive = false;
+        setIsAppBackgrounded(false);
+      };
+    }, [loggedUser, isAppBackgrounded])
   );
 
   return (
