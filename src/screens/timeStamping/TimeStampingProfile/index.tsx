@@ -21,29 +21,27 @@ const renderEvent = (event: EventType) => (
 const TimeStampingProfile = () => {
   const [displayedDate, setDisplayedDate] = useState<Date>(new Date());
   const [events, setEvents] = useState<EventType[]>([]);
-  const [isAppBackgrounded, setIsAppBackgrounded] = useState<boolean>(false);
+  const [isAppFocused, setIsAppFocused] = useState<boolean>(true);
   const { loggedUser } = useContext(AuthContext);
+
+  const handleBackground = useCallback((nextAppState: AppStateStatus) => {
+    if (nextAppState === ACTIVE_STATE && !isAppFocused) setIsAppFocused(true);
+    else setIsAppFocused(false);
+  }, [isAppFocused]);
 
   useEffect(() => {
     const interval = setInterval(() => { setDisplayedDate(new Date()); }, 60000);
+    AppState.addEventListener('change', handleBackground);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      clearInterval(interval);
+      AppState.removeEventListener('change', handleBackground);
+    };
+  }, [handleBackground]);
 
   useFocusEffect(
     useCallback(() => {
       let isActive = true;
-      let appState = AppState.currentState;
-
-      const handleBackground = (nextAppState: AppStateStatus) => {
-        setIsAppBackgrounded(false);
-        if ((appState === 'background' || appState === 'inactive') && nextAppState === ACTIVE_STATE) {
-          setIsAppBackgrounded(true);
-        }
-        appState = nextAppState;
-      };
-
-      AppState.addEventListener('change', handleBackground);
 
       const fetchInterventions = async () => {
         const today = new Date();
@@ -57,19 +55,16 @@ const TimeStampingProfile = () => {
           };
           const fetchedEvents = await Events.events(params);
 
-          if (isActive || isAppBackgrounded) setEvents(fetchedEvents);
+          if (isActive) setEvents(fetchedEvents);
         } catch (e) {
           console.error(e);
         }
       };
 
-      fetchInterventions();
+      if (isAppFocused) fetchInterventions();
 
-      return () => {
-        isActive = false;
-        AppState.removeEventListener('change', handleBackground);
-      };
-    }, [loggedUser, isAppBackgrounded])
+      return () => { isActive = false; };
+    }, [loggedUser, isAppFocused])
   );
 
   return (
