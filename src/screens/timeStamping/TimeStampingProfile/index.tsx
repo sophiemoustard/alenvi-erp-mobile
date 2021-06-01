@@ -25,9 +25,9 @@ const TimeStampingProfile = () => {
   const { loggedUser } = useContext(AuthContext);
 
   const handleBackground = useCallback((nextAppState: AppStateStatus) => {
-    if (nextAppState === ACTIVE_STATE && !isAppFocused) setIsAppFocused(true);
+    if (nextAppState === ACTIVE_STATE) setIsAppFocused(true);
     else setIsAppFocused(false);
-  }, [isAppFocused]);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => { setDisplayedDate(new Date()); }, 60000);
