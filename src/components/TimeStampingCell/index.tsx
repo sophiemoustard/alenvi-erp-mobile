@@ -82,13 +82,13 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         </View>
         {endHourStamped
           ? renderTimeStamp()
-          : <View>
+          : <>
             {!startHourStamped &&
               <NiSecondaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)}
                 style={styles.button} />}
             {startHourStamped &&
               <NiPrimaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)} style={styles.button} />}
-          </View>}
+          </>}
       </View>
     </View>
   );
