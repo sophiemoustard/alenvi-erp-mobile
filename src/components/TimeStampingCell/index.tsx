@@ -69,12 +69,10 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         </View>
         {startHourStamped
           ? renderTimeStamp()
-          : <View>
+          : <>
             {!endHourStamped &&
-            <NiPrimaryButton title='Commencer' onPress={() => goToManualTimeStamping(true)}
-              style={styles.button} />}
-            {endHourStamped && <Text> </Text>}
-          </View>}
+              <NiPrimaryButton title='Commencer' onPress={() => goToManualTimeStamping(true)} style={styles.button} />}
+          </>}
       </View>
       <View style={styles.sectionDelimiter} />
       <View style={styles.container}>
