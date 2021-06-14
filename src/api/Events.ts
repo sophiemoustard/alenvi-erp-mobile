@@ -5,7 +5,13 @@ import { EventTypeEnum } from '../types/EventType';
 export type timeStampEventPayloadType = { action: string, reason: string, startDate?: Date, endDate?: Date };
 
 export default {
-  events: async (params: { auxiliary: string, startDate: Date, endDate: Date, type: EventTypeEnum }) => {
+  list: async (params: {
+    auxiliary: string,
+    startDate: Date,
+    endDate: Date,
+    type: EventTypeEnum,
+    isCancelled: boolean
+  }) => {
     const { baseURL } = Environment.getEnvVars();
     const events = await axiosLogged.get(`${baseURL}/events`, { params });
     return events.data.data.events;
