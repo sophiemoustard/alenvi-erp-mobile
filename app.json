@@ -30,7 +30,10 @@
       "package": "com.compani.erp",
       "versionCode": 2,
       "permissions": [],
-      "adaptiveIcon": { "foregroundImage": "./assets/images/android_icon.png" },
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/android_icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
       "googleServicesFile": "./google-services.json"
     },
     "extra": {
