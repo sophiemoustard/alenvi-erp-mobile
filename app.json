@@ -28,8 +28,9 @@
     },
     "android": {
       "package": "com.compani.erp",
-      "versionCode": 2,
+      "versionCode": 5,
       "permissions": [],
+      "icon": "./assets/images/android_icon_old.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android_icon.png",
         "backgroundColor": "#FFFFFF"
