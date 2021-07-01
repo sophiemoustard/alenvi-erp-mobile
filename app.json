@@ -12,7 +12,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#005774"
     },
     "assetBundlePatterns": ["assets/images/*"],
     "updates": {
@@ -28,9 +28,13 @@
     },
     "android": {
       "package": "com.compani.erp",
-      "versionCode": 2,
+      "versionCode": 5,
       "permissions": [],
-      "adaptiveIcon": { "foregroundImage": "./assets/images/android_icon.png" },
+      "icon": "./assets/images/android_icon_old.png",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/android_icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
       "googleServicesFile": "./google-services.json"
     },
     "extra": {
