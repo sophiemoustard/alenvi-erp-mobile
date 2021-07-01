@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "erp-mobile",
+    "name": "Compani Outils",
     "slug": "erp-mobile",
     "description": "Interface auxiliaire de l'ERP Compani",
     "platforms": ["ios", "android"],
-    "version": "0.1.0",
+    "version": "0.1.2",
     "orientation": "portrait",
     "icon": "./assets/images/ios_icon.png",
     "primaryColor": "#FFFFFF",
@@ -22,13 +22,13 @@
     },
     "ios": {
       "bundleIdentifier": "com.compani.erp",
-      "buildNumber": "0.1.0",
+      "buildNumber": "0.1.2",
       "icon": "./assets/images/ios_icon.png",
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "package": "com.compani.erp",
-      "versionCode": 5,
+      "versionCode": 6,
       "permissions": [],
       "icon": "./assets/images/android_icon_old.png",
       "adaptiveIcon": {
