@@ -1,4 +1,5 @@
 import React from 'react';
+import isEqual from 'lodash.isequal';
 import createAuthContext, { StateType, ActionType } from './createAuthContext';
 import Authentication from '../api/Authentication';
 import Users from '../api/Users';
@@ -9,7 +10,8 @@ const authReducer = (state: StateType, action: ActionType) => {
     case 'signIn':
       return { ...state, companiToken: action.payload };
     case 'loggedUser':
-      return { ...state, loggedUser: action.payload };
+      if (!isEqual(action.payload, state.loggedUser)) return { ...state, loggedUser: action.payload };
+      return state;
     case 'signOut':
       return { ...state, companiToken: null, loggedUser: null };
     case 'render':
@@ -69,7 +71,7 @@ const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
   dispatch({ type: 'render' });
 };
 
-export const { Provider, Context } = createAuthContext(
+export const { Context, Provider } = createAuthContext(
   authReducer,
   { signIn, tryLocalSignIn, signOut, refreshLoggedUser },
   {
