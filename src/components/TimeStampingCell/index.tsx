@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer, Dispatch } from 'react';
 import { View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
@@ -11,9 +11,52 @@ import NiSecondaryButton from '../form/SecondaryButton';
 import { WHITE } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
 
-interface TimeStampingProps {
-  event: EventType,
+interface StateType {
+  civility: string,
+  lastName: string,
+  startDate: Date | null,
+  endDate: Date | null,
+  startHourStamped: boolean,
+  endHourStamped: boolean,
 }
+interface ActionType {
+  type: string,
+  payload: { event?: EventType, timeStampingHistories?: Array<EventHistoryType> }
+}
+
+const initialState = {
+  civility: '',
+  lastName: '',
+  startDate: null,
+  endDate: null,
+  startHourStamped: false,
+  endHourStamped: false,
+};
+const SET_EVENT_INFOS = 'setEventInfos';
+const SET_TIMESTAMPED_INFOS = 'setTimeStampedInfos';
+
+const reducer = (state: StateType, action: ActionType): StateType => {
+  switch (action.type) {
+    case SET_EVENT_INFOS:
+      return {
+        ...state,
+        civility: action.payload.event?.customer?.identity?.title || '',
+        lastName: action.payload.event?.customer?.identity?.lastname || '',
+        startDate: new Date(action.payload.event?.startDate || ''),
+        endDate: new Date(action.payload.event?.endDate || ''),
+      };
+    case SET_TIMESTAMPED_INFOS:
+      return {
+        ...state,
+        startHourStamped: action.payload?.timeStampingHistories?.some((h: EventHistoryType) => !!h.update.startHour) ||
+          false,
+        endHourStamped: action.payload?.timeStampingHistories?.some((h: EventHistoryType) => !!h.update.endHour) ||
+          false,
+      };
+    default:
+      return initialState;
+  }
+};
 
 const renderTimeStamp = () => (
   <View style={styles.timeStampingContainer}>
@@ -24,23 +67,17 @@ const renderTimeStamp = () => (
   </View>
 );
 
+interface TimeStampingProps {
+  event: EventType,
+}
+
 const TimeStampingCell = ({ event }: TimeStampingProps) => {
-  const [civility, setCivility] = useState<string>('M');
-  const [lastName, setLastName] = useState<string>('');
-  const [startDate, setStartDate] = useState<Date|null>(null);
-  const [endDate, setEndDate] = useState<Date|null>(null);
-  const [startHourStamped, setStartHourStamped] = useState<boolean>(false);
-  const [endHourStamped, setEndHourStamped] = useState<boolean>(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (event) {
-      setCivility(event.customer?.identity?.title || '');
-      setLastName(event.customer?.identity?.lastname || '');
-      setEndDate(new Date(event.endDate));
-      setStartDate(new Date(event.startDate));
-    }
-  }, [setCivility, setLastName, setEndDate, setStartDate, event]);
+    if (event) dispatch({ type: SET_EVENT_INFOS, payload: { event } });
+  }, [event]);
 
   const goToManualTimeStamping = (eventStart: boolean) => {
     navigation.navigate(
@@ -53,24 +90,23 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     if (event.histories) {
       const timeStampingHistories = event.histories.filter((h: EventHistoryType) => h.action === MANUAL_TIME_STAMPING);
 
-      setStartHourStamped(timeStampingHistories.some((h: EventHistoryType) => !!h.update.startHour));
-      setEndHourStamped(timeStampingHistories.some((h: EventHistoryType) => !!h.update.endHour));
+      dispatch({ type: SET_TIMESTAMPED_INFOS, payload: { timeStampingHistories } });
     }
   }, [event.histories]);
 
   return (
     <View style={styles.cell}>
-      <Text style={styles.title}>{CIVILITY_OPTIONS[civility]} {lastName.toUpperCase()}</Text>
+      <Text style={styles.title}>{CIVILITY_OPTIONS[state.civility]} {state.lastName.toUpperCase()}</Text>
       <View style={styles.sectionDelimiter} />
       <View style={styles.container}>
         <View>
           <Text style={styles.timeTitle}>Début</Text>
-          {!!startDate && <Text style={styles.scheduledTime}>{formatTime(startDate)}</Text>}
+          {!!state.startDate && <Text style={styles.scheduledTime}>{formatTime(state.startDate)}</Text>}
         </View>
-        {startHourStamped
+        {state.startHourStamped
           ? renderTimeStamp()
           : <>
-            {!endHourStamped &&
+            {!state.endHourStamped &&
               <NiPrimaryButton title='Commencer' onPress={() => goToManualTimeStamping(true)} style={styles.button} />}
           </>}
       </View>
@@ -78,15 +114,15 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       <View style={styles.container}>
         <View>
           <Text style={styles.timeTitle}>Fin</Text>
-          {!!endDate && <Text style={styles.scheduledTime}>{formatTime(endDate)}</Text>}
+          {!!state.endDate && <Text style={styles.scheduledTime}>{formatTime(state.endDate)}</Text>}
         </View>
-        {endHourStamped
+        {state.endHourStamped
           ? renderTimeStamp()
           : <>
-            {!startHourStamped &&
+            {!state.startHourStamped &&
               <NiSecondaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)}
                 style={styles.button} />}
-            {startHourStamped &&
+            {state.startHourStamped &&
               <NiPrimaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)} style={styles.button} />}
           </>}
       </View>
