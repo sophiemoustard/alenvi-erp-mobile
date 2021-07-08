@@ -79,13 +79,6 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     if (event) dispatch({ type: SET_EVENT_INFOS, payload: { event } });
   }, [event]);
 
-  const goToManualTimeStamping = (eventStart: boolean) => {
-    navigation.navigate(
-      'ManualTimeStamping',
-      { event: { _id: event._id, customer: { identity: event.customer.identity } }, eventStart }
-    );
-  };
-
   useEffect(() => {
     if (event.histories) {
       const timeStampingHistories = event.histories.filter((h: EventHistoryType) => h.action === MANUAL_TIME_STAMPING);
@@ -93,6 +86,19 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       dispatch({ type: SET_TIMESTAMPED_INFOS, payload: { timeStampingHistories } });
     }
   }, [event.histories]);
+
+  const goToManualTimeStamping = (eventStart: boolean) => {
+    navigation.navigate(
+      'ManualTimeStamping',
+      { event: { _id: event._id, customer: { identity: event.customer.identity } }, eventStart }
+    );
+  };
+
+  const goToBarCodeScanner = () => {
+    navigation.navigate(
+      'BarCodeScanner'
+    );
+  };
 
   return (
     <View style={styles.cell}>
@@ -107,7 +113,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           ? renderTimeStamp()
           : <>
             {!state.endHourStamped &&
-              <NiPrimaryButton title='Commencer' onPress={() => goToManualTimeStamping(true)} style={styles.button} />}
+              <NiPrimaryButton title='Commencer' style={styles.button}
+                onPress={() => (__DEV__ ? goToBarCodeScanner() : goToManualTimeStamping(true))}/>}
           </>}
       </View>
       <View style={styles.sectionDelimiter} />

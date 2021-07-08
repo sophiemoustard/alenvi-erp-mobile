@@ -1,7 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
-import TimeStampingProfile from '../../screens/timeStamping/TimeStampingProfile';
+import TimeStampingProfile from '../../screens/TimeStamping/TimeStampingProfile';
 import Profile from '../../screens/Profile';
 import { BLACK, GREY, PINK } from '../../styles/colors';
 import styles from './styles';

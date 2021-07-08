@@ -8,7 +8,8 @@ import PasswordReset from '../../screens/PasswordReset';
 import PasswordEdition from '../../screens/PasswordEdition';
 import ForgotPassword from '../../screens/ForgotPassword';
 import ProfileEdition from '../../screens/ProfileEdition';
-import ManualTimeStamping from '../../screens/timeStamping/ManualTimeStamping';
+import ManualTimeStamping from '../../screens/TimeStamping/ManualTimeStamping';
+import BarCodeScanner from '../../screens/TimeStamping/BarCodeScanner';
 import Analytics from '../../core/helpers/analytics';
 import Home from '../Home';
 
@@ -38,7 +39,7 @@ const AppNavigation = () => {
   };
 
   const authScreens = { Authentication, ForgotPassword, PasswordReset };
-  const userScreens = { Home, ManualTimeStamping, PasswordEdition, ProfileEdition };
+  const userScreens = { Home, ManualTimeStamping, BarCodeScanner, PasswordEdition, ProfileEdition };
 
   if (!appIsReady) return null;
 
