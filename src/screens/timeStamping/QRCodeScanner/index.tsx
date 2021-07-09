@@ -1,11 +1,17 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { GRANTED } from '../../../core/data/constants';
 
+interface BarCodeType {
+  type: typeof BarCodeScanner.Constants.BarCodeType,
+  data: string,
+}
+
 const QRCodeScanner = () => {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
+  const [scanned, setScanned] = useState<boolean>(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -28,14 +34,18 @@ const QRCodeScanner = () => {
     }, [])
   );
 
+  const handleBarCodeScanned = ({ type, data }: BarCodeType) => {
+    setScanned(true);
+    console.log('qrcode', { type, data });
+  };
+
   const openRejectionModal = () => {
-    console.log('ici');
+    console.log('skusku');
   };
 
   return (
-    <View>
-      {<Text>{hasPermission.toString()}</Text> }
-    </View>
+    <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+      style={StyleSheet.absoluteFillObject} />
   );
 };
 
