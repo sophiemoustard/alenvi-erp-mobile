@@ -20,7 +20,7 @@ const CameraAccessModal = ({ visible, onPressDismiss, onPressAskAgain }: CameraA
           <Text style={styles.buttonText}>{'J\'ai compris'}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={onPressAskAgain}>
-          <Text style={styles.buttonText}>{'Redemander l\'autorisation'}</Text>
+          <Text style={styles.buttonText}>{'Redemander'}</Text>
         </TouchableOpacity>
       </View>
     </>
