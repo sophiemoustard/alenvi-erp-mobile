@@ -37,9 +37,14 @@ const QRCodeScanner = () => {
     }, [])
   );
 
-  const handleBarCodeScanned = ({ type, data }: BarCodeType) => {
+  const handleBarCodeScanned = ({ data }: BarCodeType) => {
     setScanned(true);
-    console.log('qrcode', { type, data });
+    Alert.alert(
+      'Destruction de la prod en cours',
+      'Vous avez bien scanné le QRCode de destruction de la prod.'
+      + `\nVeuillez patienter...\n J'ai menti, le QR Code de ${data} est bien scanné.`,
+      [{ text: 'OK', onPress: () => setModalVisible(false) }], { cancelable: false }
+    );
   };
 
   const askPermissionAgain = async () => {
@@ -60,7 +65,7 @@ const QRCodeScanner = () => {
 
   return (hasPermission
     ? <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-      style={StyleSheet.absoluteFillObject} />
+      style={StyleSheet.absoluteFillObject} barCodeTypes={['org.iso.QRCode']}/>
     : (
       <View style={styles.screen}>
         <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
