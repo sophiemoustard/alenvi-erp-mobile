@@ -41,3 +41,6 @@ export const MANUAL_TIME_STAMPING = 'manual_time_stamping';
 // ERROR
 export const ERROR = 'error';
 export const WARNING = 'warning';
+
+// PERMISSIONS
+export const GRANTED = 'granted';

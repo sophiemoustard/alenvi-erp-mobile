@@ -5,27 +5,36 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 import { GRANTED } from '../../../core/data/constants';
 
 const QRCodeScanner = () => {
-  const [hasPermission, setHasPermission] = useState<string>();
+  const [hasPermission, setHasPermission] = useState<boolean>(false);
 
   useFocusEffect(
     useCallback(() => {
-      let isActive = true;
-      let finalStatus;
-      const status = await BarCodeScanner.getPermissionsAsync();
-      if (isActive && status !== GRANTED) finalStatus = await BarCodeScanner.requestPermissionsAsync();
-      if (isActive && finalStatus !== GRANTED) openModal(); // modale de rejet, qu'on créé dans la suite
-      if (isActive) setHasPermission(finalStatus === GRANTED);
-      return () => { isActive = false; };
+      (async () => {
+        let isActive = true;
+
+        let { status: finalStatus } = await BarCodeScanner.getPermissionsAsync();
+
+        if (isActive && finalStatus !== GRANTED) {
+          const { status: newStatus } = await BarCodeScanner.requestPermissionsAsync();
+          finalStatus = newStatus;
+        }
+
+        if (isActive && finalStatus !== GRANTED) openRejectionModal();
+
+        if (isActive) setHasPermission(finalStatus === GRANTED);
+
+        return () => { isActive = false; };
+      })();
     }, [])
   );
 
-  const openModal = () => {
+  const openRejectionModal = () => {
     console.log('ici');
   };
 
   return (
     <View>
-      <Text>Skusku</Text>
+      {<Text>{hasPermission.toString()}</Text> }
     </View>
   );
 };
