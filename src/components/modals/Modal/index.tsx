@@ -5,12 +5,13 @@ import styles from './styles';
 interface NiModalProps {
   visible: boolean,
   children: JSX.Element,
+  style?: Object,
   onRequestClose?: () => void,
 }
 
-const NiModal = ({ visible, children, onRequestClose }: NiModalProps) => (
+const NiModal = ({ visible, children, style, onRequestClose }: NiModalProps) => (
   <Modal visible={visible} transparent={true} onRequestClose={onRequestClose}>
-    <View style={styles.modalContainer}>
+    <View style={[styles.modalContainer, style]}>
       <View style={styles.modalContent}>
         {children}
       </View>

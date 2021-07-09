@@ -1,8 +1,10 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { GRANTED } from '../../../core/data/constants';
+import styles from './styles';
+import CameraAccessModal from '../../../components/modals/CameraAccessModal';
 
 interface BarCodeType {
   type: typeof BarCodeScanner.Constants.BarCodeType,
@@ -11,6 +13,7 @@ interface BarCodeType {
 
 const QRCodeScanner = () => {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [scanned, setScanned] = useState<boolean>(false);
 
   useFocusEffect(
@@ -25,7 +28,7 @@ const QRCodeScanner = () => {
           finalStatus = newStatus;
         }
 
-        if (isActive && finalStatus !== GRANTED) openRejectionModal();
+        if (isActive && finalStatus !== GRANTED) setModalVisible(true);
 
         if (isActive) setHasPermission(finalStatus === GRANTED);
 
@@ -39,13 +42,31 @@ const QRCodeScanner = () => {
     console.log('qrcode', { type, data });
   };
 
-  const openRejectionModal = () => {
-    console.log('skusku');
+  const askPermissionAgain = async () => {
+    const permission = await BarCodeScanner.requestPermissionsAsync();
+
+    if (!permission.canAskAgain) {
+      await Alert.alert(
+        'Accès refusé',
+        'Vérifie que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
+        [{ text: 'OK', onPress: () => setModalVisible(false) }], { cancelable: false }
+      );
+    }
+
+    if (permission.status !== GRANTED) setModalVisible(true);
+
+    setHasPermission(permission.status === GRANTED);
   };
 
-  return (
-    <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+  return (hasPermission
+    ? <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
       style={StyleSheet.absoluteFillObject} />
+    : (
+      <View style={styles.screen}>
+        <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
+          onPressAskAgain={askPermissionAgain} />
+      </View>
+    )
   );
 };
 
