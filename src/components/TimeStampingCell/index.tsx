@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, Dispatch } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
@@ -96,7 +96,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   const goToBarCodeScanner = () => {
     navigation.navigate(
-      'BarCodeScanner'
+      'QRCodeScanner'
     );
   };
 
