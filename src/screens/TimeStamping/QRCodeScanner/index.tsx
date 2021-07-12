@@ -7,7 +7,7 @@ import styles from './styles';
 import CameraAccessModal from '../../../components/modals/CameraAccessModal';
 
 interface BarCodeType {
-  type: typeof BarCodeScanner.Constants.BarCodeType,
+  type: string,
   data: string,
 }
 

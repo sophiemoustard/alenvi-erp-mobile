@@ -21,7 +21,7 @@ interface StateType {
 }
 interface ActionType {
   type: string,
-  payload: { event?: EventType, timeStampingHistories?: Array<EventHistoryType> }
+  payload: { event?: EventType, timeStampingHistories?: EventHistoryType[] }
 }
 
 const initialState = {
@@ -75,9 +75,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (event) dispatch({ type: SET_EVENT_INFOS, payload: { event } });
-  }, [event]);
+  useEffect(() => { if (event) dispatch({ type: SET_EVENT_INFOS, payload: { event } }); }, [event]);
 
   useEffect(() => {
     if (event.histories) {
@@ -94,11 +92,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     );
   };
 
-  const goToBarCodeScanner = () => {
-    navigation.navigate(
-      'QRCodeScanner'
-    );
-  };
+  const goToBarCodeScanner = () => navigation.navigate('QRCodeScanner');
 
   return (
     <View style={styles.cell}>
