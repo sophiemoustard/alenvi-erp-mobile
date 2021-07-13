@@ -21,7 +21,7 @@ interface StateType {
 }
 interface ActionType {
   type: string,
-  payload: { event?: EventType, timeStampingHistories?: EventHistoryType[] },
+  payload: { event?: EventType, startHourStamped?: boolean, endHourStamped?: boolean },
 }
 
 const initialState = {
@@ -48,10 +48,8 @@ const reducer = (state: StateType, action: ActionType): StateType => {
     case SET_TIMESTAMPED_INFOS:
       return {
         ...state,
-        startHourStamped: action.payload?.timeStampingHistories?.some((h: EventHistoryType) => !!h.update.startHour) ||
-          false,
-        endHourStamped: action.payload?.timeStampingHistories?.some((h: EventHistoryType) => !!h.update.endHour) ||
-          false,
+        startHourStamped: action.payload.startHourStamped || false,
+        endHourStamped: action.payload.endHourStamped || false,
       };
     default:
       return state;
@@ -81,7 +79,13 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     if (event.histories) {
       const timeStampingHistories = event.histories.filter((h: EventHistoryType) => h.action === MANUAL_TIME_STAMPING);
 
-      dispatch({ type: SET_TIMESTAMPED_INFOS, payload: { timeStampingHistories } });
+      dispatch({
+        type: SET_TIMESTAMPED_INFOS,
+        payload: {
+          startHourStamped: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.startHour) || false,
+          endHourStamped: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.endHour) || false,
+        },
+      });
     }
   }, [event.histories]);
 

@@ -20,7 +20,7 @@ const QRCodeScanner = () => {
     useCallback(() => {
       let isActive = true;
 
-      (async () => {
+      const requestPermission = async () => {
         let { status: finalStatus } = await BarCodeScanner.getPermissionsAsync();
 
         if (isActive && finalStatus !== GRANTED) {
@@ -31,7 +31,9 @@ const QRCodeScanner = () => {
         if (isActive && finalStatus !== GRANTED) setModalVisible(true);
 
         if (isActive) setHasPermission(finalStatus === GRANTED);
-      })();
+      };
+
+      requestPermission();
 
       return () => { isActive = false; };
     }, [])
@@ -40,9 +42,8 @@ const QRCodeScanner = () => {
   const handleBarCodeScanned = ({ data }: BarCodeType) => {
     setScanned(true);
     Alert.alert(
-      'Destruction de la prod en cours',
-      'Vous avez bien scanné le QRCode de destruction de la prod.'
-      + `\nVeuillez patienter...\n J'ai menti, le QR Code de ${data} est bien scanné.`,
+      'QR code scanné',
+      `Le QR Code de ${data} est bien scanné.`,
       [{ text: 'OK', onPress: () => setModalVisible(false) }], { cancelable: false }
     );
   };
