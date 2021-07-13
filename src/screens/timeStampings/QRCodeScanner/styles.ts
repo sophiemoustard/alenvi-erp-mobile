@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native';
-import { GREY } from '../../../styles/colors';
+import { BLACK } from '../../../styles/colors';
 
 export default StyleSheet.create({
   screen: {
-    backgroundColor: GREY[900],
+    backgroundColor: BLACK,
     flex: 1,
   },
 });

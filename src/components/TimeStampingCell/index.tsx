@@ -21,7 +21,7 @@ interface StateType {
 }
 interface ActionType {
   type: string,
-  payload: { event?: EventType, timeStampingHistories?: EventHistoryType[] }
+  payload: { event?: EventType, timeStampingHistories?: EventHistoryType[] },
 }
 
 const initialState = {
@@ -42,8 +42,8 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         ...state,
         civility: action.payload.event?.customer?.identity?.title || '',
         lastName: action.payload.event?.customer?.identity?.lastname || '',
-        startDate: new Date(action.payload.event?.startDate || ''),
-        endDate: new Date(action.payload.event?.endDate || ''),
+        startDate: action.payload.event?.startDate ? new Date(action.payload.event?.startDate) : null,
+        endDate: action.payload.event?.endDate ? new Date(action.payload.event?.endDate) : null,
       };
     case SET_TIMESTAMPED_INFOS:
       return {
@@ -54,7 +54,7 @@ const reducer = (state: StateType, action: ActionType): StateType => {
           false,
       };
     default:
-      return initialState;
+      return state;
   }
 };
 

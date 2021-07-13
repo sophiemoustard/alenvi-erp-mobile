@@ -10,7 +10,7 @@ export default StyleSheet.create({
   text: {
     ...FIRA_SANS_REGULAR.SM,
   },
-  buttons: {
+  buttonContainer: {
     justifyContent: 'space-between',
     flexDirection: 'row',
     marginTop: MARGIN.XL,

@@ -18,9 +18,9 @@ const QRCodeScanner = () => {
 
   useFocusEffect(
     useCallback(() => {
-      (async () => {
-        let isActive = true;
+      let isActive = true;
 
+      (async () => {
         let { status: finalStatus } = await BarCodeScanner.getPermissionsAsync();
 
         if (isActive && finalStatus !== GRANTED) {
@@ -31,9 +31,9 @@ const QRCodeScanner = () => {
         if (isActive && finalStatus !== GRANTED) setModalVisible(true);
 
         if (isActive) setHasPermission(finalStatus === GRANTED);
-
-        return () => { isActive = false; };
       })();
+
+      return () => { isActive = false; };
     }, [])
   );
 
@@ -53,7 +53,7 @@ const QRCodeScanner = () => {
     if (!permission.canAskAgain) {
       await Alert.alert(
         'Accès refusé',
-        'Vérifie que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
+        'Vérifiez que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
         [{ text: 'OK', onPress: () => setModalVisible(false) }], { cancelable: false }
       );
     }
@@ -65,7 +65,7 @@ const QRCodeScanner = () => {
 
   return (hasPermission
     ? <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-      style={StyleSheet.absoluteFillObject} barCodeTypes={['org.iso.QRCode']}/>
+      style={StyleSheet.absoluteFillObject} barCodeTypes={['org.iso.QRCode']} />
     : (
       <View style={styles.screen}>
         <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
