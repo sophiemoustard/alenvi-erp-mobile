@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { formatTime } from '../../../core/helpers/dates';
@@ -28,7 +28,7 @@ const optionList = [
 ];
 
 const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
-  const [currentTime] = useState<Date>(new Date());
+  const currentTime = useRef<Date>(new Date());
   const [civility, setCivility] = useState<string>(route.params.event?.customer?.identity?.title || '');
   const [lastname, setLastname] = useState<string>(
     route.params.event?.customer?.identity?.lastname.toUpperCase() || ''
@@ -88,7 +88,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
           <View style={styles.sectionDelimiter} />
           <View>
             <Text style={styles.subtitle}>Heure horodatée</Text>
-            <Text style={styles.info}>{formatTime(currentTime)}</Text>
+            <Text style={styles.info}>{formatTime(currentTime.current)}</Text>
           </View>
         </View>
         <View style={styles.reasons}>

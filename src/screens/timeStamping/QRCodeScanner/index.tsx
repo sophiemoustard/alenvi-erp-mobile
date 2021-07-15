@@ -1,10 +1,13 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, TouchableOpacity, Text } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { GRANTED } from '../../../core/data/constants';
 import styles from './styles';
+import { GRANTED } from '../../../core/data/constants';
 import CameraAccessModal from '../../../components/modals/CameraAccessModal';
+import FeatherButton from '../../../components/FeatherButton';
+import { WHITE } from '../../../styles/colors';
+import { ICON } from '../../../styles/metrics';
 
 interface BarCodeType {
   type: string,
@@ -64,15 +67,22 @@ const QRCodeScanner = () => {
     setHasPermission(permission.status === GRANTED);
   };
 
-  return (hasPermission
-    ? <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-      style={StyleSheet.absoluteFillObject} barCodeTypes={['org.iso.QRCode']} />
-    : (
-      <View style={styles.screen}>
-        <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
-          onPressAskAgain={askPermissionAgain} />
-      </View>
-    )
+  return (
+    <>
+      {hasPermission
+        ? <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          style={StyleSheet.absoluteFillObject} barCodeTypes={['org.iso.QRCode']} />
+        : <View style={styles.blackScreen}>
+          <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
+            onPressAskAgain={askPermissionAgain} />
+        </View>
+      }
+      <FeatherButton name='x-circle' onPress={() => {}} size={ICON.LG} color={WHITE} style={styles.closeButton} />
+      <Text style={styles.title}>{'Début de l\'intervention'}</Text>
+      <TouchableOpacity onPress={() => {}}>
+        <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
+      </TouchableOpacity>
+    </>
   );
 };
 
