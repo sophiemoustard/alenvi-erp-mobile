@@ -12,6 +12,7 @@ import { GREY } from '../../../styles/colors';
 import { errorType } from '../../../types/ErrorType';
 import styles from './styles';
 import Events, { timeStampEventPayloadType } from '../../../api/Events';
+import CustomerTimeCell from '../../../components/CustomerTimeCell';
 
 interface ManualTimeStampingProps {
   route: { params: { event: { _id: string, customer: { identity: any } }, eventStart: boolean, } },
@@ -28,11 +29,7 @@ const optionList = [
 ];
 
 const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
-  const currentTime = useRef<Date>(new Date());
-  const [civility, setCivility] = useState<string>(route.params.event?.customer?.identity?.title || '');
-  const [lastname, setLastname] = useState<string>(
-    route.params.event?.customer?.identity?.lastname.toUpperCase() || ''
-  );
+  const [identity, setIdentity] = useState({title: '', lastname: ''});
   const [title, setTitle] = useState<string>('');
   const [reason, setReason] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -42,8 +39,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    setCivility(route.params.event?.customer?.identity?.title || '');
-    setLastname(route.params.event?.customer?.identity?.lastname.toUpperCase() || '');
+    setIdentity(route.params.event?.customer?.identity);
     setTitle(route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention');
   }, [route.params]);
 
@@ -80,17 +76,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       <FeatherButton name='x-circle' onPress={goBack} size={ICON.MD} color={GREY[600]} />
       <ScrollView style={styles.container}>
         <Text style={styles.title}>{title}</Text>
-        <View style={styles.cell}>
-          <View style={styles.customerInfo}>
-            <Text style={styles.subtitle}>Bénéficiaire</Text>
-            <Text style={styles.info}>{CIVILITY_OPTIONS[civility]} {lastname}</Text>
-          </View>
-          <View style={styles.sectionDelimiter} />
-          <View>
-            <Text style={styles.subtitle}>Heure horodatée</Text>
-            <Text style={styles.info}>{formatTime(currentTime.current)}</Text>
-          </View>
-        </View>
+        <CustomerTimeCell identity={identity} />
         <View style={styles.reasons}>
           <Text style={styles.question}>Pourquoi horodatez-vous manuellement ?</Text>
           <NiRadioButtonList options={optionList} setOption={setReason} />
