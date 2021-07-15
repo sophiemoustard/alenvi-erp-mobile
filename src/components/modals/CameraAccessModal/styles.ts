@@ -5,7 +5,7 @@ import { FIRA_SANS_REGULAR } from '../../../styles/fonts';
 
 export default StyleSheet.create({
   container: {
-    margin: MARGIN.LG,
+    padding: MARGIN.LG,
   },
   text: {
     ...FIRA_SANS_REGULAR.SM,

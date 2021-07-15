@@ -8,6 +8,7 @@ import CameraAccessModal from '../../../components/modals/CameraAccessModal';
 import FeatherButton from '../../../components/FeatherButton';
 import { WHITE } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
+import CustomerTimeCell from '../../../components/CustomerTimeCell';
 
 interface BarCodeType {
   type: string,
@@ -69,19 +70,19 @@ const QRCodeScanner = () => {
 
   return (
     <>
-      {hasPermission
-        ? <BarCodeScanner onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-          style={StyleSheet.absoluteFillObject} barCodeTypes={['org.iso.QRCode']} />
-        : <View style={styles.blackScreen}>
-          <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
-            onPressAskAgain={askPermissionAgain} />
+      <BarCodeScanner onBarCodeScanned={scanned || !hasPermission ? undefined : handleBarCodeScanned}
+        style={[StyleSheet.absoluteFill, styles.container]} barCodeTypes={['org.iso.QRCode']}>
+        <View>
+          <FeatherButton name='x-circle' onPress={() => {}} size={ICON.LG} color={WHITE} style={styles.closeButton} />
+          <Text style={styles.title}>{'Début de l\'intervention'}</Text>
+          <CustomerTimeCell identity={{ title: 'mr', lastname: 'Skusku' }} style={styles.cell} />
         </View>
-      }
-      <FeatherButton name='x-circle' onPress={() => {}} size={ICON.LG} color={WHITE} style={styles.closeButton} />
-      <Text style={styles.title}>{'Début de l\'intervention'}</Text>
-      <TouchableOpacity onPress={() => {}}>
-        <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => {}}>
+          <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
+        </TouchableOpacity>
+        <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
+          onPressAskAgain={askPermissionAgain} />
+      </BarCodeScanner>
     </>
   );
 };

@@ -1,24 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef } from 'react';
 import { View, Text } from 'react-native';
 import { CIVILITY_OPTIONS } from '../../core/data/constants';
 import { formatTime } from '../../core/helpers/dates';
 import styles from './styles';
 
-const CustomerTimeCell = ({ identity }: { identity: {title: string, lastname: string} }) => {
-  const currentTime = useRef<Date>(new Date());
-  const [civility, setCivility] = useState<string>('');
-  const [lastname, setLastname] = useState<string>('');
+interface CustomerTimeCellProps {
+  identity: { civility: string, lastname: string },
+  style?: object
+}
 
-  useEffect(() => {
-    setCivility(identity.title);
-    setLastname(identity.lastname.toUpperCase());
-  }, [identity]);
+const CustomerTimeCell = ({ identity, style }: CustomerTimeCellProps) => {
+  const currentTime = useRef<Date>(new Date());
 
   return (
-    <View style={styles.cell}>
+    <View style={[styles.cell, style]}>
       <View style={styles.customerInfo}>
         <Text style={styles.subtitle}>Bénéficiaire</Text>
-        <Text style={styles.info}>{CIVILITY_OPTIONS[civility]} {lastname}</Text>
+        <Text style={styles.info}>{CIVILITY_OPTIONS[identity.civility]} {identity.lastname}</Text>
       </View>
       <View style={styles.sectionDelimiter} />
       <View>
