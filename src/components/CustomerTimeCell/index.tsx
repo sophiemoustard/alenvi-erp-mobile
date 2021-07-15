@@ -5,7 +5,7 @@ import { formatTime } from '../../core/helpers/dates';
 import styles from './styles';
 
 interface CustomerTimeCellProps {
-  identity: { civility: string, lastname: string },
+  identity: { title: string, lastname: string },
   style?: object
 }
 
@@ -16,7 +16,7 @@ const CustomerTimeCell = ({ identity, style }: CustomerTimeCellProps) => {
     <View style={[styles.cell, style]}>
       <View style={styles.customerInfo}>
         <Text style={styles.subtitle}>Bénéficiaire</Text>
-        <Text style={styles.info}>{CIVILITY_OPTIONS[identity.civility]} {identity.lastname}</Text>
+        <Text style={styles.info}>{CIVILITY_OPTIONS[identity.title]} {identity.lastname}</Text>
       </View>
       <View style={styles.sectionDelimiter} />
       <View>

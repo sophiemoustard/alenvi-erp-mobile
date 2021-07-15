@@ -96,7 +96,10 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     );
   };
 
-  const goToBarCodeScanner = () => navigation.navigate('QRCodeScanner');
+  const goToBarCodeScanner = () => navigation.navigate(
+    'QRCodeScanner',
+    { event: { _id: event._id, customer: { identity: event.customer.identity } } }
+  );
 
   return (
     <View style={styles.cell}>

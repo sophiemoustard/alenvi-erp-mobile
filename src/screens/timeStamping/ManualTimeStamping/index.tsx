@@ -15,7 +15,12 @@ import Events, { timeStampEventPayloadType } from '../../../api/Events';
 import CustomerTimeCell from '../../../components/CustomerTimeCell';
 
 interface ManualTimeStampingProps {
-  route: { params: { event: { _id: string, customer: { identity: any } }, eventStart: boolean, } },
+  route: {
+    params: {
+      event: { _id: string, customer: { identity: { title: string, lastname: string } } },
+      eventStart: boolean,
+    }
+  },
 }
 
 const QRCODE_MISSING = 'qrcode_missing';
@@ -29,7 +34,7 @@ const optionList = [
 ];
 
 const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
-  const [identity, setIdentity] = useState({title: '', lastname: ''});
+  const [identity, setIdentity] = useState({ title: '', lastname: '' });
   const [title, setTitle] = useState<string>('');
   const [reason, setReason] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
