@@ -24,12 +24,15 @@
       "bundleIdentifier": "com.compani.erp",
       "buildNumber": "0.1.2",
       "icon": "./assets/images/ios_icon.png",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Autorisez l'accès à votre caméra pour pouvoir scanner le QR code."
+      },
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "package": "com.compani.erp",
       "versionCode": 6,
-      "permissions": [],
+      "permissions": ["CAMERA"],
       "icon": "./assets/images/android_icon_old.png",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/android_icon.png",
