@@ -28,5 +28,10 @@ export default StyleSheet.create({
     color: WHITE,
     alignSelf: 'center',
     marginBottom: MARGIN.XL,
+    marginTop: MARGIN.LG,
+  },
+  scanOverlay: {
+    position: 'absolute',
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
 });
