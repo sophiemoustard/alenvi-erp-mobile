@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import { formatTime } from '../../../core/helpers/dates';
-import { CIVILITY_OPTIONS, ERROR, MANUAL_TIME_STAMPING, WARNING } from '../../../core/data/constants';
+import { ERROR, MANUAL_TIME_STAMPING, WARNING } from '../../../core/data/constants';
 import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';

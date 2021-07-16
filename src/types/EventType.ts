@@ -3,6 +3,7 @@ export type EventTypeEnum = 'intervention'| 'absence'| 'internal_hour' | 'unavai
 export type EventType = {
   _id: string,
   customer: {
+    _id: string,
     identity: {
       title: string,
       firstname: string,

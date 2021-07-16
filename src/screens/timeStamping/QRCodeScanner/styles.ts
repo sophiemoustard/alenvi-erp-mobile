@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { WHITE } from '../../../styles/colors';
+import { BLACK, WHITE } from '../../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../../styles/fonts';
 import { MARGIN } from '../../../styles/metrics';
 
@@ -7,9 +7,10 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
+    backgroundColor: BLACK,
   },
   closeButton: {
-    marginTop: MARGIN.MD,
+    marginTop: MARGIN.LG,
     marginLeft: MARGIN.MD,
   },
   title: {
@@ -26,6 +27,6 @@ export default StyleSheet.create({
     ...FIRA_SANS_REGULAR.MD,
     color: WHITE,
     alignSelf: 'center',
-    marginBottom: MARGIN.LG,
+    marginBottom: MARGIN.XL,
   },
 });
