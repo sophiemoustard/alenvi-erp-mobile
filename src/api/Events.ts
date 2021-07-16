@@ -12,12 +12,12 @@ export default {
     type: EventTypeEnum,
     isCancelled: boolean
   }) => {
-    const { baseURL } = Environment.getEnvVars();
+    const baseURL = await Environment.getBaseUrl();
     const events = await axiosLogged.get(`${baseURL}/events`, { params });
     return events.data.data.events;
   },
   timeStampEvent: async (id: string, data: timeStampEventPayloadType) => {
-    const { baseURL } = Environment.getEnvVars();
+    const baseURL = await Environment.getBaseUrl();
     await axiosLogged.put(`${baseURL}/events/${id}/timestamping`, data);
   },
 };

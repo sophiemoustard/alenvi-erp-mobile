@@ -50,6 +50,8 @@ const setUserId = async (id: string): Promise<void> => AsyncStorage.setItem('use
 
 const getUserId = async (): Promise<string|null> => AsyncStorage.getItem('userId');
 
+const removeUserId = async (): Promise<void> => AsyncStorage.removeItem('userId');
+
 export default {
   isTokenValid,
   setCompaniToken,
@@ -60,4 +62,5 @@ export default {
   removeRefreshToken,
   setUserId,
   getUserId,
+  removeUserId,
 };

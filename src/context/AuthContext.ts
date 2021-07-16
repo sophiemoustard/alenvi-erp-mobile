@@ -42,6 +42,7 @@ const signOut = (dispatch: React.Dispatch<ActionType>) => async () => {
   await Authentication.logOut();
   await asyncStorage.removeCompaniToken();
   await asyncStorage.removeRefreshToken();
+  await asyncStorage.removeUserId();
 
   dispatch({ type: 'signOut' });
 };
