@@ -2,14 +2,14 @@ import React from 'react';
 import { Text, View } from 'react-native';
 import styles from './styles';
 
-interface ErrorMessageProps {
+interface ErrorCellProps {
   message: string,
 }
 
-const ErrorModal = ({ message } : ErrorMessageProps) => (
+const ErrorCell = ({ message }: ErrorCellProps) => (
   <View style={styles.container}>
     <Text style={styles.message}>{message}</Text>
   </View>
 );
 
-export default ErrorModal;
+export default ErrorCell;

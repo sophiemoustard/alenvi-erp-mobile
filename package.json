@@ -40,7 +40,8 @@
     "expo-constants": "~11.0.1",
     "expo-device": "~3.3.0",
     "expo-updates": "~0.8.0",
-    "expo-barcode-scanner": "~10.2.2"
+    "expo-barcode-scanner": "~10.2.2",
+    "expo-camera": "~11.2.1"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

@@ -23,6 +23,13 @@ export default StyleSheet.create({
     alignSelf: 'center',
     marginHorizontal: MARGIN.LG,
   },
+  limitsContainer: {
+    alignItems: 'center',
+  },
+  limits: {
+    width: 250,
+    height: 250,
+  },
   manualTimeStampingButton: {
     ...FIRA_SANS_REGULAR.MD,
     color: WHITE,

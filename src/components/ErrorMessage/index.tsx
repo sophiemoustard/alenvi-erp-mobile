@@ -9,7 +9,7 @@ interface ErrorMessageProps {
   type?: errorType,
 }
 
-const ErrorMessage = ({ message, type = ERROR } : ErrorMessageProps) => (
+const ErrorMessage = ({ message, type = ERROR }: ErrorMessageProps) => (
   <Text style={styles(type).message}>{message}</Text>
 );
 
