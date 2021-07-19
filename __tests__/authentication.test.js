@@ -17,22 +17,26 @@ describe('authentication', () => {
   let loggedAxiosMock;
   let notLoggedAxiosMock;
   let getEnvVarsStub;
+  let getBaseUrlStub;
 
   beforeEach(() => {
     loggedAxiosMock = new MockAdapter(loggedAxios);
     notLoggedAxiosMock = new MockAdapter(notLoggedAxios);
     getEnvVarsStub = sinon.stub(Environment, 'getEnvVars');
+    getBaseUrlStub = sinon.stub(Environment, 'getBaseUrl');
   });
 
   afterEach(() => {
     loggedAxiosMock.restore();
     notLoggedAxiosMock.restore();
     getEnvVarsStub.restore();
+    getBaseUrlStub.restore();
     cleanup();
   });
 
   test('should connect user if right credentials', async () => {
     getEnvVarsStub.returns({ baseURL: 'test' });
+    getBaseUrlStub.returns('test');
 
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
       .reply(200, { data: { mustUpdate: false } })
@@ -79,6 +83,7 @@ describe('authentication', () => {
 
   test('should not connect user if wrong credentials', async () => {
     getEnvVarsStub.returns({ baseURL: 'test' });
+    getBaseUrlStub.returns('test');
 
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
       .reply(200, { data: { mustUpdate: false } })

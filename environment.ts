@@ -6,8 +6,17 @@ import localEnv from './env/env.local';
 import devEnv from './env/env.dev';
 // @ts-ignore
 import prodEnv from './env/env.prod';
+import asyncStorage from './src/core/helpers/asyncStorage';
 
-const getEnvVars = (): { baseURL: string, sentryKey: string } => {
+interface EnvVarsType {
+  baseURL: string,
+  sentryKey: string,
+  baseURLStaging: string,
+  testEmail: string,
+  testId: string,
+}
+
+const getEnvVars = (): EnvVarsType => {
   const env = Constants.manifest?.releaseChannel || '';
   if (__DEV__) return localEnv;
   if (/dev/.test(env)) return devEnv;
@@ -15,4 +24,15 @@ const getEnvVars = (): { baseURL: string, sentryKey: string } => {
   return localEnv;
 };
 
-export default { getEnvVars };
+const getBaseUrl = async (payload?: { email?: string, userId?: string }): Promise<string> => {
+  const { baseURLStaging, baseURL, testEmail, testId } = getEnvVars();
+
+  if (payload?.email === testEmail || payload?.userId === testId) return baseURLStaging;
+
+  const userId = await asyncStorage.getUserId();
+  if (testId === userId) return baseURLStaging;
+
+  return baseURL;
+};
+
+export default { getEnvVars, getBaseUrl };
