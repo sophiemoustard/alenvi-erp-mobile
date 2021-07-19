@@ -25,15 +25,6 @@ interface QRCodeScannerProps {
   }
 }
 
-const renderScanOverlay = () => (
-  <>
-    <View style={[styles.scanOverlay, { top: 0, left: 0, width: '15%', bottom: 0 }]} />
-    <View style={[styles.scanOverlay, { top: 0, left: '15%', right: '15%', height: '40%' }]} />
-    <View style={[styles.scanOverlay, { bottom: 0, left: '15%', right: '15%', height: '25%' }]} />
-    <View style={[styles.scanOverlay, { top: 0, right: 0, width: '15%', bottom: 0 }]} />
-  </>
-);
-
 const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -73,7 +64,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       setErrorMessage('');
 
       if (data !== route.params.event.customer._id) {
-        setErrorMessage('Le QR scanné ne correspond pas au bénéficiaire de l\'intervention');
+        setErrorMessage('Le QR code scanné ne correspond pas au bénéficiaire de l\'intervention');
         setScanned(false);
         setLoading(false);
         return;
@@ -131,7 +122,6 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       </View>
       <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} />
-      { renderScanOverlay() }
     </BarCodeScanner>
   );
 };
