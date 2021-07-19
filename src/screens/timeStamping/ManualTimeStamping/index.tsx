@@ -11,7 +11,7 @@ import { GREY } from '../../../styles/colors';
 import { errorType } from '../../../types/ErrorType';
 import styles from './styles';
 import Events, { timeStampEventPayloadType } from '../../../api/Events';
-import CustomerTimeCell from '../../../components/CustomerTimeCell';
+import EventInfoCell from '../../../components/EventInfoCell';
 
 interface ManualTimeStampingProps {
   route: {
@@ -80,7 +80,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       <FeatherButton name='x-circle' onPress={goBack} size={ICON.MD} color={GREY[600]} />
       <ScrollView style={styles.container}>
         <Text style={styles.title}>{title}</Text>
-        <CustomerTimeCell identity={identity} />
+        <EventInfoCell identity={identity} />
         <View style={styles.reasons}>
           <Text style={styles.question}>Pourquoi horodatez-vous manuellement ?</Text>
           <NiRadioButtonList options={optionList} setOption={setReason} />

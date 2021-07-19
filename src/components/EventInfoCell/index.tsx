@@ -4,12 +4,12 @@ import { CIVILITY_OPTIONS } from '../../core/data/constants';
 import { formatTime } from '../../core/helpers/dates';
 import styles from './styles';
 
-interface CustomerTimeCellProps {
+interface EventInfoCellProps {
   identity: { title: string, lastname: string },
   style?: object
 }
 
-const CustomerTimeCell = ({ identity, style }: CustomerTimeCellProps) => {
+const EventInfoCell = ({ identity, style }: EventInfoCellProps) => {
   const currentTime = useRef<Date>(new Date());
 
   return (
@@ -27,4 +27,4 @@ const CustomerTimeCell = ({ identity, style }: CustomerTimeCellProps) => {
   );
 };
 
-export default CustomerTimeCell;
+export default EventInfoCell;

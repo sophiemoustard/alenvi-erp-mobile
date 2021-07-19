@@ -8,7 +8,7 @@ import { ICON } from '../../../styles/metrics';
 import { GRANTED, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
 import CameraAccessModal from '../../../components/modals/CameraAccessModal';
 import FeatherButton from '../../../components/FeatherButton';
-import CustomerTimeCell from '../../../components/CustomerTimeCell';
+import EventInfoCell from '../../../components/EventInfoCell';
 import NiErrorModal from '../../../components/ErrorModal';
 import Events, { timeStampEventPayloadType } from '../../../api/Events';
 
@@ -111,7 +111,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       <View>
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
         <Text style={styles.title}>{'Début de l\'intervention'}</Text>
-        <CustomerTimeCell identity={route.params.event.customer.identity} style={styles.cell} />
+        <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
       </View>
       <View>
         {loading && <ActivityIndicator color={WHITE} size="small" />}
