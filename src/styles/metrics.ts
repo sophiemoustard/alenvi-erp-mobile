@@ -49,6 +49,7 @@ export const TAB_BAR_HEIGHT = 72;
 export const BUTTON_INTERVENTION_WIDTH = 128;
 
 export const SCREEN_HEIGHT = width < height ? height : width;
+export const SCREEN_WIDTH = width < height ? width : height;
 export const SMALL_SCREEN_MAX_HEIGHT = 568;
 export const IS_LARGE_SCREEN = SCREEN_HEIGHT > SMALL_SCREEN_MAX_HEIGHT;
 export const KEYBOARD_AVOIDING_VIEW_BEHAVIOR = Platform.OS === 'ios' ? 'padding' : 'height';

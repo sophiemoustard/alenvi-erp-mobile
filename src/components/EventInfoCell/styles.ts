@@ -23,10 +23,12 @@ export default StyleSheet.create({
   },
   subtitle: {
     ...FIRA_SANS_REGULAR.SM,
+    lineHeight: 16,
     color: GREY[700],
     marginBottom: MARGIN.SM,
   },
   info: {
     ...FIRA_SANS_MEDIUM.MD,
+    lineHeight: 24,
   },
 });
