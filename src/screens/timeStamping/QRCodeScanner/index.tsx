@@ -10,7 +10,7 @@ import CameraAccessModal from '../../../components/modals/CameraAccessModal';
 import FeatherButton from '../../../components/FeatherButton';
 import EventInfoCell from '../../../components/EventInfoCell';
 import NiErrorCell from '../../../components/ErrorCell';
-import Events, { timeStampEventPayloadType } from '../../../api/Events';
+import Events from '../../../api/Events';
 
 interface BarCodeType {
   type: string,
@@ -32,7 +32,7 @@ interface StateType {
 }
 interface ActionType {
   type: string,
-  payload?: { errorMessage: string },
+  payload?: string,
 }
 
 const SCANNING = 'scanning';
@@ -50,7 +50,7 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         errorMessage: 'Le QR code scanné ne correspond pas au bénéficiaire de l\'intervention',
       };
     case BAD_REQUEST:
-      return { loading: false, scanned: true, errorMessage: action.payload?.errorMessage || '' };
+      return { loading: false, scanned: true, errorMessage: action.payload || '' };
     default:
       return state;
   }
@@ -87,27 +87,23 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   );
 
   const handleBarCodeScanned = async ({ data }: BarCodeType) => {
-    dispatch({ type: SCANNING });
     try {
+      dispatch({ type: SCANNING });
+
       if (data !== route.params.event.customer._id) {
         dispatch({ type: WRONG_QR_CODE });
         return;
       }
 
-      const payload: timeStampEventPayloadType = { action: QR_CODE_TIME_STAMPING, startDate: new Date() };
-      await Events.timeStampEvent(route.params?.event?._id, payload);
+      await Events.timeStampEvent(route.params?.event?._id, { action: QR_CODE_TIME_STAMPING, startDate: new Date() });
 
       goBack();
     } catch (e) {
-      if ([409, 422].includes(e.response.status)) {
-        dispatch({ type: BAD_REQUEST, payload: { errorMessage: e.response.data.message } });
-      } else if ([404, 403].includes(e.response.status)) {
-        dispatch({ type: BAD_REQUEST, payload: { errorMessage: 'Vous ne pouvez pas horodater cet évènement.' } });
+      if ([409, 422].includes(e.response.status)) dispatch({ type: BAD_REQUEST, payload: e.response.data.message });
+      else if ([404, 403].includes(e.response.status)) {
+        dispatch({ type: BAD_REQUEST, payload: 'Vous ne pouvez pas horodater cet évènement.' });
       } else {
-        dispatch({
-          type: BAD_REQUEST,
-          payload: { errorMessage: 'Erreur, si le problème persiste, contactez le support technique.' },
-        });
+        dispatch({ type: BAD_REQUEST, payload: 'Erreur, si le problème persiste, contactez le support technique.' });
       }
     }
   };
@@ -143,7 +139,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
         <View style={styles.limitsContainer}>
           <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-limiter.png' }}
-            style={styles.limits} />
+            style={styles.limits} resizeMode='contain' />
         </View>
       </View>
       <View>
