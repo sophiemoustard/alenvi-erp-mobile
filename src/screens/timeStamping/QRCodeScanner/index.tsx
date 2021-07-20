@@ -136,12 +136,15 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
 
   return (
     <Camera onBarCodeScanned={!hasPermission || state.scanned || state.loading ? undefined : handleBarCodeScanned}
-      style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }}
-      type={Camera.Constants.Type.back}>
+      style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }}>
       <View>
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
         <Text style={styles.title}>{'Début de l\'intervention'}</Text>
         <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
+        <View style={styles.limitsContainer}>
+          <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-limiter.png' }}
+            style={styles.limits} />
+        </View>
       </View>
       <View>
         {state.loading && <ActivityIndicator color={WHITE} size="small" />}
@@ -152,10 +155,6 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       </View>
       <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} />
-      <View style={styles.backgroundContainer}>
-        <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-background.png' }}
-          style={styles.background}/>
-      </View>
     </Camera>
   );
 };
