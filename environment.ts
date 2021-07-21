@@ -27,7 +27,9 @@ const getEnvVars = (): EnvVarsType => {
 const getBaseUrl = async (payload?: { email?: string, userId?: string }): Promise<string> => {
   const { baseURLStaging, baseURL, testEmail, testId } = getEnvVars();
 
-  if (payload?.email === testEmail || payload?.userId === testId) return baseURLStaging;
+  if ((payload?.email && payload?.email === testEmail) || (payload?.userId && payload?.userId === testId)) {
+    return baseURLStaging;
+  }
 
   const userId = await asyncStorage.getUserId();
   if (testId === userId) return baseURLStaging;
