@@ -10,7 +10,7 @@ import CameraAccessModal from '../../../components/modals/CameraAccessModal';
 import FeatherButton from '../../../components/FeatherButton';
 import EventInfoCell from '../../../components/EventInfoCell';
 import NiErrorCell from '../../../components/ErrorCell';
-import Events from '../../../api/Events';
+import Events, { timeStampEventPayloadType } from '../../../api/Events';
 
 interface BarCodeType {
   type: string,
@@ -20,9 +20,10 @@ interface BarCodeType {
 interface QRCodeScannerProps {
   route: {
     params: {
-      event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } }
+      event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } },
+      eventStart: boolean,
     },
-  }
+  },
 }
 
 interface StateType {
@@ -95,7 +96,12 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         return;
       }
 
-      await Events.timeStampEvent(route.params?.event?._id, { action: QR_CODE_TIME_STAMPING, startDate: new Date() });
+      const payload: timeStampEventPayloadType = { action: QR_CODE_TIME_STAMPING };
+
+      if (route.params.eventStart) payload.startDate = new Date();
+      else payload.endDate = new Date();
+
+      await Events.timeStampEvent(route.params?.event?._id, payload);
 
       goBack();
     } catch (e) {

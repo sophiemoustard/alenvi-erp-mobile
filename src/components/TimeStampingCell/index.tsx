@@ -90,16 +90,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     }
   }, [event.histories]);
 
-  const goToManualTimeStamping = (eventStart: boolean) => {
-    navigation.navigate(
-      'ManualTimeStamping',
-      { event: { _id: event._id, customer: { identity: event.customer.identity } }, eventStart }
-    );
-  };
-
-  const goToBarCodeScanner = () => navigation.navigate(
+  const goToBarCodeScanner = (eventStart: boolean) => navigation.navigate(
     'QRCodeScanner',
-    { event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } } }
+    { event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } }, eventStart }
   );
 
   return (
@@ -115,8 +108,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           ? renderTimeStamp()
           : <>
             {!state.endHourStamped &&
-              <NiPrimaryButton title='Commencer' style={styles.button}
-                onPress={() => (__DEV__ ? goToBarCodeScanner() : goToManualTimeStamping(true))}/>}
+              <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => goToBarCodeScanner(true)} />}
           </>}
       </View>
       <View style={styles.sectionDelimiter} />
@@ -129,10 +121,10 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           ? renderTimeStamp()
           : <>
             {!state.startHourStamped &&
-              <NiSecondaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)}
+              <NiSecondaryButton title='Terminer' onPress={() => goToBarCodeScanner(false)}
                 style={styles.button} />}
             {state.startHourStamped &&
-              <NiPrimaryButton title='Terminer' onPress={() => goToManualTimeStamping(false)} style={styles.button} />}
+              <NiPrimaryButton title='Terminer' onPress={() => goToBarCodeScanner(false)} style={styles.button} />}
           </>}
       </View>
     </View>
