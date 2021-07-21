@@ -96,10 +96,11 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         return;
       }
 
-      const payload: timeStampEventPayloadType = { action: QR_CODE_TIME_STAMPING };
-
-      if (route.params.eventStart) payload.startDate = new Date();
-      else payload.endDate = new Date();
+      const payload: timeStampEventPayloadType = {
+        action: QR_CODE_TIME_STAMPING,
+        ...(route.params.eventStart && { startDate: new Date() }),
+        ...(!route.params.eventStart && { endDate: new Date() }),
+      };
 
       await Events.timeStampEvent(route.params?.event?._id, payload);
 
@@ -141,7 +142,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }}>
       <View>
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
-        <Text style={styles.title}>{'Début de l\'intervention'}</Text>
+        { route.params.eventStart && <Text style={styles.title}>{'Début de l\'intervention'}</Text> }
+        { !route.params.eventStart && <Text style={styles.title}>{'Fin de l\'intervention'}</Text> }
         <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
         <View style={styles.limitsContainer}>
           <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-limiter.png' }}
