@@ -8,8 +8,8 @@ import PasswordReset from '../../screens/PasswordReset';
 import PasswordEdition from '../../screens/PasswordEdition';
 import ForgotPassword from '../../screens/ForgotPassword';
 import ProfileEdition from '../../screens/ProfileEdition';
-import ManualTimeStamping from '../../screens/timeStampings/ManualTimeStamping';
-import QRCodeScanner from '../../screens/timeStampings/QRCodeScanner';
+import ManualTimeStamping from '../../screens/timeStamping/ManualTimeStamping';
+import QRCodeScanner from '../../screens/timeStamping/QRCodeScanner';
 import Analytics from '../../core/helpers/analytics';
 import Home from '../Home';
 

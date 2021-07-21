@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { formatTime } from '../../core/helpers/dates';
-import { CIVILITY_OPTIONS, MANUAL_TIME_STAMPING } from '../../core/data/constants';
+import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST } from '../../core/data/constants';
 import styles from './styles';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import NiPrimaryButton from '../form/PrimaryButton';
@@ -77,7 +77,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   useEffect(() => {
     if (event.histories) {
-      const timeStampingHistories = event.histories.filter((h: EventHistoryType) => h.action === MANUAL_TIME_STAMPING);
+      const timeStampingHistories = event.histories
+        .filter((h: EventHistoryType) => TIMESTAMPING_ACTION_TYPE_LIST.includes(h.action));
 
       dispatch({
         type: SET_TIMESTAMPED_INFOS,
@@ -96,7 +97,10 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     );
   };
 
-  const goToBarCodeScanner = () => navigation.navigate('QRCodeScanner');
+  const goToBarCodeScanner = () => navigation.navigate(
+    'QRCodeScanner',
+    { event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } } }
+  );
 
   return (
     <View style={styles.cell}>
