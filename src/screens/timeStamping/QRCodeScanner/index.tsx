@@ -1,5 +1,5 @@
-import React, { useCallback, useState, useReducer } from 'react';
-import { View, Alert, TouchableOpacity, Text, ActivityIndicator, Image } from 'react-native';
+import React, { useCallback, useState, useReducer, useRef } from 'react';
+import { View, Alert, TouchableOpacity, Text, ActivityIndicator, Image, Platform, Dimensions } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import styles from './styles';
@@ -56,10 +56,20 @@ const reducer = (state: StateType, action: ActionType): StateType => {
   }
 };
 
+const closerValue = (array: number[], value: number) => {
+  let tempCloserValue = array[0];
+  for (let i = 1; i < array.length; i += 1) {
+    if (Math.abs(array[i] - value) < (Math.abs(tempCloserValue - value))) tempCloserValue = array[i];
+  }
+  return tempCloserValue;
+};
+
 const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const [state, dispatch] = useReducer(reducer, { errorMessage: '', scanned: false, loading: false });
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const camera = useRef<Camera>(null);
+  const [ratio, setRatio] = useState<string | undefined>();
 
   const navigation = useNavigation();
 
@@ -130,9 +140,27 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     navigation.navigate('ManualTimeStamping', { event: route.params.event, eventStart });
   };
 
+  const setScreenDimension = async () => {
+    if (Platform.OS === 'ios' || !camera.current) return;
+
+    const { height, width } = Dimensions.get('window');
+    if (!width) return;
+    const screenRatio = height / width;
+    const supportedratios = await camera.current.getSupportedRatiosAsync();
+    const ratiosNumbers = supportedratios.map((supportedratio) => {
+      const values = supportedratio.split(':');
+      if (!values[1]) return 0;
+      return Number(values[0]) / Number(values[1]);
+    });
+
+    const index = ratiosNumbers.indexOf(closerValue(ratiosNumbers, screenRatio));
+    setRatio(supportedratios[index]);
+  };
+
   return (
     <Camera onBarCodeScanned={!hasPermission || state.scanned || state.loading ? undefined : handleBarCodeScanned}
-      style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }}>
+      style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }} ratio={ratio} ref={camera}
+      onCameraReady={setScreenDimension}>
       <View>
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
         <Text style={styles.title}>{'Début de l\'intervention'}</Text>
