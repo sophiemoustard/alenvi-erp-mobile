@@ -71,7 +71,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         let { status } = await Camera.getPermissionsAsync();
 
         if (isActive && status !== GRANTED) {
-          const { status: newStatus } = await Camera.requestPermissionsAsync();
+          const { status: newStatus } = await Camera.requestCameraPermissionsAsync();
           status = newStatus;
         }
 
@@ -139,7 +139,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
         <View style={styles.limitsContainer}>
           <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-limiter.png' }}
-            style={styles.limits} resizeMode='contain' />
+            style={styles.limits} />
         </View>
       </View>
       <View>

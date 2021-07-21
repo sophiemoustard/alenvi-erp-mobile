@@ -26,7 +26,6 @@
       "icon": "./assets/images/ios_icon.png",
       "infoPlist": {
         "NSCameraUsageDescription": "Autorisez l'accès à votre caméra pour pouvoir scanner le QR code.",
-        "NSMicrophoneUsageDescription": "Autorisez l'accès à votre caméra pour pouvoir scanner le QR code."
       },
       "googleServicesFile": "./GoogleService-Info.plist"
     },

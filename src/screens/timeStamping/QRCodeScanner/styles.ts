@@ -34,7 +34,6 @@ export default StyleSheet.create({
     ...FIRA_SANS_REGULAR.MD,
     color: WHITE,
     alignSelf: 'center',
-    marginBottom: MARGIN.LG,
-    marginTop: MARGIN.SM,
+    marginVertical: MARGIN.LG,
   },
 });
