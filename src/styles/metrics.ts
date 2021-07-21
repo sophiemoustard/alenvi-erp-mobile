@@ -42,6 +42,11 @@ export const ICON = {
   XXXL: 72,
 };
 
+export const LINE_HEIGHT = {
+  SM: 16,
+  MD: 24,
+};
+
 export const BUTTON_HEIGHT = 48;
 export const INPUT_HEIGHT = 48;
 export const BORDER_WIDTH = 1;
