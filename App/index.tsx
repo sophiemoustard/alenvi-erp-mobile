@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, StatusBar } from 'react-native';
-import TrackingTransparency, { PermissionStatus } from 'expo-tracking-transparency';
+import { Platform, View, StatusBar } from 'react-native';
+import {
+  getTrackingPermissionsAsync,
+  requestTrackingPermissionsAsync,
+  PermissionStatus,
+} from 'expo-tracking-transparency';
 import AppLoading from 'expo-app-loading';
 import * as Sentry from 'sentry-expo';
 import { Provider as AuthProvider } from '../src/context/AuthContext';
@@ -20,14 +24,15 @@ const App = () => {
 
   useEffect(() => {
     async function askPermission() {
-      let { status } = await TrackingTransparency.getTrackingPermissionsAsync();
+      let { status } = await getTrackingPermissionsAsync();
       if (status === PermissionStatus.UNDETERMINED) {
-        status = (await TrackingTransparency.requestTrackingPermissionsAsync()).status;
+        status = (await requestTrackingPermissionsAsync()).status;
       }
       setPermissionStatus(status);
     }
 
-    askPermission();
+    const osVersion = parseInt(Platform.Version.toString().match(/\d*/)?.[0] || '0', 10);
+    if (Platform.OS === 'ios' && osVersion >= 14) askPermission();
   }, []);
 
   useEffect(() => {

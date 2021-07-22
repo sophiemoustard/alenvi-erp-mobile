@@ -1,16 +1,23 @@
 import * as Analytics from 'expo-firebase-analytics';
-import TrackingTransparency, { PermissionStatus } from 'expo-tracking-transparency';
+import { Platform } from 'react-native';
+import { getTrackingPermissionsAsync, PermissionStatus } from 'expo-tracking-transparency';
 
 const logSessionStart = async () => {
-  const { status } = await TrackingTransparency.getTrackingPermissionsAsync();
-  if (status !== PermissionStatus.GRANTED) return;
+  const osVersion = parseInt(Platform.Version.toString().match(/\d*/)?.[0] || '0', 10);
+  if (Platform.OS === 'ios' && osVersion >= 14) {
+    const { status } = await getTrackingPermissionsAsync();
+    if (status !== PermissionStatus.GRANTED) return;
+  }
 
   Analytics.logEvent('session_start');
 };
 
 const logScreenView = async (screen: string) => {
-  const { status } = await TrackingTransparency.getTrackingPermissionsAsync();
-  if (status !== PermissionStatus.GRANTED) return;
+  const osVersion = parseInt(Platform.Version.toString().match(/\d*/)?.[0] || '0', 10);
+  if (Platform.OS === 'ios' && osVersion >= 14) {
+    const { status } = await getTrackingPermissionsAsync();
+    if (status !== PermissionStatus.GRANTED) return;
+  }
 
   Analytics.logEvent(
     'screen_view',
