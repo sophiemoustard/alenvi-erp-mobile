@@ -29,8 +29,8 @@ const App = () => {
       setPermissionStatus(status);
     }
 
-    askPermission();
-  }, []);
+    if (!firebaseAndSentryAllowed(permissionStatus)) askPermission();
+  }, [permissionStatus]);
 
   useEffect(() => {
     async function startAnalytics() { await Analytics.logSessionStart(); }
@@ -38,7 +38,7 @@ const App = () => {
 
     if (firebaseAndSentryAllowed(permissionStatus)) {
       const { sentryKey } = Environment.getEnvVars();
-      Sentry.init({ dsn: sentryKey, debug: true, enableInExpoDevelopment: true });
+      Sentry.init({ dsn: sentryKey, debug: false });
     }
   }, [permissionStatus]);
 
