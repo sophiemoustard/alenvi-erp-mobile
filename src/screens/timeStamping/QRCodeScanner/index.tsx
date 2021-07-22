@@ -127,7 +127,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   };
 
   const askPermissionAgain = async () => {
-    const permission = await Camera.requestPermissionsAsync();
+    const permission = await Camera.requestCameraPermissionsAsync();
 
     if (!permission.canAskAgain) {
       await Alert.alert(
@@ -135,10 +135,10 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         'Vérifiez que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
         [{ text: 'OK', onPress: () => setModalVisible(false) }], { cancelable: false }
       );
+      return;
     }
 
-    if (permission.status !== GRANTED) setModalVisible(true);
-
+    setModalVisible(permission.status !== GRANTED);
     setHasPermission(permission.status === GRANTED);
   };
 
