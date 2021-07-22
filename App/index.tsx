@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Platform, View, StatusBar } from 'react-native';
+import { View, StatusBar } from 'react-native';
 import {
   getTrackingPermissionsAsync,
   requestTrackingPermissionsAsync,
@@ -14,9 +14,7 @@ import styles from './styles';
 import AppContainer from '../src/AppContainer';
 import Environment from '../environment';
 import Analytics from '../src/core/helpers/analytics';
-
-const { sentryKey } = Environment.getEnvVars();
-Sentry.init({ dsn: sentryKey, debug: false });
+import { firebaseAndSentryAllowed } from '../src/core/helpers/utils';
 
 const App = () => {
   const [permissionStatus, setPermissionStatus] = useState<String>(PermissionStatus.UNDETERMINED);
@@ -31,13 +29,17 @@ const App = () => {
       setPermissionStatus(status);
     }
 
-    const osVersion = parseInt(Platform.Version.toString().match(/\d*/)?.[0] || '0', 10);
-    if (Platform.OS === 'ios' && osVersion >= 14) askPermission();
+    askPermission();
   }, []);
 
   useEffect(() => {
     async function startAnalytics() { await Analytics.logSessionStart(); }
     startAnalytics();
+
+    if (firebaseAndSentryAllowed(permissionStatus)) {
+      const { sentryKey } = Environment.getEnvVars();
+      Sentry.init({ dsn: sentryKey, debug: true, enableInExpoDevelopment: true });
+    }
   }, [permissionStatus]);
 
   if (!isAppReady) {
