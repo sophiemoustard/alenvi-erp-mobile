@@ -20,9 +20,10 @@ interface BarCodeType {
 interface QRCodeScannerProps {
   route: {
     params: {
-      event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } }
+      event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } },
+      eventStart: boolean,
     },
-  }
+  },
 }
 
 interface StateType {
@@ -105,7 +106,14 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         return;
       }
 
-      await Events.timeStampEvent(route.params?.event?._id, { action: QR_CODE_TIME_STAMPING, startDate: new Date() });
+      await Events.timeStampEvent(
+        route.params?.event?._id,
+        {
+          action: QR_CODE_TIME_STAMPING,
+          ...(route.params.eventStart && { startDate: new Date() }),
+          ...(!route.params.eventStart && { endDate: new Date() }),
+        }
+      );
 
       goBack();
     } catch (e) {
@@ -163,7 +171,9 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       onCameraReady={setScreenDimension}>
       <View>
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
-        <Text style={styles.title}>{'Début de l\'intervention'}</Text>
+        <Text style={styles.title}>
+          {route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention'}
+        </Text>
         <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
         <View style={styles.limitsContainer}>
           <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-limiter.png' }}
@@ -173,7 +183,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       <View>
         {state.loading && <ActivityIndicator color={WHITE} size="small" />}
         {!!state.errorMessage && <NiErrorCell message={state.errorMessage} />}
-        <TouchableOpacity onPress={() => goToManualTimeStamping(true)}>
+        <TouchableOpacity onPress={() => goToManualTimeStamping(route.params.eventStart)}>
           <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
         </TouchableOpacity>
       </View>
