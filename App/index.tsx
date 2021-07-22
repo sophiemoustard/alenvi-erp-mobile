@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StatusBar } from 'react-native';
+import TrackingTransparency, { PermissionStatus } from 'expo-tracking-transparency';
 import AppLoading from 'expo-app-loading';
 import * as Sentry from 'sentry-expo';
 import { Provider as AuthProvider } from '../src/context/AuthContext';
@@ -14,12 +15,25 @@ const { sentryKey } = Environment.getEnvVars();
 Sentry.init({ dsn: sentryKey, debug: false });
 
 const App = () => {
+  const [permissionStatus, setPermissionStatus] = useState<String>(PermissionStatus.UNDETERMINED);
   const [isAppReady, setIsAppReady] = useState<boolean>(false);
+
+  useEffect(() => {
+    async function askPermission() {
+      let { status } = await TrackingTransparency.getTrackingPermissionsAsync();
+      if (status === PermissionStatus.UNDETERMINED) {
+        status = (await TrackingTransparency.requestTrackingPermissionsAsync()).status;
+      }
+      setPermissionStatus(status);
+    }
+
+    askPermission();
+  }, []);
 
   useEffect(() => {
     async function startAnalytics() { await Analytics.logSessionStart(); }
     startAnalytics();
-  }, []);
+  }, [permissionStatus]);
 
   if (!isAppReady) {
     return <AppLoading startAsync={initializeAssets} onFinish={() => setIsAppReady(true)} onError={console.error} />;

@@ -22,18 +22,18 @@ const AppNavigation = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { tryLocalSignIn(); }, []);
 
-  const handleOnReadyNavigation = () => {
+  const handleOnReadyNavigation = async () => {
     const currentRouteName = navigationRef.current?.getCurrentRoute()?.name || '';
     routeNameRef.current = currentRouteName;
-    Analytics.logScreenView(currentRouteName);
+    await Analytics.logScreenView(currentRouteName);
   };
 
-  const handleNavigationStateChange = () => {
+  const handleNavigationStateChange = async () => {
     const prevRouteName = routeNameRef.current;
     const currentRouteName = navigationRef.current?.getCurrentRoute()?.name || '';
 
     if (prevRouteName !== currentRouteName) {
-      Analytics.logScreenView(currentRouteName);
+      await Analytics.logScreenView(currentRouteName);
       routeNameRef.current = currentRouteName;
     }
   };

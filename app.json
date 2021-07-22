@@ -26,6 +26,7 @@
       "icon": "./assets/images/ios_icon.png",
       "infoPlist": {
         "NSCameraUsageDescription": "Autorisez l'accès à votre caméra pour pouvoir scanner le QR code.",
+        "NSUserTrackingUsageDescription": "Cela nous permet de savoir s'il y a des bugs et de comprendre comment est utilisée l'application afin de l'améliorer."
       },
       "googleServicesFile": "./GoogleService-Info.plist"
     },
@@ -52,6 +53,7 @@
           }
         ]
       }
-    }
+    },
+    "plugins": ["expo-tracking-transparency"]
   }
 }
