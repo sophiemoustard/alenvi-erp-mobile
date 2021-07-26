@@ -62,7 +62,7 @@ const Input = ({
         <View style={inputStyle.inputContainer}>
           <TextInput style={inputStyle.input} onChangeText={onChangeText} onTouchStart={() => setIsSelected(true)}
             onBlur={() => setIsSelected(false)} secureTextEntry={secureTextEntry} keyboardType={keyboardType}
-            value={value} editable={!disabled} autoCapitalize={autoCapitalize} />
+            value={value} editable={!disabled} autoCapitalize={autoCapitalize} testID={caption} />
           {type === PASSWORD &&
             <NiFeatherButton name={iconName} style={inputStyle.icon} onPress={onPasswordIconPress} />}
         </View>

@@ -1,45 +1,131 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { View, Text } from 'react-native';
-import { displayMinutes } from '../../core/helpers/dates';
-import { CIVILITY_OPTIONS } from '../../core/data/constants';
+import { useNavigation } from '@react-navigation/native';
+import { Feather } from '@expo/vector-icons';
+import { formatTime } from '../../core/helpers/dates';
+import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST } from '../../core/data/constants';
 import styles from './styles';
-import { EventType } from '../../types/EventType';
+import { EventType, EventHistoryType } from '../../types/EventType';
+import NiPrimaryButton from '../form/PrimaryButton';
+import NiSecondaryButton from '../form/SecondaryButton';
+import { WHITE } from '../../styles/colors';
+import { ICON } from '../../styles/metrics';
+
+interface StateType {
+  civility: string,
+  lastName: string,
+  startDate: Date | null,
+  endDate: Date | null,
+  startHourStamped: boolean,
+  endHourStamped: boolean,
+}
+interface ActionType {
+  type: string,
+  payload: { event?: EventType, startHourStamped?: boolean, endHourStamped?: boolean },
+}
+
+const initialState = {
+  civility: '',
+  lastName: '',
+  startDate: null,
+  endDate: null,
+  startHourStamped: false,
+  endHourStamped: false,
+};
+const SET_EVENT_INFOS = 'setEventInfos';
+const SET_TIMESTAMPED_INFOS = 'setTimeStampedInfos';
+
+const reducer = (state: StateType, action: ActionType): StateType => {
+  switch (action.type) {
+    case SET_EVENT_INFOS:
+      return {
+        ...state,
+        civility: action.payload.event?.customer?.identity?.title || '',
+        lastName: action.payload.event?.customer?.identity?.lastname || '',
+        startDate: action.payload.event?.startDate ? new Date(action.payload.event?.startDate) : null,
+        endDate: action.payload.event?.endDate ? new Date(action.payload.event?.endDate) : null,
+      };
+    case SET_TIMESTAMPED_INFOS:
+      return {
+        ...state,
+        startHourStamped: action.payload.startHourStamped || false,
+        endHourStamped: action.payload.endHourStamped || false,
+      };
+    default:
+      return state;
+  }
+};
+
+const renderTimeStamp = () => (
+  <View style={styles.timeStampingContainer}>
+    <View style={styles.iconContainer}>
+      <Feather name='check' size={ICON.XS} color={WHITE} />
+    </View>
+    <Text style={styles.timeStamping}>Horodaté</Text>
+  </View>
+);
 
 interface TimeStampingProps {
   event: EventType,
 }
 
 const TimeStampingCell = ({ event }: TimeStampingProps) => {
-  const [civility, setCivility] = useState<string>('M');
-  const [lastName, setLastName] = useState<string>('');
-  const [startDate, setStartDate] = useState<Date|null>(null);
-  const [endDate, setEndDate] = useState<Date|null>(null);
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const navigation = useNavigation();
+
+  useEffect(() => { if (event) dispatch({ type: SET_EVENT_INFOS, payload: { event } }); }, [event]);
 
   useEffect(() => {
-    if (event) {
-      setCivility(event.customer?.identity?.title || '');
-      setLastName(event.customer?.identity?.lastname || '');
-      setEndDate(new Date(event.endDate));
-      setStartDate(new Date(event.startDate));
+    if (event.histories) {
+      const timeStampingHistories = event.histories
+        .filter((h: EventHistoryType) => TIMESTAMPING_ACTION_TYPE_LIST.includes(h.action));
+
+      dispatch({
+        type: SET_TIMESTAMPED_INFOS,
+        payload: {
+          startHourStamped: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.startHour) || false,
+          endHourStamped: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.endHour) || false,
+        },
+      });
     }
-  }, [setCivility, setLastName, setEndDate, setStartDate, event]);
+  }, [event.histories]);
+
+  const goToBarCodeScanner = (eventStart: boolean) => navigation.navigate(
+    'QRCodeScanner',
+    { event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } }, eventStart }
+  );
 
   return (
     <View style={styles.cell}>
-      <Text style={styles.title}>{CIVILITY_OPTIONS[civility]} {lastName.toUpperCase()}</Text>
+      <Text style={styles.title}>{CIVILITY_OPTIONS[state.civility]} {state.lastName.toUpperCase()}</Text>
       <View style={styles.sectionDelimiter} />
-      <View style={styles.view}>
-        <Text style={styles.timeTitle}>Début</Text>
-        {!!startDate &&
-          <Text style={styles.scheduledTime}>{startDate.getHours()}:{displayMinutes(startDate)}</Text>
-        }
+      <View style={styles.container}>
+        <View>
+          <Text style={styles.timeTitle}>Début</Text>
+          {!!state.startDate && <Text style={styles.scheduledTime}>{formatTime(state.startDate)}</Text>}
+        </View>
+        {state.startHourStamped
+          ? renderTimeStamp()
+          : <>
+            {!state.endHourStamped &&
+              <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => goToBarCodeScanner(true)} />}
+          </>}
       </View>
       <View style={styles.sectionDelimiter} />
-      <View style={styles.view}>
-        <Text style={styles.timeTitle}>Fin</Text>
-        {!!endDate &&
-          <Text style={styles.scheduledTime}>{endDate.getHours()}:{displayMinutes(endDate)}</Text>
-        }
+      <View style={styles.container}>
+        <View>
+          <Text style={styles.timeTitle}>Fin</Text>
+          {!!state.endDate && <Text style={styles.scheduledTime}>{formatTime(state.endDate)}</Text>}
+        </View>
+        {state.endHourStamped
+          ? renderTimeStamp()
+          : <>
+            {!state.startHourStamped &&
+              <NiSecondaryButton title='Terminer' onPress={() => goToBarCodeScanner(false)}
+                style={styles.button} />}
+            {state.startHourStamped &&
+              <NiPrimaryButton title='Terminer' onPress={() => goToBarCodeScanner(false)} style={styles.button} />}
+          </>}
       </View>
     </View>
   );

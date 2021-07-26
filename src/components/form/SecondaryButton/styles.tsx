@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { GREY } from '../../../styles/colors';
 import commonStyle from '../../../styles/common';
-import { BORDER_WIDTH } from '../../../styles/metrics';
+import { BORDER_WIDTH, PADDING } from '../../../styles/metrics';
 
 export default StyleSheet.create({
   button: {
@@ -9,6 +9,7 @@ export default StyleSheet.create({
     borderColor: GREY[600],
     backgroundColor: GREY[100],
     borderWidth: BORDER_WIDTH,
+    paddingHorizontal: PADDING.LG,
   },
   textButton: {
     ...commonStyle.textButton,

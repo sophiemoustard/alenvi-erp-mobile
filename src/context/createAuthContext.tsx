@@ -31,8 +31,7 @@ export default (
   defaultValue: StateType
 ): createAuthContextType => {
   const Provider = ({ children }: {children: React.ReactNode}) => {
-    const [{ companiToken, appIsReady, loggedUser }, dispatch] = useReducer(reducer, defaultValue);
-    const state = { companiToken, appIsReady, loggedUser };
+    const [state, dispatch] = useReducer(reducer, defaultValue);
 
     const boundFunctions: any = {};
     // eslint-disable-next-line guard-for-in, no-restricted-syntax

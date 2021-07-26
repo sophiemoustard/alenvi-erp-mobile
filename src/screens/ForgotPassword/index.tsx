@@ -7,6 +7,7 @@ import NiInput from '../../components/form/Input';
 import ExitModal from '../../components/modals/ExitModal';
 import ForgotPasswordModal from '../../components/modals/ForgotPasswordModal';
 import { EMAIL_REGEX } from '../../core/data/constants';
+import { formatEmailForPayload } from '../../core/helpers/utils';
 import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
 import { GREY } from '../../styles/colors';
 import { NavigationType } from '../../types/NavigationType';
@@ -52,7 +53,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
     try {
       if (!invalidEmail) {
         setIsLoading(true);
-        const exists = await Users.exists({ email });
+        const exists = await Users.exists({ email: formatEmailForPayload(email) });
         if (!exists) setErrorMessage('Oups ! Cet e-mail n\'est pas reconnu.');
         else setForgotPasswordModal(true);
       }

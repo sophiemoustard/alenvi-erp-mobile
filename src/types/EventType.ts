@@ -3,6 +3,7 @@ export type EventTypeEnum = 'intervention'| 'absence'| 'internal_hour' | 'unavai
 export type EventType = {
   _id: string,
   customer: {
+    _id: string,
     identity: {
       title: string,
       firstname: string,
@@ -11,4 +12,10 @@ export type EventType = {
   },
   startDate: Date,
   endDate: Date,
+  histories?: EventHistoryType[],
+};
+
+export type EventHistoryType = {
+  action: string,
+  update: { startHour?: Date, endHour?: Date },
 };

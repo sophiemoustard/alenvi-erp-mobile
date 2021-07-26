@@ -15,7 +15,7 @@ const AppContainer = () => {
   const [maintenanceModaleVisible, setMaintenanceModalVisible] = useState<boolean>(false);
   const [axiosInitialized, setAxiosInitialized] = useState<boolean>(false);
   const loggedAxiosInterceptorId = useRef<number | null>(null);
-  const { companiToken, refreshLoggedUser } = useContext(AuthContext);
+  const { refreshLoggedUser, companiToken } = useContext(AuthContext);
 
   const initializeNotLoggedAxios = () => {
     axiosNotLogged.interceptors.response.use(
@@ -68,8 +68,7 @@ const AppContainer = () => {
 
     initializeLoggedAxios(companiToken);
     if (companiToken) refreshUser();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [companiToken]);
+  }, [refreshLoggedUser, companiToken]);
 
   useEffect(() => {
     initializeNotLoggedAxios();

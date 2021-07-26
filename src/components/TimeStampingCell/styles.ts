@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
-import { GREY, WHITE } from '../../styles/colors';
+import { GREEN, GREY, WHITE } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
-import { BORDER_RADIUS, BORDER_WIDTH, MARGIN } from '../../styles/metrics';
+import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING, BUTTON_INTERVENTION_WIDTH, ICON } from '../../styles/metrics';
 
 export default StyleSheet.create({
   sectionDelimiter: {
-    borderWidth: BORDER_WIDTH,
+    borderTopWidth: BORDER_WIDTH,
     borderColor: GREY[200],
   },
   cell: {
@@ -15,8 +15,11 @@ export default StyleSheet.create({
     backgroundColor: WHITE,
     marginHorizontal: MARGIN.MD,
   },
-  view: {
-    margin: MARGIN.MD,
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: PADDING.LG,
   },
   title: {
     ...FIRA_SANS_BOLD.MD,
@@ -30,7 +33,29 @@ export default StyleSheet.create({
     marginBottom: MARGIN.SM,
   },
   scheduledTime: {
-    ...NUNITO_REGULAR.XL,
+    ...NUNITO_REGULAR.XXL,
     color: GREY[900],
+  },
+  button: {
+    width: BUTTON_INTERVENTION_WIDTH,
+  },
+  timeStamping: {
+    ...FIRA_SANS_REGULAR.MD,
+    color: GREEN[600],
+    marginLeft: MARGIN.SM,
+  },
+  timeStampingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    width: ICON.XL,
+    height: ICON.XL,
+    backgroundColor: GREEN[600],
+    borderRadius: BORDER_RADIUS.LG,
+    borderWidth: 4 * BORDER_WIDTH,
+    borderColor: GREEN[200],
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

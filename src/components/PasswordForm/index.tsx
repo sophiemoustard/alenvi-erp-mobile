@@ -53,12 +53,12 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
 
   useEffect(() => {
     if (!isValidationAttempted || isValidPassword) setPasswordError('');
-    else setPasswordError('Votre nouveau mot de passe et sa confirmation ne correspondent pas.');
+    else setPasswordError('Le mot de passe doit comporter au minimum 6 caractères.');
   }, [isValidationAttempted, isValidPassword]);
 
   useEffect(() => {
     if (!isValidationAttempted || isValidConfirmation) setConfirmationError('');
-    else setConfirmationError('Le mot de passe doit comporter au minimum 6 caractères.');
+    else setConfirmationError('Votre nouveau mot de passe et sa confirmation ne correspondent pas.');
   }, [isValidationAttempted, isValidConfirmation]);
 
   const toggleModal = () => setExitConfirmationModal(!exitConfirmationModal);
