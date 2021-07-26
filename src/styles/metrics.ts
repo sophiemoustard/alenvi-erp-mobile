@@ -57,4 +57,4 @@ export const SCREEN_HEIGHT = width < height ? height : width;
 export const SMALL_SCREEN_MAX_HEIGHT = 568;
 export const IS_LARGE_SCREEN = SCREEN_HEIGHT > SMALL_SCREEN_MAX_HEIGHT;
 export const KEYBOARD_AVOIDING_VIEW_BEHAVIOR = Platform.OS === 'ios' ? 'padding' : 'height';
-export const hitSlop = { top: 12, bottom: 12 };
+export const hitSlop = { top: 12, bottom: 12, left: 12, right: 12 };

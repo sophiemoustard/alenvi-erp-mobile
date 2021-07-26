@@ -22,8 +22,7 @@ const FeatherButton = ({
   style = {},
   disabled = false,
 } : FeatherButtonProps) => (
-  <TouchableOpacity style={style} onPress={onPress} hitSlop={{ ...hitSlop, left: 12, right: 12 }}
-    disabled={disabled}>
+  <TouchableOpacity style={style} onPress={onPress} hitSlop={hitSlop} disabled={disabled}>
     <Feather name={name} color={color} size={size} />
   </TouchableOpacity>
 );

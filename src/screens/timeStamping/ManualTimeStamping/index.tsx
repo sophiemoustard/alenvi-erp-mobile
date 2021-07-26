@@ -16,7 +16,7 @@ import EventInfoCell from '../../../components/EventInfoCell';
 interface ManualTimeStampingProps {
   route: {
     params: {
-      event: { _id: string, customer: { identity: { title: string, lastname: string } } },
+      event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } },
       eventStart: boolean,
     }
   },
@@ -49,7 +49,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
 
   const goBack = () => navigation.navigate('Home');
 
-  const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner');
+  const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner', route.params);
 
   const timeStampEvent = async () => {
     try {
