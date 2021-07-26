@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { ERROR, MANUAL_TIME_STAMPING, WARNING } from '../../../core/data/constants';
 import NiRadioButtonList from '../../../components/RadioButtonList';
@@ -49,6 +49,8 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
 
   const goBack = () => navigation.navigate('Home');
 
+  const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner');
+
   const timeStampEvent = async () => {
     try {
       setLoading(true);
@@ -89,6 +91,9 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       </ScrollView>
       <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} onPress={timeStampEvent}
         loading={loading} />
+      <TouchableOpacity onPress={() => goToQRCodeScanner()}>
+        <Text style={styles.QRCodeTimeStampingButton}>{'Scanner le QR code avec l\'appareil photo'}</Text>
+      </TouchableOpacity>
     </View>
   );
 };

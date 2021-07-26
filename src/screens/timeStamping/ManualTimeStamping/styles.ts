@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { FIRA_SANS_BOLD, FIRA_SANS_MEDIUM } from '../../../styles/fonts';
+import { BLACK } from '../../../styles/colors';
+import { FIRA_SANS_BOLD, FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR } from '../../../styles/fonts';
 import { MARGIN } from '../../../styles/metrics';
 
 export default StyleSheet.create({
@@ -25,5 +26,11 @@ export default StyleSheet.create({
   },
   reasons: {
     marginBottom: MARGIN.SM,
+  },
+  QRCodeTimeStampingButton: {
+    ...FIRA_SANS_REGULAR.MD,
+    color: BLACK,
+    alignSelf: 'center',
+    marginVertical: MARGIN.LG,
   },
 });
