@@ -31,7 +31,7 @@ export default StyleSheet.create({
     height: 250,
   },
   manualTimeStampingButton: {
-    ...FIRA_SANS_REGULAR.MD,
+    ...FIRA_SANS_REGULAR.SM,
     color: WHITE,
     alignSelf: 'center',
     marginVertical: MARGIN.LG,

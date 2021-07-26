@@ -6,7 +6,7 @@ import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
-import { ICON } from '../../../styles/metrics';
+import { hitSlop, ICON } from '../../../styles/metrics';
 import { GREY } from '../../../styles/colors';
 import { errorType } from '../../../types/ErrorType';
 import styles from './styles';
@@ -89,10 +89,9 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
         </View>
         {!!errorMessage && <NiErrorMessage message={errorMessage} type={type} />}
       </ScrollView>
-      <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} onPress={timeStampEvent}
-        loading={loading} />
-      <TouchableOpacity onPress={() => goToQRCodeScanner()}>
-        <Text style={styles.QRCodeTimeStampingButton}>{'Scanner le QR code avec l\'appareil photo'}</Text>
+      <NiPrimaryButton title='Valider et horodater' onPress={timeStampEvent} loading={loading} />
+      <TouchableOpacity onPress={goToQRCodeScanner} hitSlop={hitSlop} >
+        <Text style={styles.QRCodeTimeStampingButton}>Scanner le QR code avec l&apos;appareil photo</Text>
       </TouchableOpacity>
     </View>
   );

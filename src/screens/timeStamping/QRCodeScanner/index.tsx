@@ -4,7 +4,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import styles from './styles';
 import { WHITE } from '../../../styles/colors';
-import { ICON } from '../../../styles/metrics';
+import { hitSlop, ICON } from '../../../styles/metrics';
 import { GRANTED, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
 import CameraAccessModal from '../../../components/modals/CameraAccessModal';
 import FeatherButton from '../../../components/FeatherButton';
@@ -183,7 +183,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       <View>
         {state.loading && <ActivityIndicator color={WHITE} size="small" />}
         {!!state.errorMessage && <NiErrorCell message={state.errorMessage} />}
-        <TouchableOpacity onPress={() => goToManualTimeStamping(route.params.eventStart)}>
+        <TouchableOpacity onPress={() => goToManualTimeStamping(route.params.eventStart)} hitSlop={hitSlop}>
           <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
         </TouchableOpacity>
       </View>

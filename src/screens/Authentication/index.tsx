@@ -8,7 +8,7 @@ import NiErrorMessage from '../../components/ErrorMessage';
 import styles from './styles';
 import { PASSWORD, EMAIL } from '../../core/data/constants';
 import { NavigationType } from '../../types/NavigationType';
-import { KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
+import { hitSlop, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
 
 interface AuthenticationProps {
   navigation: NavigationType,
@@ -44,7 +44,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
         <NiInput caption='Email' type={EMAIL} onChangeText={setEmail} value={email} darkMode />
         <NiInput caption='Mot de Passe' type={PASSWORD} onChangeText={setPassword} value={password} darkMode />
         <NiErrorMessage message={errorMessage} />
-        <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={{ top: 12, bottom: 12 }}>
+        <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={hitSlop}>
           <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
         </TouchableOpacity>
         <NiPrimaryButton style={styles.primaryButton} title='Se connecter' onPress={login} />
