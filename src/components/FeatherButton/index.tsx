@@ -2,7 +2,7 @@ import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { BLACK } from '../../styles/colors';
-import { ICON } from '../../styles/metrics';
+import { hitSlop, ICON } from '../../styles/metrics';
 import { FeatherType } from '../../types/IconType';
 
 interface FeatherButtonProps {
@@ -22,8 +22,7 @@ const FeatherButton = ({
   style = {},
   disabled = false,
 } : FeatherButtonProps) => (
-  <TouchableOpacity style={style} onPress={onPress} hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
-    disabled={disabled}>
+  <TouchableOpacity style={style} onPress={onPress} hitSlop={hitSlop} disabled={disabled}>
     <Feather name={name} color={color} size={size} />
   </TouchableOpacity>
 );

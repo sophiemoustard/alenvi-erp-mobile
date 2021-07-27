@@ -1,10 +1,10 @@
 import React, { useCallback, useState, useReducer, useRef } from 'react';
 import { View, Alert, TouchableOpacity, Text, ActivityIndicator, Image, Platform, Dimensions } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import styles from './styles';
 import { WHITE } from '../../../styles/colors';
-import { ICON } from '../../../styles/metrics';
+import { hitSlop, ICON } from '../../../styles/metrics';
 import { GRANTED, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
 import CameraAccessModal from '../../../components/modals/CameraAccessModal';
 import FeatherButton from '../../../components/FeatherButton';
@@ -69,8 +69,9 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const [state, dispatch] = useReducer(reducer, { errorMessage: '', scanned: false, loading: false });
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const camera = useRef<Camera>(null);
+  const camera = useRef<Camera | null>(null);
   const [ratio, setRatio] = useState<string | undefined>();
+  const isFocused = useIsFocused();
 
   const navigation = useNavigation();
 
@@ -165,10 +166,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     setRatio(supportedratios[index]);
   };
 
-  return (
-    <Camera onBarCodeScanned={!hasPermission || state.scanned || state.loading ? undefined : handleBarCodeScanned}
-      style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }} ratio={ratio} ref={camera}
-      onCameraReady={setScreenDimension}>
+  const displayEventInfos = () => (
+    <>
       <View>
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
         <Text style={styles.title}>
@@ -183,13 +182,25 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       <View>
         {state.loading && <ActivityIndicator color={WHITE} size="small" />}
         {!!state.errorMessage && <NiErrorCell message={state.errorMessage} />}
-        <TouchableOpacity onPress={() => goToManualTimeStamping(route.params.eventStart)}>
+        <TouchableOpacity onPress={() => goToManualTimeStamping(route.params.eventStart)} hitSlop={hitSlop}>
           <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
         </TouchableOpacity>
       </View>
-      <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
-        onPressAskAgain={askPermissionAgain} />
-    </Camera>
+    </>
+  );
+
+  return (
+    <>
+      {isFocused &&
+        <Camera onBarCodeScanned={!hasPermission || state.scanned || state.loading ? undefined : handleBarCodeScanned}
+          style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }} ratio={ratio}
+          ref={camera} onCameraReady={setScreenDimension}>
+          {displayEventInfos()}
+          <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
+            onPressAskAgain={askPermissionAgain} />
+        </Camera>}
+      {!isFocused && <View style={styles.container}>{displayEventInfos()}</View>}
+    </>
   );
 };
 
