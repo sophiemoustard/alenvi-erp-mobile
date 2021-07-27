@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { BLACK, WHITE } from '../../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../../styles/fonts';
-import { MARGIN } from '../../../styles/metrics';
+import { MARGIN, SCREEN_HEIGHT } from '../../../styles/metrics';
 
 export default StyleSheet.create({
   container: {
@@ -35,5 +35,9 @@ export default StyleSheet.create({
     color: WHITE,
     alignSelf: 'center',
     marginVertical: MARGIN.LG,
+  },
+  eventInfos: {
+    backgroundColor: BLACK,
+    height: SCREEN_HEIGHT,
   },
 });

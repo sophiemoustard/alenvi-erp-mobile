@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useReducer, useRef } from 'react';
 import { View, Alert, TouchableOpacity, Text, ActivityIndicator, Image, Platform, Dimensions } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import styles from './styles';
 import { WHITE } from '../../../styles/colors';
@@ -69,8 +69,9 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const [state, dispatch] = useReducer(reducer, { errorMessage: '', scanned: false, loading: false });
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const camera = useRef<Camera>(null);
+  const camera = useRef<Camera | null>(null);
   const [ratio, setRatio] = useState<string | undefined>();
+  const isFocused = useIsFocused();
 
   const navigation = useNavigation();
 
@@ -165,10 +166,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     setRatio(supportedratios[index]);
   };
 
-  return (
-    <Camera onBarCodeScanned={!hasPermission || state.scanned || state.loading ? undefined : handleBarCodeScanned}
-      style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }} ratio={ratio} ref={camera}
-      onCameraReady={setScreenDimension}>
+  const displayEventInfos = (style:Object) => (
+    <View style={style}>
       <View>
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
         <Text style={styles.title}>
@@ -187,9 +186,21 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
           <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
         </TouchableOpacity>
       </View>
-      <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
-        onPressAskAgain={askPermissionAgain} />
-    </Camera>
+    </View>
+  );
+
+  return (
+    <>
+      {isFocused &&
+      <Camera onBarCodeScanned={!hasPermission || state.scanned || state.loading ? undefined : handleBarCodeScanned}
+        style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }} ratio={ratio}
+        ref={camera} onCameraReady={setScreenDimension}>
+        {displayEventInfos(styles.container)}
+        <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
+          onPressAskAgain={askPermissionAgain} />
+      </Camera>}
+      {!isFocused && displayEventInfos(styles.eventInfos)}
+    </>
   );
 };
 
