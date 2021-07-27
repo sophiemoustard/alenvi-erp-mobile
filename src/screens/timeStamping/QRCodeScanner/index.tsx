@@ -166,8 +166,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     setRatio(supportedratios[index]);
   };
 
-  const displayEventInfos = (style:Object) => (
-    <View style={style}>
+  const displayEventInfos = () => (
+    <>
       <View>
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
         <Text style={styles.title}>
@@ -186,20 +186,20 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
           <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </>
   );
 
   return (
     <>
       {isFocused &&
-      <Camera onBarCodeScanned={!hasPermission || state.scanned || state.loading ? undefined : handleBarCodeScanned}
-        style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }} ratio={ratio}
-        ref={camera} onCameraReady={setScreenDimension}>
-        {displayEventInfos(styles.container)}
-        <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
-          onPressAskAgain={askPermissionAgain} />
-      </Camera>}
-      {!isFocused && displayEventInfos(styles.eventInfos)}
+        <Camera onBarCodeScanned={!hasPermission || state.scanned || state.loading ? undefined : handleBarCodeScanned}
+          style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }} ratio={ratio}
+          ref={camera} onCameraReady={setScreenDimension}>
+          {displayEventInfos()}
+          <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
+            onPressAskAgain={askPermissionAgain} />
+        </Camera>}
+      {!isFocused && <View style={styles.container}>{displayEventInfos()}</View>}
     </>
   );
 };
