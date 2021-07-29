@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, ScrollView } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { ERROR, MANUAL_TIME_STAMPING, WARNING } from '../../../core/data/constants';
 import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
-import { ICON } from '../../../styles/metrics';
+import { hitSlop, ICON } from '../../../styles/metrics';
 import { GREY } from '../../../styles/colors';
 import { errorType } from '../../../types/ErrorType';
 import styles from './styles';
@@ -16,7 +16,7 @@ import EventInfoCell from '../../../components/EventInfoCell';
 interface ManualTimeStampingProps {
   route: {
     params: {
-      event: { _id: string, customer: { identity: { title: string, lastname: string } } },
+      event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } },
       eventStart: boolean,
     }
   },
@@ -48,6 +48,8 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   }, [route.params]);
 
   const goBack = () => navigation.navigate('Home');
+
+  const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner', route.params);
 
   const timeStampEvent = async () => {
     try {
@@ -87,8 +89,10 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
         </View>
         {!!errorMessage && <NiErrorMessage message={errorMessage} type={type} />}
       </ScrollView>
-      <NiPrimaryButton title='Valider et horodater' style={styles.submitButton} onPress={timeStampEvent}
-        loading={loading} />
+      <NiPrimaryButton title='Valider et horodater' onPress={timeStampEvent} loading={loading} />
+      <TouchableOpacity onPress={goToQRCodeScanner} hitSlop={hitSlop} >
+        <Text style={styles.QRCodeTimeStampingButton}>Scanner le QR code avec l&apos;appareil photo</Text>
+      </TouchableOpacity>
     </View>
   );
 };
