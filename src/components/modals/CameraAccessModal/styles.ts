@@ -8,7 +8,7 @@ export default StyleSheet.create({
     padding: PADDING.XL,
   },
   text: {
-    ...FIRA_SANS_REGULAR.SM,
+    ...FIRA_SANS_REGULAR.MD,
   },
   buttonContainer: {
     justifyContent: 'space-between',
