@@ -73,7 +73,6 @@ interface TimeStampingProps {
 
 const TimeStampingCell = ({ event }: TimeStampingProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const navigation = useNavigation();
@@ -100,7 +99,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     { event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } }, eventStart }
   );
 
-  const requestPermission = async () => {
+  const requestPermission = async (eventStart:boolean) => {
     let { status } = await Camera.getPermissionsAsync();
 
     if (status !== GRANTED) {
@@ -108,8 +107,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       status = newStatus;
     }
 
+    if (status === GRANTED) goToBarCodeScanner(eventStart);
+
     setModalVisible(status !== GRANTED);
-    setHasPermission(status === GRANTED);
   };
 
   const askPermissionAgain = async () => {
@@ -125,12 +125,6 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     }
 
     setModalVisible(permission.status !== GRANTED);
-    setHasPermission(permission.status === GRANTED);
-  };
-
-  const startTimeStamping = async (eventStart: boolean) => {
-    await requestPermission();
-    if (hasPermission) goToBarCodeScanner(eventStart);
   };
 
   return (
@@ -148,7 +142,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           ? renderTimeStamp()
           : <>
             {!state.endHourStamped &&
-              <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => startTimeStamping(true)} />}
+              <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => requestPermission(true)} />}
           </>}
       </View>
       <View style={styles.sectionDelimiter} />
@@ -161,9 +155,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           ? renderTimeStamp()
           : <>
             {!state.startHourStamped &&
-              <NiSecondaryButton title='Terminer' onPress={() => startTimeStamping(false)} style={styles.button} />}
+              <NiSecondaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
             {state.startHourStamped &&
-              <NiPrimaryButton title='Terminer' onPress={() => startTimeStamping(false)} style={styles.button} />}
+              <NiPrimaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
           </>}
       </View>
     </View>
