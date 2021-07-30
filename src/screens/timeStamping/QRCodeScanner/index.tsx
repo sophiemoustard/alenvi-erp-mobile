@@ -1,12 +1,11 @@
-import React, { useCallback, useState, useReducer, useRef } from 'react';
-import { View, Alert, TouchableOpacity, Text, ActivityIndicator, Image, Platform, Dimensions } from 'react-native';
-import { useFocusEffect, useNavigation, useIsFocused } from '@react-navigation/native';
+import React, { useState, useReducer, useRef } from 'react';
+import { View, TouchableOpacity, Text, ActivityIndicator, Image, Platform, Dimensions } from 'react-native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import styles from './styles';
 import { WHITE } from '../../../styles/colors';
 import { hitSlop, ICON } from '../../../styles/metrics';
-import { GRANTED, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
-import CameraAccessModal from '../../../components/modals/CameraAccessModal';
+import { QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
 import FeatherButton from '../../../components/FeatherButton';
 import EventInfoCell from '../../../components/EventInfoCell';
 import NiErrorCell from '../../../components/ErrorCell';
@@ -67,36 +66,11 @@ const closerValue = (array: number[], value: number) => {
 
 const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const [state, dispatch] = useReducer(reducer, { errorMessage: '', scanned: false, loading: false });
-  const [hasPermission, setHasPermission] = useState<boolean>(false);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const camera = useRef<Camera | null>(null);
   const [ratio, setRatio] = useState<string | undefined>();
   const isFocused = useIsFocused();
 
   const navigation = useNavigation();
-
-  useFocusEffect(
-    useCallback(() => {
-      let isActive = true;
-
-      const requestPermission = async () => {
-        let { status } = await Camera.getPermissionsAsync();
-
-        if (isActive && status !== GRANTED) {
-          const { status: newStatus } = await Camera.requestCameraPermissionsAsync();
-          status = newStatus;
-        }
-
-        if (isActive && status !== GRANTED) setModalVisible(true);
-
-        if (isActive) setHasPermission(status === GRANTED);
-      };
-
-      requestPermission();
-
-      return () => { isActive = false; };
-    }, [])
-  );
 
   const handleBarCodeScanned = async ({ data }: BarCodeType) => {
     try {
@@ -125,22 +99,6 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         dispatch({ type: BAD_REQUEST, payload: 'Erreur, si le problème persiste, contactez le support technique.' });
       }
     }
-  };
-
-  const askPermissionAgain = async () => {
-    const permission = await Camera.requestCameraPermissionsAsync();
-
-    if (!permission.canAskAgain) {
-      await Alert.alert(
-        'Accès refusé',
-        'Vérifiez que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
-        [{ text: 'OK', onPress: () => setModalVisible(false) }], { cancelable: false }
-      );
-      return;
-    }
-
-    setModalVisible(permission.status !== GRANTED);
-    setHasPermission(permission.status === GRANTED);
   };
 
   const goBack = () => navigation.navigate('Home');
@@ -192,12 +150,10 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   return (
     <>
       {isFocused &&
-        <Camera onBarCodeScanned={!hasPermission || state.scanned || state.loading ? undefined : handleBarCodeScanned}
+        <Camera onBarCodeScanned={ state.scanned || state.loading ? undefined : handleBarCodeScanned}
           style={styles.container} barCodeScannerSettings={{ barCodeTypes: ['org.iso.QRCode'] }} ratio={ratio}
           ref={camera} onCameraReady={setScreenDimension}>
           {displayEventInfos()}
-          <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
-            onPressAskAgain={askPermissionAgain} />
         </Camera>}
       {!isFocused && <View style={styles.container}>{displayEventInfos()}</View>}
     </>

@@ -1,11 +1,13 @@
-import React, { useEffect, useReducer } from 'react';
-import { View, Text } from 'react-native';
+import React, { useEffect, useReducer, useState } from 'react';
+import { View, Text, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Camera } from 'expo-camera';
 import { Feather } from '@expo/vector-icons';
 import { formatTime } from '../../core/helpers/dates';
-import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST } from '../../core/data/constants';
+import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
 import styles from './styles';
 import { EventType, EventHistoryType } from '../../types/EventType';
+import CameraAccessModal from '../../components/modals/CameraAccessModal';
 import NiPrimaryButton from '../form/PrimaryButton';
 import NiSecondaryButton from '../form/SecondaryButton';
 import { WHITE } from '../../styles/colors';
@@ -71,6 +73,9 @@ interface TimeStampingProps {
 
 const TimeStampingCell = ({ event }: TimeStampingProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [hasPermission, setHasPermission] = useState<boolean>(false);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
   const navigation = useNavigation();
 
   useEffect(() => { if (event) dispatch({ type: SET_EVENT_INFOS, payload: { event } }); }, [event]);
@@ -95,8 +100,43 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     { event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } }, eventStart }
   );
 
+  const requestPermission = async () => {
+    let { status } = await Camera.getPermissionsAsync();
+
+    if (status !== GRANTED) {
+      const { status: newStatus } = await Camera.requestCameraPermissionsAsync();
+      status = newStatus;
+    }
+
+    setModalVisible(status !== GRANTED);
+    setHasPermission(status === GRANTED);
+  };
+
+  const askPermissionAgain = async () => {
+    const permission = await Camera.requestCameraPermissionsAsync();
+
+    if (!permission.canAskAgain) {
+      await Alert.alert(
+        'Accès refusé',
+        'Vérifiez que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
+        [{ text: 'OK', onPress: () => setModalVisible(false) }], { cancelable: false }
+      );
+      return;
+    }
+
+    setModalVisible(permission.status !== GRANTED);
+    setHasPermission(permission.status === GRANTED);
+  };
+
+  const startTimeStamping = async (eventStart: boolean) => {
+    await requestPermission();
+    if (hasPermission) goToBarCodeScanner(eventStart);
+  };
+
   return (
     <View style={styles.cell}>
+      <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
+        onPressAskAgain={askPermissionAgain} />
       <Text style={styles.title}>{CIVILITY_OPTIONS[state.civility]} {state.lastName.toUpperCase()}</Text>
       <View style={styles.sectionDelimiter} />
       <View style={styles.container}>
@@ -108,7 +148,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           ? renderTimeStamp()
           : <>
             {!state.endHourStamped &&
-              <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => goToBarCodeScanner(true)} />}
+              <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => startTimeStamping(true)} />}
           </>}
       </View>
       <View style={styles.sectionDelimiter} />
@@ -121,10 +161,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
           ? renderTimeStamp()
           : <>
             {!state.startHourStamped &&
-              <NiSecondaryButton title='Terminer' onPress={() => goToBarCodeScanner(false)}
-                style={styles.button} />}
+              <NiSecondaryButton title='Terminer' onPress={() => startTimeStamping(false)} style={styles.button} />}
             {state.startHourStamped &&
-              <NiPrimaryButton title='Terminer' onPress={() => goToBarCodeScanner(false)} style={styles.button} />}
+              <NiPrimaryButton title='Terminer' onPress={() => startTimeStamping(false)} style={styles.button} />}
           </>}
       </View>
     </View>
