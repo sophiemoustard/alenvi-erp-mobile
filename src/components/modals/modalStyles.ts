@@ -6,7 +6,7 @@ export default StyleSheet.create({
   title: {
     ...FIRA_SANS_BOLD.LG,
     textAlign: 'center',
-    margin: MARGIN.LG,
+    margin: MARGIN.MD,
     fontSize: 20,
   },
   body: {

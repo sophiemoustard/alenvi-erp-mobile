@@ -13,7 +13,7 @@ interface CameraAccessModalProps {
 }
 
 const CameraAccessModal = ({ visible, onPressDismiss, onPressAskAgain }: CameraAccessModalProps) => (
-  <NiModal visible={visible} style={styles.container}>
+  <NiModal visible={visible}>
     <>
       <Text style={modalStyles.title}>Accès à la caméra</Text>
       <Text style={modalStyles.body}>
