@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { TouchableOpacity, Text } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import styles from './styles';
-import { BLACK, GREY } from '../../styles/colors';
+import { COPPER_GREY } from '../../styles/colors';
 
 type RadioButtonOptionsType = { label: string, value: string };
 
@@ -19,8 +19,8 @@ interface RenderItemProps {
 
 const renderItem = ({ item, checkedRadioButton, onPressCheckbox }: RenderItemProps) => {
   const iconName = checkedRadioButton === item.value ? 'radio-button-checked' : 'radio-button-unchecked';
-  const iconColor = checkedRadioButton === item.value ? BLACK : GREY[600];
-  const textStyle = checkedRadioButton === item.value ? styles.text : { ...styles.text, color: GREY[600] };
+  const iconColor = checkedRadioButton === item.value ? COPPER_GREY[900] : COPPER_GREY[600];
+  const textStyle = checkedRadioButton === item.value ? styles.text : { ...styles.text, color: COPPER_GREY[600] };
 
   return (
     <TouchableOpacity key={item.label} style={styles.container} onPress={() => onPressCheckbox(item.value)}>

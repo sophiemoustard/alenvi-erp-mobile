@@ -7,7 +7,7 @@ import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
 import { hitSlop, ICON } from '../../../styles/metrics';
-import { GREY } from '../../../styles/colors';
+import { COPPER_GREY } from '../../../styles/colors';
 import { errorType } from '../../../types/ErrorType';
 import styles from './styles';
 import Events, { timeStampEventPayloadType } from '../../../api/Events';
@@ -79,7 +79,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
 
   return (
     <View style={styles.screen}>
-      <FeatherButton name='x-circle' onPress={goBack} size={ICON.MD} color={GREY[600]} />
+      <FeatherButton name='x-circle' onPress={goBack} size={ICON.MD} color={COPPER_GREY[600]} />
       <ScrollView style={styles.container}>
         <Text style={styles.title}>{title}</Text>
         <EventInfoCell identity={identity} />

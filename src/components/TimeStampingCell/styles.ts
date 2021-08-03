@@ -1,17 +1,17 @@
 import { StyleSheet } from 'react-native';
-import { GREEN, GREY, WHITE } from '../../styles/colors';
+import { GREEN, COPPER_GREY, WHITE } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING, BUTTON_INTERVENTION_WIDTH, ICON } from '../../styles/metrics';
 
 export default StyleSheet.create({
   sectionDelimiter: {
     borderTopWidth: BORDER_WIDTH,
-    borderColor: GREY[200],
+    borderColor: COPPER_GREY[200],
   },
   cell: {
     borderRadius: BORDER_RADIUS.MD,
     borderWidth: BORDER_WIDTH,
-    borderColor: GREY[200],
+    borderColor: COPPER_GREY[200],
     backgroundColor: WHITE,
     marginHorizontal: MARGIN.MD,
   },
@@ -23,18 +23,18 @@ export default StyleSheet.create({
   },
   title: {
     ...FIRA_SANS_BOLD.MD,
-    color: GREY[900],
+    color: COPPER_GREY[900],
     marginVertical: MARGIN.SM,
     marginHorizontal: MARGIN.MD,
   },
   timeTitle: {
     ...FIRA_SANS_REGULAR.SM,
-    color: GREY[700],
+    color: COPPER_GREY[700],
     marginBottom: MARGIN.SM,
   },
   scheduledTime: {
     ...NUNITO_REGULAR.XXL,
-    color: GREY[900],
+    color: COPPER_GREY[900],
   },
   button: {
     width: BUTTON_INTERVENTION_WIDTH,

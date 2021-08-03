@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { MARGIN } from '../../styles/metrics';
 import { FIRA_SANS_BOLD } from '../../styles/fonts';
+import { COPPER_GREY } from '../../styles/colors';
 
 export default StyleSheet.create({
   screen: {
@@ -14,6 +15,7 @@ export default StyleSheet.create({
   title: {
     ...FIRA_SANS_BOLD.LG,
     marginBottom: MARGIN.LG,
+    color: COPPER_GREY[800],
   },
   input: {
     marginBottom: MARGIN.XS,

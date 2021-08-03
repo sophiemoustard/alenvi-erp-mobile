@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { GREY, MODAL_BACKDROP_GREY, WHITE } from '../../../styles/colors';
+import { COPPER_GREY, MODAL_BACKDROP_GREY, WHITE } from '../../../styles/colors';
 import { BORDER_RADIUS, MARGIN, PADDING } from '../../../styles/metrics';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../../styles/fonts';
 
@@ -26,13 +26,13 @@ const styles = StyleSheet.create({
   },
   title: {
     ...FIRA_SANS_BOLD.LG,
-    color: GREY[800],
+    color: COPPER_GREY[800],
     textAlign: 'center',
     marginVertical: MARGIN.LG,
   },
   beforeCodeSentText: {
     ...FIRA_SANS_REGULAR.MD,
-    color: GREY[800],
+    color: COPPER_GREY[800],
     textAlign: 'center',
     marginHorizontal: MARGIN.SM,
     marginBottom: MARGIN.XXL,
@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
   },
   afterCodeSentText: {
     ...FIRA_SANS_REGULAR.MD,
-    color: GREY[800],
+    color: COPPER_GREY[800],
   },
   recipient: {
     ...FIRA_SANS_BOLD.MD,
-    color: GREY[800],
+    color: COPPER_GREY[800],
   },
 });
 
