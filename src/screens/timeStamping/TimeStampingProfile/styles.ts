@@ -1,11 +1,11 @@
 import { StyleSheet } from 'react-native';
-import { GREY, PINK } from '../../../styles/colors';
+import { COPPER_GREY, COPPER } from '../../../styles/colors';
 import { FIRA_SANS_MEDIUM, NUNITO_REGULAR, FIRA_SANS_BLACK } from '../../../styles/fonts';
 import { BORDER_RADIUS, MARGIN, PADDING } from '../../../styles/metrics';
 
 export default StyleSheet.create({
   screen: {
-    backgroundColor: GREY[100],
+    backgroundColor: COPPER_GREY[50],
   },
   title: {
     ...FIRA_SANS_BLACK.XL,
@@ -22,17 +22,17 @@ export default StyleSheet.create({
   },
   date: {
     ...FIRA_SANS_MEDIUM.MD,
-    color: GREY[800],
+    color: COPPER_GREY[800],
   },
   time: {
     ...NUNITO_REGULAR.XXL,
-    color: PINK[500],
+    color: COPPER[500],
   },
   textIntervention: {
-    color: PINK[600],
+    color: COPPER[600],
   },
   viewIntervention: {
-    backgroundColor: PINK[100],
+    backgroundColor: COPPER_GREY[200],
     borderRadius: BORDER_RADIUS.XXL,
     paddingHorizontal: PADDING.MD,
   },

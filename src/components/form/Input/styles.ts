@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { WHITE, GREY, PINK, ORANGE } from '../../../styles/colors';
+import { WHITE, COPPER_GREY, COPPER, ORANGE } from '../../../styles/colors';
 import { INPUT_HEIGHT, BORDER_RADIUS, PADDING, MARGIN, BORDER_WIDTH } from '../../../styles/metrics';
 import { FIRA_SANS_REGULAR, FIRA_SANS_MEDIUM, FIRA_SANS_ITALIC } from '../../../styles/fonts';
 
@@ -26,7 +26,7 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
   inputContainer: {
     width: '100%',
     borderWidth: BORDER_WIDTH,
-    borderColor: isSelected ? PINK[500] : GREY[600],
+    borderColor: isSelected ? COPPER[500] : COPPER_GREY[600],
     alignItems: 'center',
     borderRadius: BORDER_RADIUS.MD,
     display: 'flex',
@@ -41,6 +41,7 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
   },
   icon: {
     paddingHorizontal: PADDING.MD,
+    color: COPPER_GREY[900],
   },
   captionContainer: {
     width: '100%',
@@ -49,6 +50,7 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
     ...FIRA_SANS_REGULAR.SM,
     textAlign: 'left',
     marginBottom: MARGIN.XS,
+    color: COPPER_GREY[700],
   },
   invalid: {
     ...FIRA_SANS_ITALIC.SM,

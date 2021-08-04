@@ -1,29 +1,23 @@
 export const WHITE = 'white';
-export const BLACK = 'black';
 export const MODAL_BACKDROP_GREY = '#00000099';
-export const TRANSPARENT_PINK = 'rgba(193, 40, 98, 0.2)';
+export const TRANSPARENT_COPPER = 'rgba(71, 96, 105, 0.2)';
 export const RED = '#FF0000';
 
-export const GREY = {
-  0: '#F2F2F2',
-  100: '#F9F6F8',
-  200: '#E2DADF',
-  300: '#C8BCC3',
-  400: '#AD9FA8',
-  500: '#91838C',
-  600: '#766570',
-  700: '#5A4954',
-  800: '#3D2E38',
-  900: '#1F141B',
+export const COPPER_GREY = {
+  50: '#F9FBFB',
+  100: '#F3F6F7',
+  200: '#E2ECF0',
+  600: '#476069',
+  700: '#334C55',
+  800: '#1E343B',
+  900: '#0F232A',
 };
 
-export const PINK = {
-  100: '#FFEBF1',
-  200: '#FBB8D2',
-  300: '#F18FB5',
-  400: '#E74B87',
-  500: '#C12862',
-  600: '#98204D',
+export const COPPER = {
+  500: '#1D7C8F',
+  600: '#005774',
+  800: '#00223B',
+  900: '#000F1F',
 };
 
 // Orange

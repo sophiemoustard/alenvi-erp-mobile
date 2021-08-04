@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { FIRA_SANS_BLACK, FIRA_SANS_REGULAR } from '../../styles/fonts';
-import { WHITE, GREY } from '../../styles/colors';
+import { WHITE, COPPER_GREY } from '../../styles/colors';
 import { MARGIN } from '../../styles/metrics';
 
 export default StyleSheet.create({
@@ -28,7 +28,7 @@ export default StyleSheet.create({
     textDecorationStyle: 'solid',
     textDecorationLine: 'underline',
     color: WHITE,
-    textShadowColor: GREY[800],
+    textShadowColor: COPPER_GREY[800],
     textShadowRadius: 4,
     textShadowOffset: { width: 0, height: 1 },
   },

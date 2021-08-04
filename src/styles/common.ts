@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { WHITE } from './colors';
+import { COPPER_GREY, WHITE } from './colors';
 import { FIRA_SANS_BLACK } from './fonts';
 import { MARGIN, BORDER_RADIUS, BUTTON_HEIGHT, PADDING } from './metrics';
 
@@ -21,5 +21,6 @@ export default StyleSheet.create({
     marginHorizontal: MARGIN.XL,
     marginVertical: MARGIN.XL,
     paddingBottom: PADDING.LG,
+    color: COPPER_GREY[800],
   },
 });
