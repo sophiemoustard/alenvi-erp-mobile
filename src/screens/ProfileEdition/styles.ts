@@ -10,12 +10,11 @@ export default StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    marginBottom: MARGIN.MD,
   },
   title: {
     ...FIRA_SANS_BOLD.LG,
     color: COPPER_GREY[800],
-    marginHorizontal: MARGIN.MD,
+    marginBottom: MARGIN.LG,
   },
   keyboardAvoidingView: {
     flex: 1,

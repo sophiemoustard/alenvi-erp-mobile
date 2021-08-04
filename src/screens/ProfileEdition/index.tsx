@@ -129,9 +129,9 @@ const ProfileEdition = () => {
           <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
             onPressCancelButton={() => setExitConfirmationModal(false)}
             title={'Êtes-vous sûr de cela ?'} contentText={'Vos modifications ne seront pas enregistrées.'} />
-          <Text style={styles.title}>Modifier mes informations</Text>
         </View>
         <View style={styles.container}>
+          <Text style={styles.title}>Modifier mes informations</Text>
           <NiInput caption='Nom' value={editedUser.identity.lastname} type='lastname' validationMessage={nameError}
             onChangeText={onChangeIdentity('lastname')} />
           <NiInput caption='Prénom' type='firstname' value={editedUser.identity.firstname}

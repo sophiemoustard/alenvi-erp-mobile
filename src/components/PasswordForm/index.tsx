@@ -5,7 +5,7 @@ import NiErrorMessage from '../ErrorMessage';
 import NiInput from '../form/Input';
 import NiPrimaryButton from '../form/PrimaryButton';
 import ExitModal from '../modals/ExitModal';
-import { GREY } from '../../styles/colors';
+import { COPPER_GREY } from '../../styles/colors';
 import { ICON, IS_LARGE_SCREEN, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../styles/metrics';
 import styles from './styles';
 
@@ -87,7 +87,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
     <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.keyboardAvoidingView}
       keyboardVerticalOffset={IS_LARGE_SCREEN ? MARGIN.MD : MARGIN.XS} >
       <View style={styles.goBack}>
-        <FeatherButton name='x-circle' onPress={toggleModal} size={ICON.MD} color={GREY[600]} />
+        <FeatherButton name='x-circle' onPress={toggleModal} size={ICON.MD} color={COPPER_GREY[600]} />
         <ExitModal onPressConfirmButton={handlePressConfirmButton} visible={exitConfirmationModal}
           title={'Êtes-vous sûr de cela ?'} contentText={'Vos modifications ne seront pas enregistrées.'}
           onPressCancelButton={toggleModal}/>
