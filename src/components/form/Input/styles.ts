@@ -41,6 +41,7 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
   },
   icon: {
     paddingHorizontal: PADDING.MD,
+    color: COPPER_GREY[900],
   },
   captionContainer: {
     width: '100%',

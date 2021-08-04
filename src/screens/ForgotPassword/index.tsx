@@ -9,7 +9,6 @@ import ForgotPasswordModal from '../../components/modals/ForgotPasswordModal';
 import { EMAIL_REGEX } from '../../core/data/constants';
 import { formatEmailForPayload } from '../../core/helpers/utils';
 import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
-import { COPPER_GREY } from '../../styles/colors';
 import { NavigationType } from '../../types/NavigationType';
 import styles from './styles';
 
@@ -69,7 +68,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
       <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.screen}>
         <View style={styles.goBack}>
           <FeatherButton name='x-circle' onPress={() => setExitConfirmationModal(true)} size={ICON.MD}
-            color={COPPER_GREY[600]} disabled={isLoading} />
+            disabled={isLoading} />
           <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
             onPressCancelButton={() => setExitConfirmationModal(false)}
             title={'Êtes-vous sûr de cela ?'} contentText={'Vous reviendrez à la page d\'accueil.'} />

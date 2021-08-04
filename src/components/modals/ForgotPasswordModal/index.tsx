@@ -6,7 +6,6 @@ import NiPrimaryButton from '../../form/PrimaryButton';
 import FeatherButton from '../../FeatherButton';
 import { EMAIL, PHONE, MOBILE } from '../../../core/data/constants';
 import { ICON, IS_LARGE_SCREEN } from '../../../styles/metrics';
-import { COPPER_GREY } from '../../../styles/colors';
 import styles from './styles';
 import NiErrorMessage from '../../ErrorMessage';
 
@@ -172,8 +171,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
     <>
       {visible && <View style={styles.modal}>
         <View style={styles.modalContainer}>
-          <FeatherButton name='x-circle' onPress={onRequestClose} size={ICON.LG} color={COPPER_GREY[600]}
-            style={styles.goBack} />
+          <FeatherButton name='x-circle' onPress={onRequestClose} size={ICON.LG} style={styles.goBack} />
           <ScrollView keyboardShouldPersistTaps='handled'>
             <Text style={styles.title}>Confirmez votre identité</Text>
             {!recipient ? beforeCodeSent() : afterCodeSent()}

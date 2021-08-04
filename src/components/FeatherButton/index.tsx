@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { BLACK } from '../../styles/colors';
+import { COPPER_GREY } from '../../styles/colors';
 import { hitSlop, ICON } from '../../styles/metrics';
 import { FeatherType } from '../../types/IconType';
 
@@ -17,7 +17,7 @@ interface FeatherButtonProps {
 const FeatherButton = ({
   name,
   onPress,
-  color = BLACK,
+  color = COPPER_GREY[600],
   size = ICON.XS,
   style = {},
   disabled = false,
