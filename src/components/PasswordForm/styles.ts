@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { MARGIN, PADDING } from '../../styles/metrics';
 import { FIRA_SANS_BOLD } from '../../styles/fonts';
+import { COPPER_GREY } from '../../styles/colors';
 
 const styles = StyleSheet.create({
   title: {
@@ -9,6 +10,7 @@ const styles = StyleSheet.create({
   },
   keyboardAvoidingView: {
     flex: 1,
+    backgroundColor: COPPER_GREY[50],
   },
   container: {
     flexGrow: 1,

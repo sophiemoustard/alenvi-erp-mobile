@@ -1,5 +1,4 @@
 export const WHITE = 'white';
-export const BLACK = 'black';
 export const MODAL_BACKDROP_GREY = '#00000099';
 export const TRANSPARENT_COPPER = 'rgba(71, 96, 105, 0.2)';
 export const RED = '#FF0000';
