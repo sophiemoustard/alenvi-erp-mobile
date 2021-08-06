@@ -23,7 +23,7 @@ const CameraAccessModal = ({
 }: CameraAccessModalProps) => (
   <NiModal visible={visible}>
     <>
-      <FeatherButton name='x-circle' onPress={onRequestClose} size={ICON.MD} />
+      <FeatherButton name="x-circle" onPress={onRequestClose} size={ICON.MD} />
       <Text style={modalStyles.title}>Accès à la caméra</Text>
       <Text style={modalStyles.body}>
         Vous n&apos;avez pas autorisé l&apos;accès à la caméra. Veuillez l&apos;autoriser.
@@ -33,7 +33,7 @@ const CameraAccessModal = ({
           <SecondaryButton title={'Horodater\n manuellement'} onPress={goToManualTimeStamping} />
         </View>
         <View>
-          <PrimaryButton title='Redemander' onPress={onPressAskAgain} />
+          <PrimaryButton title="Redemander" onPress={onPressAskAgain} />
         </View>
       </View>
     </>

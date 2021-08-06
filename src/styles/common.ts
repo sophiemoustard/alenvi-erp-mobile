@@ -15,6 +15,7 @@ export default StyleSheet.create({
   },
   textButton: {
     ...FIRA_SANS_BLACK.MD,
+    textAlign: 'center',
   },
   title: {
     ...FIRA_SANS_BLACK.XL,

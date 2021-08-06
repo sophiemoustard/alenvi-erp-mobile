@@ -100,20 +100,20 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     { event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } }, eventStart }
   );
 
-  const goToManualTimeStamping = (eventStart: boolean) => {
+  const goToManualTimeStamping = () => {
     setModalVisible(false);
     return (
       navigation.navigate(
         'ManualTimeStamping',
         {
           event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } },
-          eventStart,
+          eventStart: isEventStarting,
         }
       )
     );
   };
 
-  const requestPermission = async (eventStart:boolean) => {
+  const requestPermission = async (eventStart: boolean) => {
     setIsEventStarting(eventStart);
     let { status } = await Camera.getPermissionsAsync();
 
@@ -131,7 +131,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     const permission = await Camera.requestCameraPermissionsAsync();
 
     if (!permission.canAskAgain) {
-      await Alert.alert(
+      Alert.alert(
         'Accès refusé',
         'Vérifiez que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
         [{ text: 'OK', onPress: () => setModalVisible(false) }], { cancelable: false }
@@ -145,7 +145,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
   return (
     <View style={styles.cell}>
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
-        onPressAskAgain={askPermissionAgain} goToManualTimeStamping={() => goToManualTimeStamping(isEventStarting)} />
+        onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
       <Text style={styles.title}>{CIVILITY_OPTIONS[state.civility]} {state.lastName.toUpperCase()}</Text>
       <View style={styles.sectionDelimiter} />
       <View style={styles.container}>

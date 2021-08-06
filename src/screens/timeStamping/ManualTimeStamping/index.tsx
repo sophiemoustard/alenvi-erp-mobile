@@ -61,7 +61,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
 
     if (status === GRANTED) goToQRCodeScanner();
     else {
-      await Alert.alert(
+      Alert.alert(
         'Accès refusé',
         'Vérifiez que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
         [{ text: 'OK' }], { cancelable: false }
