@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
-import { ERROR, MANUAL_TIME_STAMPING, WARNING } from '../../../core/data/constants';
+import { Camera } from 'expo-camera';
+import { ERROR, MANUAL_TIME_STAMPING, WARNING, GRANTED } from '../../../core/data/constants';
 import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
@@ -50,6 +51,24 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
 
   const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner', route.params);
 
+  const requestPermission = async () => {
+    let { status } = await Camera.getPermissionsAsync();
+
+    if (status !== GRANTED) {
+      const { status: newStatus } = await Camera.requestCameraPermissionsAsync();
+      status = newStatus;
+    }
+
+    if (status === GRANTED) goToQRCodeScanner();
+    else {
+      await Alert.alert(
+        'Accès refusé',
+        'Vérifiez que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
+        [{ text: 'OK' }], { cancelable: false }
+      );
+    }
+  };
+
   const timeStampEvent = async () => {
     try {
       setLoading(true);
@@ -89,7 +108,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
         {!!errorMessage && <NiErrorMessage message={errorMessage} type={type} />}
       </ScrollView>
       <NiPrimaryButton title='Valider et horodater' onPress={timeStampEvent} loading={loading} />
-      <TouchableOpacity onPress={goToQRCodeScanner} hitSlop={hitSlop} >
+      <TouchableOpacity onPress={requestPermission} hitSlop={hitSlop} >
         <Text style={styles.QRCodeTimeStampingButton}>Scanner le QR code avec l&apos;appareil photo</Text>
       </TouchableOpacity>
     </View>

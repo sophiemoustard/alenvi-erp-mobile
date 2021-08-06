@@ -14,5 +14,6 @@ export default StyleSheet.create({
   textButton: {
     ...commonStyle.textButton,
     color: COPPER_GREY[600],
+    textAlign: 'center',
   },
 });

@@ -74,6 +74,7 @@ interface TimeStampingProps {
 const TimeStampingCell = ({ event }: TimeStampingProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isEventStarting, setIsEventStarting] = useState<boolean>(true);
 
   const navigation = useNavigation();
 
@@ -99,7 +100,21 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     { event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } }, eventStart }
   );
 
+  const goToManualTimeStamping = (eventStart: boolean) => {
+    setModalVisible(false);
+    return (
+      navigation.navigate(
+        'ManualTimeStamping',
+        {
+          event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } },
+          eventStart,
+        }
+      )
+    );
+  };
+
   const requestPermission = async (eventStart:boolean) => {
+    setIsEventStarting(eventStart);
     let { status } = await Camera.getPermissionsAsync();
 
     if (status !== GRANTED) {
@@ -129,8 +144,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   return (
     <View style={styles.cell}>
-      <CameraAccessModal visible={modalVisible} onPressDismiss={() => setModalVisible(false)}
-        onPressAskAgain={askPermissionAgain} />
+      <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
+        onPressAskAgain={askPermissionAgain} goToManualTimeStamping={() => goToManualTimeStamping(isEventStarting)} />
       <Text style={styles.title}>{CIVILITY_OPTIONS[state.civility]} {state.lastName.toUpperCase()}</Text>
       <View style={styles.sectionDelimiter} />
       <View style={styles.container}>
