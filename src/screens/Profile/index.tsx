@@ -26,7 +26,7 @@ const Profile = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.screen}>
-      <Text style={commonStyle.title}>Mon profil test</Text>
+      <Text style={commonStyle.title}>Mon profil test again</Text>
       <View style={styles.identityContainer}>
         <View style={styles.profilView}>
           <Image source={source} style={styles.image} />
