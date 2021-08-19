@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
+import React, { useEffect, useState, useRef, useContext, useCallback } from 'react';
 import { AppState } from 'react-native';
 import { AxiosRequestConfig } from 'axios';
 import axiosNotLogged from '../api/axios/notLogged';
@@ -15,7 +15,7 @@ const AppContainer = () => {
   const [maintenanceModaleVisible, setMaintenanceModalVisible] = useState<boolean>(false);
   const [axiosInitialized, setAxiosInitialized] = useState<boolean>(false);
   const loggedAxiosInterceptorId = useRef<number | null>(null);
-  const { refreshLoggedUser, companiToken } = useContext(AuthContext);
+  const { refreshLoggedUser, companiToken, signOut } = useContext(AuthContext);
 
   const initializeNotLoggedAxios = () => {
     axiosNotLogged.interceptors.response.use(
@@ -30,7 +30,7 @@ const AppContainer = () => {
     );
   };
 
-  const initializeLoggedAxios = (token: string | null) => {
+  const initializeLoggedAxios = useCallback((token: string | null) => {
     if (loggedAxiosInterceptorId.current !== null) {
       axiosLogged.interceptors.request.eject(loggedAxiosInterceptorId.current);
     }
@@ -43,7 +43,17 @@ const AppContainer = () => {
       },
       err => Promise.reject(err)
     );
-  };
+
+    loggedAxiosInterceptorId.current = axiosLogged.interceptors
+      .response
+      .use(
+        response => response,
+        async (error) => {
+          if (error?.response?.status === 401) return signOut();
+          return Promise.reject(error);
+        }
+      );
+  }, [signOut]);
 
   const shouldUpdate = async (nextState: string) => {
     try {
@@ -68,7 +78,7 @@ const AppContainer = () => {
 
     initializeLoggedAxios(companiToken);
     if (companiToken) refreshUser();
-  }, [refreshLoggedUser, companiToken]);
+  }, [refreshLoggedUser, companiToken, initializeLoggedAxios]);
 
   useEffect(() => {
     initializeNotLoggedAxios();
