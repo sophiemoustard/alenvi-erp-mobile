@@ -71,7 +71,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
             disabled={isLoading} />
           <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
             onPressCancelButton={() => setExitConfirmationModal(false)}
-            title={'Êtes-vous sûr de cela ?'} contentText={'Vous reviendrez à la page d\'accueil.'} />
+            title={'Êtes-vous sûr(e) de cela ?'} contentText={'Vous reviendrez à la page d\'accueil.'} />
         </View>
         <View style={styles.body}>
           <View style={styles.content}>

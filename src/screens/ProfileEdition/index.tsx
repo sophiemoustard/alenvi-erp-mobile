@@ -127,7 +127,7 @@ const ProfileEdition = () => {
           <FeatherButton name='x-circle' onPress={onPressExitModal} size={ICON.MD} />
           <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
             onPressCancelButton={() => setExitConfirmationModal(false)}
-            title={'Êtes-vous sûr de cela ?'} contentText={'Vos modifications ne seront pas enregistrées.'} />
+            title={'Êtes-vous sûr(e) de cela ?'} contentText={'Vos modifications ne seront pas enregistrées.'} />
         </View>
         <View style={styles.container}>
           <Text style={styles.title}>Modifier mes informations</Text>
