@@ -4,18 +4,35 @@ import { AxiosRequestConfig } from 'axios';
 import axiosNotLogged from '../api/axios/notLogged';
 import axiosLogged from '../api/axios/logged';
 import Version from '../api/Versions';
+import { Context as AuthContext } from '../context/AuthContext';
 import { ACTIVE_STATE } from '../core/data/constants';
+import asyncStorage from '../core/helpers/asyncStorage';
 import UpdateAppModal from '../components/modals/UpdateAppModal';
 import MaintenanceModal from '../components/modals/MaintenanceModal';
 import AppNavigation from '../navigation/AppNavigation';
-import { Context as AuthContext } from '../context/AuthContext';
 
 const AppContainer = () => {
   const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
   const [maintenanceModaleVisible, setMaintenanceModalVisible] = useState<boolean>(false);
   const [axiosInitialized, setAxiosInitialized] = useState<boolean>(false);
   const loggedAxiosInterceptorId = useRef<number | null>(null);
-  const { refreshLoggedUser, companiToken, signOut } = useContext(AuthContext);
+  const { refreshLoggedUser, companiToken, signOut, refreshCompaniToken } = useContext(AuthContext);
+
+  const handleUnauthorizedRequest = useCallback(async (error) => {
+    await asyncStorage.removeCompaniToken();
+    const { refreshToken } = await asyncStorage.getRefreshToken();
+    await refreshCompaniToken(refreshToken);
+
+    const { companiToken: newCompaniToken, companiTokenExpireDate } = await asyncStorage.getCompaniToken();
+
+    if (asyncStorage.isTokenValid(newCompaniToken, companiTokenExpireDate)) {
+      const config = { ...error.config };
+      config.headers['x-access-token'] = newCompaniToken;
+      return axiosLogged.request(config);
+    }
+
+    return signOut();
+  }, [signOut, refreshCompaniToken]);
 
   const initializeNotLoggedAxios = () => {
     axiosNotLogged.interceptors.response.use(
@@ -30,7 +47,7 @@ const AppContainer = () => {
     );
   };
 
-  const initializeLoggedAxios = useCallback((token: string | null) => {
+  const initializeLoggedAxios = useCallback(() => {
     if (loggedAxiosInterceptorId.current !== null) {
       axiosLogged.interceptors.request.eject(loggedAxiosInterceptorId.current);
     }
@@ -38,7 +55,7 @@ const AppContainer = () => {
     loggedAxiosInterceptorId.current = axiosLogged.interceptors.request.use(
       async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
         const newConfig = { ...config };
-        newConfig.headers.common['x-access-token'] = token;
+        newConfig.headers.common['x-access-token'] = companiToken;
         return newConfig;
       },
       err => Promise.reject(err)
@@ -49,12 +66,13 @@ const AppContainer = () => {
       .use(
         response => response,
         async (error) => {
-          if (error?.response?.status === 401) await signOut();
+          if (error?.response?.status === 401) return handleUnauthorizedRequest(error);
           if ([502, 503].includes(error?.response?.status)) setMaintenanceModalVisible(true);
+
           return Promise.reject(error);
         }
       );
-  }, [signOut]);
+  }, [handleUnauthorizedRequest, companiToken]);
 
   const shouldUpdate = async (nextState: string) => {
     try {
@@ -77,7 +95,7 @@ const AppContainer = () => {
       }
     };
 
-    initializeLoggedAxios(companiToken);
+    initializeLoggedAxios();
     if (companiToken) refreshUser();
   }, [refreshLoggedUser, companiToken, initializeLoggedAxios]);
 

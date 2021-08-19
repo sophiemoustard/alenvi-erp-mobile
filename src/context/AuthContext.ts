@@ -74,7 +74,7 @@ const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
 
 export const { Context, Provider } = createAuthContext(
   authReducer,
-  { signIn, tryLocalSignIn, signOut, refreshLoggedUser },
+  { signIn, tryLocalSignIn, signOut, refreshLoggedUser, refreshCompaniToken },
   {
     companiToken: null,
     appIsReady: false,
@@ -83,5 +83,6 @@ export const { Context, Provider } = createAuthContext(
     tryLocalSignIn: async () => {},
     signOut: async () => {},
     refreshLoggedUser: async () => {},
+    refreshCompaniToken: async () => {},
   }
 );
