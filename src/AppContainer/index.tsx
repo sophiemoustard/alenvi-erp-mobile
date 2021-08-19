@@ -24,8 +24,8 @@ const AppContainer = () => {
         return response;
       },
       async (error) => {
-        if ([502, 503].includes(error.response.status)) setMaintenanceModalVisible(true);
-        return Promise.reject(error.response);
+        if ([502, 503].includes(error?.response?.status)) setMaintenanceModalVisible(true);
+        return Promise.reject(error);
       }
     );
   };
@@ -49,7 +49,7 @@ const AppContainer = () => {
       .use(
         response => response,
         async (error) => {
-          if (error?.response?.status === 401) return signOut();
+          if (error?.response?.status === 401) await signOut();
           return Promise.reject(error);
         }
       );

@@ -13,7 +13,7 @@ const MaintenanceModal = ({ visible }: MaintenanceModalProps) => (
     <>
       <Text style={modalStyles.title}> L&apos;application est en maintenance !</Text>
       <Text style={[modalStyles.body, styles.body]}>
-        Elle sera à nouveau disponible dans quelques minutes.
+        Elle sera de nouveau disponible dans quelques minutes.
       </Text>
     </>
   </Modal>
