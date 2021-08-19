@@ -50,6 +50,7 @@ const AppContainer = () => {
         response => response,
         async (error) => {
           if (error?.response?.status === 401) await signOut();
+          if ([502, 503].includes(error?.response?.status)) setMaintenanceModalVisible(true);
           return Promise.reject(error);
         }
       );
