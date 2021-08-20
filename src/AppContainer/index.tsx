@@ -20,6 +20,15 @@ const AppContainer = () => {
   const { refreshLoggedUser, companiToken, signOut, refreshCompaniToken } = useContext(AuthContext);
 
   const handleUnauthorizedRequest = useCallback(async (error) => {
+    const {
+      companiToken: oldCompaniToken,
+      companiTokenExpireDate: oldCompaniTokenExpireDate,
+    } = await asyncStorage.getCompaniToken();
+    if (asyncStorage.isTokenValid(oldCompaniToken, oldCompaniTokenExpireDate)) {
+      await signOut();
+      return Promise.reject(error);
+    } // handle invalid refreshToken reception from api wich trigger infite 401 calls
+
     await asyncStorage.removeCompaniToken();
     const { refreshToken } = await asyncStorage.getRefreshToken();
     await refreshCompaniToken(refreshToken);
