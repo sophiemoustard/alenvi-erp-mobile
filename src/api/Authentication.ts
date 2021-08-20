@@ -1,3 +1,4 @@
+import axiosLogged from './axios/logged';
 import axiosNotLogged from './axios/notLogged';
 import Environment from '../../environment';
 
@@ -25,5 +26,12 @@ export default {
     const baseURL = await Environment.getBaseUrl({ email });
     const checkToken = await axiosNotLogged.get(`${baseURL}/users/passwordtoken/${token}`, { params: { email } });
     return checkToken.data.data;
+  },
+  updatePassword: async (userId: string, data: object, token = '') => {
+    const baseURL = await Environment.getBaseUrl({ userId });
+    if (!token) await axiosLogged.put(`${baseURL}/users/${userId}/password`, data);
+    else {
+      await axiosNotLogged.put(`${baseURL}/users/${userId}/password`, data, { headers: { 'x-access-token': token } });
+    }
   },
 };

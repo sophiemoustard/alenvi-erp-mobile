@@ -21,13 +21,6 @@ export default {
 
     return user.data.data.user;
   },
-  updatePassword: async (userId: string, data: object, token = '') => {
-    const baseURL = await Environment.getBaseUrl({ userId });
-    if (!token) await axiosLogged.put(`${baseURL}/users/${userId}/password`, data);
-    else {
-      await axiosNotLogged.put(`${baseURL}/users/${userId}/password`, data, { headers: { 'x-access-token': token } });
-    }
-  },
   setUser: async (userId: string | null, data: userInfos) => {
     const baseURL = await Environment.getBaseUrl();
     await axiosLogged.put(`${baseURL}/users/${userId}`, data);
