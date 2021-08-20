@@ -57,7 +57,7 @@ const AppContainer = () => {
     axiosLoggedRequestInterceptorId.current = axiosLogged.interceptors.request.use(
       async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
         const newConfig = { ...config };
-        newConfig.headers.common['x-access-token'] = companiToken;
+        newConfig.headers['x-access-token'] = companiToken;
         return newConfig;
       },
       err => Promise.reject(err)
