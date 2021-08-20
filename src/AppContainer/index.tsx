@@ -15,7 +15,8 @@ const AppContainer = () => {
   const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
   const [maintenanceModaleVisible, setMaintenanceModalVisible] = useState<boolean>(false);
   const [axiosInitialized, setAxiosInitialized] = useState<boolean>(false);
-  const loggedAxiosInterceptorId = useRef<number | null>(null);
+  const axiosLoggedRequestInterceptorId = useRef<number | null>(null);
+  const axiosLoggedResponseInterceptorId = useRef<number | null>(null);
   const { refreshLoggedUser, companiToken, signOut, refreshCompaniToken } = useContext(AuthContext);
 
   const handleUnauthorizedRequest = useCallback(async (error) => {
@@ -31,10 +32,11 @@ const AppContainer = () => {
       return axiosLogged.request(config);
     }
 
-    return signOut();
+    await signOut();
+    return Promise.reject(error);
   }, [signOut, refreshCompaniToken]);
 
-  const initializeNotLoggedAxios = () => {
+  const initializeAxiosNotLogged = () => {
     axiosNotLogged.interceptors.response.use(
       (response) => {
         setMaintenanceModalVisible(false);
@@ -47,12 +49,12 @@ const AppContainer = () => {
     );
   };
 
-  const initializeLoggedAxios = useCallback(() => {
-    if (loggedAxiosInterceptorId.current !== null) {
-      axiosLogged.interceptors.request.eject(loggedAxiosInterceptorId.current);
+  const initializeAxiosLogged = useCallback(() => {
+    if (axiosLoggedRequestInterceptorId.current !== null) {
+      axiosLogged.interceptors.request.eject(axiosLoggedRequestInterceptorId.current);
     }
 
-    loggedAxiosInterceptorId.current = axiosLogged.interceptors.request.use(
+    axiosLoggedRequestInterceptorId.current = axiosLogged.interceptors.request.use(
       async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
         const newConfig = { ...config };
         newConfig.headers.common['x-access-token'] = companiToken;
@@ -61,7 +63,11 @@ const AppContainer = () => {
       err => Promise.reject(err)
     );
 
-    loggedAxiosInterceptorId.current = axiosLogged.interceptors
+    if (axiosLoggedResponseInterceptorId.current !== null) {
+      axiosLogged.interceptors.response.eject(axiosLoggedResponseInterceptorId.current);
+    }
+
+    axiosLoggedResponseInterceptorId.current = axiosLogged.interceptors
       .response
       .use(
         response => response,
@@ -95,12 +101,12 @@ const AppContainer = () => {
       }
     };
 
-    initializeLoggedAxios();
+    initializeAxiosLogged();
     if (companiToken) refreshUser();
-  }, [refreshLoggedUser, companiToken, initializeLoggedAxios]);
+  }, [refreshLoggedUser, companiToken, initializeAxiosLogged]);
 
   useEffect(() => {
-    initializeNotLoggedAxios();
+    initializeAxiosNotLogged();
     setAxiosInitialized(true);
     shouldUpdate(ACTIVE_STATE);
     AppState.addEventListener('change', shouldUpdate);
