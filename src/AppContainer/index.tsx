@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useContext, useCallback } from 'react';
 import { AppState } from 'react-native';
-import { AxiosRequestConfig, AxiosError } from 'axios';
+import { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import axiosNotLogged from '../api/axios/notLogged';
 import axiosLogged from '../api/axios/logged';
 import Version from '../api/Versions';
@@ -24,18 +24,41 @@ const AppContainer = () => {
     return Promise.reject(error);
   };
 
-  const initializeAxiosNotLogged = useCallback(() => {
-    axiosNotLogged.interceptors.response.use(
-      (response) => {
-        setMaintenanceModalVisible(false);
-        return response;
-      },
-      async (error: AxiosError) => {
-        if (error?.response?.status === 502 || error?.response?.status === 503) return handleApiUnavailability(error);
-        return Promise.reject(error);
-      }
-    );
+  const handleAxiosNotLoggedValidResponse = (response: AxiosResponse) => {
+    setMaintenanceModalVisible(false);
+    return response;
+  };
+
+  const handleAxiosNotLoggedErrorResponse = useCallback(async (error: AxiosError) => {
+    if (error?.response?.status === 502 || error?.response?.status === 503) return handleApiUnavailability(error);
+    return Promise.reject(error);
   }, []);
+
+  const initializeAxiosNotLogged = useCallback(() => axiosNotLogged.interceptors
+    .response
+    .use(handleAxiosNotLoggedValidResponse, handleAxiosNotLoggedErrorResponse),
+  [handleAxiosNotLoggedErrorResponse]);
+
+  const shouldUpdate = async (nextState: string) => {
+    try {
+      if (nextState === ACTIVE_STATE) {
+        const { mustUpdate } = await Version.shouldUpdate();
+        setUpdateAppVisible(mustUpdate);
+      }
+    } catch (e) {
+      setUpdateAppVisible(false);
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    initializeAxiosNotLogged();
+    setAxiosInitialized(true);
+    shouldUpdate(ACTIVE_STATE);
+    AppState.addEventListener('change', shouldUpdate);
+
+    return () => { AppState.removeEventListener('change', shouldUpdate); };
+  }, [initializeAxiosNotLogged]);
 
   const handleUnauthorizedRequest = useCallback(async (error: AxiosError) => {
     const storedTokens = await asyncStorage.getCompaniToken();
@@ -60,19 +83,26 @@ const AppContainer = () => {
     return Promise.reject(error);
   }, [signOut, refreshCompaniToken]);
 
+  const handleAxiosLoggedRequest = useCallback(async (config: AxiosRequestConfig) => {
+    const newConfig = { ...config };
+    newConfig.headers['x-access-token'] = companiToken;
+    return newConfig;
+  }, [companiToken]);
+
+  const handleAxiosLoggedErrorResponse = useCallback(async (error: AxiosError) => {
+    if (error?.response?.status === 401) return handleUnauthorizedRequest(error);
+    if (error?.response?.status === 502 || error?.response?.status === 503) return handleApiUnavailability(error);
+    return Promise.reject(error);
+  }, [handleUnauthorizedRequest]);
+
   const initializeAxiosLogged = useCallback(() => {
     if (axiosLoggedRequestInterceptorId.current !== null) {
       axiosLogged.interceptors.request.eject(axiosLoggedRequestInterceptorId.current);
     }
 
-    axiosLoggedRequestInterceptorId.current = axiosLogged.interceptors.request.use(
-      async (config: AxiosRequestConfig): Promise<AxiosRequestConfig> => {
-        const newConfig = { ...config };
-        newConfig.headers['x-access-token'] = companiToken;
-        return newConfig;
-      },
-      err => Promise.reject(err)
-    );
+    axiosLoggedRequestInterceptorId.current = axiosLogged.interceptors
+      .request
+      .use(handleAxiosLoggedRequest, err => Promise.reject(err));
 
     if (axiosLoggedResponseInterceptorId.current !== null) {
       axiosLogged.interceptors.response.eject(axiosLoggedResponseInterceptorId.current);
@@ -80,27 +110,8 @@ const AppContainer = () => {
 
     axiosLoggedResponseInterceptorId.current = axiosLogged.interceptors
       .response
-      .use(
-        response => response,
-        async (error: AxiosError) => {
-          if (error?.response?.status === 401) return handleUnauthorizedRequest(error);
-          if (error?.response?.status === 502 || error?.response?.status === 503) return handleApiUnavailability(error);
-          return Promise.reject(error);
-        }
-      );
-  }, [handleUnauthorizedRequest, companiToken]);
-
-  const shouldUpdate = async (nextState: string) => {
-    try {
-      if (nextState === ACTIVE_STATE) {
-        const { mustUpdate } = await Version.shouldUpdate();
-        setUpdateAppVisible(mustUpdate);
-      }
-    } catch (e) {
-      setUpdateAppVisible(false);
-      console.error(e);
-    }
-  };
+      .use(response => response, handleAxiosLoggedErrorResponse);
+  }, [handleAxiosLoggedRequest, handleAxiosLoggedErrorResponse]);
 
   useEffect(() => {
     const refreshUser = async () => {
@@ -114,15 +125,6 @@ const AppContainer = () => {
     initializeAxiosLogged();
     if (companiToken) refreshUser();
   }, [refreshLoggedUser, companiToken, initializeAxiosLogged]);
-
-  useEffect(() => {
-    initializeAxiosNotLogged();
-    setAxiosInitialized(true);
-    shouldUpdate(ACTIVE_STATE);
-    AppState.addEventListener('change', shouldUpdate);
-
-    return () => { AppState.removeEventListener('change', shouldUpdate); };
-  }, [initializeAxiosNotLogged]);
 
   if (!axiosInitialized) return null;
 
