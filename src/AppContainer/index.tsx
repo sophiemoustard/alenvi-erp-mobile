@@ -30,7 +30,8 @@ const AppContainer = () => {
   };
 
   const handleAxiosNotLoggedErrorResponse = useCallback(async (error: AxiosError) => {
-    if (error?.response?.status === 502 || error?.response?.status === 503) return handleApiUnavailability(error);
+    const statusCode = error?.response?.status;
+    if (statusCode && [502, 503].includes(statusCode)) return handleApiUnavailability(error);
     return Promise.reject(error);
   }, []);
 
@@ -65,7 +66,7 @@ const AppContainer = () => {
     if (asyncStorage.isTokenValid(storedTokens.companiToken, storedTokens.companiTokenExpireDate)) {
       await signOut();
       return Promise.reject(error);
-    } // handle invalid refreshToken reception from api whsich trigger infinite 401 calls
+    } // handle invalid refreshToken reception from api which trigger infinite 401 calls
 
     await asyncStorage.removeCompaniToken();
     const { refreshToken } = await asyncStorage.getRefreshToken();
@@ -90,8 +91,9 @@ const AppContainer = () => {
   }, [companiToken]);
 
   const handleAxiosLoggedErrorResponse = useCallback(async (error: AxiosError) => {
-    if (error?.response?.status === 401) return handleUnauthorizedRequest(error);
-    if (error?.response?.status === 502 || error?.response?.status === 503) return handleApiUnavailability(error);
+    const statusCode = error?.response?.status;
+    if (statusCode === 401) return handleUnauthorizedRequest(error);
+    if (statusCode && [502, 503].includes(statusCode)) return handleApiUnavailability(error);
     return Promise.reject(error);
   }, [handleUnauthorizedRequest]);
 
