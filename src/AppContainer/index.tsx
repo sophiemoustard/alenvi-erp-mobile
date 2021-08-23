@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useContext, useCallback } from 'react';
 import { AppState } from 'react-native';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, AxiosError } from 'axios';
 import axiosNotLogged from '../api/axios/notLogged';
 import axiosLogged from '../api/axios/logged';
 import Version from '../api/Versions';
@@ -19,44 +19,46 @@ const AppContainer = () => {
   const axiosLoggedResponseInterceptorId = useRef<number | null>(null);
   const { refreshLoggedUser, companiToken, signOut, refreshCompaniToken } = useContext(AuthContext);
 
-  const handleUnauthorizedRequest = useCallback(async (error) => {
-    const {
-      companiToken: oldCompaniToken,
-      companiTokenExpireDate: oldCompaniTokenExpireDate,
-    } = await asyncStorage.getCompaniToken();
-    if (asyncStorage.isTokenValid(oldCompaniToken, oldCompaniTokenExpireDate)) {
+  const handleApiUnavailability = (error: AxiosError) => {
+    setMaintenanceModalVisible(true);
+    return Promise.reject(error);
+  };
+
+  const initializeAxiosNotLogged = useCallback(() => {
+    axiosNotLogged.interceptors.response.use(
+      (response) => {
+        setMaintenanceModalVisible(false);
+        return response;
+      },
+      async (error: AxiosError) => {
+        if (error?.response?.status === 502 || error?.response?.status === 503) return handleApiUnavailability(error);
+        return Promise.reject(error);
+      }
+    );
+  }, []);
+
+  const handleUnauthorizedRequest = useCallback(async (error: AxiosError) => {
+    const storedTokens = await asyncStorage.getCompaniToken();
+    if (asyncStorage.isTokenValid(storedTokens.companiToken, storedTokens.companiTokenExpireDate)) {
       await signOut();
       return Promise.reject(error);
-    } // handle invalid refreshToken reception from api wich trigger infite 401 calls
+    } // handle invalid refreshToken reception from api whsich trigger infinite 401 calls
 
     await asyncStorage.removeCompaniToken();
     const { refreshToken } = await asyncStorage.getRefreshToken();
     await refreshCompaniToken(refreshToken);
 
-    const { companiToken: newCompaniToken, companiTokenExpireDate } = await asyncStorage.getCompaniToken();
+    const refreshedStoredTokens = await asyncStorage.getCompaniToken();
 
-    if (asyncStorage.isTokenValid(newCompaniToken, companiTokenExpireDate)) {
+    if (asyncStorage.isTokenValid(refreshedStoredTokens.companiToken, refreshedStoredTokens.companiTokenExpireDate)) {
       const config = { ...error.config };
-      config.headers['x-access-token'] = newCompaniToken;
+      config.headers['x-access-token'] = refreshedStoredTokens.companiToken;
       return axiosLogged.request(config);
     }
 
     await signOut();
     return Promise.reject(error);
   }, [signOut, refreshCompaniToken]);
-
-  const initializeAxiosNotLogged = () => {
-    axiosNotLogged.interceptors.response.use(
-      (response) => {
-        setMaintenanceModalVisible(false);
-        return response;
-      },
-      async (error) => {
-        if ([502, 503].includes(error?.response?.status)) setMaintenanceModalVisible(true);
-        return Promise.reject(error);
-      }
-    );
-  };
 
   const initializeAxiosLogged = useCallback(() => {
     if (axiosLoggedRequestInterceptorId.current !== null) {
@@ -80,10 +82,9 @@ const AppContainer = () => {
       .response
       .use(
         response => response,
-        async (error) => {
+        async (error: AxiosError) => {
           if (error?.response?.status === 401) return handleUnauthorizedRequest(error);
-          if ([502, 503].includes(error?.response?.status)) setMaintenanceModalVisible(true);
-
+          if (error?.response?.status === 502 || error?.response?.status === 503) return handleApiUnavailability(error);
           return Promise.reject(error);
         }
       );
@@ -121,7 +122,7 @@ const AppContainer = () => {
     AppState.addEventListener('change', shouldUpdate);
 
     return () => { AppState.removeEventListener('change', shouldUpdate); };
-  }, []);
+  }, [initializeAxiosNotLogged]);
 
   if (!axiosInitialized) return null;
 
