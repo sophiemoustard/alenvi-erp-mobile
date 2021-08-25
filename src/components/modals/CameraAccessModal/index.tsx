@@ -1,25 +1,40 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import styles from './styles';
 import NiModal from '../../../components/modals/Modal';
+import PrimaryButton from '../../form/PrimaryButton';
+import SecondaryButton from '../../form/SecondaryButton';
+import modalStyles from '../modalStyles';
+import FeatherButton from '../../FeatherButton';
+import { ICON } from '../../../styles/metrics';
 
 interface CameraAccessModalProps {
   visible: boolean,
-  onPressDismiss: () => void,
   onPressAskAgain: () => void,
+  goToManualTimeStamping: () => void,
+  onRequestClose: () => void,
 }
 
-const CameraAccessModal = ({ visible, onPressDismiss, onPressAskAgain }: CameraAccessModalProps) => (
-  <NiModal visible={visible} style={styles.container}>
+const CameraAccessModal = ({
+  visible,
+  onPressAskAgain,
+  goToManualTimeStamping,
+  onRequestClose,
+}: CameraAccessModalProps) => (
+  <NiModal visible={visible}>
     <>
-      <Text style={styles.text}>{'Vous n\'avez pas autorisé l\'accès à la caméra. Veuillez l\'autoriser.'}</Text>
+      <FeatherButton name="x-circle" onPress={onRequestClose} size={ICON.MD} />
+      <Text style={modalStyles.title}>Accès à la caméra</Text>
+      <Text style={modalStyles.body}>
+        Vous n&apos;avez pas autorisé l&apos;accès à la caméra. Veuillez l&apos;autoriser.
+      </Text>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={onPressDismiss}>
-          <Text style={styles.buttonText}>{'J\'ai compris'}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onPressAskAgain}>
-          <Text style={styles.buttonText}>Redemander</Text>
-        </TouchableOpacity>
+        <View>
+          <SecondaryButton title={'Horodater\n manuellement'} onPress={goToManualTimeStamping} />
+        </View>
+        <View>
+          <PrimaryButton title="Redemander" onPress={onPressAskAgain} />
+        </View>
       </View>
     </>
   </NiModal>

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { BLACK, WHITE } from '../../../styles/colors';
+import { COPPER_GREY, WHITE } from '../../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../../styles/fonts';
 import { MARGIN } from '../../../styles/metrics';
 
@@ -7,7 +7,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
-    backgroundColor: BLACK,
+    backgroundColor: COPPER_GREY[900],
   },
   closeButton: {
     marginTop: MARGIN.LG,

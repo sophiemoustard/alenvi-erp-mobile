@@ -1,5 +1,5 @@
 import React, { useContext, useCallback } from 'react';
-import Users from '../../api/Users';
+import Authentication from '../../api/Authentication';
 import PasswordForm from '../../components/PasswordForm';
 import { Context as AuthContext } from '../../context/AuthContext';
 import { NavigationType } from '../../types/NavigationType';
@@ -16,7 +16,7 @@ const PasswordReset = ({ route, navigation }: PasswordResetProps) => {
 
   const savePassword = useCallback(async (password: string) => {
     const { userId, email, token } = route.params;
-    await Users.updatePassword(userId, { local: { password } }, token);
+    await Authentication.updatePassword(userId, { local: { password } }, token);
     await signIn({ email, password });
   }, [route.params, signIn]);
 

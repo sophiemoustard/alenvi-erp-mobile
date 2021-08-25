@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { MARGIN, BORDER_WIDTH, BORDER_RADIUS } from '../../styles/metrics';
-import { GREY } from '../../styles/colors';
+import { COPPER_GREY, COPPER } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR } from '../../styles/fonts';
 
 export default StyleSheet.create({
@@ -8,10 +8,11 @@ export default StyleSheet.create({
     flexGrow: 1,
     flexDirection: 'column',
     justifyContent: 'space-between',
+    backgroundColor: COPPER_GREY[50],
   },
   sectionDelimiter: {
     borderWidth: BORDER_WIDTH,
-    borderColor: GREY[200],
+    borderColor: COPPER_GREY[200],
     marginVertical: MARGIN.XL,
   },
   identityContainer: {
@@ -28,15 +29,15 @@ export default StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: BORDER_RADIUS.XXL,
-    borderColor: GREY[200],
+    borderColor: COPPER_GREY[200],
   },
   name: {
     ...FIRA_SANS_BOLD.LG,
-    color: GREY[800],
+    color: COPPER_GREY[800],
   },
   company: {
     ...FIRA_SANS_MEDIUM.MD,
-    color: GREY[600],
+    color: COPPER_GREY[600],
     marginTop: MARGIN.XS,
   },
   contactContainer: {
@@ -45,16 +46,17 @@ export default StyleSheet.create({
   },
   contact: {
     ...FIRA_SANS_BOLD.LG,
+    color: COPPER_GREY[800],
   },
   infos: {
     ...FIRA_SANS_MEDIUM.MD,
     marginTop: MARGIN.XS,
-    color: GREY[900],
+    color: COPPER[900],
   },
   subtitle: {
     ...FIRA_SANS_REGULAR.MD,
     marginTop: MARGIN.MD,
-    color: GREY[600],
+    color: COPPER_GREY[600],
   },
   buttonContainer: {
     marginHorizontal: MARGIN.XL,

@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { GREY, WHITE } from '../../styles/colors';
+import { COPPER_GREY, WHITE } from '../../styles/colors';
 import { FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, BORDER_WIDTH, LINE_HEIGHT, MARGIN, PADDING } from '../../styles/metrics';
 
@@ -10,7 +10,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     borderWidth: BORDER_WIDTH,
     borderRadius: BORDER_RADIUS.SM,
-    borderColor: GREY[200],
+    borderColor: COPPER_GREY[200],
     backgroundColor: WHITE,
   },
   customerInfo: {
@@ -18,17 +18,18 @@ export default StyleSheet.create({
   },
   sectionDelimiter: {
     borderRightWidth: BORDER_WIDTH,
-    borderColor: GREY[200],
+    borderColor: COPPER_GREY[200],
     marginHorizontal: MARGIN.MD,
   },
   subtitle: {
     ...FIRA_SANS_REGULAR.SM,
     lineHeight: LINE_HEIGHT.SM,
-    color: GREY[700],
+    color: COPPER_GREY[700],
     marginBottom: MARGIN.SM,
   },
   info: {
     ...FIRA_SANS_MEDIUM.MD,
     lineHeight: LINE_HEIGHT.MD,
+    color: COPPER_GREY[900],
   },
 });

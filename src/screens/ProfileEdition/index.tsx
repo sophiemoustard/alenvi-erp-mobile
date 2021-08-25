@@ -6,7 +6,6 @@ import ExitModal from '../../components/modals/ExitModal';
 import NiInput from '../../components/form/Input';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
 import NiErrorMessage from '../../components/ErrorMessage';
-import { GREY } from '../../styles/colors';
 import { ICON, IS_LARGE_SCREEN, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../styles/metrics';
 import { Context as AuthContext } from '../../context/AuthContext';
 import Users from '../../api/Users';
@@ -125,13 +124,13 @@ const ProfileEdition = () => {
       keyboardVerticalOffset={IS_LARGE_SCREEN ? MARGIN.MD : MARGIN.XS}>
       <ScrollView contentContainerStyle={styles.screen}>
         <View style={styles.header}>
-          <FeatherButton name='x-circle' onPress={onPressExitModal} size={ICON.MD} color={GREY[600]} />
+          <FeatherButton name='x-circle' onPress={onPressExitModal} size={ICON.MD} />
           <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
             onPressCancelButton={() => setExitConfirmationModal(false)}
-            title={'Êtes-vous sûr de cela ?'} contentText={'Vos modifications ne seront pas enregistrées.'} />
-          <Text style={styles.title}>Modifier mes informations</Text>
+            title={'Êtes-vous sûr(e) de cela ?'} contentText={'Vos modifications ne seront pas enregistrées.'} />
         </View>
         <View style={styles.container}>
+          <Text style={styles.title}>Modifier mes informations</Text>
           <NiInput caption='Nom' value={editedUser.identity.lastname} type='lastname' validationMessage={nameError}
             onChangeText={onChangeIdentity('lastname')} />
           <NiInput caption='Prénom' type='firstname' value={editedUser.identity.firstname}

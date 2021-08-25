@@ -1,22 +1,14 @@
 import { StyleSheet } from 'react-native';
-import { PINK } from '../../../styles/colors';
-import { MARGIN, PADDING } from '../../../styles/metrics';
+import { MARGIN } from '../../../styles/metrics';
 import { FIRA_SANS_REGULAR } from '../../../styles/fonts';
 
 export default StyleSheet.create({
-  container: {
-    padding: PADDING.XL,
-  },
   text: {
-    ...FIRA_SANS_REGULAR.SM,
+    ...FIRA_SANS_REGULAR.MD,
   },
   buttonContainer: {
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     flexDirection: 'row',
     marginTop: MARGIN.XL,
-  },
-  buttonText: {
-    ...FIRA_SANS_REGULAR.SM,
-    color: PINK[400],
   },
 });
