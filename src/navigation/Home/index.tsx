@@ -30,6 +30,7 @@ const Home = () => {
         tabBarInactiveTintColor: COPPER_GREY[800],
         tabBarLabelStyle: styles.labelStyle,
         tabBarStyle: styles.tabBar,
+        headerShown: false,
       }}
     >
       <Tab.Screen name='Horodatage' component={TimeStampingProfile} options={{ tabBarIcon: timeStampingIcon }} />
