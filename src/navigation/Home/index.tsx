@@ -25,11 +25,11 @@ const Home = () => {
 
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        style: styles.tabBar,
-        activeTintColor: COPPER[600],
-        inactiveTintColor: COPPER_GREY[800],
-        labelStyle: styles.labelStyle,
+      screenOptions={{
+        tabBarActiveTintColor: COPPER[600],
+        tabBarInactiveTintColor: COPPER_GREY[800],
+        tabBarLabelStyle: styles.labelStyle,
+        tabBarStyle: styles.tabBar,
       }}
     >
       <Tab.Screen name='Horodatage' component={TimeStampingProfile} options={{ tabBarIcon: timeStampingIcon }} />
