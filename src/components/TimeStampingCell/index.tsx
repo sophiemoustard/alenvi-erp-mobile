@@ -88,8 +88,12 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       dispatch({
         type: SET_TIMESTAMPED_INFOS,
         payload: {
-          startHourStamped: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.startHour) || false,
-          endHourStamped: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.endHour) || false,
+          startHourStamped: timeStampingHistories?.some(
+            (h: EventHistoryType) => !!h.update.startHour && !h.isCancelled
+          ) || false,
+          endHourStamped: timeStampingHistories?.some(
+            (h: EventHistoryType) => !!h.update.endHour && !h.isCancelled
+          ) || false,
         },
       });
     }
