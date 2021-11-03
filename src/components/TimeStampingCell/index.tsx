@@ -115,7 +115,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   const requestPermission = async (eventStart: boolean) => {
     setIsEventStarting(eventStart);
-    let { status } = await Camera.getPermissionsAsync();
+    let { status } = await Camera.getCameraPermissionsAsync();
 
     if (status !== GRANTED) {
       const { status: newStatus } = await Camera.requestCameraPermissionsAsync();
