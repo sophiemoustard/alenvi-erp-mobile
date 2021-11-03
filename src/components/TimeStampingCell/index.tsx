@@ -83,7 +83,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
   useEffect(() => {
     if (event.histories) {
       const timeStampingHistories = event.histories
-        .filter((h: EventHistoryType) => TIMESTAMPING_ACTION_TYPE_LIST.includes(h.action));
+        .filter((h: EventHistoryType) => TIMESTAMPING_ACTION_TYPE_LIST.includes(h.action) && !h.isCancelled);
 
       dispatch({
         type: SET_TIMESTAMPED_INFOS,

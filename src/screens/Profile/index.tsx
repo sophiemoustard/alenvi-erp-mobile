@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { Text, View, Image, ImageSourcePropType } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Text, View, Image, ImageSourcePropType, ScrollView } from 'react-native';
 import NiSecondaryButton from '../../components/form/SecondaryButton';
 import { Context as AuthContext } from '../../context/AuthContext';
 import commonStyle from '../../styles/common';
