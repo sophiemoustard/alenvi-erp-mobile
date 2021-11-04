@@ -3,6 +3,7 @@ import { View, Text, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import { Feather } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { formatTime } from '../../core/helpers/dates';
 import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
 import styles from './styles';
@@ -113,6 +114,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     );
   };
 
+  const gotToEventEdition = () => navigation.navigate('EventEdition', { event });
+
   const requestPermission = async (eventStart: boolean) => {
     setIsEventStarting(eventStart);
     let { status } = await Camera.getCameraPermissionsAsync();
@@ -148,7 +151,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
       <Text style={styles.title}>{CIVILITY_OPTIONS[state.civility]} {state.lastName.toUpperCase()}</Text>
       <View style={styles.sectionDelimiter} />
-      <View style={styles.container}>
+      <TouchableOpacity onPress={gotToEventEdition} style={styles.container}>
         <View>
           <Text style={styles.timeTitle}>Début</Text>
           {!!state.startDate && <Text style={styles.scheduledTime}>{formatTime(state.startDate)}</Text>}
@@ -159,9 +162,9 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
             {!state.endHourStamped &&
               <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => requestPermission(true)} />}
           </>}
-      </View>
+      </TouchableOpacity>
       <View style={styles.sectionDelimiter} />
-      <View style={styles.container}>
+      <TouchableOpacity onPress={gotToEventEdition} style={styles.container}>
         <View>
           <Text style={styles.timeTitle}>Fin</Text>
           {!!state.endDate && <Text style={styles.scheduledTime}>{formatTime(state.endDate)}</Text>}
@@ -174,7 +177,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
             {state.startHourStamped &&
               <NiPrimaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
           </>}
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

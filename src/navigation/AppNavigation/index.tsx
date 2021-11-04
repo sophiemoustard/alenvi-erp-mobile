@@ -10,6 +10,7 @@ import ForgotPassword from '../../screens/ForgotPassword';
 import ProfileEdition from '../../screens/ProfileEdition';
 import ManualTimeStamping from '../../screens/timeStamping/ManualTimeStamping';
 import QRCodeScanner from '../../screens/timeStamping/QRCodeScanner';
+import EventEdition from '../../screens/timeStamping/EventEdition';
 import Analytics from '../../core/helpers/analytics';
 import Home from '../Home';
 
@@ -39,7 +40,7 @@ const AppNavigation = () => {
   };
 
   const authScreens = { Authentication, ForgotPassword, PasswordReset };
-  const userScreens = { Home, ManualTimeStamping, QRCodeScanner, PasswordEdition, ProfileEdition };
+  const userScreens = { Home, ManualTimeStamping, QRCodeScanner, PasswordEdition, ProfileEdition, EventEdition };
 
   if (!appIsReady) return null;
 
