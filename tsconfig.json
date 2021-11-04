@@ -10,7 +10,8 @@
     "noImplicitAny": true,
     "strict": true,
     "skipLibCheck": true,
-    "typeRoots": ["./node_modules/@types"]
+    "typeRoots": ["./node_modules/@types"],
+    "useUnknownInCatchVariables": false
   },
   "exclude": ["node_modules"],
   "extends": "expo/tsconfig.base"

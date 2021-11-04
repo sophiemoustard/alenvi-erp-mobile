@@ -52,7 +52,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner', route.params);
 
   const requestPermission = async () => {
-    let { status } = await Camera.getPermissionsAsync();
+    let { status } = await Camera.getCameraPermissionsAsync();
 
     if (status !== GRANTED) {
       const { status: newStatus } = await Camera.requestCameraPermissionsAsync();
