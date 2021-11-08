@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, BackHandler } from 'react-native';
+import get from 'lodash.get';
 import { formatDate } from '../../../core/helpers/dates';
 import FeatherButton from '../../../components/FeatherButton';
 import { NavigationType } from '../../../types/NavigationType';
@@ -16,9 +17,12 @@ interface EventEditionProps {
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
 
-  const goBack = useCallback(() => { navigation.navigate('Home', { screen: 'Profile' }); }, [navigation]);
+  const goBack = useCallback(() => { navigation.goBack(); }, [navigation]);
 
-  const hardwareBackPress = useCallback(() => { goBack(); return true; }, [goBack]);
+  const hardwareBackPress = useCallback(() => {
+    goBack();
+    return true;
+  }, [goBack]);
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
@@ -37,7 +41,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
-        <Text style={styles.name}>{`${event.customer.identity.firstname} ${event.customer.identity.lastname}`}</Text>
+        <Text style={styles.name}>
+          {`${get(event, 'customer.identity.firstname')} ${get(event, 'customer.identity.lastname')}`}
+        </Text>
       </View>
     </View>
   );

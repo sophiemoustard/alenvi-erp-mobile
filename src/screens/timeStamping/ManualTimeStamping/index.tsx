@@ -47,7 +47,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     setTitle(route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention');
   }, [route.params]);
 
-  const goBack = () => navigation.navigate('Home');
+  const goBack = () => navigation.navigate('Home', { screen: 'Horodatage' });
 
   const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner', route.params);
 

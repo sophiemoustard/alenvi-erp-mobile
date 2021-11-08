@@ -11,7 +11,7 @@ interface PasswordEditionProps {
 const PasswordEdition = ({ route, navigation }: PasswordEditionProps) => {
   const { userId } = route.params;
 
-  const goBack = () => { navigation.navigate('Home', { screen: 'Profile' }); };
+  const goBack = () => { navigation.navigate('Home', { screen: 'Profil' }); };
 
   const savePassword = async (password: string) => {
     await Authentication.updatePassword(userId, { local: { password } });

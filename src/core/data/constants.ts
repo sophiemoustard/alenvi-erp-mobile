@@ -34,8 +34,8 @@ export const CIVILITY_OPTIONS = {
 export const DAYS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 export const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre',
   'novembre', 'décembre'];
-export const CUT_MONTHS = ['Janv.', 'Fév.', 'Mars.', 'Avr.', 'Mai.', 'Juin.', 'Juil.', 'Août.', 'Sept.', 'Oct.',
-  'Nov.', 'Déc.'];
+export const MONTHS_SHORT = ['janv.', 'fév.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.',
+  'déc.'];
 
 // EVENT
 export const MANUAL_TIME_STAMPING = 'manual_time_stamping';

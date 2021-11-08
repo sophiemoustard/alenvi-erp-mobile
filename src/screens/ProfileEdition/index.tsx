@@ -41,7 +41,7 @@ const ProfileEdition = () => {
 
   const goBack = () => {
     if (exitConfirmationModal) setExitConfirmationModal(false);
-    navigation.navigate('Home', { screen: 'Profile' });
+    navigation.navigate('Home', { screen: 'Profil' });
   };
 
   const saveData = async () => {

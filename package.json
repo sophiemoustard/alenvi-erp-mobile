@@ -33,6 +33,7 @@
     "expo-font": "~10.0.3",
     "expo-status-bar": "~1.1.0",
     "expo-updates": "~0.10.10",
+    "lodash.get": "^4.4.2",
     "lodash.isequal": "^4.5.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
@@ -45,6 +46,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.9",
     "@testing-library/react-native": "^8.0.0",
+    "@types/lodash.get": "^4.4.6",
     "@types/lodash.isequal": "^4.5.5",
     "@types/react": "~17.0.21",
     "@types/react-dom": "~17.0.9",
