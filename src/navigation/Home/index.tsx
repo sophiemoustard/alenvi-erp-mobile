@@ -14,15 +14,17 @@ const Home = () => {
     focused: Boolean,
   }
 
+  const unfocusedStyle = styles();
+
   const timeStampingIcon = ({ focused } : tabBarProps) => (
-    <View style={styles().iconContainer}>
+    <View style={unfocusedStyle.iconContainer}>
       <Feather name='clock' size={20} color={focused ? COPPER[600] : COPPER_GREY[800]} />
       <Text style={styles(focused).labelStyle}>Horodatage</Text>
     </View>
   );
 
   const profileIcon = ({ focused } : tabBarProps) => (
-    <View style={styles().iconContainer}>
+    <View style={unfocusedStyle.iconContainer}>
       <Feather name='user' size={20} color={focused ? COPPER[600] : COPPER_GREY[800]} />
       <Text style={styles(focused).labelStyle}>Profil</Text>
     </View>
@@ -31,10 +33,10 @@ const Home = () => {
   return (
     <Tab.Navigator
       tabBarOptions={{
-        style: styles().tabBar,
+        style: unfocusedStyle.tabBar,
         activeTintColor: COPPER[600],
         inactiveTintColor: COPPER_GREY[800],
-        labelStyle: styles().labelStyle,
+        labelStyle: unfocusedStyle.labelStyle,
         showLabel: false,
       }}
     >

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
 import { View, Text, TouchableOpacity, BackHandler } from 'react-native';
-import get from 'lodash.get';
 import { formatDate } from '../../../core/helpers/dates';
 import FeatherButton from '../../../components/FeatherButton';
 import { NavigationType } from '../../../types/NavigationType';
@@ -42,7 +41,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       </View>
       <View style={styles.container}>
         <Text style={styles.name}>
-          {`${get(event, 'customer.identity.firstname')} ${get(event, 'customer.identity.lastname')}`}
+          {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
         </Text>
       </View>
     </View>
