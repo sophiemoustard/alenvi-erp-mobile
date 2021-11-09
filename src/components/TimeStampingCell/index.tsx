@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { View, Text, Alert } from 'react-native';
+import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import { Feather } from '@expo/vector-icons';
@@ -113,6 +113,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     );
   };
 
+  const goToEventEdition = () => navigation.navigate('EventEdition', { event });
+
   const requestPermission = async (eventStart: boolean) => {
     setIsEventStarting(eventStart);
     let { status } = await Camera.getCameraPermissionsAsync();
@@ -146,35 +148,37 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     <View style={styles.cell}>
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
-      <Text style={styles.title}>{CIVILITY_OPTIONS[state.civility]} {state.lastName.toUpperCase()}</Text>
-      <View style={styles.sectionDelimiter} />
-      <View style={styles.container}>
-        <View>
-          <Text style={styles.timeTitle}>Début</Text>
-          {!!state.startDate && <Text style={styles.scheduledTime}>{formatTime(state.startDate)}</Text>}
+      <TouchableOpacity onPress={goToEventEdition}>
+        <Text style={styles.title}>{CIVILITY_OPTIONS[state.civility]} {state.lastName.toUpperCase()}</Text>
+        <View style={styles.sectionDelimiter} />
+        <View style={styles.container}>
+          <View>
+            <Text style={styles.timeTitle}>Début</Text>
+            {!!state.startDate && <Text style={styles.scheduledTime}>{formatTime(state.startDate)}</Text>}
+          </View>
+          {state.startHourStamped
+            ? renderTimeStamp()
+            : <>
+              {!state.endHourStamped &&
+                <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => requestPermission(true)} />}
+            </>}
         </View>
-        {state.startHourStamped
-          ? renderTimeStamp()
-          : <>
-            {!state.endHourStamped &&
-              <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => requestPermission(true)} />}
-          </>}
-      </View>
-      <View style={styles.sectionDelimiter} />
-      <View style={styles.container}>
-        <View>
-          <Text style={styles.timeTitle}>Fin</Text>
-          {!!state.endDate && <Text style={styles.scheduledTime}>{formatTime(state.endDate)}</Text>}
+        <View style={styles.sectionDelimiter} />
+        <View style={styles.container}>
+          <View>
+            <Text style={styles.timeTitle}>Fin</Text>
+            {!!state.endDate && <Text style={styles.scheduledTime}>{formatTime(state.endDate)}</Text>}
+          </View>
+          {state.endHourStamped
+            ? renderTimeStamp()
+            : <>
+              {!state.startHourStamped &&
+                <NiSecondaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
+              {state.startHourStamped &&
+                <NiPrimaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
+            </>}
         </View>
-        {state.endHourStamped
-          ? renderTimeStamp()
-          : <>
-            {!state.startHourStamped &&
-              <NiSecondaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
-            {state.startHourStamped &&
-              <NiPrimaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
-          </>}
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

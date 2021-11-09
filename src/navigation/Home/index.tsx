@@ -1,4 +1,5 @@
 import React from 'react';
+import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Feather } from '@expo/vector-icons';
 import TimeStampingProfile from '../../screens/timeStamping/TimeStampingProfile';
@@ -13,27 +14,35 @@ const Home = () => {
     focused: Boolean,
   }
 
-  const timeStampingIcon = ({ focused } : tabBarProps) => (focused
-    ? <Feather name='clock' size={20} color={COPPER[600]} />
-    : <Feather name='clock' size={20} color={COPPER_GREY[800]} />
+  const unfocusedStyle = styles();
+
+  const timeStampingIcon = ({ focused } : tabBarProps) => (
+    <View style={unfocusedStyle.iconContainer}>
+      <Feather name='clock' size={20} color={focused ? COPPER[600] : COPPER_GREY[800]} />
+      <Text style={styles(focused).labelStyle}>Horodatage</Text>
+    </View>
   );
 
-  const profileIcon = ({ focused } : tabBarProps) => (focused
-    ? <Feather name='user' size={20} color={COPPER[600]} />
-    : <Feather name='user' size={20} color={COPPER_GREY[800]} />
+  const profileIcon = ({ focused } : tabBarProps) => (
+    <View style={unfocusedStyle.iconContainer}>
+      <Feather name='user' size={20} color={focused ? COPPER[600] : COPPER_GREY[800]} />
+      <Text style={styles(focused).labelStyle}>Profil</Text>
+    </View>
   );
 
   return (
     <Tab.Navigator
       tabBarOptions={{
-        style: styles.tabBar,
+        style: unfocusedStyle.tabBar,
         activeTintColor: COPPER[600],
         inactiveTintColor: COPPER_GREY[800],
-        labelStyle: styles.labelStyle,
+        labelStyle: unfocusedStyle.labelStyle,
+        showLabel: false,
       }}
     >
-      <Tab.Screen name='Horodatage' component={TimeStampingProfile} options={{ tabBarIcon: timeStampingIcon }} />
-      <Tab.Screen name='Profil' component={Profile} options={{ tabBarIcon: profileIcon }} />
+      <Tab.Screen name='TimeStampingProfile' component={TimeStampingProfile}
+        options={{ tabBarIcon: timeStampingIcon }} />
+      <Tab.Screen name='Profile' component={Profile} options={{ tabBarIcon: profileIcon }} />
     </Tab.Navigator>
   );
 };
