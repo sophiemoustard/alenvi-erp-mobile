@@ -13,6 +13,9 @@ export type EventType = {
   startDate: Date,
   endDate: Date,
   histories?: EventHistoryType[],
+  startDateTimeStamp?: boolean,
+  endDateTimeStamp?: boolean,
+  isBilled?: boolean,
 };
 
 export type EventHistoryType = {

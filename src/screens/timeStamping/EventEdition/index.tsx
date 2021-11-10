@@ -7,6 +7,7 @@ import styles from './styles';
 import { COPPER } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
 import { EventType } from '../../../types/EventType';
+import EventDateTimeDetails from '../../../components/EventDateTimeDetails';
 
 interface EventEditionProps {
   route: { params: { event: EventType } },
@@ -43,6 +44,15 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <Text style={styles.name}>
           {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
         </Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionText}>Début</Text>
+          <EventDateTimeDetails date={event.startDate} isTimeStamped={event.startDateTimeStamp}
+            isBilled={event.isBilled} />
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionText}>Fin</Text>
+          <EventDateTimeDetails date={event.endDate} isTimeStamped={event.endDateTimeStamp} isBilled={event.isBilled} />
+        </View>
       </View>
     </View>
   );
