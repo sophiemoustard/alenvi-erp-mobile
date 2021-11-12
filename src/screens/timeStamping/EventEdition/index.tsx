@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
-import { View, Text, TouchableOpacity, BackHandler } from 'react-native';
+import { View, Text, TouchableOpacity, BackHandler, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { formatDate } from '../../../core/helpers/dates';
 import FeatherButton from '../../../components/FeatherButton';
@@ -26,20 +26,22 @@ interface StateType {
 }
 interface ActionType {
   type: string,
-  payload?: { date?: Date, mode?: ModeType },
+  payload?: { date?: Date, mode?: ModeType, start?: boolean },
 }
 
 const SWITCH_PICKER = 'switchPicker';
-const SET_MODE = 'setMode';
+const HIDE_PICKER = 'hidePicker';
 const SET_DATE = 'setDate';
 
 const reducer = (state: StateType, action: ActionType): StateType => {
   switch (action.type) {
     case SWITCH_PICKER:
-      if (state.showStartPicker) return { ...state, showStartPicker: false, showEndPicker: true };
-      return { ...state, showStartPicker: true, showEndPicker: false };
-    case SET_MODE:
-      return { ...state, mode: action.payload?.mode || 'date' };
+      if (action.payload?.start) {
+        return { ...state, showStartPicker: true, showEndPicker: false, mode: action.payload?.mode || 'date' };
+      }
+      return { ...state, showStartPicker: false, showEndPicker: true, mode: action.payload?.mode || 'date' };
+    case HIDE_PICKER:
+      return { ...state, showStartPicker: false, showEndPicker: false };
     case SET_DATE:
       return {
         ...state,
@@ -62,6 +64,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     showEndPicker: false,
   };
   const [state, dispatch] = useReducer(reducer, initialState);
+  const isIOS = Platform.OS === 'ios';
 
   const goBack = useCallback(() => { navigation.goBack(); }, [navigation]);
 
@@ -76,34 +79,18 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
   }, [hardwareBackPress]);
 
-  const onPressStartDatePicker = () => {
-    if (!state.showStartPicker) dispatch({ type: SWITCH_PICKER });
-    dispatch({ type: SET_MODE, payload: { mode: 'date' } });
-  };
+  const onPressDatePicker = (start: boolean) => dispatch({ type: SWITCH_PICKER, payload: { start, mode: 'date' } });
 
-  const onPressStartTimePicker = () => {
-    if (!state.showStartPicker) dispatch({ type: SWITCH_PICKER });
-    dispatch({ type: SET_MODE, payload: { mode: 'time' } });
-  };
-
-  const onPressEndDatePicker = () => {
-    if (!state.showEndPicker) dispatch({ type: SWITCH_PICKER });
-    dispatch({ type: SET_MODE, payload: { mode: 'date' } });
-  };
-
-  const onPressEndTimePicker = () => {
-    if (!state.showEndPicker) dispatch({ type: SWITCH_PICKER });
-    dispatch({ type: SET_MODE, payload: { mode: 'time' } });
-  };
+  const onPressTimePicker = (start: boolean) => dispatch({ type: SWITCH_PICKER, payload: { start, mode: 'time' } });
 
   const onChangeStartPicker = (pickerEvent: any, newDate: Date | undefined) => {
-    const value = newDate || initialDate;
-    if (state.mode === 'date') dispatch({ type: SET_DATE, payload: { date: value } });
+    if (state.mode === 'date') dispatch({ type: SET_DATE, payload: { date: newDate } });
+    if (!isIOS) dispatch({ type: HIDE_PICKER });
   };
 
   const onChangeEndPicker = (pickerEvent: any, newDate: Date | undefined) => {
-    const value = newDate || initialDate;
-    if (state.mode === 'date') dispatch({ type: SET_DATE, payload: { date: value } });
+    if (state.mode === 'date') dispatch({ type: SET_DATE, payload: { date: newDate } });
+    if (!isIOS) dispatch({ type: HIDE_PICKER });
   };
 
   return (
@@ -123,14 +110,15 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <View style={styles.section}>
           <Text style={styles.sectionText}>Début</Text>
           <EventDateTimeDetails date={state.startDate} isTimeStamped={event.startDateTimeStamp}
-            onPressDate={onPressStartDatePicker} onPressTime={onPressStartTimePicker} isBilled={event.isBilled} />
+            onPressDate={() => onPressDatePicker(true)} onPressTime={() => onPressTimePicker(true)}
+            isBilled={event.isBilled} />
           { !!state.showStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour={true}
             display="default" onChange={onChangeStartPicker} dateFormat="dayofweek day month" />}
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
           <EventDateTimeDetails date={state.endDate} isTimeStamped={event.endDateTimeStamp} isBilled={event.isBilled}
-            onPressDate={onPressEndDatePicker} onPressTime={onPressEndTimePicker} />
+            onPressDate={() => onPressDatePicker(false)} onPressTime={() => onPressTimePicker(false)} />
           { !!state.showEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour={true}
             display="default" onChange={onChangeEndPicker} dateFormat="dayofweek day month" />}
         </View>

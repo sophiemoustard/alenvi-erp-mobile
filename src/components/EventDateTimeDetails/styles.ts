@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { COPPER_GREY, WHITE } from '../../styles/colors';
-import { BORDER_RADIUS, BORDER_WIDTH, MARGIN } from '../../styles/metrics';
+import { BORDER_RADIUS, BORDER_WIDTH, ICON, MARGIN } from '../../styles/metrics';
 
 export default StyleSheet.create({
   container: {
@@ -43,9 +43,9 @@ export default StyleSheet.create({
     alignItems: 'center',
   },
   icon: {
-    width: 20,
-    height: 20,
-    borderRadius: 20 / 2,
+    width: ICON.SM,
+    height: ICON.SM,
+    borderRadius: ICON.SM / 2,
     backgroundColor: COPPER_GREY[100],
     marginHorizontal: MARGIN.MD,
     alignItems: 'center',
