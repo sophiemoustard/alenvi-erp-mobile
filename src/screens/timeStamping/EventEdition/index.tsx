@@ -107,15 +107,15 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <Text style={styles.sectionText}>Début</Text>
           <EventDateTimeDetails date={state.startDate} isTimeStamped={event.startDateTimeStamp}
             onPress={(mode: ModeType) => onPressPicker(true, mode)} isBilled={event.isBilled} />
-          { !!state.showStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour={true}
-            display="default" onChange={onChangePicker} dateFormat="dayofweek day month" />}
+          { state.showStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour={true}
+            display="spinner" onChange={onChangePicker} locale="fr-FR" />}
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
           <EventDateTimeDetails date={state.endDate} isTimeStamped={event.endDateTimeStamp} isBilled={event.isBilled}
             onPress={(mode: ModeType) => onPressPicker(false, mode)} />
-          { !!state.showEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour={true}
-            display="default" onChange={onChangePicker} dateFormat="dayofweek day month" />}
+          { state.showEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour={true}
+            display="spinner" onChange={onChangePicker} locale="fr-FR" />}
         </View>
       </View>
     </View>
