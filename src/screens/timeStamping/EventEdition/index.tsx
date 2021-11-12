@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
 import { View, Text, TouchableOpacity, BackHandler, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { DATE } from '../../../core/data/constants';
 import { formatDate } from '../../../core/helpers/dates';
 import EventDateTimeDetails from '../../../components/EventDateTimeDetails';
 import FeatherButton from '../../../components/FeatherButton';
@@ -10,7 +11,7 @@ import { ICON } from '../../../styles/metrics';
 import { EventType } from '../../../types/EventType';
 import { NavigationType } from '../../../types/NavigationType';
 
-type ModeType = 'date' | 'time';
+export type ModeType = 'date' | 'time';
 
 interface EventEditionProps {
   route: { params: { event: EventType } },
@@ -36,10 +37,12 @@ const SET_DATE = 'setDate';
 const reducer = (state: StateType, action: ActionType): StateType => {
   switch (action.type) {
     case SWITCH_PICKER:
-      if (action.payload?.start) {
-        return { ...state, showStartPicker: true, showEndPicker: false, mode: action.payload?.mode || 'date' };
-      }
-      return { ...state, showStartPicker: false, showEndPicker: true, mode: action.payload?.mode || 'date' };
+      return {
+        ...state,
+        showStartPicker: !!action.payload?.start,
+        showEndPicker: !action.payload?.start,
+        mode: action.payload?.mode || DATE,
+      };
     case HIDE_PICKER:
       return { ...state, showStartPicker: false, showEndPicker: false };
     case SET_DATE:
@@ -59,7 +62,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const initialState: StateType = {
     startDate: initialDate,
     endDate: initialDate,
-    mode: 'date',
+    mode: DATE,
     showStartPicker: false,
     showEndPicker: false,
   };
@@ -79,17 +82,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
   }, [hardwareBackPress]);
 
-  const onPressDatePicker = (start: boolean) => dispatch({ type: SWITCH_PICKER, payload: { start, mode: 'date' } });
+  const onPressPicker = (start: boolean, mode: ModeType) => dispatch({ type: SWITCH_PICKER, payload: { start, mode } });
 
-  const onPressTimePicker = (start: boolean) => dispatch({ type: SWITCH_PICKER, payload: { start, mode: 'time' } });
-
-  const onChangeStartPicker = (pickerEvent: any, newDate: Date | undefined) => {
-    if (state.mode === 'date') dispatch({ type: SET_DATE, payload: { date: newDate } });
-    if (!isIOS) dispatch({ type: HIDE_PICKER });
-  };
-
-  const onChangeEndPicker = (pickerEvent: any, newDate: Date | undefined) => {
-    if (state.mode === 'date') dispatch({ type: SET_DATE, payload: { date: newDate } });
+  const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
+    if (state.mode === DATE) dispatch({ type: SET_DATE, payload: { date: newDate } });
     if (!isIOS) dispatch({ type: HIDE_PICKER });
   };
 
@@ -110,17 +106,16 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <View style={styles.section}>
           <Text style={styles.sectionText}>Début</Text>
           <EventDateTimeDetails date={state.startDate} isTimeStamped={event.startDateTimeStamp}
-            onPressDate={() => onPressDatePicker(true)} onPressTime={() => onPressTimePicker(true)}
-            isBilled={event.isBilled} />
+            onPress={(mode: ModeType) => onPressPicker(true, mode)} isBilled={event.isBilled} />
           { !!state.showStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour={true}
-            display="default" onChange={onChangeStartPicker} dateFormat="dayofweek day month" />}
+            display="default" onChange={onChangePicker} dateFormat="dayofweek day month" />}
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
           <EventDateTimeDetails date={state.endDate} isTimeStamped={event.endDateTimeStamp} isBilled={event.isBilled}
-            onPressDate={() => onPressDatePicker(false)} onPressTime={() => onPressTimePicker(false)} />
+            onPress={(mode: ModeType) => onPressPicker(false, mode)} />
           { !!state.showEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour={true}
-            display="default" onChange={onChangeEndPicker} dateFormat="dayofweek day month" />}
+            display="default" onChange={onChangePicker} dateFormat="dayofweek day month" />}
         </View>
       </View>
     </View>

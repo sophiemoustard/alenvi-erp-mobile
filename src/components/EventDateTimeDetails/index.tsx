@@ -1,9 +1,10 @@
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { MONTHS } from '../../core/data/constants';
+import { DATE, MONTHS, TIME } from '../../core/data/constants';
 import { formatTime } from '../../core/helpers/dates';
 import { capitalizeFirstLetter } from '../../core/helpers/utils';
+import { ModeType } from '../../screens/timeStamping/EventEdition';
 import { COPPER_GREY } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
 import styles from './styles';
@@ -12,16 +13,14 @@ interface EventDateTimeDetailsProps {
   date: Date,
   isTimeStamped?: boolean,
   isBilled?: boolean,
-  onPressDate: () => void,
-  onPressTime: () => void,
+  onPress: (mode: ModeType) => void,
 }
 
 const EventDateTimeDetails = ({
   date,
   isTimeStamped = false,
   isBilled = false,
-  onPressDate,
-  onPressTime,
+  onPress,
 }: EventDateTimeDetailsProps) => {
   const formattedDate = new Date(date);
   const displayedDate = `${formattedDate.getDate()} ${capitalizeFirstLetter(MONTHS[formattedDate.getMonth()])}`;
@@ -29,10 +28,10 @@ const EventDateTimeDetails = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.dateCell} onPress={onPressDate} disabled={isTimeStamped || isBilled}>
+      <TouchableOpacity style={styles.dateCell} onPress={() => onPress(DATE)} disabled={isTimeStamped || isBilled}>
         <Text style={styles.text}>{displayedDate}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.timeCell} onPress={onPressTime} disabled={isTimeStamped || isBilled}>
+      <TouchableOpacity style={styles.timeCell} onPress={() => onPress(TIME)} disabled={isTimeStamped || isBilled}>
         <Text style={styles.text}>{displayedTime}</Text>
       </TouchableOpacity>
       { !!isTimeStamped && <View style={styles.iconContainer}>

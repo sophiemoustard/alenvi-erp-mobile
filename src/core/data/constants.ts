@@ -16,6 +16,8 @@ export const PHONE_REGEX = /^\s*(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}(?:[
 
 // DATE
 export const ONE_YEAR_IN_MILLISECONDS = 31536000000;
+export const DATE = 'date';
+export const TIME = 'time';
 
 // PLANNING
 export const INTERVENTION: EventTypeEnum = 'intervention';
