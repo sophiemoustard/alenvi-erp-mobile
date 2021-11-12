@@ -4,9 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import { Feather } from '@expo/vector-icons';
 import { formatTime } from '../../core/helpers/dates';
-import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
+import { CIVILITY_OPTIONS, GRANTED } from '../../core/data/constants';
 import styles from './styles';
-import { EventType, EventHistoryType } from '../../types/EventType';
+import { EventType } from '../../types/EventType';
 import CameraAccessModal from '../../components/modals/CameraAccessModal';
 import NiPrimaryButton from '../form/PrimaryButton';
 import NiSecondaryButton from '../form/SecondaryButton';
@@ -18,12 +18,10 @@ interface StateType {
   lastName: string,
   startDate: Date | null,
   endDate: Date | null,
-  startHourStamped: boolean,
-  endHourStamped: boolean,
 }
 interface ActionType {
   type: string,
-  payload: { event?: EventType, startHourStamped?: boolean, endHourStamped?: boolean },
+  payload: { event?: EventType },
 }
 
 const initialState = {
@@ -31,11 +29,8 @@ const initialState = {
   lastName: '',
   startDate: null,
   endDate: null,
-  startHourStamped: false,
-  endHourStamped: false,
 };
 const SET_EVENT_INFOS = 'setEventInfos';
-const SET_TIMESTAMPED_INFOS = 'setTimeStampedInfos';
 
 const reducer = (state: StateType, action: ActionType): StateType => {
   switch (action.type) {
@@ -46,12 +41,6 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         lastName: action.payload.event?.customer?.identity?.lastname || '',
         startDate: action.payload.event?.startDate ? new Date(action.payload.event?.startDate) : null,
         endDate: action.payload.event?.endDate ? new Date(action.payload.event?.endDate) : null,
-      };
-    case SET_TIMESTAMPED_INFOS:
-      return {
-        ...state,
-        startHourStamped: action.payload.startHourStamped || false,
-        endHourStamped: action.payload.endHourStamped || false,
       };
     default:
       return state;
@@ -79,21 +68,6 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
   const navigation = useNavigation();
 
   useEffect(() => { if (event) dispatch({ type: SET_EVENT_INFOS, payload: { event } }); }, [event]);
-
-  useEffect(() => {
-    if (event.histories) {
-      const timeStampingHistories = event.histories
-        .filter((h: EventHistoryType) => TIMESTAMPING_ACTION_TYPE_LIST.includes(h.action) && !h.isCancelled);
-
-      dispatch({
-        type: SET_TIMESTAMPED_INFOS,
-        payload: {
-          startHourStamped: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.startHour) || false,
-          endHourStamped: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.endHour) || false,
-        },
-      });
-    }
-  }, [event.histories]);
 
   const goToBarCodeScanner = (eventStart: boolean) => navigation.navigate(
     'QRCodeScanner',
@@ -156,10 +130,10 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
             <Text style={styles.timeTitle}>Début</Text>
             {!!state.startDate && <Text style={styles.scheduledTime}>{formatTime(state.startDate)}</Text>}
           </View>
-          {state.startHourStamped
+          {event.startDateTimeStamp
             ? renderTimeStamp()
             : <>
-              {!state.endHourStamped &&
+              {!event.endDateTimeStamp &&
                 <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => requestPermission(true)} />}
             </>}
         </View>
@@ -169,12 +143,12 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
             <Text style={styles.timeTitle}>Fin</Text>
             {!!state.endDate && <Text style={styles.scheduledTime}>{formatTime(state.endDate)}</Text>}
           </View>
-          {state.endHourStamped
+          {event.endDateTimeStamp
             ? renderTimeStamp()
             : <>
-              {!state.startHourStamped &&
+              {!event.startDateTimeStamp &&
                 <NiSecondaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
-              {state.startHourStamped &&
+              {!!event.startDateTimeStamp &&
                 <NiPrimaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
             </>}
         </View>

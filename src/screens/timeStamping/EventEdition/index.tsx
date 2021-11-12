@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useReducer } from 'react';
 import { View, Text, TouchableOpacity, BackHandler, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { formatDate } from '../../../core/helpers/dates';
+import EventDateTimeDetails from '../../../components/EventDateTimeDetails';
 import FeatherButton from '../../../components/FeatherButton';
-import { NavigationType } from '../../../types/NavigationType';
 import styles from './styles';
 import { COPPER } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
 import { EventType } from '../../../types/EventType';
-import EventDateTimeDetails from '../../../components/EventDateTimeDetails';
+import { NavigationType } from '../../../types/NavigationType';
 
 type ModeType = 'date' | 'time';
 
