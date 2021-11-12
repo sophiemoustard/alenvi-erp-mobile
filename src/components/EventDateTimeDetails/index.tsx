@@ -12,19 +12,27 @@ interface EventDateTimeDetailsProps {
   date: Date,
   isTimeStamped?: boolean,
   isBilled?: boolean,
+  onPressDate: () => void,
+  onPressTime: () => void,
 }
 
-const EventDateTimeDetails = ({ date, isTimeStamped = false, isBilled = false }: EventDateTimeDetailsProps) => {
+const EventDateTimeDetails = ({
+  date,
+  isTimeStamped = false,
+  isBilled = false,
+  onPressDate,
+  onPressTime,
+}: EventDateTimeDetailsProps) => {
   const formattedDate = new Date(date);
   const displayedDate = `${formattedDate.getDate()} ${capitalizeFirstLetter(MONTHS[formattedDate.getMonth()])}`;
   const displayedTime = formatTime(formattedDate);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.dateCell} onPress={() => {}} disabled={isTimeStamped || isBilled}>
+      <TouchableOpacity style={styles.dateCell} onPress={onPressDate} disabled={isTimeStamped || isBilled}>
         <Text style={styles.text}>{displayedDate}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.timeCell} onPress={() => {}} disabled={isTimeStamped || isBilled}>
+      <TouchableOpacity style={styles.timeCell} onPress={onPressTime} disabled={isTimeStamped || isBilled}>
         <Text style={styles.text}>{displayedTime}</Text>
       </TouchableOpacity>
       { !!isTimeStamped && <View style={styles.iconContainer}>
