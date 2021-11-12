@@ -7,7 +7,7 @@ import { FeatherType } from '../../types/IconType';
 
 interface FeatherButtonProps {
   name: FeatherType,
-  onPress: () => void,
+  onPress?: () => void,
   color?: string,
   size?: number,
   style?: Object,
@@ -16,7 +16,7 @@ interface FeatherButtonProps {
 
 const FeatherButton = ({
   name,
-  onPress,
+  onPress = () => {},
   color = COPPER_GREY[600],
   size = ICON.XS,
   style = {},

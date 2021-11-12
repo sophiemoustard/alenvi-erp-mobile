@@ -55,4 +55,18 @@ export default StyleSheet.create({
     color: COPPER_GREY[700],
     marginBottom: MARGIN.SM,
   },
+  address: {
+    flexDirection: 'row',
+    paddingBottom: PADDING.XL,
+  },
+  addressIcon: {
+    padding: PADDING.SM,
+  },
+  primaryAddress: {
+    color: COPPER_GREY[500],
+    paddingHorizontal: PADDING.MD,
+  },
+  addressText: {
+    color: COPPER_GREY[500],
+  },
 });

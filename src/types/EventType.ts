@@ -8,7 +8,8 @@ export type EventType = {
       title: string,
       firstname: string,
       lastname: string,
-    }
+    },
+    contact: { primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string } },
   },
   startDate: Date,
   endDate: Date,
