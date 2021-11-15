@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
 import { View, Text, TouchableOpacity, BackHandler, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Feather } from '@expo/vector-icons';
 import { DATE, IOS } from '../../../core/data/constants';
 import { formatDate } from '../../../core/helpers/dates';
 import EventDateTime from '../../../components/EventDateTime';
@@ -104,7 +105,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
         </Text>
         <View style={styles.address} >
-          <FeatherButton name='map-pin' size={ICON.SM} style={styles.addressIcon} color={COPPER_GREY[500]} />
+          <Feather name='map-pin' size={ICON.SM} style={styles.addressIcon} color={COPPER_GREY[500]} />
           <View style={styles.primaryAddress}>
             <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
             <Text style={styles.addressText}>
