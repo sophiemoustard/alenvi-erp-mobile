@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
 import { View, Text, TouchableOpacity, BackHandler, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { DATE } from '../../../core/data/constants';
+import { DATE, IOS } from '../../../core/data/constants';
 import { formatDate } from '../../../core/helpers/dates';
-import EventDateTimeDetails from '../../../components/EventDateTimeDetails';
+import EventDateTime from '../../../components/EventDateTime';
 import FeatherButton from '../../../components/FeatherButton';
 import styles from './styles';
 import { COPPER } from '../../../styles/colors';
@@ -22,9 +22,10 @@ interface StateType {
   startDate: Date,
   endDate: Date,
   mode: ModeType,
-  showStartPicker: boolean,
-  showEndPicker: boolean,
+  displayStartPicker: boolean,
+  displayEndPicker: boolean,
 }
+
 interface ActionType {
   type: string,
   payload?: { date?: Date, mode?: ModeType, start?: boolean },
@@ -39,12 +40,12 @@ const reducer = (state: StateType, action: ActionType): StateType => {
     case SWITCH_PICKER:
       return {
         ...state,
-        showStartPicker: !!action.payload?.start,
-        showEndPicker: !action.payload?.start,
+        displayStartPicker: !!action.payload?.start,
+        displayEndPicker: !action.payload?.start,
         mode: action.payload?.mode || DATE,
       };
     case HIDE_PICKER:
-      return { ...state, showStartPicker: false, showEndPicker: false };
+      return { ...state, displayStartPicker: false, displayEndPicker: false };
     case SET_DATE:
       return {
         ...state,
@@ -58,16 +59,15 @@ const reducer = (state: StateType, action: ActionType): StateType => {
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
-  const initialDate = new Date(event.startDate);
   const initialState: StateType = {
-    startDate: initialDate,
-    endDate: initialDate,
+    startDate: new Date(event.startDate),
+    endDate: new Date(event.startDate),
     mode: DATE,
-    showStartPicker: false,
-    showEndPicker: false,
+    displayStartPicker: false,
+    displayEndPicker: false,
   };
   const [state, dispatch] = useReducer(reducer, initialState);
-  const isIOS = Platform.OS === 'ios';
+  const isIOS = Platform.OS === IOS;
 
   const goBack = useCallback(() => { navigation.goBack(); }, [navigation]);
 
@@ -105,17 +105,17 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         </Text>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Début</Text>
-          <EventDateTimeDetails date={state.startDate} isTimeStamped={event.startDateTimeStamp}
+          <EventDateTime date={state.startDate} isTimeStamped={event.startDateTimeStamp}
             onPress={(mode: ModeType) => onPressPicker(true, mode)} isBilled={event.isBilled} />
-          { state.showStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour={true}
-            display="spinner" onChange={onChangePicker} locale="fr-FR" />}
+          {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour locale="fr-FR"
+            display="spinner" onChange={onChangePicker} />}
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
-          <EventDateTimeDetails date={state.endDate} isTimeStamped={event.endDateTimeStamp} isBilled={event.isBilled}
+          <EventDateTime date={state.endDate} isTimeStamped={event.endDateTimeStamp} isBilled={event.isBilled}
             onPress={(mode: ModeType) => onPressPicker(false, mode)} />
-          { state.showEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour={true}
-            display="spinner" onChange={onChangePicker} locale="fr-FR" />}
+          {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour locale="fr-FR"
+            display="spinner" onChange={onChangePicker} />}
         </View>
       </View>
     </View>

@@ -4,13 +4,14 @@ import NiModal from '../Modal';
 import NiPrimaryButton from '../../form/PrimaryButton';
 import styles from './styles';
 import modalStyles from '../modalStyles';
+import { IOS } from '../../../core/data/constants';
 
 interface UpdateAppModalProps {
   visible: boolean,
 }
 
 const UpdateAppModal = ({ visible }: UpdateAppModalProps) => {
-  const appUrl = Platform.OS === 'ios'
+  const appUrl = Platform.OS === IOS
     ? 'https://apps.apple.com/app/id/1564254334'
     : 'market://details?id=com.compani.erp';
 

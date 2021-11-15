@@ -1,6 +1,7 @@
 import { EventTypeEnum } from '../../types/EventType';
 
 export const ERP = 'erp';
+export const IOS = 'ios';
 
 // STATE
 export const ACTIVE_STATE = 'active';
