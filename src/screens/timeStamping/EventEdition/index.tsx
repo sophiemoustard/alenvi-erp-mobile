@@ -1,20 +1,73 @@
-import React, { useCallback, useEffect } from 'react';
-import { View, Text, TouchableOpacity, BackHandler } from 'react-native';
+import React, { useCallback, useEffect, useReducer } from 'react';
+import { View, Text, TouchableOpacity, BackHandler, Platform } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { DATE, IOS } from '../../../core/data/constants';
 import { formatDate } from '../../../core/helpers/dates';
+import EventDateTime from '../../../components/EventDateTime';
 import FeatherButton from '../../../components/FeatherButton';
-import { NavigationType } from '../../../types/NavigationType';
 import styles from './styles';
 import { COPPER } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
 import { EventType } from '../../../types/EventType';
+import { NavigationType } from '../../../types/NavigationType';
+
+export type ModeType = 'date' | 'time';
 
 interface EventEditionProps {
   route: { params: { event: EventType } },
   navigation: NavigationType,
 }
 
+interface StateType {
+  startDate: Date,
+  endDate: Date,
+  mode: ModeType,
+  displayStartPicker: boolean,
+  displayEndPicker: boolean,
+}
+
+interface ActionType {
+  type: string,
+  payload?: { date?: Date, mode?: ModeType, start?: boolean },
+}
+
+const SWITCH_PICKER = 'switchPicker';
+const HIDE_PICKER = 'hidePicker';
+const SET_DATE = 'setDate';
+
+const reducer = (state: StateType, action: ActionType): StateType => {
+  switch (action.type) {
+    case SWITCH_PICKER:
+      return {
+        ...state,
+        displayStartPicker: !!action.payload?.start,
+        displayEndPicker: !action.payload?.start,
+        mode: action.payload?.mode || DATE,
+      };
+    case HIDE_PICKER:
+      return { ...state, displayStartPicker: false, displayEndPicker: false };
+    case SET_DATE:
+      return {
+        ...state,
+        startDate: action.payload?.date || state.startDate,
+        endDate: action.payload?.date || state.endDate,
+      };
+    default:
+      return state;
+  }
+};
+
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
+  const initialState: StateType = {
+    startDate: new Date(event.startDate),
+    endDate: new Date(event.startDate),
+    mode: DATE,
+    displayStartPicker: false,
+    displayEndPicker: false,
+  };
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const isIOS = Platform.OS === IOS;
 
   const goBack = useCallback(() => { navigation.goBack(); }, [navigation]);
 
@@ -28,6 +81,13 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
     return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
   }, [hardwareBackPress]);
+
+  const onPressPicker = (start: boolean, mode: ModeType) => dispatch({ type: SWITCH_PICKER, payload: { start, mode } });
+
+  const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
+    if (state.mode === DATE) dispatch({ type: SET_DATE, payload: { date: newDate } });
+    if (!isIOS) dispatch({ type: HIDE_PICKER });
+  };
 
   return (
     <View style={styles.screen}>
@@ -43,6 +103,20 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <Text style={styles.name}>
           {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
         </Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionText}>Début</Text>
+          <EventDateTime date={state.startDate} isTimeStamped={event.startDateTimeStamp}
+            onPress={(mode: ModeType) => onPressPicker(true, mode)} isBilled={event.isBilled} />
+          {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour locale="fr-FR"
+            display="spinner" onChange={onChangePicker} />}
+        </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionText}>Fin</Text>
+          <EventDateTime date={state.endDate} isTimeStamped={event.endDateTimeStamp} isBilled={event.isBilled}
+            onPress={(mode: ModeType) => onPressPicker(false, mode)} />
+          {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour locale="fr-FR"
+            display="spinner" onChange={onChangePicker} />}
+        </View>
       </View>
     </View>
   );

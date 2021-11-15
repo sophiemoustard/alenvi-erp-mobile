@@ -18,12 +18,12 @@ interface StateType {
   lastName: string,
   startDate: Date | null,
   endDate: Date | null,
-  startHourStamped: boolean,
-  endHourStamped: boolean,
+  startDateTimeStamp: boolean,
+  endDateTimeStamp: boolean,
 }
 interface ActionType {
   type: string,
-  payload: { event?: EventType, startHourStamped?: boolean, endHourStamped?: boolean },
+  payload: { event?: EventType, startDateTimeStamp?: boolean, endDateTimeStamp?: boolean },
 }
 
 const initialState = {
@@ -31,8 +31,8 @@ const initialState = {
   lastName: '',
   startDate: null,
   endDate: null,
-  startHourStamped: false,
-  endHourStamped: false,
+  startDateTimeStamp: false,
+  endDateTimeStamp: false,
 };
 const SET_EVENT_INFOS = 'setEventInfos';
 const SET_TIMESTAMPED_INFOS = 'setTimeStampedInfos';
@@ -50,8 +50,8 @@ const reducer = (state: StateType, action: ActionType): StateType => {
     case SET_TIMESTAMPED_INFOS:
       return {
         ...state,
-        startHourStamped: action.payload.startHourStamped || false,
-        endHourStamped: action.payload.endHourStamped || false,
+        startDateTimeStamp: action.payload.startDateTimeStamp || false,
+        endDateTimeStamp: action.payload.endDateTimeStamp || false,
       };
     default:
       return state;
@@ -88,8 +88,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       dispatch({
         type: SET_TIMESTAMPED_INFOS,
         payload: {
-          startHourStamped: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.startHour) || false,
-          endHourStamped: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.endHour) || false,
+          startDateTimeStamp: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.startHour) || false,
+          endDateTimeStamp: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.endHour) || false,
         },
       });
     }
@@ -113,7 +113,10 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     );
   };
 
-  const goToEventEdition = () => navigation.navigate('EventEdition', { event });
+  const goToEventEdition = () => navigation.navigate(
+    'EventEdition',
+    { event: { ...event, startDateTimeStamp: state.startDateTimeStamp, endDateTimeStamp: state.endDateTimeStamp } }
+  );
 
   const requestPermission = async (eventStart: boolean) => {
     setIsEventStarting(eventStart);
@@ -156,10 +159,10 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
             <Text style={styles.timeTitle}>Début</Text>
             {!!state.startDate && <Text style={styles.scheduledTime}>{formatTime(state.startDate)}</Text>}
           </View>
-          {state.startHourStamped
+          {state.startDateTimeStamp
             ? renderTimeStamp()
             : <>
-              {!state.endHourStamped &&
+              {!state.endDateTimeStamp &&
                 <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => requestPermission(true)} />}
             </>}
         </View>
@@ -169,12 +172,12 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
             <Text style={styles.timeTitle}>Fin</Text>
             {!!state.endDate && <Text style={styles.scheduledTime}>{formatTime(state.endDate)}</Text>}
           </View>
-          {state.endHourStamped
+          {state.endDateTimeStamp
             ? renderTimeStamp()
             : <>
-              {!state.startHourStamped &&
+              {!state.startDateTimeStamp &&
                 <NiSecondaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
-              {state.startHourStamped &&
+              {!!state.startDateTimeStamp &&
                 <NiPrimaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
             </>}
         </View>

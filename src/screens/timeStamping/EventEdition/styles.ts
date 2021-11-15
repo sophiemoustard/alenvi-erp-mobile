@@ -40,9 +40,19 @@ export default StyleSheet.create({
   },
   container: {
     flex: 1,
+    paddingHorizontal: PADDING.XL,
   },
   name: {
     ...FIRA_SANS_BLACK.XL,
-    padding: PADDING.XL,
+    paddingVertical: PADDING.XL,
+    color: COPPER_GREY[800],
+  },
+  section: {
+    color: COPPER_GREY[700],
+    marginBottom: MARGIN.XL,
+  },
+  sectionText: {
+    color: COPPER_GREY[700],
+    marginBottom: MARGIN.SM,
   },
 });
