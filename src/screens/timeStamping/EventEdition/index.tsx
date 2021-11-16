@@ -119,7 +119,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       );
       goBack();
     } catch (e) {
-      setErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
+      if (e.response.status === 409) setErrorMessage(e.response.data.message);
+      else setErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
     } finally {
       setLoading(false);
     }
@@ -141,8 +142,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <FeatherButton style={styles.arrow} name='arrow-left' onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
         <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
-        <NiPrimaryButton title='Enregistrer' onPress={onSave} loading={loading} disabled={event.isBilled}
-          style={styles.button} textStyle={styles.textButton} />
+        <NiPrimaryButton title='Enregistrer' onPress={onSave} loading={loading} textStyle={styles.textButton}
+          disabled={event.startDateTimeStamp || event.endDateTimeStamp || event.isBilled} style={styles.button} />
       </View>
       <View style={styles.container}>
         <Text style={styles.name}>
@@ -159,15 +160,15 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Début</Text>
-          <EventDateTime date={state.startDate} isTimeStamped={event.startDateTimeStamp}
-            onPress={(mode: ModeType) => onPressPicker(true, mode)} isBilled={event.isBilled} />
+          <EventDateTime isTimeStamped={event.startDateTimeStamp} disabled={event.endDateTimeStamp || event.isBilled}
+            onPress={(mode: ModeType) => onPressPicker(true, mode)} date={state.startDate} />
           {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour locale="fr-FR"
             display="spinner" onChange={onChangePicker} />}
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
-          <EventDateTime date={state.endDate} isTimeStamped={event.endDateTimeStamp} isBilled={event.isBilled}
-            onPress={(mode: ModeType) => onPressPicker(false, mode)} />
+          <EventDateTime isTimeStamped={event.endDateTimeStamp} onPress={(mode: ModeType) => onPressPicker(false, mode)}
+            date={state.endDate} disabled={event.startDateTimeStamp || event.isBilled}/>
           {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour locale="fr-FR"
             display="spinner" onChange={onChangePicker} minimumDate={state.mode === TIME ? state.startDate : undefined}
           />}
