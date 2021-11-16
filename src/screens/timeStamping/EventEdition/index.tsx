@@ -1,11 +1,14 @@
-import React, { useCallback, useEffect, useReducer } from 'react';
-import { View, Text, TouchableOpacity, BackHandler, Platform } from 'react-native';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import { View, Text, BackHandler, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
+import Events from '../../../api/Events';
 import { DATE, IOS, TIME } from '../../../core/data/constants';
 import { addTime, changeDate, dateDiff, formatDate, getEndOfDay } from '../../../core/helpers/dates';
 import EventDateTime from '../../../components/EventDateTime';
 import FeatherButton from '../../../components/FeatherButton';
+import NiErrorMessage from '../../../components/ErrorMessage';
+import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import styles from './styles';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
@@ -41,9 +44,7 @@ const SET_TIME = 'setTime';
 const reducer = (state: StateType, action: ActionType): StateType => {
   const changeEndHourOnStartHourChange = () => {
     const newDate = addTime(action.payload?.date || state.startDate, dateDiff(state.endDate, state.startDate));
-    if (newDate.getDate() !== state.endDate.getDate()) return getEndOfDay(state.endDate);
-
-    return newDate;
+    return newDate.getDate() !== state.endDate.getDate() ? getEndOfDay(state.endDate) : newDate;
   };
 
   switch (action.type) {
@@ -66,10 +67,7 @@ const reducer = (state: StateType, action: ActionType): StateType => {
     case SET_TIME:
       return {
         ...state,
-        ...(state.start && {
-          startDate: action.payload?.date,
-          endDate: changeEndHourOnStartHourChange(),
-        }),
+        ...(state.start && { startDate: action.payload?.date, endDate: changeEndHourOnStartHourChange() }),
         ...(!state.start && { endDate: action.payload?.date }),
       };
     default:
@@ -88,6 +86,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     start: false,
   };
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const isIOS = Platform.OS === IOS;
 
   const goBack = useCallback(() => { navigation.goBack(); }, [navigation]);
@@ -102,6 +102,22 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
     return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
   }, [hardwareBackPress]);
+
+  const onSave = async () => {
+    try {
+      setLoading(true);
+      setErrorMessage('');
+      await Events.updateById(
+        event._id,
+        { auxiliary: event.auxiliary._id, startDate: state.startDate, endDate: state.endDate }
+      );
+      goBack();
+    } catch (e) {
+      setErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const onPressPicker = (start: boolean, mode: ModeType) => dispatch({ type: SWITCH_PICKER, payload: { start, mode } });
 
@@ -119,9 +135,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <FeatherButton style={styles.arrow} name='arrow-left' onPress={goBack} color={COPPER[400]}
           size={ICON.SM} />
         <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => {}}>
-          <Text style={styles.textButton}>Enregistrer</Text>
-        </TouchableOpacity>
+        <NiPrimaryButton title='Enregistrer' onPress={onSave} loading={loading} disabled={event.isBilled}
+          style={styles.button} textStyle={styles.textButton} />
       </View>
       <View style={styles.container}>
         <Text style={styles.name}>
@@ -151,6 +166,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             display="spinner" onChange={onChangePicker} minimumDate={state.mode === TIME ? state.startDate : undefined}
           />}
         </View>
+        {!!errorMessage && <NiErrorMessage message={errorMessage} />}
       </View>
     </View>
   );

@@ -29,6 +29,7 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   button: {
+    width: 130,
     borderRadius: BORDER_RADIUS.MD,
     height: BUTTON_HEIGHT,
     backgroundColor: COPPER[400],
