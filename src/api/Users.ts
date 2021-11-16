@@ -21,7 +21,7 @@ export default {
 
     return user.data.data.user;
   },
-  setUser: async (userId: string | null, data: userInfos) => {
+  updateById: async (userId: string | null, data: userInfos) => {
     const baseURL = await Environment.getBaseUrl();
     await axiosLogged.put(`${baseURL}/users/${userId}`, data);
   },

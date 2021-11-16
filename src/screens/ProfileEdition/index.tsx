@@ -51,7 +51,7 @@ const ProfileEdition = () => {
         setErrorMessage('');
         setIsLoading(true);
 
-        await Users.setUser(
+        await Users.updateById(
           loggedUser._id,
           {
             ...editedUser,
