@@ -44,7 +44,7 @@ export default StyleSheet.create({
   },
   name: {
     ...FIRA_SANS_BLACK.XL,
-    paddingVertical: PADDING.XL,
+    marginVertical: MARGIN.XL,
     color: COPPER_GREY[800],
   },
   section: {
@@ -54,5 +54,15 @@ export default StyleSheet.create({
   sectionText: {
     color: COPPER_GREY[700],
     marginBottom: MARGIN.SM,
+  },
+  addressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: MARGIN.XL,
+  },
+  addressText: {
+    marginLeft: MARGIN.SM,
+    marginRight: MARGIN.MD,
+    color: COPPER_GREY[500],
   },
 });

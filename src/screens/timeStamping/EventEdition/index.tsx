@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useReducer } from 'react';
 import { View, Text, TouchableOpacity, BackHandler, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Feather } from '@expo/vector-icons';
 import { DATE, IOS } from '../../../core/data/constants';
 import { formatDate } from '../../../core/helpers/dates';
 import EventDateTime from '../../../components/EventDateTime';
 import FeatherButton from '../../../components/FeatherButton';
 import styles from './styles';
-import { COPPER } from '../../../styles/colors';
+import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
 import { EventType } from '../../../types/EventType';
 import { NavigationType } from '../../../types/NavigationType';
@@ -103,6 +104,15 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <Text style={styles.name}>
           {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
         </Text>
+        <View style={styles.addressContainer}>
+          <Feather name='map-pin' size={ICON.SM} color={COPPER_GREY[500]} />
+          <View>
+            <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
+            <Text style={styles.addressText}>
+              {`${event?.customer?.contact?.primaryAddress?.zipCode} ${event?.customer?.contact?.primaryAddress?.city}`}
+            </Text>
+          </View>
+        </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Début</Text>
           <EventDateTime date={state.startDate} isTimeStamped={event.startDateTimeStamp}
