@@ -92,22 +92,22 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [exitModal, setExitModal] = useState<boolean>(false);
   const isIOS = Platform.OS === IOS;
 
-  const goBack = useCallback(() => { navigation.goBack(); }, [navigation]);
+  const onLeave = useCallback(() => (
+    (state.startDate === initialState.startDate && state.endDate === initialState.endDate)
+      ? navigation.goBack()
+      : setExitModal(true)),
+  [initialState.endDate, initialState.startDate, state.endDate, state.startDate, navigation]);
 
   const hardwareBackPress = useCallback(() => {
-    goBack();
+    onLeave();
     return true;
-  }, [goBack]);
+  }, [onLeave]);
 
   useEffect(() => {
     BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
 
     return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
   }, [hardwareBackPress]);
-
-  const onLeave = () => ((state.startDate === initialState.startDate && state.endDate === initialState.endDate)
-    ? goBack()
-    : setExitModal(true));
 
   const onSave = async () => {
     try {
@@ -117,7 +117,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         event._id,
         { auxiliary: event.auxiliary._id, startDate: state.startDate, endDate: state.endDate }
       );
-      goBack();
+      navigation.goBack();
     } catch (e) {
       if (e.response.status === 409) setErrorMessage(e.response.data.message);
       else setErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
@@ -163,17 +163,17 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <EventDateTime isTimeStamped={event.startDateTimeStamp} disabled={event.endDateTimeStamp || event.isBilled}
             onPress={(mode: ModeType) => onPressPicker(true, mode)} date={state.startDate} />
           {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour locale="fr-FR"
-            display="spinner" onChange={onChangePicker} />}
+            display="default" onChange={onChangePicker} />}
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
           <EventDateTime isTimeStamped={event.endDateTimeStamp} onPress={(mode: ModeType) => onPressPicker(false, mode)}
             date={state.endDate} disabled={event.startDateTimeStamp || event.isBilled}/>
           {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour locale="fr-FR"
-            display="spinner" onChange={onChangePicker} minimumDate={state.mode === TIME ? state.startDate : undefined}
+            display="default" onChange={onChangePicker} minimumDate={state.mode === TIME ? state.startDate : undefined}
           />}
         </View>
-        <ExitModal onPressConfirmButton={goBack} onPressCancelButton={() => setExitModal(false)}
+        <ExitModal onPressConfirmButton={navigation.goBack} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText={'Supprimer les modifications apportées à cet événement ?'} />
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}
       </View>
