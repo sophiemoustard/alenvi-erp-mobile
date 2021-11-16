@@ -44,7 +44,7 @@ export default StyleSheet.create({
   },
   name: {
     ...FIRA_SANS_BLACK.XL,
-    paddingVertical: PADDING.XL,
+    marginVertical: MARGIN.XL,
     color: COPPER_GREY[800],
   },
   section: {
@@ -55,18 +55,14 @@ export default StyleSheet.create({
     color: COPPER_GREY[700],
     marginBottom: MARGIN.SM,
   },
-  address: {
+  addressContainer: {
     flexDirection: 'row',
-    paddingBottom: PADDING.XL,
-  },
-  addressIcon: {
-    padding: PADDING.SM,
-  },
-  primaryAddress: {
-    color: COPPER_GREY[500],
-    paddingHorizontal: PADDING.MD,
+    alignItems: 'center',
+    marginBottom: MARGIN.XL,
   },
   addressText: {
+    marginLeft: MARGIN.SM,
+    marginRight: MARGIN.MD,
     color: COPPER_GREY[500],
   },
 });

@@ -104,9 +104,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <Text style={styles.name}>
           {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
         </Text>
-        <View style={styles.address} >
-          <Feather name='map-pin' size={ICON.SM} style={styles.addressIcon} color={COPPER_GREY[500]} />
-          <View style={styles.primaryAddress}>
+        <View style={styles.addressContainer}>
+          <Feather name='map-pin' size={ICON.SM} color={COPPER_GREY[500]} />
+          <View>
             <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
             <Text style={styles.addressText}>
               {`${event?.customer?.contact?.primaryAddress?.zipCode} ${event?.customer?.contact?.primaryAddress?.city}`}
