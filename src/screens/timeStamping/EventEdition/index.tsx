@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useReducer } from 'react';
 import { View, Text, TouchableOpacity, BackHandler, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
-import { DATE, IOS } from '../../../core/data/constants';
-import { formatDate } from '../../../core/helpers/dates';
+import { DATE, IOS, TIME } from '../../../core/data/constants';
+import { addTime, changeDate, dateDiff, formatDate, getEndOfDay } from '../../../core/helpers/dates';
 import EventDateTime from '../../../components/EventDateTime';
 import FeatherButton from '../../../components/FeatherButton';
 import styles from './styles';
@@ -25,6 +25,7 @@ interface StateType {
   mode: ModeType,
   displayStartPicker: boolean,
   displayEndPicker: boolean,
+  start: boolean,
 }
 
 interface ActionType {
@@ -34,9 +35,17 @@ interface ActionType {
 
 const SWITCH_PICKER = 'switchPicker';
 const HIDE_PICKER = 'hidePicker';
-const SET_DATE = 'setDate';
+const SET_DATES = 'setDates';
+const SET_TIME = 'setTime';
 
 const reducer = (state: StateType, action: ActionType): StateType => {
+  const changeEndHourOnStartHourChange = () => {
+    const newDate = addTime(action.payload?.date || state.startDate, dateDiff(state.endDate, state.startDate));
+    if (newDate.getDate() !== state.endDate.getDate()) return getEndOfDay(state.endDate);
+
+    return newDate;
+  };
+
   switch (action.type) {
     case SWITCH_PICKER:
       return {
@@ -44,14 +53,24 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         displayStartPicker: !!action.payload?.start,
         displayEndPicker: !action.payload?.start,
         mode: action.payload?.mode || DATE,
+        start: !!action.payload?.start,
       };
     case HIDE_PICKER:
       return { ...state, displayStartPicker: false, displayEndPicker: false };
-    case SET_DATE:
+    case SET_DATES:
       return {
         ...state,
-        startDate: action.payload?.date || state.startDate,
-        endDate: action.payload?.date || state.endDate,
+        startDate: changeDate(state.startDate, action.payload?.date || state.startDate),
+        endDate: changeDate(state.endDate, action.payload?.date || state.endDate),
+      };
+    case SET_TIME:
+      return {
+        ...state,
+        ...(state.start && {
+          startDate: action.payload?.date,
+          endDate: changeEndHourOnStartHourChange(),
+        }),
+        ...(!state.start && { endDate: action.payload?.date }),
       };
     default:
       return state;
@@ -62,10 +81,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
   const initialState: StateType = {
     startDate: new Date(event.startDate),
-    endDate: new Date(event.startDate),
+    endDate: new Date(event.endDate),
     mode: DATE,
     displayStartPicker: false,
     displayEndPicker: false,
+    start: false,
   };
   const [state, dispatch] = useReducer(reducer, initialState);
   const isIOS = Platform.OS === IOS;
@@ -86,7 +106,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const onPressPicker = (start: boolean, mode: ModeType) => dispatch({ type: SWITCH_PICKER, payload: { start, mode } });
 
   const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
-    if (state.mode === DATE) dispatch({ type: SET_DATE, payload: { date: newDate } });
+    if (state.mode === DATE) dispatch({ type: SET_DATES, payload: { date: newDate } });
+
+    if (state.mode === TIME) dispatch({ type: SET_TIME, payload: { date: newDate } });
+
     if (!isIOS) dispatch({ type: HIDE_PICKER });
   };
 
@@ -125,7 +148,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <EventDateTime date={state.endDate} isTimeStamped={event.endDateTimeStamp} isBilled={event.isBilled}
             onPress={(mode: ModeType) => onPressPicker(false, mode)} />
           {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour locale="fr-FR"
-            display="spinner" onChange={onChangePicker} />}
+            display="spinner" onChange={onChangePicker} minimumDate={state.mode === TIME ? state.startDate : undefined}
+          />}
         </View>
       </View>
     </View>
