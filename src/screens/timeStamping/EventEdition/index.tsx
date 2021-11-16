@@ -14,6 +14,7 @@ import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
 import { EventType } from '../../../types/EventType';
 import { NavigationType } from '../../../types/NavigationType';
+import ExitModal from '../../../components/modals/ExitModal';
 
 export type ModeType = 'date' | 'time';
 
@@ -88,6 +89,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [exitModal, setExitModal] = useState<boolean>(false);
   const isIOS = Platform.OS === IOS;
 
   const goBack = useCallback(() => { navigation.goBack(); }, [navigation]);
@@ -102,6 +104,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
     return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
   }, [hardwareBackPress]);
+
+  const onLeave = () => ((state.startDate === initialState.startDate && state.endDate === initialState.endDate)
+    ? goBack()
+    : setExitModal(true));
 
   const onSave = async () => {
     try {
@@ -132,7 +138,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
-        <FeatherButton style={styles.arrow} name='arrow-left' onPress={goBack} color={COPPER[400]}
+        <FeatherButton style={styles.arrow} name='arrow-left' onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
         <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
         <NiPrimaryButton title='Enregistrer' onPress={onSave} loading={loading} disabled={event.isBilled}
@@ -166,6 +172,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             display="spinner" onChange={onChangePicker} minimumDate={state.mode === TIME ? state.startDate : undefined}
           />}
         </View>
+        <ExitModal onPressConfirmButton={goBack} onPressCancelButton={() => setExitModal(false)}
+          visible={exitModal} contentText={'Supprimer les modifications apportées à cet événement ?'} />
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}
       </View>
     </View>
