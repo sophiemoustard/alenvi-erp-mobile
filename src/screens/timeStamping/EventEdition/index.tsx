@@ -42,40 +42,6 @@ const HIDE_PICKER = 'hidePicker';
 const SET_DATES = 'setDates';
 const SET_TIME = 'setTime';
 
-const reducer = (state: StateType, action: ActionType): StateType => {
-  const changeEndHourOnStartHourChange = () => {
-    const newDate = addTime(action.payload?.date || state.startDate, dateDiff(state.endDate, state.startDate));
-    return newDate.getDate() !== state.endDate.getDate() ? getEndOfDay(state.endDate) : newDate;
-  };
-
-  switch (action.type) {
-    case SWITCH_PICKER:
-      return {
-        ...state,
-        displayStartPicker: !!action.payload?.start,
-        displayEndPicker: !action.payload?.start,
-        mode: action.payload?.mode || DATE,
-        start: !!action.payload?.start,
-      };
-    case HIDE_PICKER:
-      return { ...state, displayStartPicker: false, displayEndPicker: false };
-    case SET_DATES:
-      return {
-        ...state,
-        startDate: changeDate(state.startDate, action.payload?.date || state.startDate),
-        endDate: changeDate(state.endDate, action.payload?.date || state.endDate),
-      };
-    case SET_TIME:
-      return {
-        ...state,
-        ...(state.start && { startDate: action.payload?.date, endDate: changeEndHourOnStartHourChange() }),
-        ...(!state.start && { endDate: action.payload?.date }),
-      };
-    default:
-      return state;
-  }
-};
-
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
   const initialState: StateType = {
@@ -86,11 +52,48 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     displayEndPicker: false,
     start: false,
   };
-  const [state, dispatch] = useReducer(reducer, initialState);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
   const isIOS = Platform.OS === IOS;
+  const dateDisabled = event.startDateTimeStamp || event.endDateTimeStamp || event.isBilled;
+
+  const reducer = (state: StateType, action: ActionType): StateType => {
+    const changeEndHourOnStartHourChange = () => {
+      if (event.endDateTimeStamp) return state.endDate;
+
+      const newDate = addTime(action.payload?.date || state.startDate, dateDiff(state.endDate, state.startDate));
+      return newDate.getDate() !== state.endDate.getDate() ? getEndOfDay(state.endDate) : newDate;
+    };
+
+    switch (action.type) {
+      case SWITCH_PICKER:
+        return {
+          ...state,
+          displayStartPicker: !!action.payload?.start,
+          displayEndPicker: !action.payload?.start,
+          mode: action.payload?.mode || DATE,
+          start: !!action.payload?.start,
+        };
+      case HIDE_PICKER:
+        return { ...state, displayStartPicker: false, displayEndPicker: false };
+      case SET_DATES:
+        return {
+          ...state,
+          startDate: changeDate(state.startDate, action.payload?.date || state.startDate),
+          endDate: changeDate(state.endDate, action.payload?.date || state.endDate),
+        };
+      case SET_TIME:
+        return {
+          ...state,
+          ...(state.start && { startDate: action.payload?.date, endDate: changeEndHourOnStartHourChange() }),
+          ...(!state.start && { endDate: action.payload?.date }),
+        };
+      default:
+        return state;
+    }
+  };
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const onLeave = useCallback(() => (
     (state.startDate === initialState.startDate && state.endDate === initialState.endDate)
@@ -143,7 +146,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           size={ICON.SM} />
         <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
         <NiPrimaryButton title='Enregistrer' onPress={onSave} loading={loading} textStyle={styles.textButton}
-          disabled={event.startDateTimeStamp || event.endDateTimeStamp || event.isBilled} style={styles.button} />
+          disabled={(event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled} style={styles.button} />
       </View>
       <View style={styles.container}>
         <Text style={styles.name}>
@@ -160,15 +163,16 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Début</Text>
-          <EventDateTime isTimeStamped={event.startDateTimeStamp} disabled={event.endDateTimeStamp || event.isBilled}
-            onPress={(mode: ModeType) => onPressPicker(true, mode)} date={state.startDate} />
+          <EventDateTime isTimeStamped={event.startDateTimeStamp} date={state.startDate} dateDisabled={dateDisabled}
+            onPress={(mode: ModeType) => onPressPicker(true, mode)} isBilled={event.isBilled} />
           {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour locale="fr-FR"
-            display="default" onChange={onChangePicker} />}
+            maximumDate={(state.mode === TIME && event.endDateTimeStamp) ? state.endDate : undefined} display="default"
+            onChange={onChangePicker} />}
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
           <EventDateTime isTimeStamped={event.endDateTimeStamp} onPress={(mode: ModeType) => onPressPicker(false, mode)}
-            date={state.endDate} disabled={event.startDateTimeStamp || event.isBilled}/>
+            date={state.endDate} dateDisabled={dateDisabled} isBilled={event.isBilled} />
           {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour locale="fr-FR"
             display="default" onChange={onChangePicker} minimumDate={state.mode === TIME ? state.startDate : undefined}
           />}

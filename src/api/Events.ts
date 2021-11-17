@@ -20,7 +20,7 @@ export default {
     const baseURL = await Environment.getBaseUrl();
     await axiosLogged.put(`${baseURL}/events/${id}/timestamping`, data);
   },
-  updateById: async (eventId: string | null, data: { auxiliary: string, startDate: Date, endDate: Date }) => {
+  updateById: async (eventId: string, data: { auxiliary: string, startDate: Date, endDate: Date }) => {
     const baseURL = await Environment.getBaseUrl();
     await axiosLogged.put(`${baseURL}/events/${eventId}`, data);
   },
