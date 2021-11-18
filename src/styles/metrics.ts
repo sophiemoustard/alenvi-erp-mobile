@@ -52,6 +52,7 @@ export const BUTTON_HEIGHT = 48;
 export const INPUT_HEIGHT = 48;
 export const BORDER_WIDTH = 1;
 export const TAB_BAR_HEIGHT = 72;
+export const HEADER_HEIGHT = 64;
 export const BUTTON_INTERVENTION_WIDTH = 128;
 export const TAB_BAR_LABEL_WIDTH = 110;
 

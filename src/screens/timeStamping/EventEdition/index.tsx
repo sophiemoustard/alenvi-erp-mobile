@@ -8,13 +8,13 @@ import { addTime, changeDate, dateDiff, formatDate, getEndOfDay } from '../../..
 import EventDateTime from '../../../components/EventDateTime';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
+import ExitModal from '../../../components/modals/ExitModal';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import styles from './styles';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
 import { EventType } from '../../../types/EventType';
 import { NavigationType } from '../../../types/NavigationType';
-import ExitModal from '../../../components/modals/ExitModal';
 
 export type ModeType = 'date' | 'time';
 
@@ -145,8 +145,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <FeatherButton style={styles.arrow} name='arrow-left' onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
         <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
-        <NiPrimaryButton title='Enregistrer' onPress={onSave} loading={loading} textStyle={styles.textButton}
-          disabled={(event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled} style={styles.button} />
+        {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) && <NiPrimaryButton onPress={onSave}
+          title='Enregistrer' loading={loading} textStyle={styles.textButton} style={styles.button} />}
       </View>
       <View style={styles.container}>
         <Text style={styles.name}>

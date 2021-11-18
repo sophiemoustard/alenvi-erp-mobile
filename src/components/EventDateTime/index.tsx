@@ -35,13 +35,13 @@ const EventDateTime = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.dateCell} onPress={() => onPress(DATE)} disabled={isTimeStamped || dateDisabled}>
+      <TouchableOpacity style={styles.dateCell} onPress={() => onPress(DATE)} disabled={dateDisabled}>
         <Text style={styles.text}>{displayedDate}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.timeCell} onPress={() => onPress(TIME)} disabled={isTimeStamped || isBilled}>
         <Text style={styles.text}>{displayedTime}</Text>
       </TouchableOpacity>
-      {!!isTimeStamped && <View style={styles.iconContainer}>
+      {isTimeStamped && <View style={styles.iconContainer}>
         <View style={styles.icon}>
           <Feather name='check' size={ICON.XS} color={COPPER_GREY[500]} />
         </View>
