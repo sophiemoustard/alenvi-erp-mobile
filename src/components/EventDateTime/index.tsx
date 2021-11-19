@@ -29,7 +29,7 @@ const EventDateTime = ({
 
   useEffect(() => {
     const formattedDate = new Date(date);
-    setDisplayedDate(`${formattedDate.getDate()} ${capitalizeFirstLetter(MONTHS[formattedDate.getMonth()])}`);
+    setDisplayedDate(`${formattedDate.getDate()} ${capitalizeFirstLetter(MONTHS[formattedDate.getMonth()] || '')}`);
     setDisplayedTime(formatTime(formattedDate));
   }, [date]);
 

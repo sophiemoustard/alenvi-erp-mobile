@@ -174,17 +174,18 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <EventDateTime isTimeStamped={event.startDateTimeStamp} date={state.startDate} dateDisabled={dateDisabled}
             onPress={(mode: ModeType) => onPressPicker(true, mode)}
             timeDisabled={event.startDateTimeStamp || event.isBilled} />
-          {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour locale="fr-FR"
-            maximumDate={(state.mode === TIME && event.endDateTimeStamp) ? state.endDate : undefined} display="default"
-            onChange={onChangePicker} />}
+          {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode}
+            is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
+            maximumDate={(state.mode === TIME && event.endDateTimeStamp) ? state.endDate : undefined} />}
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
           <EventDateTime isTimeStamped={event.endDateTimeStamp} onPress={(mode: ModeType) => onPressPicker(false, mode)}
-            date={state.endDate} dateDisabled={dateDisabled} timeDisabled={event.endDateTimeStamp || event.isBilled} />
-          {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour locale="fr-FR"
-            display="default" onChange={onChangePicker} minimumDate={state.mode === TIME ? state.startDate : undefined}
-          />}
+            date={state.endDate} dateDisabled={dateDisabled}
+            timeDisabled={event.endDateTimeStamp || event.isBilled} />
+          {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour
+            display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} locale="fr-FR"
+            minimumDate={state.mode === TIME ? state.startDate : undefined} />}
         </View>
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText={'Supprimer les modifications apportées à cet événement ?'} />
