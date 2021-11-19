@@ -68,8 +68,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     };
 
     const isSamePayload = state.displayStartPicker === !!action.payload?.start &&
-    state.displayEndPicker === !action.payload?.start &&
-    state.mode === action.payload?.mode;
+      state.displayEndPicker === !action.payload?.start && state.mode === action.payload?.mode;
 
     switch (action.type) {
       case SWITCH_PICKER:
@@ -125,7 +124,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       setErrorMessage('');
 
       if (isBefore(state.endDate, state.startDate)) {
-        setErrorMessage('La date de début est supérieure à la date de fin.');
+        setErrorMessage('La date de début est postérieure à la date de fin.');
         return;
       }
 
@@ -193,8 +192,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
           <EventDateTime isTimeStamped={event.endDateTimeStamp} onPress={(mode: ModeType) => onPressPicker(false, mode)}
-            date={state.endDate} dateDisabled={dateDisabled}
-            timeDisabled={event.endDateTimeStamp || event.isBilled} />
+            date={state.endDate} dateDisabled={dateDisabled} timeDisabled={event.endDateTimeStamp || event.isBilled} />
           {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour
             display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} locale="fr-FR"
             minimumDate={state.mode === TIME ? state.startDate : undefined} />}
