@@ -27,14 +27,14 @@ export const addTime = (date: Date, time: number) => {
   return newDate;
 };
 
-export const changeDate = (oldDate: Date, newDate: Date) => new Date(
-  newDate.getFullYear(),
-  newDate.getMonth(),
-  newDate.getDate(),
-  oldDate.getHours(),
-  oldDate.getMinutes(),
-  oldDate.getSeconds()
-);
+export const changeDate = (oldDate: Date, newDate: Date): Date => {
+  const date = oldDate;
+  date.setFullYear(newDate.getFullYear());
+  date.setMonth(newDate.getMonth());
+  date.setDate(newDate.getDate());
+
+  return new Date(date);
+};
 
 export const dateDiff = (newerDate: Date, olderDate: Date) => {
   const diff = new Date(newerDate).getTime() - new Date(olderDate).getTime();

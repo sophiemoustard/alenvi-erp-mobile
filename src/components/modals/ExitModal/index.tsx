@@ -6,7 +6,7 @@ import styles from './styles';
 interface ExitModalProps {
   visible: boolean,
   title?: string,
-  contentText?: string,
+  contentText: string,
   cancelText?: string,
   confirmText?: string,
   onPressCancelButton: () => void,
@@ -16,7 +16,7 @@ interface ExitModalProps {
 const ExitModal = ({
   visible,
   title = '',
-  contentText = '',
+  contentText,
   cancelText = 'Annuler',
   confirmText = 'Quitter',
   onPressCancelButton,

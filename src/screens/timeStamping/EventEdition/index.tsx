@@ -129,6 +129,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     }
   };
 
+  const onConfirmExit = () => {
+    setExitModal(false);
+    navigation.goBack();
+  };
+
   const onPressPicker = (start: boolean, mode: ModeType) => dispatch({ type: SWITCH_PICKER, payload: { start, mode } });
 
   const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
@@ -146,7 +151,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           size={ICON.SM} />
         <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
         {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) && <NiPrimaryButton onPress={onSave}
-          title='Enregistrer' loading={loading} textStyle={styles.textButton} style={styles.button} />}
+          title='Enregistrer' loading={loading} titleStyle={styles.buttonTitle} style={styles.button} />}
       </View>
       <View style={styles.container}>
         <Text style={styles.name}>
@@ -164,7 +169,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <View style={styles.section}>
           <Text style={styles.sectionText}>Début</Text>
           <EventDateTime isTimeStamped={event.startDateTimeStamp} date={state.startDate} dateDisabled={dateDisabled}
-            onPress={(mode: ModeType) => onPressPicker(true, mode)} isBilled={event.isBilled} />
+            onPress={(mode: ModeType) => onPressPicker(true, mode)}
+            timeDisabled={event.startDateTimeStamp || event.isBilled} />
           {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour locale="fr-FR"
             maximumDate={(state.mode === TIME && event.endDateTimeStamp) ? state.endDate : undefined} display="default"
             onChange={onChangePicker} />}
@@ -172,12 +178,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
           <EventDateTime isTimeStamped={event.endDateTimeStamp} onPress={(mode: ModeType) => onPressPicker(false, mode)}
-            date={state.endDate} dateDisabled={dateDisabled} isBilled={event.isBilled} />
+            date={state.endDate} dateDisabled={dateDisabled} timeDisabled={event.endDateTimeStamp || event.isBilled} />
           {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour locale="fr-FR"
             display="default" onChange={onChangePicker} minimumDate={state.mode === TIME ? state.startDate : undefined}
           />}
         </View>
-        <ExitModal onPressConfirmButton={navigation.goBack} onPressCancelButton={() => setExitModal(false)}
+        <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText={'Supprimer les modifications apportées à cet événement ?'} />
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}
       </View>

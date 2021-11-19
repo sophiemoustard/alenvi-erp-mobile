@@ -24,7 +24,7 @@ export default StyleSheet.create({
     textAlign: 'left',
     flex: 1,
   },
-  textButton: {
+  buttonTitle: {
     ...FIRA_SANS_REGULAR.MD,
     color: WHITE,
     textAlign: 'center',
