@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
 import { DATE, IOS, TIME } from '../../../core/data/constants';
-import { addTime, changeDate, dateDiff, formatDate, getEndOfDay } from '../../../core/helpers/dates';
+import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore } from '../../../core/helpers/dates';
 import EventDateTime from '../../../components/EventDateTime';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
@@ -61,15 +61,19 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const reducer = (state: StateType, action: ActionType): StateType => {
     const changeEndHourOnStartHourChange = () => {
       if (event.endDateTimeStamp) return state.endDate;
+      if (isBefore(state.endDate, state.startDate)) return state.endDate;
 
       const newDate = addTime(action.payload?.date || state.startDate, dateDiff(state.endDate, state.startDate));
       return newDate.getDate() !== state.endDate.getDate() ? getEndOfDay(state.endDate) : newDate;
     };
 
+    const isSamePayload = state.displayStartPicker === !!action.payload?.start &&
+    state.displayEndPicker === !action.payload?.start &&
+    state.mode === action.payload?.mode;
+
     switch (action.type) {
       case SWITCH_PICKER:
-        if (state.displayStartPicker === !!action.payload?.start && state.displayEndPicker === !action.payload?.start &&
-          state.mode === action.payload?.mode) return { ...state, displayStartPicker: false, displayEndPicker: false };
+        if (isIOS && isSamePayload) return { ...state, displayStartPicker: false, displayEndPicker: false };
 
         return {
           ...state,
@@ -119,6 +123,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     try {
       setLoading(true);
       setErrorMessage('');
+
+      if (isBefore(state.endDate, state.startDate)) {
+        setErrorMessage('La date de début est supérieure à la date de fin.');
+        return;
+      }
+
       await Events.updateById(
         event._id,
         { auxiliary: event.auxiliary._id, startDate: state.startDate, endDate: state.endDate }
@@ -140,6 +150,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const onPressPicker = (start: boolean, mode: ModeType) => dispatch({ type: SWITCH_PICKER, payload: { start, mode } });
 
   const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
+    if (!newDate) return;
+
     if (state.mode === DATE) dispatch({ type: SET_DATES, payload: { date: newDate } });
 
     if (state.mode === TIME) dispatch({ type: SET_TIME, payload: { date: newDate } });
