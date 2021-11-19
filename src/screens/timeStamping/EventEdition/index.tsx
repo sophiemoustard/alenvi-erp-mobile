@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { View, Text, BackHandler, Platform } from 'react-native';
+import { View, ScrollView, Text, BackHandler, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
@@ -68,6 +68,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
     switch (action.type) {
       case SWITCH_PICKER:
+        if (state.displayStartPicker === !!action.payload?.start && state.displayEndPicker === !action.payload?.start &&
+          state.mode === action.payload?.mode) return { ...state, displayStartPicker: false, displayEndPicker: false };
+
         return {
           ...state,
           displayStartPicker: !!action.payload?.start,
@@ -153,7 +156,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) && <NiPrimaryButton onPress={onSave}
           title='Enregistrer' loading={loading} titleStyle={styles.buttonTitle} style={styles.button} />}
       </View>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Text style={styles.name}>
           {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
         </Text>
@@ -186,7 +189,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText={'Supprimer les modifications apportées à cet événement ?'} />
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}
-      </View>
+      </ScrollView>
     </View>
   );
 };
