@@ -13,10 +13,17 @@ interface EventDateTimeProps {
   date: Date,
   onPress: (mode: ModeType) => void,
   isTimeStamped?: boolean,
-  isBilled?: boolean,
+  dateDisabled?: boolean,
+  timeDisabled?: boolean,
 }
 
-const EventDateTime = ({ date, onPress, isTimeStamped = false, isBilled = false }: EventDateTimeProps) => {
+const EventDateTime = ({
+  date,
+  onPress,
+  isTimeStamped = false,
+  dateDisabled = false,
+  timeDisabled = false,
+}: EventDateTimeProps) => {
   const [displayedDate, setDisplayedDate] = useState<string>('');
   const [displayedTime, setDisplayedTime] = useState<string>('');
 
@@ -28,13 +35,13 @@ const EventDateTime = ({ date, onPress, isTimeStamped = false, isBilled = false 
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.dateCell} onPress={() => onPress(DATE)} disabled={isTimeStamped || isBilled}>
+      <TouchableOpacity style={styles.dateCell} onPress={() => onPress(DATE)} disabled={dateDisabled}>
         <Text style={styles.text}>{displayedDate}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.timeCell} onPress={() => onPress(TIME)} disabled={isTimeStamped || isBilled}>
+      <TouchableOpacity style={styles.timeCell} onPress={() => onPress(TIME)} disabled={timeDisabled}>
         <Text style={styles.text}>{displayedTime}</Text>
       </TouchableOpacity>
-      {!!isTimeStamped && <View style={styles.iconContainer}>
+      {isTimeStamped && <View style={styles.iconContainer}>
         <View style={styles.icon}>
           <Feather name='check' size={ICON.XS} color={COPPER_GREY[500]} />
         </View>

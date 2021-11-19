@@ -21,3 +21,24 @@ export const displayMinutes = (date: Date) => {
   if (date.getMinutes() < 10) return '0'.concat(date.getMinutes().toString());
   return date.getMinutes();
 };
+
+export const addTime = (date: Date, time: number) => {
+  const newDate = new Date(date.getTime() + time);
+  return newDate;
+};
+
+export const changeDate = (oldDate: Date, newDate: Date): Date => {
+  const date = oldDate;
+  date.setFullYear(newDate.getFullYear());
+  date.setMonth(newDate.getMonth());
+  date.setDate(newDate.getDate());
+
+  return new Date(date);
+};
+
+export const dateDiff = (newerDate: Date, olderDate: Date) => {
+  const diff = new Date(newerDate).getTime() - new Date(olderDate).getTime();
+  return diff;
+};
+
+export const getEndOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);

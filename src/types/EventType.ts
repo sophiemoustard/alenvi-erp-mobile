@@ -17,6 +17,7 @@ export type EventType = {
   startDateTimeStamp?: boolean,
   endDateTimeStamp?: boolean,
   isBilled?: boolean,
+  auxiliary: { _id: string },
 };
 
 export type EventHistoryType = {
