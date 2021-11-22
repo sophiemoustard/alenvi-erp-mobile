@@ -61,10 +61,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const reducer = (state: StateType, action: ActionType): StateType => {
     const changeEndHourOnStartHourChange = () => {
       if (event.endDateTimeStamp) return state.endDate;
-      if (isBefore(state.endDate, state.startDate)) return state.endDate;
+      if (isBefore(action.payload?.date || state.startDate, state.endDate)) return state.endDate;
 
-      const newDate = addTime(action.payload?.date || state.startDate, dateDiff(state.endDate, state.startDate));
-      return newDate.getDate() !== state.endDate.getDate() ? getEndOfDay(state.endDate) : newDate;
+      const newDate = addTime(action.payload?.date || state.startDate, dateDiff(event.endDate, event.startDate));
+      const newDateIsAfterMidnight = newDate.getDate() !== state.endDate.getDate();
+      return newDateIsAfterMidnight ? getEndOfDay(state.endDate) : newDate;
     };
 
     const isSamePayload = state.displayStartPicker === !!action.payload?.start &&
