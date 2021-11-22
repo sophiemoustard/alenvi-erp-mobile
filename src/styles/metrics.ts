@@ -1,4 +1,5 @@
 import { Dimensions, Platform } from 'react-native';
+import { IOS } from '../core/data/constants';
 
 const { width, height } = Dimensions.get('window');
 
@@ -51,10 +52,12 @@ export const BUTTON_HEIGHT = 48;
 export const INPUT_HEIGHT = 48;
 export const BORDER_WIDTH = 1;
 export const TAB_BAR_HEIGHT = 72;
+export const HEADER_HEIGHT = 64;
 export const BUTTON_INTERVENTION_WIDTH = 128;
+export const TAB_BAR_LABEL_WIDTH = 110;
 
 export const SCREEN_HEIGHT = width < height ? height : width;
 export const SMALL_SCREEN_MAX_HEIGHT = 568;
 export const IS_LARGE_SCREEN = SCREEN_HEIGHT > SMALL_SCREEN_MAX_HEIGHT;
-export const KEYBOARD_AVOIDING_VIEW_BEHAVIOR = Platform.OS === 'ios' ? 'padding' : 'height';
+export const KEYBOARD_AVOIDING_VIEW_BEHAVIOR = Platform.OS === IOS ? 'padding' : 'height';
 export const hitSlop = { top: 12, bottom: 12, left: 12, right: 12 };

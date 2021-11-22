@@ -47,12 +47,12 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     setTitle(route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention');
   }, [route.params]);
 
-  const goBack = () => navigation.navigate('Home');
+  const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
 
   const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner', route.params);
 
   const requestPermission = async () => {
-    let { status } = await Camera.getPermissionsAsync();
+    let { status } = await Camera.getCameraPermissionsAsync();
 
     if (status !== GRANTED) {
       const { status: newStatus } = await Camera.requestCameraPermissionsAsync();

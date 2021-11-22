@@ -1,6 +1,7 @@
 import { EventTypeEnum } from '../../types/EventType';
 
 export const ERP = 'erp';
+export const IOS = 'ios';
 
 // STATE
 export const ACTIVE_STATE = 'active';
@@ -16,6 +17,8 @@ export const PHONE_REGEX = /^\s*(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}(?:[
 
 // DATE
 export const ONE_YEAR_IN_MILLISECONDS = 31536000000;
+export const DATE = 'date';
+export const TIME = 'time';
 
 // PLANNING
 export const INTERVENTION: EventTypeEnum = 'intervention';
@@ -34,6 +37,8 @@ export const CIVILITY_OPTIONS = {
 export const DAYS = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
 export const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre',
   'novembre', 'décembre'];
+export const MONTHS_SHORT = ['janv.', 'fév.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.',
+  'déc.'];
 
 // EVENT
 export const MANUAL_TIME_STAMPING = 'manual_time_stamping';

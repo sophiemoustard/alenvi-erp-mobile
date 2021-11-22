@@ -5,7 +5,7 @@ import { Camera } from 'expo-camera';
 import styles from './styles';
 import { WHITE } from '../../../styles/colors';
 import { hitSlop, ICON } from '../../../styles/metrics';
-import { QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
+import { IOS, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
 import FeatherButton from '../../../components/FeatherButton';
 import EventInfoCell from '../../../components/EventInfoCell';
 import NiErrorCell from '../../../components/ErrorCell';
@@ -101,14 +101,14 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     }
   };
 
-  const goBack = () => navigation.navigate('Home');
+  const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
 
   const goToManualTimeStamping = (eventStart: boolean) => {
     navigation.navigate('ManualTimeStamping', { event: route.params.event, eventStart });
   };
 
   const setScreenDimension = async () => {
-    if (Platform.OS === 'ios' || !camera.current) return;
+    if (Platform.OS === IOS || !camera.current) return;
 
     const { height, width } = Dimensions.get('window');
     if (!width) return;

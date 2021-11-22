@@ -5,7 +5,7 @@ import commonStyle from '../../../styles/common';
 import Events from '../../../api/Events';
 import { Context as AuthContext } from '../../../context/AuthContext';
 import { ACTIVE_STATE, INTERVENTION } from '../../../core/data/constants';
-import { capitalizeFirstLetter, formatWordToPlural } from '../../../core/helpers/utils';
+import { formatWordToPlural } from '../../../core/helpers/utils';
 import { formatTime, formatDate } from '../../../core/helpers/dates';
 import TimeStampingCell from '../../../components/TimeStampingCell';
 import styles from './styles';
@@ -73,7 +73,7 @@ const TimeStampingProfile = () => {
       <Text style={commonStyle.title}>Horodatage</Text>
       <View style={styles.container}>
         <View>
-          <Text style={styles.date}>{capitalizeFirstLetter(formatDate(displayedDate))}</Text>
+          <Text style={styles.date}>{formatDate(displayedDate)}</Text>
           <Text style={styles.time}>{formatTime(displayedDate)}</Text>
         </View>
         <View style={styles.viewIntervention}>

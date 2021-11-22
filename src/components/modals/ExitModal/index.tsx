@@ -5,29 +5,33 @@ import styles from './styles';
 
 interface ExitModalProps {
   visible: boolean,
-  title: string,
+  title?: string,
   contentText: string,
+  cancelText?: string,
+  confirmText?: string,
   onPressCancelButton: () => void,
   onPressConfirmButton: () => void,
 }
 
 const ExitModal = ({
   visible,
-  title,
+  title = '',
   contentText,
+  cancelText = 'Annuler',
+  confirmText = 'Quitter',
   onPressCancelButton,
   onPressConfirmButton,
 }: ExitModalProps) => (
   <NiModal visible={visible}>
     <>
-      <Text style={styles.title}>{title}</Text>
+      {!!title && <Text style={styles.title}>{title}</Text>}
       <Text style={styles.contentText}>{contentText}</Text>
       <View style={styles.buttons}>
         <TouchableOpacity style={styles.button} onPress={onPressCancelButton}>
-          <Text style={styles.buttonText}>Annuler</Text>
+          <Text style={styles.buttonText}>{cancelText}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={onPressConfirmButton}>
-          <Text style={styles.buttonText}>Quitter</Text>
+          <Text style={styles.buttonText}>{confirmText}</Text>
         </TouchableOpacity>
       </View>
     </>

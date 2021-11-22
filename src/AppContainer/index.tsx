@@ -76,7 +76,7 @@ const AppContainer = () => {
 
     if (asyncStorage.isTokenValid(refreshedStoredTokens.companiToken, refreshedStoredTokens.companiTokenExpireDate)) {
       const config = { ...error.config };
-      config.headers['x-access-token'] = refreshedStoredTokens.companiToken;
+      if (config.headers) config.headers['x-access-token'] = refreshedStoredTokens.companiToken || '';
       return axiosLogged.request(config);
     }
 
@@ -86,7 +86,7 @@ const AppContainer = () => {
 
   const handleAxiosLoggedRequest = useCallback(async (config: AxiosRequestConfig) => {
     const newConfig = { ...config };
-    newConfig.headers['x-access-token'] = companiToken;
+    if (newConfig.headers) newConfig.headers['x-access-token'] = companiToken || '';
     return newConfig;
   }, [companiToken]);
 

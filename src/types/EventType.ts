@@ -8,11 +8,16 @@ export type EventType = {
       title: string,
       firstname: string,
       lastname: string,
-    }
+    },
+    contact: { primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string } },
   },
   startDate: Date,
   endDate: Date,
   histories?: EventHistoryType[],
+  startDateTimeStamp?: boolean,
+  endDateTimeStamp?: boolean,
+  isBilled?: boolean,
+  auxiliary: { _id: string },
 };
 
 export type EventHistoryType = {

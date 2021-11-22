@@ -7,6 +7,7 @@ export const COPPER_GREY = {
   50: '#F9FBFB',
   100: '#F3F6F7',
   200: '#E2ECF0',
+  500: '#64818B',
   600: '#476069',
   700: '#334C55',
   800: '#1E343B',
@@ -14,6 +15,7 @@ export const COPPER_GREY = {
 };
 
 export const COPPER = {
+  400: '#45A5AD',
   500: '#1D7C8F',
   600: '#005774',
   800: '#00223B',
