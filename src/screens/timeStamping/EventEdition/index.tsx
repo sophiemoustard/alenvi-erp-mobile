@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { View, Text, BackHandler, Platform } from 'react-native';
+import { View, ScrollView, Text, BackHandler, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
 import { DATE, IOS, TIME } from '../../../core/data/constants';
-import { addTime, changeDate, dateDiff, formatDate, getEndOfDay } from '../../../core/helpers/dates';
+import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore } from '../../../core/helpers/dates';
 import EventDateTime from '../../../components/EventDateTime';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
@@ -61,13 +61,20 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const reducer = (state: StateType, action: ActionType): StateType => {
     const changeEndHourOnStartHourChange = () => {
       if (event.endDateTimeStamp) return state.endDate;
+      if (isBefore(action.payload?.date || state.startDate, state.endDate)) return state.endDate;
 
-      const newDate = addTime(action.payload?.date || state.startDate, dateDiff(state.endDate, state.startDate));
-      return newDate.getDate() !== state.endDate.getDate() ? getEndOfDay(state.endDate) : newDate;
+      const newDate = addTime(action.payload?.date || state.startDate, dateDiff(event.endDate, event.startDate));
+      const newDateIsAfterMidnight = newDate.getDate() !== state.endDate.getDate();
+      return newDateIsAfterMidnight ? getEndOfDay(state.endDate) : newDate;
     };
+
+    const isSamePayload = state.displayStartPicker === !!action.payload?.start &&
+      state.displayEndPicker === !action.payload?.start && state.mode === action.payload?.mode;
 
     switch (action.type) {
       case SWITCH_PICKER:
+        if (isIOS && isSamePayload) return { ...state, displayStartPicker: false, displayEndPicker: false };
+
         return {
           ...state,
           displayStartPicker: !!action.payload?.start,
@@ -116,6 +123,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     try {
       setLoading(true);
       setErrorMessage('');
+
+      if (isBefore(state.endDate, state.startDate)) {
+        setErrorMessage('La date de début est postérieure à la date de fin.');
+        return;
+      }
+
       await Events.updateById(
         event._id,
         { auxiliary: event.auxiliary._id, startDate: state.startDate, endDate: state.endDate }
@@ -137,6 +150,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const onPressPicker = (start: boolean, mode: ModeType) => dispatch({ type: SWITCH_PICKER, payload: { start, mode } });
 
   const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
+    if (!newDate) return;
+
     if (state.mode === DATE) dispatch({ type: SET_DATES, payload: { date: newDate } });
 
     if (state.mode === TIME) dispatch({ type: SET_TIME, payload: { date: newDate } });
@@ -153,7 +168,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) && <NiPrimaryButton onPress={onSave}
           title='Enregistrer' loading={loading} titleStyle={styles.buttonTitle} style={styles.button} />}
       </View>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Text style={styles.name}>
           {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
         </Text>
@@ -171,22 +186,22 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <EventDateTime isTimeStamped={event.startDateTimeStamp} date={state.startDate} dateDisabled={dateDisabled}
             onPress={(mode: ModeType) => onPressPicker(true, mode)}
             timeDisabled={event.startDateTimeStamp || event.isBilled} />
-          {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode} is24Hour locale="fr-FR"
-            maximumDate={(state.mode === TIME && event.endDateTimeStamp) ? state.endDate : undefined} display="default"
-            onChange={onChangePicker} />}
+          {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode}
+            is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
+            maximumDate={(state.mode === TIME && event.endDateTimeStamp) ? state.endDate : undefined} />}
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionText}>Fin</Text>
           <EventDateTime isTimeStamped={event.endDateTimeStamp} onPress={(mode: ModeType) => onPressPicker(false, mode)}
             date={state.endDate} dateDisabled={dateDisabled} timeDisabled={event.endDateTimeStamp || event.isBilled} />
-          {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour locale="fr-FR"
-            display="default" onChange={onChangePicker} minimumDate={state.mode === TIME ? state.startDate : undefined}
-          />}
+          {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour
+            display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} locale="fr-FR"
+            minimumDate={state.mode === TIME ? state.startDate : undefined} />}
         </View>
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText={'Supprimer les modifications apportées à cet événement ?'} />
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}
-      </View>
+      </ScrollView>
     </View>
   );
 };
