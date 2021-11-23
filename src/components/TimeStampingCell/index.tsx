@@ -139,7 +139,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       Alert.alert(
         'Accès refusé',
         'Vérifiez que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
-        [{ text: 'OK', onPress: () => setModalVisible(false) }], { cancelable: false }
+        [{ text: 'OK', onPress: () => setModalVisible(false) }],
+        { cancelable: false }
       );
       return;
     }
