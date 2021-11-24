@@ -199,7 +199,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             minimumDate={state.mode === TIME ? state.startDate : undefined} />}
         </View>
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
-          visible={exitModal} contentText={'Supprimer les modifications apportées à cet événement ?'} />
+          visible={exitModal} contentText={'Supprimer les modifications apportées à cet événement ?'}
+          cancelText={'Poursuivre les modifications'} confirmText={'Supprimer'} />
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}
       </ScrollView>
     </View>
