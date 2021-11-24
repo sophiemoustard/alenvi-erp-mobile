@@ -64,7 +64,8 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       Alert.alert(
         'Accès refusé',
         'Vérifiez que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
-        [{ text: 'OK' }], { cancelable: false }
+        [{ text: 'OK' }],
+        { cancelable: false }
       );
     }
   };
