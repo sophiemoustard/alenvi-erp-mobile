@@ -42,3 +42,7 @@ export const dateDiff = (newerDate: Date, olderDate: Date) => {
 };
 
 export const getEndOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+
+export const ascendingSortArray = (array: Array<any>, key: string) => [...array].sort(
+  (a, b) => dateDiff(a[key], b[key])
+);
