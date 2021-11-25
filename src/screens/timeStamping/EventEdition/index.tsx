@@ -25,9 +25,6 @@ interface EventEditionProps {
 export interface EventEditionStateType {
   startDate: Date,
   endDate: Date,
-  mode: ModeType,
-  displayStartPicker: boolean,
-  displayEndPicker: boolean,
   start: boolean,
 }
 
@@ -40,21 +37,18 @@ export const SWITCH_PICKER = 'switchPicker';
 export const HIDE_PICKER = 'hidePicker';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
+export const SET_START = 'setStart';
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
   const initialState: EventEditionStateType = {
     startDate: new Date(event.startDate),
     endDate: new Date(event.endDate),
-    mode: DATE,
-    displayStartPicker: false,
-    displayEndPicker: false,
     start: false,
   };
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
-  const isIOS = Platform.OS === IOS;
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -66,22 +60,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       return newDateIsAfterMidnight ? getEndOfDay(state.endDate) : newDate;
     };
 
-    const isSamePayload = state.displayStartPicker === !!action.payload?.start &&
-      state.displayEndPicker === !action.payload?.start && state.mode === action.payload?.mode;
-
     switch (action.type) {
-      case SWITCH_PICKER:
-        if (isIOS && isSamePayload) return { ...state, displayStartPicker: false, displayEndPicker: false };
-
-        return {
-          ...state,
-          displayStartPicker: !!action.payload?.start,
-          displayEndPicker: !action.payload?.start,
-          mode: action.payload?.mode || DATE,
-          start: !!action.payload?.start,
-        };
-      case HIDE_PICKER:
-        return { ...state, displayStartPicker: false, displayEndPicker: false };
       case SET_DATES:
         return {
           ...state,
@@ -94,6 +73,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           ...(state.start && { startDate: action.payload?.date, endDate: changeEndHourOnStartHourChange() }),
           ...(!state.start && { endDate: action.payload?.date }),
         };
+      case SET_START:
+        return { ...state, start: action.payload?.start || false };
       default:
         return state;
     }
@@ -167,7 +148,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             </Text>
           </View>
         </View>
-        <EventDateTimeEdition event={event} state={state} dispatch={dispatch} />
+        <EventDateTimeEdition event={event} eventEditionState={state} eventEditionDispatch={dispatch} />
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
           cancelText="Poursuivre les modifications" confirmText="Supprimer" />
