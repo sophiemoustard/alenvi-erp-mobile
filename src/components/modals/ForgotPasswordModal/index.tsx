@@ -158,7 +158,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
       <View style={styles.inputContainer}>
         {inputRefs.map((k, idx) => (
           <TextInput ref={(r) => { inputRefs[idx] = r; }} key={`${k}${idx}`} value={code[idx]} keyboardType='number-pad'
-            onChangeText={char => onChangeText(char, idx)} style={styles.input} placeholder={'_'} maxLength={1}
+            onChangeText={char => onChangeText(char, idx)} style={styles.input} placeholder="_" maxLength={1}
             onKeyPress={({ nativeEvent }) => checkKeyValue(nativeEvent.key, idx)} autoFocus={idx === 0} />
         ))}
       </View>

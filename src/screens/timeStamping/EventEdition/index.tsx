@@ -162,18 +162,18 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
-        <FeatherButton style={styles.arrow} name='arrow-left' onPress={onLeave} color={COPPER[400]}
+        <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
         <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
         {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) && <NiPrimaryButton onPress={onSave}
-          title='Enregistrer' loading={loading} titleStyle={styles.buttonTitle} style={styles.button} />}
+          title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle} style={styles.button} />}
       </View>
       <ScrollView style={styles.container}>
         <Text style={styles.name}>
           {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
         </Text>
         <View style={styles.addressContainer}>
-          <Feather name='map-pin' size={ICON.SM} color={COPPER_GREY[500]} />
+          <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
           <View>
             <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
             <Text style={styles.addressText}>
@@ -199,7 +199,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             minimumDate={state.mode === TIME ? state.startDate : undefined} />}
         </View>
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
-          visible={exitModal} contentText={'Supprimer les modifications apportées à cet événement ?'} />
+          visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
+          cancelText="Poursuivre les modifications" confirmText="Supprimer" />
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}
       </ScrollView>
     </View>

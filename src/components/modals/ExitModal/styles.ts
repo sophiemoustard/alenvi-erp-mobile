@@ -36,10 +36,11 @@ const styles = StyleSheet.create({
     color: COPPER[500],
   },
   button: {
-    width: 80,
     height: BUTTON_HEIGHT,
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'center',
+    marginRight: MARGIN.XL,
+    maxWidth: 192,
   },
 });
 
