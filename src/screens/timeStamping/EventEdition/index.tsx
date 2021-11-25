@@ -1,11 +1,9 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, Platform } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
-import { DATE, IOS, TIME } from '../../../core/data/constants';
+import { DATE, IOS } from '../../../core/data/constants';
 import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore } from '../../../core/helpers/dates';
-import EventDateTime from '../../../components/EventDateTime';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
 import ExitModal from '../../../components/modals/ExitModal';
@@ -15,6 +13,7 @@ import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
 import { EventType } from '../../../types/EventType';
 import { NavigationType } from '../../../types/NavigationType';
+import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 
 export type ModeType = 'date' | 'time';
 
@@ -23,7 +22,7 @@ interface EventEditionProps {
   navigation: NavigationType,
 }
 
-interface StateType {
+export interface EventEditionStateType {
   startDate: Date,
   endDate: Date,
   mode: ModeType,
@@ -32,19 +31,19 @@ interface StateType {
   start: boolean,
 }
 
-interface ActionType {
+export interface EventEditionActionType {
   type: string,
   payload?: { date?: Date, mode?: ModeType, start?: boolean },
 }
 
-const SWITCH_PICKER = 'switchPicker';
-const HIDE_PICKER = 'hidePicker';
-const SET_DATES = 'setDates';
-const SET_TIME = 'setTime';
+export const SWITCH_PICKER = 'switchPicker';
+export const HIDE_PICKER = 'hidePicker';
+export const SET_DATES = 'setDates';
+export const SET_TIME = 'setTime';
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
-  const initialState: StateType = {
+  const initialState: EventEditionStateType = {
     startDate: new Date(event.startDate),
     endDate: new Date(event.endDate),
     mode: DATE,
@@ -56,9 +55,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
   const isIOS = Platform.OS === IOS;
-  const dateDisabled = event.startDateTimeStamp || event.endDateTimeStamp || event.isBilled;
 
-  const reducer = (state: StateType, action: ActionType): StateType => {
+  const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
       if (event.endDateTimeStamp) return state.endDate;
       if (isBefore(action.payload?.date || state.startDate, state.endDate)) return state.endDate;
@@ -147,18 +145,6 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     navigation.goBack();
   };
 
-  const onPressPicker = (start: boolean, mode: ModeType) => dispatch({ type: SWITCH_PICKER, payload: { start, mode } });
-
-  const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
-    if (!newDate) return;
-
-    if (state.mode === DATE) dispatch({ type: SET_DATES, payload: { date: newDate } });
-
-    if (state.mode === TIME) dispatch({ type: SET_TIME, payload: { date: newDate } });
-
-    if (!isIOS) dispatch({ type: HIDE_PICKER });
-  };
-
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
@@ -181,23 +167,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             </Text>
           </View>
         </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Début</Text>
-          <EventDateTime isTimeStamped={event.startDateTimeStamp} date={state.startDate} dateDisabled={dateDisabled}
-            onPress={(mode: ModeType) => onPressPicker(true, mode)}
-            timeDisabled={event.startDateTimeStamp || event.isBilled} />
-          {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode}
-            is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
-            maximumDate={(state.mode === TIME && event.endDateTimeStamp) ? state.endDate : undefined} />}
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Fin</Text>
-          <EventDateTime isTimeStamped={event.endDateTimeStamp} onPress={(mode: ModeType) => onPressPicker(false, mode)}
-            date={state.endDate} dateDisabled={dateDisabled} timeDisabled={event.endDateTimeStamp || event.isBilled} />
-          {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour
-            display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} locale="fr-FR"
-            minimumDate={state.mode === TIME ? state.startDate : undefined} />}
-        </View>
+        <EventDateTimeEdition event={event} state={state} dispatch={dispatch} />
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
           cancelText="Poursuivre les modifications" confirmText="Supprimer" />

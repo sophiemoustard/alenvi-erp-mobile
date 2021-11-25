@@ -49,14 +49,6 @@ export default StyleSheet.create({
     marginVertical: MARGIN.XL,
     color: COPPER_GREY[800],
   },
-  section: {
-    color: COPPER_GREY[700],
-    marginBottom: MARGIN.XL,
-  },
-  sectionText: {
-    color: COPPER_GREY[700],
-    marginBottom: MARGIN.SM,
-  },
   addressContainer: {
     flexDirection: 'row',
     alignItems: 'center',
