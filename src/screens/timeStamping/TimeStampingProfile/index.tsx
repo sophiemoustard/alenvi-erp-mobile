@@ -56,9 +56,7 @@ const TimeStampingProfile = () => {
           };
           const fetchedEvents = await Events.list(params);
 
-          if (isActive) {
-            setEvents(ascendingSortArray(fetchedEvents, 'startDate'));
-          }
+          if (isActive) setEvents(ascendingSortArray(fetchedEvents, 'startDate'));
         } catch (e) {
           console.error(e);
         }

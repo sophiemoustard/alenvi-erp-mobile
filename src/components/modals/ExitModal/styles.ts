@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'center',
     marginRight: MARGIN.XL,
-    maxWidth: 180,
+    maxWidth: 192,
   },
 });
 
