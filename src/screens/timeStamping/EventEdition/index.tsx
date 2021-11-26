@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { View, ScrollView, Text, BackHandler, Platform } from 'react-native';
+import { View, ScrollView, Text, BackHandler } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
-import { DATE, IOS } from '../../../core/data/constants';
 import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore } from '../../../core/helpers/dates';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
