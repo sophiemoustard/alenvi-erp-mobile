@@ -1,11 +1,11 @@
 import React, { useState, useReducer, useRef } from 'react';
-import { View, TouchableOpacity, Text, ActivityIndicator, Image, Platform, Dimensions } from 'react-native';
+import { View, TouchableOpacity, Text, ActivityIndicator, Image, Dimensions } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import styles from './styles';
 import { WHITE } from '../../../styles/colors';
 import { hitSlop, ICON } from '../../../styles/metrics';
-import { IOS, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
+import { isIOS, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
 import FeatherButton from '../../../components/FeatherButton';
 import EventInfoCell from '../../../components/EventInfoCell';
 import NiErrorCell from '../../../components/ErrorCell';
@@ -108,7 +108,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   };
 
   const setScreenDimension = async () => {
-    if (Platform.OS === IOS || !camera.current) return;
+    if (isIOS || !camera.current) return;
 
     const { height, width } = Dimensions.get('window');
     if (!width) return;

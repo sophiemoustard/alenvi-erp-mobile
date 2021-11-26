@@ -1,7 +1,7 @@
 import React, { useReducer } from 'react';
-import { View, Text, Platform } from 'react-native';
+import { View, Text } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { DATE, IOS, TIME } from '../../core/data/constants';
+import { DATE, isIOS, TIME } from '../../core/data/constants';
 import {
   EventEditionActionType,
   EventEditionStateType,
@@ -34,8 +34,6 @@ interface ActionType {
   type: string,
   payload?: { mode: ModeType, startPickerSelected: boolean },
 }
-
-const isIOS = Platform.OS === IOS;
 
 const initialState: StateType = {
   mode: DATE,
@@ -88,7 +86,7 @@ const EventDateTimeEdition = ({
   };
 
   return (
-    <View>
+    <>
       <View style={styles.section}>
         <Text style={styles.sectionText}>Début</Text>
         <EventDateTime isTimeStamped={event.startDateTimeStamp} date={eventEditionState.startDate}
@@ -107,7 +105,7 @@ const EventDateTimeEdition = ({
           display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} locale="fr-FR"
           minimumDate={state.mode === TIME ? eventEditionState.startDate : undefined} />}
       </View>
-    </View>
+    </>
   );
 };
 
