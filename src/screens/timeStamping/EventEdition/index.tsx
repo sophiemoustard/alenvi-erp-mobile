@@ -32,8 +32,6 @@ export interface EventEditionActionType {
   payload?: { date?: Date, mode?: ModeType, start?: boolean },
 }
 
-export const SWITCH_PICKER = 'switchPicker';
-export const HIDE_PICKER = 'hidePicker';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
 export const SET_START = 'setStart';
@@ -78,13 +76,13 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         return state;
     }
   };
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [dates, datesDispatch] = useReducer(reducer, initialState);
 
   const onLeave = useCallback(() => (
-    (state.startDate === initialState.startDate && state.endDate === initialState.endDate)
+    (dates.startDate === initialState.startDate && dates.endDate === initialState.endDate)
       ? navigation.goBack()
       : setExitModal(true)),
-  [initialState.endDate, initialState.startDate, state.endDate, state.startDate, navigation]);
+  [initialState.endDate, initialState.startDate, dates.endDate, dates.startDate, navigation]);
 
   const hardwareBackPress = useCallback(() => {
     onLeave();
@@ -102,14 +100,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       setLoading(true);
       setErrorMessage('');
 
-      if (isBefore(state.endDate, state.startDate)) {
+      if (isBefore(dates.endDate, dates.startDate)) {
         setErrorMessage('La date de début est postérieure à la date de fin.');
         return;
       }
 
       await Events.updateById(
         event._id,
-        { auxiliary: event.auxiliary._id, startDate: state.startDate, endDate: state.endDate }
+        { auxiliary: event.auxiliary._id, startDate: dates.startDate, endDate: dates.endDate }
       );
       navigation.goBack();
     } catch (e) {
@@ -147,7 +145,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             </Text>
           </View>
         </View>
-        <EventDateTimeEdition event={event} eventEditionState={state} eventEditionDispatch={dispatch} />
+        <EventDateTimeEdition event={event} eventEditionState={dates} eventEditionDispatch={datesDispatch} />
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
           cancelText="Poursuivre les modifications" confirmText="Supprimer" />

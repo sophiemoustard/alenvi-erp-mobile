@@ -5,12 +5,10 @@ import { DATE, isIOS, TIME } from '../../core/data/constants';
 import {
   EventEditionActionType,
   EventEditionStateType,
-  HIDE_PICKER,
   ModeType,
   SET_DATES,
   SET_START,
   SET_TIME,
-  SWITCH_PICKER,
 } from '../../screens/timeStamping/EventEdition';
 import { EventType } from '../../types/EventType';
 import EventDateTime from '../EventDateTime';
@@ -41,6 +39,9 @@ const initialState: StateType = {
   displayEndPicker: false,
 };
 
+const SWITCH_PICKER = 'switchPicker';
+const HIDE_PICKER = 'hidePicker';
+
 const reducer = (state: StateType, action: ActionType): StateType => {
   const isSamePayload = state.displayStartPicker === !!action.payload?.startPickerSelected &&
     state.displayEndPicker === !action.payload?.startPickerSelected && state.mode === action.payload?.mode;
@@ -68,21 +69,21 @@ const EventDateTimeEdition = ({
   eventEditionDispatch,
 }: EventDateTimeEditionProps) => {
   const dateDisabled = event.startDateTimeStamp || event.endDateTimeStamp || event.isBilled;
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [picker, pickerDispatch] = useReducer(reducer, initialState);
 
   const onPressPicker = (start: boolean, mode: ModeType) => {
     eventEditionDispatch({ type: SET_START, payload: { start } });
-    dispatch({ type: SWITCH_PICKER, payload: { startPickerSelected: start, mode } });
+    pickerDispatch({ type: SWITCH_PICKER, payload: { startPickerSelected: start, mode } });
   };
 
   const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
     if (!newDate) return;
 
-    if (state.mode === DATE) eventEditionDispatch({ type: SET_DATES, payload: { date: newDate } });
+    if (picker.mode === DATE) eventEditionDispatch({ type: SET_DATES, payload: { date: newDate } });
 
-    if (state.mode === TIME) eventEditionDispatch({ type: SET_TIME, payload: { date: newDate } });
+    if (picker.mode === TIME) eventEditionDispatch({ type: SET_TIME, payload: { date: newDate } });
 
-    if (!isIOS) dispatch({ type: HIDE_PICKER });
+    if (!isIOS) pickerDispatch({ type: HIDE_PICKER });
   };
 
   return (
@@ -92,18 +93,18 @@ const EventDateTimeEdition = ({
         <EventDateTime isTimeStamped={event.startDateTimeStamp} date={eventEditionState.startDate}
           dateDisabled={dateDisabled} onPress={(mode: ModeType) => onPressPicker(true, mode)}
           timeDisabled={event.startDateTimeStamp || event.isBilled} />
-        {state.displayStartPicker && <DateTimePicker value={eventEditionState.startDate} mode={state.mode}
+        {picker.displayStartPicker && <DateTimePicker value={eventEditionState.startDate} mode={picker.mode}
           is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
-          maximumDate={(state.mode === TIME && event.endDateTimeStamp) ? eventEditionState.endDate : undefined} />}
+          maximumDate={(picker.mode === TIME && event.endDateTimeStamp) ? eventEditionState.endDate : undefined} />}
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionText}>Fin</Text>
         <EventDateTime isTimeStamped={event.endDateTimeStamp} onPress={(mode: ModeType) => onPressPicker(false, mode)}
           date={eventEditionState.endDate} timeDisabled={event.endDateTimeStamp || event.isBilled}
           dateDisabled={dateDisabled} />
-        {state.displayEndPicker && <DateTimePicker value={eventEditionState.endDate} mode={state.mode} is24Hour
+        {picker.displayEndPicker && <DateTimePicker value={eventEditionState.endDate} mode={picker.mode} is24Hour
           display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} locale="fr-FR"
-          minimumDate={state.mode === TIME ? eventEditionState.startDate : undefined} />}
+          minimumDate={picker.mode === TIME ? eventEditionState.startDate : undefined} />}
       </View>
     </>
   );
