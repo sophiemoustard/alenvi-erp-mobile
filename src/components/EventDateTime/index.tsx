@@ -4,9 +4,9 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { DATE, MONTHS, TIME } from '../../core/data/constants';
 import { formatTime } from '../../core/helpers/dates';
 import { capitalizeFirstLetter } from '../../core/helpers/utils';
-import { ModeType } from '../../screens/timeStamping/EventEdition';
 import { COPPER_GREY } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
+import { ModeType } from '../../types/DateTimeType';
 import styles from './styles';
 
 interface EventDateTimeProps {

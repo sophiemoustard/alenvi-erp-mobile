@@ -2,17 +2,12 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { View, Text } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { DATE, isIOS, TIME } from '../../core/data/constants';
-import {
-  EventEditionActionType,
-  EventEditionStateType,
-  ModeType,
-  SET_DATES,
-  SET_START,
-  SET_TIME,
-} from '../../screens/timeStamping/EventEdition';
-import { EventType } from '../../types/EventType';
 import EventDateTime from '../EventDateTime';
+import { SET_DATES, SET_START, SET_TIME } from '../../screens/timeStamping/EventEdition';
+import { EventEditionActionType, EventEditionStateType } from '../../screens/timeStamping/EventEdition/types';
 import styles from './styles';
+import { EventType } from '../../types/EventType';
+import { ModeType } from '../../types/DateTimeType';
 
 interface EventDateTimeEditionProps {
   initialEvent: EventType,

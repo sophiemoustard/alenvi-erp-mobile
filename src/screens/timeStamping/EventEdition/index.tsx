@@ -4,35 +4,21 @@ import React, { useCallback, useEffect, useMemo, useReducer, useState } from 're
 import { View, ScrollView, Text, BackHandler } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
+import Users from '../../../api/Users';
 import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore, isAfter } from '../../../core/helpers/dates';
 import { formatIdentity } from '../../../core/helpers/utils';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
 import ExitModal from '../../../components/modals/ExitModal';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
+import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
+import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 import styles from './styles';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
 import { EventType } from '../../../types/EventType';
-import { NavigationType } from '../../../types/NavigationType';
-import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
-import Users from '../../../api/Users';
 import { UserType, AuxiliaryType } from '../../../types/UserType';
-import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
-
-export type ModeType = 'date' | 'time';
-
-interface EventEditionProps {
-  route: { params: { event: EventType } },
-  navigation: NavigationType,
-}
-
-export type EventEditionStateType = EventType & { start: boolean };
-
-export type EventEditionActionType = {
-  type: string,
-  payload?: { date?: Date, mode?: ModeType, start?: boolean },
-}
+import { EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
 
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
