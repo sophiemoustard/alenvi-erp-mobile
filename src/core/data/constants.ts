@@ -1,7 +1,9 @@
+import { Platform } from 'react-native';
 import { EventTypeEnum } from '../../types/EventType';
 
 export const ERP = 'erp';
 export const IOS = 'ios';
+export const isIOS = Platform.OS === IOS;
 
 // STATE
 export const ACTIVE_STATE = 'active';
