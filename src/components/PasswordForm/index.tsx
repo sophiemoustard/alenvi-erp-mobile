@@ -4,7 +4,7 @@ import FeatherButton from '../FeatherButton';
 import NiErrorMessage from '../ErrorMessage';
 import NiInput from '../form/Input';
 import NiPrimaryButton from '../form/PrimaryButton';
-import ExitModal from '../modals/ExitModal';
+import ConfirmationModal from '../modals/ConfirmationModal';
 import { ICON, IS_LARGE_SCREEN, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../styles/metrics';
 import styles from './styles';
 
@@ -87,7 +87,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
       keyboardVerticalOffset={IS_LARGE_SCREEN ? MARGIN.MD : MARGIN.XS} >
       <View style={styles.goBack}>
         <FeatherButton name='x-circle' onPress={toggleModal} size={ICON.MD} />
-        <ExitModal onPressConfirmButton={handlePressConfirmButton} visible={exitConfirmationModal}
+        <ConfirmationModal onPressConfirmButton={handlePressConfirmButton} visible={exitConfirmationModal}
           title="Êtes-vous sûr(e) de cela ?" contentText="Vos modifications ne seront pas enregistrées."
           onPressCancelButton={toggleModal}/>
       </View>

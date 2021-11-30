@@ -3,9 +3,10 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import NiModal from '../Modal';
 import styles from './styles';
 
-interface ExitModalProps {
+interface ConfirmationModalProps {
   visible: boolean,
   title?: string,
+  children?: JSX.Element,
   contentText: string,
   cancelText?: string,
   confirmText?: string,
@@ -13,18 +14,20 @@ interface ExitModalProps {
   onPressConfirmButton: () => void,
 }
 
-const ExitModal = ({
+const ConfirmationModal = ({
   visible,
   title = '',
+  children,
   contentText,
   cancelText = 'Annuler',
   confirmText = 'Quitter',
   onPressCancelButton,
   onPressConfirmButton,
-}: ExitModalProps) => (
+}: ConfirmationModalProps) => (
   <NiModal visible={visible}>
     <>
       {!!title && <Text style={styles.title}>{title}</Text>}
+      {children}
       <Text style={styles.contentText}>{contentText}</Text>
       <View style={styles.buttons}>
         <TouchableOpacity style={styles.button} onPress={onPressCancelButton}>
@@ -38,4 +41,4 @@ const ExitModal = ({
   </NiModal>
 );
 
-export default ExitModal;
+export default ConfirmationModal;

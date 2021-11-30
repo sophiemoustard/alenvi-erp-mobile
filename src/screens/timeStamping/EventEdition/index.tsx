@@ -9,9 +9,9 @@ import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore, isAft
 import { formatIdentity } from '../../../core/helpers/utils';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
-import ExitModal from '../../../components/modals/ExitModal';
-import NiPrimaryButton from '../../../components/form/PrimaryButton';
+import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
+import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 import styles from './styles';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
@@ -164,7 +164,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         </View>
         <EventDateTimeEdition initialEvent={initialState} event={event} eventEditionDispatch={eventDispatch} />
         <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries} />
-        <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
+        <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
           cancelText="Poursuivre les modifications" confirmText="Supprimer" />
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}

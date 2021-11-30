@@ -4,7 +4,7 @@ import Users from '../../api/Users';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
 import FeatherButton from '../../components/FeatherButton';
 import NiInput from '../../components/form/Input';
-import ExitModal from '../../components/modals/ExitModal';
+import ConfirmationModal from '../../components/modals/ConfirmationModal';
 import ForgotPasswordModal from '../../components/modals/ForgotPasswordModal';
 import { EMAIL_REGEX } from '../../core/data/constants';
 import { formatEmailForPayload } from '../../core/helpers/utils';
@@ -69,7 +69,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
         <View style={styles.goBack}>
           <FeatherButton name='x-circle' onPress={() => setExitConfirmationModal(true)} size={ICON.MD}
             disabled={isLoading} />
-          <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
+          <ConfirmationModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
             onPressCancelButton={() => setExitConfirmationModal(false)}
             title="Êtes-vous sûr(e) de cela ?" contentText="Vous reviendrez à la page d\'accueil." />
         </View>
