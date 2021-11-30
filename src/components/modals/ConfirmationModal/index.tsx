@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { COPPER_GREY } from '../../../styles/colors';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
 import FeatherButton from '../../FeatherButton';
 import NiModal from '../Modal';
@@ -16,6 +16,7 @@ interface ConfirmationModalProps {
   contentText?: string,
   cancelText?: string,
   confirmText?: string,
+  loading?: boolean,
   onRequestClose?: () => void,
 }
 
@@ -29,6 +30,7 @@ const ConfirmationModal = ({
   contentText = '',
   cancelText = 'Annuler',
   confirmText = 'Quitter',
+  loading = false,
   onRequestClose = () => {},
 }: ConfirmationModalProps) => (
   <NiModal visible={visible}>
@@ -46,9 +48,11 @@ const ConfirmationModal = ({
         <TouchableOpacity style={styles.button} onPress={onPressCancelButton}>
           <Text style={styles.buttonText}>{cancelText}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={onPressConfirmButton}>
-          <Text style={styles.buttonText}>{confirmText}</Text>
-        </TouchableOpacity>
+        {loading
+          ? <ActivityIndicator style={styles.button} color={COPPER[500]} size="small" />
+          : <TouchableOpacity style={styles.button} onPress={onPressConfirmButton}>
+            <Text style={styles.buttonText}>{confirmText}</Text>
+          </TouchableOpacity>}
       </View>
     </>
   </NiModal>

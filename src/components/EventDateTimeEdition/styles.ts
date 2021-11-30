@@ -11,4 +11,7 @@ export default StyleSheet.create({
     color: COPPER_GREY[700],
     marginBottom: MARGIN.SM,
   },
+  errorMessage: {
+    marginTop: MARGIN.MD,
+  },
 });

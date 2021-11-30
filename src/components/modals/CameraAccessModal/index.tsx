@@ -30,7 +30,7 @@ const CameraAccessModal = ({
       </Text>
       <View style={styles.buttonContainer}>
         <View>
-          <SecondaryButton title="Horodater\n manuellement" onPress={goToManualTimeStamping} />
+          <SecondaryButton title={'Horodater\n manuellement'} onPress={goToManualTimeStamping} />
         </View>
         <View>
           <PrimaryButton title="Redemander" onPress={onPressAskAgain} />
