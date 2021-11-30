@@ -4,5 +4,6 @@ export interface UserType {
   local: { email: string },
   picture?: { link: string },
   company?: { name: string },
-  contact?: { phone: string }
+  contact?: { phone: string },
+  contracts: [{ _id: string, startDate: Date, endDate: Date }],
 }

@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { View, ScrollView, Text, BackHandler } from 'react-native';
+import { View, ScrollView, Text, BackHandler, ImageSourcePropType, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
-import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore } from '../../../core/helpers/dates';
+import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore, isAfter } from '../../../core/helpers/dates';
+import { getLastVersion } from '../../../core/helpers/utils';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
 import ExitModal from '../../../components/modals/ExitModal';
@@ -13,6 +14,8 @@ import { ICON } from '../../../styles/metrics';
 import { EventType } from '../../../types/EventType';
 import { NavigationType } from '../../../types/NavigationType';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
+import Users from '../../../api/Users';
+import { UserType } from '../../../types/UserType';
 
 export type ModeType = 'date' | 'time';
 
@@ -21,10 +24,17 @@ interface EventEditionProps {
   navigation: NavigationType,
 }
 
+export interface AuxiliaryType {
+  _id: string,
+  identity: { firstname: string; lastname: string; },
+  picture?: { link: string; },
+  contracts?: { _id: string, startDate: Date, endDate?: Date },
+}
 export interface EventEditionStateType {
   startDate: Date,
   endDate: Date,
   start: boolean,
+  auxiliary: AuxiliaryType,
 }
 
 export interface EventEditionActionType {
@@ -36,16 +46,30 @@ export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
 export const SET_START = 'setStart';
 
+const formatAuxiliary = (auxiliary: UserType) => ({
+  _id: auxiliary._id,
+  identity: { firstname: auxiliary?.identity?.firstname, lastname: auxiliary?.identity?.lastname },
+  picture: auxiliary?.picture,
+  contracts: (auxiliary.contracts ? getLastVersion(auxiliary.contracts) : {}),
+});
+
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
+  const initialAuxiliary = formatAuxiliary(event.auxiliary);
   const initialState: EventEditionStateType = {
     startDate: new Date(event.startDate),
     endDate: new Date(event.endDate),
     start: false,
+    auxiliary: initialAuxiliary,
   };
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
+  const [source, setSource] = useState<ImageSourcePropType>({});
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
+  const [currentAuxiliary] = useState<AuxiliaryType>(initialAuxiliary);
+  const [isAuxiliaryEditable] = useState<boolean>(false);
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -123,6 +147,29 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     navigation.goBack();
   };
 
+  useEffect(() => {
+    if (currentAuxiliary?.picture?.link) setSource({ uri: currentAuxiliary.picture.link });
+    else setSource(require('../../../../assets/images/default_avatar.png'));
+  }, [currentAuxiliary?.picture?.link]);
+
+  const getActiveAuxiliaries = async (company: string) => {
+    try {
+      const auxiliaries = await Users.listWithSectorHistories({ company });
+      const filteredAuxiliaries = auxiliaries.map((aux: UserType) => (formatAuxiliary(aux)))
+        .filter((aux: AuxiliaryType) => {
+          if (aux.contracts?.endDate) {
+            return isBefore(aux?.contracts?.startDate, event.startDate) &&
+              isAfter(aux.contracts?.endDate, event.endDate);
+          }
+          return isBefore(aux?.contracts?.startDate, event.startDate);
+        });
+
+      setActiveAuxiliaries(filteredAuxiliaries);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
@@ -146,6 +193,18 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           </View>
         </View>
         <EventDateTimeEdition event={event} eventEditionState={dates} eventEditionDispatch={datesDispatch} />
+        <Text style={styles.sectionText}>Intervenant</Text>
+        <View style={isAuxiliaryEditable ? styles.auxiliaryCell : styles.auxiliaryCellNotEditable} >
+          <View style={styles.auxiliaryInfos}>
+            <Image source={source} style={styles.image} />
+            <Text style={styles.auxiliaryText}>
+              {currentAuxiliary?.identity?.firstname} {currentAuxiliary?.identity?.lastname}
+            </Text>
+          </View>
+          { isAuxiliaryEditable &&
+            <FeatherButton name='chevron-down' onPress={() => getActiveAuxiliaries(event.company)} /> }
+        </View>
+        {/* <Text>{activeAuxiliaries.map(aux => aux?.contracts?.endDate)}</Text> */}
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
           cancelText="Poursuivre les modifications" confirmText="Supprimer" />
