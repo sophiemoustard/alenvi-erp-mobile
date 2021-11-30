@@ -10,7 +10,7 @@ import { FeatherType } from '../../../types/IconType';
 interface InputProps {
   value: string,
   caption: string,
-  type: string,
+  type?: string,
   onChangeText: (value: string) => void,
   style?: Object,
   darkMode?: boolean,
@@ -20,9 +20,9 @@ interface InputProps {
 
 const Input = ({
   caption,
-  type,
   onChangeText,
   value,
+  type = '',
   style = {},
   darkMode = false,
   validationMessage = '',

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useReducer, useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import EventHistories from '../../api/EventHistories';
@@ -6,6 +6,7 @@ import { DATE, isIOS, TIME, TIMESTAMPING_ACTION_TYPE_LIST } from '../../core/dat
 import EventDateTime from '../EventDateTime';
 import WarningBanner from '../WarningBanner';
 import ConfirmationModal from '../modals/ConfirmationModal';
+import NiInput from '../form/Input';
 import { EventEditionActionType, EventEditionStateType } from '../../screens/timeStamping/EventEdition/types';
 import { SET_DATES, SET_START, SET_TIME } from '../../screens/timeStamping/EventEdition';
 import { EventHistoryType, EventType } from '../../types/EventType';
@@ -66,26 +67,32 @@ const EventDateTimeEdition = ({ initialEvent, event, eventEditionDispatch }: Eve
   const [maximumStartDate, setMaximumStartDate] = useState<Date | undefined>(undefined);
   const [minimumEndDate, setMinimumEndDate] = useState<Date | undefined>(undefined);
   const [eventHistories, setEventHistories] = useState<Array<EventHistoryType>>([]);
+  // const [eventHistories, setEventHistories] = useState<Array<EventHistoryType>>([]);
   const [confirmationModal, setConfirmationModal] = useState<boolean>(false);
+  const [cancellationModal, setCancellationModal] = useState<boolean>(false);
+  const [reason, setReason] = useState<string>('');
+  const [cancelledDate, setCancelledDate] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
-  useEffect(() => {
-    const fetchEventHistories = async () => {
-      try {
-        const fetchedEventHistories = await EventHistories.list(
-          { eventId: event._id, action: TIMESTAMPING_ACTION_TYPE_LIST, isCancelled: false }
-        );
-        setEventHistories(fetchedEventHistories);
-      } catch (e) {
-        console.error(e);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchEventHistories = async () => {
+  //     try {
+  //       const fetchedEventHistories = await EventHistories.list(
+  //         { eventId: event._id, action: TIMESTAMPING_ACTION_TYPE_LIST, isCancelled: false }
+  //       );
+  //       setEventHistories(fetchedEventHistories);
+  //     } catch (e) {
+  //       console.error(e);
+  //     }
+  //   };
 
-    fetchEventHistories();
-  });
+  //   fetchEventHistories();
+  // }, [event]);
 
   const onPressPicker = async (start: boolean, mode: ModeType) => {
     if ((start && event.startDateTimeStamp) || (!start && event.endDateTimeStamp)) {
       setConfirmationModal(true);
+      setCancelledDate(start ? 'startDate' : 'endDate');
     } else {
       eventEditionDispatch({ type: SET_START, payload: { start } });
       pickerDispatch({ type: SWITCH_PICKER, payload: { startPickerSelected: start, mode } });
@@ -118,6 +125,28 @@ const EventDateTimeEdition = ({ initialEvent, event, eventEditionDispatch }: Eve
     if (!isIOS) pickerDispatch({ type: HIDE_PICKER });
   };
 
+  const openCancellationModal = () => {
+    setConfirmationModal(false);
+    setCancellationModal(true);
+  };
+
+  const cancelTimeStamp = async () => {
+    try {
+      setErrorMessage('');
+      if (!reason) {
+        setErrorMessage('Veuillez remplir un motif');
+        return;
+      }
+
+      const eventHistories = await EventHistories.list(
+        { eventId: event._id, action: TIMESTAMPING_ACTION_TYPE_LIST, isCancelled: false }
+      );
+    } catch (e) {
+      console.error(e);
+      setErrorMessage('Une erreur s\'est produite, veuillez réessayer ultérieurement.');
+    }
+  };
+
   return (
     <>
       <View style={styles.section}>
@@ -134,15 +163,18 @@ const EventDateTimeEdition = ({ initialEvent, event, eventEditionDispatch }: Eve
         {picker.displayEndPicker && <DateTimePicker value={event.endDate} mode={picker.mode} is24Hour locale="fr-FR"
           display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} minimumDate={minimumEndDate} />}
       </View>
-      {confirmationModal && (
-        <ConfirmationModal visible={confirmationModal} title="Cet évènement a déjà été horodaté"
-          cancelText="Retour" confirmText="Annuler l'horodatage" exitButton onPressConfirmButton={() => {}}
-          onRequestClose={() => setConfirmationModal(false)} onPressCancelButton={() => setConfirmationModal(false)}>
-          <WarningBanner text="Pour modifier l’horaire, vous devez annuler l’horodatage existant.
+      <ConfirmationModal visible={confirmationModal} title="Cet évènement a déjà été horodaté" exitButton
+        cancelText="Retour" confirmText="Annuler l'horodatage" onPressConfirmButton={openCancellationModal}
+        onRequestClose={() => setConfirmationModal(false)} onPressCancelButton={() => setConfirmationModal(false)}>
+        <WarningBanner text="Pour modifier l’horaire, vous devez annuler l’horodatage existant.
           Cette action est irréversible." />
-        </ConfirmationModal>
-      )}
-
+      </ConfirmationModal>
+      <ConfirmationModal visible={cancellationModal} title="Motif d'annulation" cancelText="Retour" exitButton
+        confirmText="Confirmer" contentText="Veuillez préciser pourquoi vous annulez l'horodatage"
+        onPressConfirmButton={cancelTimeStamp} onRequestClose={() => setCancellationModal(false)}
+        onPressCancelButton={() => setCancellationModal(false)}>
+        <NiInput caption="Motif" value={reason} onChangeText={setReason} validationMessage={errorMessage} />
+      </ConfirmationModal>
     </>
   );
 };
