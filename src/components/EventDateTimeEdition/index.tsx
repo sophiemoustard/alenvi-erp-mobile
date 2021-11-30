@@ -1,7 +1,8 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { View, Text } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { DATE, isIOS, TIME } from '../../core/data/constants';
+import { DATE, isIOS, TIME, TIMESTAMPING_ACTION_TYPE_LIST } from '../../core/data/constants';
+import EventHistories from '../../api/EventHistories';
 import EventDateTime from '../EventDateTime';
 import { SET_DATES, SET_START, SET_TIME } from '../../screens/timeStamping/EventEdition';
 import { EventEditionActionType, EventEditionStateType } from '../../screens/timeStamping/EventEdition/types';
@@ -13,8 +14,7 @@ interface EventDateTimeEditionProps {
   initialEvent: EventType,
   event: EventEditionStateType,
   eventEditionDispatch: (action: EventEditionActionType) => void,
-  dateDisabled?: boolean,
-  timeDisabled?: boolean,
+  disabled?: boolean,
 }
 
 interface StateType {
@@ -64,9 +64,15 @@ const EventDateTimeEdition = ({ initialEvent, event, eventEditionDispatch }: Eve
   const [maximumStartDate, setMaximumStartDate] = useState<Date | undefined>(undefined);
   const [minimumEndDate, setMinimumEndDate] = useState<Date | undefined>(undefined);
 
-  const onPressPicker = (start: boolean, mode: ModeType) => {
-    eventEditionDispatch({ type: SET_START, payload: { start } });
-    pickerDispatch({ type: SWITCH_PICKER, payload: { startPickerSelected: start, mode } });
+  const onPressPicker = async (start: boolean, mode: ModeType) => {
+    if ((start && event.startDateTimeStamp) || (!start && event.endDateTimeStamp)) {
+      const eventhistories = await EventHistories.list(
+        { eventId: event._id, action: TIMESTAMPING_ACTION_TYPE_LIST, isCancelled: false }
+      );
+    } else {
+      eventEditionDispatch({ type: SET_START, payload: { start } });
+      pickerDispatch({ type: SWITCH_PICKER, payload: { startPickerSelected: start, mode } });
+    }
   };
 
   useEffect(
@@ -100,16 +106,14 @@ const EventDateTimeEdition = ({ initialEvent, event, eventEditionDispatch }: Eve
       <View style={styles.section}>
         <Text style={styles.sectionText}>Début</Text>
         <EventDateTime isTimeStamped={initialEvent.startDateTimeStamp} date={event.startDate}
-          dateDisabled={dateDisabled} onPress={(mode: ModeType) => onPressPicker(true, mode)}
-          timeDisabled={initialEvent.startDateTimeStamp || initialEvent.isBilled} />
+          disabled={initialEvent.isBilled} onPress={(mode: ModeType) => onPressPicker(true, mode)} />
         {picker.displayStartPicker && <DateTimePicker value={event.startDate} mode={picker.mode} is24Hour locale="fr-FR"
           display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} maximumDate={maximumStartDate} />}
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionText}>Fin</Text>
-        <EventDateTime isTimeStamped={initialEvent.endDateTimeStamp} dateDisabled={dateDisabled}
-          date={event.endDate} timeDisabled={initialEvent.endDateTimeStamp || initialEvent.isBilled}
-          onPress={(mode: ModeType) => onPressPicker(false, mode)} />
+        <EventDateTime isTimeStamped={initialEvent.endDateTimeStamp} date={event.endDate}
+          disabled={initialEvent.isBilled} onPress={(mode: ModeType) => onPressPicker(false, mode)} />
         {picker.displayEndPicker && <DateTimePicker value={event.endDate} mode={picker.mode} is24Hour locale="fr-FR"
           display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} minimumDate={minimumEndDate} />}
       </View>
