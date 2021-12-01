@@ -53,7 +53,12 @@ const formatZipCodeAndCity = (intervention: EventType) => {
 };
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
-  const initialState: EventEditionStateType = { ...route.params.event, start: false };
+  const initialState: EventEditionStateType = {
+    ...route.params.event,
+    startDate: new Date(route.params.event.startDate),
+    endDate: new Date(route.params.event.endDate),
+    start: false,
+  };
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
