@@ -3,7 +3,7 @@ import { View, ScrollView, Text, BackHandler, ImageSourcePropType, Image } from 
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
 import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore, isAfter } from '../../../core/helpers/dates';
-import { getLastVersion } from '../../../core/helpers/utils';
+import { formatIdentity, getLastVersion } from '../../../core/helpers/utils';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
 import ExitModal from '../../../components/modals/ExitModal';
@@ -55,21 +55,17 @@ const formatAuxiliary = (auxiliary: UserType) => ({
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
-  const initialAuxiliary = formatAuxiliary(event.auxiliary);
   const initialState: EventEditionStateType = {
     startDate: new Date(event.startDate),
     endDate: new Date(event.endDate),
     start: false,
-    auxiliary: initialAuxiliary,
+    auxiliary: formatAuxiliary(event.auxiliary),
   };
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [source, setSource] = useState<ImageSourcePropType>({});
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
-  const [currentAuxiliary] = useState<AuxiliaryType>(initialAuxiliary);
-  const [isAuxiliaryEditable] = useState<boolean>(false);
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -148,11 +144,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   };
 
   useEffect(() => {
-    if (currentAuxiliary?.picture?.link) setSource({ uri: currentAuxiliary.picture.link });
+    if (dates.auxiliary.picture?.link) setSource({ uri: dates.auxiliary.picture.link });
     else setSource(require('../../../../assets/images/default_avatar.png'));
-  }, [currentAuxiliary?.picture?.link]);
+  }, [dates.auxiliary?.picture?.link]);
 
-  const getActiveAuxiliaries = async (company: string) => {
+  const getActiveAuxiliaries = useCallback(async (company: string) => {
     try {
       const auxiliaries = await Users.listWithSectorHistories({ company });
       const filteredAuxiliaries = auxiliaries.map((aux: UserType) => (formatAuxiliary(aux)))
@@ -168,7 +164,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     } catch (e) {
       console.error(e);
     }
-  };
+  }, [event.endDate, event.startDate]);
+
+  useEffect(() => {
+    getActiveAuxiliaries(event.company);
+  }, [event.company, getActiveAuxiliaries]);
 
   return (
     <View style={styles.screen}>
@@ -180,9 +180,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle} style={styles.button} />}
       </View>
       <ScrollView style={styles.container}>
-        <Text style={styles.name}>
-          {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
-        </Text>
+        <Text style={styles.name}>{formatIdentity(event.customer.identity, 'FL')}</Text>
         <View style={styles.addressContainer}>
           <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
           <View>
@@ -194,17 +192,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         </View>
         <EventDateTimeEdition event={event} eventEditionState={dates} eventEditionDispatch={datesDispatch} />
         <Text style={styles.sectionText}>Intervenant</Text>
-        <View style={isAuxiliaryEditable ? styles.auxiliaryCell : styles.auxiliaryCellNotEditable} >
+        <View style={styles.auxiliaryCellNotEditable}>
           <View style={styles.auxiliaryInfos}>
             <Image source={source} style={styles.image} />
-            <Text style={styles.auxiliaryText}>
-              {currentAuxiliary?.identity?.firstname} {currentAuxiliary?.identity?.lastname}
-            </Text>
+            <Text style={styles.auxiliaryText}>{formatIdentity(dates.auxiliary.identity, 'FL')}</Text>
           </View>
-          { isAuxiliaryEditable &&
-            <FeatherButton name='chevron-down' onPress={() => getActiveAuxiliaries(event.company)} /> }
         </View>
-        {/* <Text>{activeAuxiliaries.map(aux => aux?.contracts?.endDate)}</Text> */}
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
           cancelText="Poursuivre les modifications" confirmText="Supprimer" />
