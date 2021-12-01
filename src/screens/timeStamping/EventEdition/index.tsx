@@ -40,9 +40,7 @@ export const SET_START = 'setStart';
 
 const formatAuxiliary = (auxiliary: UserType) => ({
   _id: auxiliary._id,
-  identity: { ...pick(auxiliary.identity, ['firstname', 'lastname']) },
-  picture: auxiliary?.picture,
-  contracts: auxiliary.contracts,
+  ...pick(auxiliary, ['picture', 'contracts', 'identity.firstname', 'identity.lastname']),
 });
 
 const formatZipCodeAndCity = (intervention: EventType) => {
@@ -146,15 +144,15 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       const auxiliaries = await Users.listWithSectorHistories({ company });
       const filteredAuxiliaries = auxiliaries
         .filter((aux: UserType) => aux.contracts && aux.contracts
-          .some(c => isBefore(c.startDate, initialState.endDate) &&
-            (!c.endDate || isAfter(c.endDate, initialState.startDate))))
+          .some(c => isBefore(c.startDate, event.endDate) &&
+            (!c.endDate || isAfter(c.endDate, event.startDate))))
         .map((aux: UserType) => (formatAuxiliary(aux)));
 
       setActiveAuxiliaries(filteredAuxiliaries);
     } catch (e) {
       console.error(e);
     }
-  }, [initialState.endDate, initialState.startDate]);
+  }, [event.endDate, event.startDate]);
 
   useEffect(() => { getActiveAuxiliaries(initialState.company); }, [initialState.company, getActiveAuxiliaries]);
 
