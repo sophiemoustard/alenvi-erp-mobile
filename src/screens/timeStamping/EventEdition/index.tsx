@@ -1,4 +1,5 @@
 import pick from 'lodash.pick';
+import get from 'lodash.get';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, ImageSourcePropType, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
@@ -92,6 +93,13 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   };
   const [event, eventDispatch] = useReducer(reducer, initialState);
 
+  const formatZipCodeAndCity = (intervention: EventType) => {
+    const zipCode = get(intervention, 'customer.contact.primaryAddress.zipCode') || '';
+    const city = get(intervention, 'customer.contact.primaryAddress.city') || '';
+
+    return `${zipCode} ${city}`;
+  };
+
   const onLeave = useCallback(() => (
     (event.startDate === initialState.startDate && event.endDate === initialState.endDate)
       ? navigation.goBack()
@@ -175,10 +183,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
           <View>
             <Text style={styles.addressText}>{`${initialState?.customer?.contact?.primaryAddress?.street}`}</Text>
-            <Text style={styles.addressText}>
-              {`${initialState?.customer?.contact?.primaryAddress?.zipCode}
-                ${initialState?.customer?.contact?.primaryAddress?.city}`}
-            </Text>
+            <Text style={styles.addressText}>{formatZipCodeAndCity(initialState)}</Text>
           </View>
         </View>
         <EventDateTimeEdition event={initialState} eventEditionState={event} eventEditionDispatch={eventDispatch} />
