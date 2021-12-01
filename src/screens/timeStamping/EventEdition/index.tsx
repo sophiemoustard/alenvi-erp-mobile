@@ -1,9 +1,10 @@
+import pick from 'lodash.pick';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, ImageSourcePropType, Image } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
 import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore, isAfter } from '../../../core/helpers/dates';
-import { formatIdentity, getLastVersion } from '../../../core/helpers/utils';
+import { formatIdentity } from '../../../core/helpers/utils';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
 import ExitModal from '../../../components/modals/ExitModal';
@@ -24,18 +25,14 @@ interface EventEditionProps {
   navigation: NavigationType,
 }
 
-export interface AuxiliaryType {
+export type AuxiliaryType = {
   _id: string,
   identity: { firstname: string; lastname: string; },
   picture?: { link: string; },
   contracts: [{ _id: string, startDate: Date, endDate?: Date }],
 }
-export interface EventEditionStateType {
-  startDate: Date,
-  endDate: Date,
-  start: boolean,
-  auxiliary: AuxiliaryType,
-}
+
+export type EventEditionStateType = EventType & { start: boolean };
 
 export interface EventEditionActionType {
   type: string,
@@ -54,13 +51,7 @@ const formatAuxiliary = (auxiliary: UserType) => ({
 });
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
-  const { event } = route.params;
-  const initialState: EventEditionStateType = {
-    startDate: new Date(event.startDate),
-    endDate: new Date(event.endDate),
-    start: false,
-    auxiliary: formatAuxiliary(event.auxiliary),
-  };
+  const initialState: EventEditionStateType = { ...route.params.event, start: false };
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
@@ -69,10 +60,13 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
-      if (event.endDateTimeStamp) return state.endDate;
+      if (route.params.event.endDateTimeStamp) return state.endDate;
       if (isBefore(action.payload?.date || state.startDate, state.endDate)) return state.endDate;
 
-      const newDate = addTime(action.payload?.date || state.startDate, dateDiff(event.endDate, event.startDate));
+      const newDate = addTime(
+        action.payload?.date || state.startDate,
+        dateDiff(initialState.endDate, initialState.startDate)
+      );
       const newDateIsAfterMidnight = newDate.getDate() !== state.endDate.getDate();
       return newDateIsAfterMidnight ? getEndOfDay(state.endDate) : newDate;
     };
@@ -96,13 +90,13 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         return state;
     }
   };
-  const [dates, datesDispatch] = useReducer(reducer, initialState);
+  const [event, eventDispatch] = useReducer(reducer, initialState);
 
   const onLeave = useCallback(() => (
-    (dates.startDate === initialState.startDate && dates.endDate === initialState.endDate)
+    (event.startDate === initialState.startDate && event.endDate === initialState.endDate)
       ? navigation.goBack()
       : setExitModal(true)),
-  [initialState.endDate, initialState.startDate, dates.endDate, dates.startDate, navigation]);
+  [initialState.endDate, initialState.startDate, event.endDate, event.startDate, navigation]);
 
   const hardwareBackPress = useCallback(() => {
     onLeave();
@@ -120,14 +114,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       setLoading(true);
       setErrorMessage('');
 
-      if (isBefore(dates.endDate, dates.startDate)) {
+      if (isBefore(event.endDate, event.startDate)) {
         setErrorMessage('La date de début est postérieure à la date de fin.');
         return;
       }
 
       await Events.updateById(
         event._id,
-        { auxiliary: event.auxiliary._id, startDate: dates.startDate, endDate: dates.endDate }
+        { auxiliary: event.auxiliary._id, ...pick(event, ['startDate', 'endDate']) }
       );
       navigation.goBack();
     } catch (e) {
@@ -144,54 +138,55 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   };
 
   useEffect(() => {
-    if (dates.auxiliary.picture?.link) setSource({ uri: dates.auxiliary.picture.link });
+    if (event.auxiliary.picture?.link) setSource({ uri: event.auxiliary.picture.link });
     else setSource(require('../../../../assets/images/default_avatar.png'));
-  }, [dates.auxiliary?.picture?.link]);
+  }, [event.auxiliary?.picture?.link]);
 
   const getActiveAuxiliaries = useCallback(async (company: string) => {
     try {
       const auxiliaries = await Users.listWithSectorHistories({ company });
       const filteredAuxiliaries = auxiliaries
-        .filter((aux: AuxiliaryType) => aux.contracts
-          .some(c => isBefore(c.startDate, event.endDate) && (!c.endDate || isAfter(c.endDate, event.startDate))))
+        .filter((aux: UserType) => aux.contracts && aux.contracts
+          .some(c => isBefore(c.startDate, initialState.endDate) &&
+            (!c.endDate || isAfter(c.endDate, initialState.startDate))))
         .map((aux: UserType) => (formatAuxiliary(aux)));
 
       setActiveAuxiliaries(filteredAuxiliaries);
     } catch (e) {
       console.error(e);
     }
-  }, [event.endDate, event.startDate]);
+  }, [initialState.endDate, initialState.startDate]);
 
-  useEffect(() => {
-    getActiveAuxiliaries(event.company);
-  }, [event.company, getActiveAuxiliaries]);
+  useEffect(() => { getActiveAuxiliaries(initialState.company); }, [initialState.company, getActiveAuxiliaries]);
 
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
         <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
-        <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
-        {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) && <NiPrimaryButton onPress={onSave}
-          title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle} style={styles.button} />}
+        <Text style={styles.text}>{formatDate(initialState.startDate, true)}</Text>
+        {!((initialState.startDateTimeStamp && initialState.endDateTimeStamp) || initialState.isBilled) &&
+          <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
+            style={styles.button} />}
       </View>
       <ScrollView style={styles.container}>
-        <Text style={styles.name}>{formatIdentity(event.customer.identity, 'FL')}</Text>
+        <Text style={styles.name}>{formatIdentity(initialState.customer.identity, 'FL')}</Text>
         <View style={styles.addressContainer}>
           <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
           <View>
-            <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
+            <Text style={styles.addressText}>{`${initialState?.customer?.contact?.primaryAddress?.street}`}</Text>
             <Text style={styles.addressText}>
-              {`${event?.customer?.contact?.primaryAddress?.zipCode} ${event?.customer?.contact?.primaryAddress?.city}`}
+              {`${initialState?.customer?.contact?.primaryAddress?.zipCode}
+                ${initialState?.customer?.contact?.primaryAddress?.city}`}
             </Text>
           </View>
         </View>
-        <EventDateTimeEdition event={event} eventEditionState={dates} eventEditionDispatch={datesDispatch} />
+        <EventDateTimeEdition event={initialState} eventEditionState={event} eventEditionDispatch={eventDispatch} />
         <Text style={styles.sectionText}>Intervenant</Text>
         <View style={styles.auxiliaryCellNotEditable}>
           <View style={styles.auxiliaryInfos}>
             <Image source={source} style={styles.image} />
-            <Text style={styles.auxiliaryText}>{formatIdentity(dates.auxiliary.identity, 'FL')}</Text>
+            <Text style={styles.auxiliaryText}>{formatIdentity(event.auxiliary.identity, 'FL')}</Text>
           </View>
         </View>
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}

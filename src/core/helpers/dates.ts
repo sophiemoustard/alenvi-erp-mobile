@@ -49,7 +49,3 @@ export const getEndOfDay = (date: Date) => new Date(date.getFullYear(), date.get
 export const ascendingSortArray = (array: Array<EventType>, key: 'startDate') => [...array].sort(
   (a, b) => dateDiff(a[key], b[key])
 );
-
-export const descendingSortArray = (array: Array<EventType>, key: 'startDate') => [...array].sort(
-  (a, b) => dateDiff(b[key], a[key])
-);
