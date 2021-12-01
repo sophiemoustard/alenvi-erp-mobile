@@ -28,7 +28,7 @@ export interface AuxiliaryType {
   _id: string,
   identity: { firstname: string; lastname: string; },
   picture?: { link: string; },
-  contracts?: { _id: string, startDate: Date, endDate?: Date },
+  contracts: [{ _id: string, startDate: Date, endDate?: Date }],
 }
 export interface EventEditionStateType {
   startDate: Date,
@@ -50,7 +50,7 @@ const formatAuxiliary = (auxiliary: UserType) => ({
   _id: auxiliary._id,
   identity: { firstname: auxiliary?.identity?.firstname, lastname: auxiliary?.identity?.lastname },
   picture: auxiliary?.picture,
-  contracts: (auxiliary.contracts ? getLastVersion(auxiliary.contracts) : {}),
+  contracts: auxiliary.contracts,
 });
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
@@ -151,14 +151,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const getActiveAuxiliaries = useCallback(async (company: string) => {
     try {
       const auxiliaries = await Users.listWithSectorHistories({ company });
-      const filteredAuxiliaries = auxiliaries.map((aux: UserType) => (formatAuxiliary(aux)))
-        .filter((aux: AuxiliaryType) => {
-          if (aux.contracts?.endDate) {
-            return isBefore(aux?.contracts?.startDate, event.startDate) &&
-              isAfter(aux.contracts?.endDate, event.endDate);
-          }
-          return isBefore(aux?.contracts?.startDate, event.startDate);
-        });
+      const filteredAuxiliaries = auxiliaries
+        .filter((aux: AuxiliaryType) => aux.contracts
+          .some(c => isBefore(c.startDate, event.endDate) && (!c.endDate || isAfter(c.endDate, event.startDate))))
+        .map((aux: UserType) => (formatAuxiliary(aux)));
 
       setActiveAuxiliaries(filteredAuxiliaries);
     } catch (e) {
