@@ -1,7 +1,7 @@
 import pick from 'lodash.pick';
 import get from 'lodash.get';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { View, ScrollView, Text, BackHandler, ImageSourcePropType, Image } from 'react-native';
+import { View, ScrollView, Text, BackHandler } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
 import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore, isAfter } from '../../../core/helpers/dates';
@@ -18,6 +18,7 @@ import { NavigationType } from '../../../types/NavigationType';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import Users from '../../../api/Users';
 import { UserType } from '../../../types/UserType';
+import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 
 export type ModeType = 'date' | 'time';
 
@@ -51,12 +52,18 @@ const formatAuxiliary = (auxiliary: UserType) => ({
   contracts: auxiliary.contracts,
 });
 
+const formatZipCodeAndCity = (intervention: EventType) => {
+  const zipCode = get(intervention, 'customer.contact.primaryAddress.zipCode') || '';
+  const city = get(intervention, 'customer.contact.primaryAddress.city') || '';
+
+  return `${zipCode} ${city}`;
+};
+
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const initialState: EventEditionStateType = { ...route.params.event, start: false };
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
-  const [auxiliaryPicture, setAuxiliaryPicture] = useState<ImageSourcePropType>({});
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
@@ -93,18 +100,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   };
   const [event, eventDispatch] = useReducer(reducer, initialState);
 
-  const formatZipCodeAndCity = (intervention: EventType) => {
-    const zipCode = get(intervention, 'customer.contact.primaryAddress.zipCode') || '';
-    const city = get(intervention, 'customer.contact.primaryAddress.city') || '';
-
-    return `${zipCode} ${city}`;
-  };
-
-  const onLeave = useCallback(() => (
-    (event.startDate === initialState.startDate && event.endDate === initialState.endDate)
+  const onLeave = useCallback(
+    () => ((event.startDate === initialState.startDate && event.endDate === initialState.endDate)
       ? navigation.goBack()
       : setExitModal(true)),
-  [initialState.endDate, initialState.startDate, event.endDate, event.startDate, navigation]);
+    [initialState.endDate, initialState.startDate, event.endDate, event.startDate, navigation]
+  );
 
   const hardwareBackPress = useCallback(() => {
     onLeave();
@@ -127,10 +128,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         return;
       }
 
-      await Events.updateById(
-        event._id,
-        { auxiliary: event.auxiliary._id, ...pick(event, ['startDate', 'endDate']) }
-      );
+      await Events.updateById(event._id, { auxiliary: event.auxiliary._id, ...pick(event, ['startDate', 'endDate']) });
       navigation.goBack();
     } catch (e) {
       if (e.response.status === 409) setErrorMessage(e.response.data.message);
@@ -144,11 +142,6 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     setExitModal(false);
     navigation.goBack();
   };
-
-  useEffect(() => {
-    if (event.auxiliary.picture?.link) setAuxiliaryPicture({ uri: event.auxiliary.picture.link });
-    else setAuxiliaryPicture(require('../../../../assets/images/default_avatar.png'));
-  }, [event.auxiliary?.picture?.link]);
 
   const getActiveAuxiliaries = useCallback(async (company: string) => {
     try {
@@ -186,14 +179,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             <Text style={styles.addressText}>{formatZipCodeAndCity(initialState)}</Text>
           </View>
         </View>
-        <EventDateTimeEdition event={initialState} eventEditionState={event} eventEditionDispatch={eventDispatch} />
-        <Text style={styles.sectionText}>Intervenant</Text>
-        <View style={styles.auxiliaryCellNotEditable}>
-          <View style={styles.auxiliaryInfos}>
-            <Image source={auxiliaryPicture} style={styles.image} />
-            <Text style={styles.auxiliaryText}>{formatIdentity(event.auxiliary.identity, 'FL')}</Text>
-          </View>
-        </View>
+        <EventDateTimeEdition initialEvent={initialState} event={event} eventEditionDispatch={eventDispatch} />
+        <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries} />
         <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
           cancelText="Poursuivre les modifications" confirmText="Supprimer" />
