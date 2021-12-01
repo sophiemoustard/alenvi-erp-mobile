@@ -3,6 +3,8 @@ import { COPPER, COPPER_GREY, WHITE } from '../../../styles/colors';
 import { FIRA_SANS_BLACK, FIRA_SANS_REGULAR } from '../../../styles/fonts';
 import { BORDER_RADIUS, BORDER_WIDTH, BUTTON_HEIGHT, HEADER_HEIGHT, MARGIN, PADDING } from '../../../styles/metrics';
 
+const HEIGHT = 72;
+
 export default StyleSheet.create({
   screen: {
     flex: 1,
@@ -62,7 +64,7 @@ export default StyleSheet.create({
   auxiliaryCell: {
     flexDirection: 'row',
     backgroundColor: WHITE,
-    height: 72,
+    height: HEIGHT,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -74,7 +76,7 @@ export default StyleSheet.create({
   },
   auxiliaryCellNotEditable: {
     flexDirection: 'row',
-    height: 72,
+    height: HEIGHT,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',

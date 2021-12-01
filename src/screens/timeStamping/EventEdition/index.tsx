@@ -45,7 +45,7 @@ export const SET_START = 'setStart';
 
 const formatAuxiliary = (auxiliary: UserType) => ({
   _id: auxiliary._id,
-  identity: { firstname: auxiliary?.identity?.firstname, lastname: auxiliary?.identity?.lastname },
+  identity: { ...pick(auxiliary.identity, ['firstname', 'lastname']) },
   picture: auxiliary?.picture,
   contracts: auxiliary.contracts,
 });
@@ -55,7 +55,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
-  const [source, setSource] = useState<ImageSourcePropType>({});
+  const [auxiliaryPicture, setAuxiliaryPicture] = useState<ImageSourcePropType>({});
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
@@ -138,8 +138,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   };
 
   useEffect(() => {
-    if (event.auxiliary.picture?.link) setSource({ uri: event.auxiliary.picture.link });
-    else setSource(require('../../../../assets/images/default_avatar.png'));
+    if (event.auxiliary.picture?.link) setAuxiliaryPicture({ uri: event.auxiliary.picture.link });
+    else setAuxiliaryPicture(require('../../../../assets/images/default_avatar.png'));
   }, [event.auxiliary?.picture?.link]);
 
   const getActiveAuxiliaries = useCallback(async (company: string) => {
@@ -185,7 +185,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <Text style={styles.sectionText}>Intervenant</Text>
         <View style={styles.auxiliaryCellNotEditable}>
           <View style={styles.auxiliaryInfos}>
-            <Image source={source} style={styles.image} />
+            <Image source={auxiliaryPicture} style={styles.image} />
             <Text style={styles.auxiliaryText}>{formatIdentity(event.auxiliary.identity, 'FL')}</Text>
           </View>
         </View>

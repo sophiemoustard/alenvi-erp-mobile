@@ -2,7 +2,7 @@ import { EventType } from '../../types/EventType';
 import { MONTHS_SHORT, DAYS, MONTHS } from '../data/constants';
 import { capitalizeFirstLetter } from './utils';
 
-type DateProps = Date | string | null | undefined;
+type DateProps = Date | string | null;
 
 const createDate = (date: DateProps) => (date ? new Date(date) : new Date());
 
