@@ -5,5 +5,12 @@ export interface UserType {
   picture?: { link: string },
   company?: { name: string },
   contact?: { phone: string, primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string } },
-  contracts: [{ _id: string, startDate: Date, endDate: Date }],
+  contracts?: [{ _id: string, startDate: Date, endDate: Date }],
+}
+
+export type AuxiliaryType = {
+  _id: UserType['_id'],
+  identity: UserType['identity'],
+  picture?: UserType['picture'],
+  contracts?: UserType['contracts'],
 }

@@ -17,7 +17,7 @@ import { EventType } from '../../../types/EventType';
 import { NavigationType } from '../../../types/NavigationType';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import Users from '../../../api/Users';
-import { UserType } from '../../../types/UserType';
+import { UserType, AuxiliaryType } from '../../../types/UserType';
 import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 
 export type ModeType = 'date' | 'time';
@@ -25,13 +25,6 @@ export type ModeType = 'date' | 'time';
 interface EventEditionProps {
   route: { params: { event: EventType } },
   navigation: NavigationType,
-}
-
-export type AuxiliaryType = {
-  _id: string,
-  identity: { firstname: string; lastname: string; },
-  picture?: { link: string; },
-  contracts: [{ _id: string, startDate: Date, endDate?: Date }],
 }
 
 export type EventEditionStateType = EventType & { start: boolean };

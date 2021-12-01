@@ -2,14 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ImageSourcePropType, Image } from 'react-native';
 import { formatIdentity } from '../../core/helpers/utils';
 import { EventType } from '../../types/EventType';
+import { AuxiliaryType } from '../../types/UserType';
 import styles from './styles';
-
-export interface AuxiliaryType {
-  _id: string,
-  identity: { firstname: string, lastname: string, },
-  picture?: { link: string; },
-  contracts?: [{ _id: string, startDate: Date, endDate?: Date }],
-}
 
 interface EventAuxiliaryEditionProps {
   auxiliary: EventType['auxiliary'],
