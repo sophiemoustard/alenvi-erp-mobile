@@ -6,7 +6,7 @@ import { EventType } from '../../types/EventType';
 import { AuxiliaryType } from '../../types/UserType';
 import FeatherButton from '../FeatherButton';
 import NiEventAuxiliaryEditionModal from '../EventAuxiliaryEditionModal';
-import { EventEditionActionType } from '../../screens/timeStamping/EventEdition';
+import { EventEditionActionType } from '../../screens/timeStamping/EventEdition/types';
 
 interface EventAuxiliaryEditionProps {
   auxiliary: EventType['auxiliary'],

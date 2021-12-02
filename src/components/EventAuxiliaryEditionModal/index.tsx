@@ -3,9 +3,10 @@ import { Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import NiBottomModal from '../BottomModal';
 import { formatIdentity } from '../../core/helpers/utils';
-import { EventEditionActionType, SET_AUXILIARY } from '../../screens/timeStamping/EventEdition';
 import { EventType } from '../../types/EventType';
 import { AuxiliaryType } from '../../types/UserType';
+import { EventEditionActionType } from '../../screens/timeStamping/EventEdition/types';
+import { SET_AUXILIARY } from '../../screens/timeStamping/EventEdition';
 
 interface EventAuxiliaryEditionModalProps {
   auxiliaryOptions: AuxiliaryType [],
