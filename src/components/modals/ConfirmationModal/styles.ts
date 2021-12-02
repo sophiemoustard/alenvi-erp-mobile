@@ -1,27 +1,21 @@
 import { StyleSheet } from 'react-native';
-import { WHITE, MODAL_BACKDROP_GREY, COPPER, COPPER_GREY } from '../../../styles/colors';
-import { BORDER_RADIUS, PADDING, MARGIN, BUTTON_HEIGHT } from '../../../styles/metrics';
+import { COPPER, COPPER_GREY } from '../../../styles/colors';
+import { MARGIN, BUTTON_HEIGHT } from '../../../styles/metrics';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../../styles/fonts';
 
 const styles = StyleSheet.create({
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-    backgroundColor: MODAL_BACKDROP_GREY,
-  },
-  modalContent: {
+  header: {
     display: 'flex',
-    backgroundColor: WHITE,
-    borderRadius: BORDER_RADIUS.XL,
-    width: '90%',
-    padding: PADDING.LG,
+    flexDirection: 'row',
+    marginBottom: MARGIN.XL,
   },
   title: {
     ...FIRA_SANS_BOLD.LG,
-    marginBottom: MARGIN.XL,
     color: COPPER_GREY[800],
+    flex: 1,
+  },
+  closeButton: {
+    marginLeft: MARGIN.SM,
   },
   contentText: {
     ...FIRA_SANS_REGULAR.MD,

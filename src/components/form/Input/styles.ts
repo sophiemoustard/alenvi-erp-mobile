@@ -20,7 +20,6 @@ export interface InputStyleType {
 const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
   container: {
     position: 'relative',
-    marginHorizontal: MARGIN.XS,
     width: '100%',
   },
   inputContainer: {

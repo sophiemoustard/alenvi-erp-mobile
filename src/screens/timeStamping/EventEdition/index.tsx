@@ -3,37 +3,26 @@ import get from 'lodash.get';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
+import Users from '../../../api/Users';
 import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore, isAfter } from '../../../core/helpers/dates';
 import { formatIdentity } from '../../../core/helpers/utils';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
-import ExitModal from '../../../components/modals/ExitModal';
+import ConfirmationModal from '../../../components/modals/ConfirmationModal';
+import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
-import styles from './styles';
+import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
-import { EventType } from '../../../types/EventType';
-import { NavigationType } from '../../../types/NavigationType';
-import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
-import Users from '../../../api/Users';
+import styles from './styles';
+import { EventHistoryType, EventType } from '../../../types/EventType';
 import { UserType, AuxiliaryType } from '../../../types/UserType';
-import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
+import { EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
+import { TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
 
-export type ModeType = 'date' | 'time';
-
-interface EventEditionProps {
-  route: { params: { event: EventType } },
-  navigation: NavigationType,
-}
-
-export type EventEditionStateType = EventType & { start: boolean };
-
-export type EventEditionActionType = {
-  type: string,
-  payload?: { date?: Date, mode?: ModeType, start?: boolean },
-}
-
+export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
 export const SET_START = 'setStart';
@@ -50,8 +39,12 @@ const formatZipCodeAndCity = (intervention: EventType) => {
   return `${zipCode} ${city}`;
 };
 
+const isTimeStampHistory = (eh: EventHistoryType) =>
+  TIMESTAMPING_ACTION_TYPE_LIST.includes(eh.action) && !eh.isCancelled;
+
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const initialState: EventEditionStateType = useMemo(() => ({
+    histories: [],
     ...route.params.event,
     startDate: new Date(route.params.event.startDate),
     endDate: new Date(route.params.event.endDate),
@@ -76,7 +69,16 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       return newDateIsAfterMidnight ? getEndOfDay(state.endDate) : newDate;
     };
 
+    const timeStampHistories: EventHistoryType[] = action.payload?.histories?.filter(isTimeStampHistory) || [];
+
     switch (action.type) {
+      case SET_HISTORIES:
+        return {
+          ...state,
+          histories: action.payload?.histories || [],
+          startDateTimeStamp: timeStampHistories.some((eh: EventHistoryType) => !!eh.update.startHour),
+          endDateTimeStamp: timeStampHistories.some((eh: EventHistoryType) => !!eh.update.endHour),
+        };
       case SET_DATES:
         return {
           ...state,
@@ -157,6 +159,15 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   useEffect(() => { getActiveAuxiliaries(initialState.company); }, [initialState.company, getActiveAuxiliaries]);
 
+  const refreshHistories = useCallback(async () => {
+    setLoading(true);
+    const eventHistories = await EventHistories.list({ eventId: event._id });
+    eventDispatch({ type: SET_HISTORIES, payload: { histories: eventHistories } });
+    setLoading(false);
+  }, [event._id]);
+
+  useEffect(() => { refreshHistories(); }, [refreshHistories]);
+
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
@@ -176,9 +187,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             <Text style={styles.addressText}>{formatZipCodeAndCity(initialState)}</Text>
           </View>
         </View>
-        <EventDateTimeEdition initialEvent={initialState} event={event} eventEditionDispatch={eventDispatch} />
+        <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
+          loading={loading} />
         <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries} />
-        <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
+        <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
           cancelText="Poursuivre les modifications" confirmText="Supprimer" />
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}

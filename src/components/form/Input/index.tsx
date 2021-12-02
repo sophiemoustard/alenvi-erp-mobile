@@ -10,9 +10,10 @@ import { FeatherType } from '../../../types/IconType';
 interface InputProps {
   value: string,
   caption: string,
-  type: string,
+  type?: string,
   onChangeText: (value: string) => void,
   style?: Object,
+  validationStyle?: Object,
   darkMode?: boolean,
   validationMessage?: string,
   disabled?: boolean,
@@ -20,10 +21,11 @@ interface InputProps {
 
 const Input = ({
   caption,
-  type,
   onChangeText,
   value,
+  type = '',
   style = {},
+  validationStyle = {},
   darkMode = false,
   validationMessage = '',
   disabled = false,
@@ -68,7 +70,7 @@ const Input = ({
         </View>
         {isSelected && <Shadow />}
       </View>
-      <Text style={inputStyle.invalid}>{validationMessage}</Text>
+      <Text style={[inputStyle.invalid, validationStyle]}>{validationMessage}</Text>
     </View>
   );
 };
