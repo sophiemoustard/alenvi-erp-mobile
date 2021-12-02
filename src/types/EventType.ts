@@ -1,5 +1,4 @@
-import { AuxiliaryType } from '../screens/timeStamping/EventEdition';
-import { UserType } from './UserType';
+import { UserType, AuxiliaryType } from './UserType';
 
 export type EventTypeEnum = 'intervention'| 'absence'| 'internal_hour' | 'unavailability';
 

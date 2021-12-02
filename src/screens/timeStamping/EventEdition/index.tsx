@@ -31,7 +31,7 @@ export const SET_AUXILIARY = 'setAuxiliary';
 
 const formatAuxiliary = (auxiliary: UserType) => ({
   _id: auxiliary._id,
-  ...pick(auxiliary, ['picture', 'contracts', 'identity.firstname', 'identity.lastname']),
+  ...pick(auxiliary, ['picture', 'contracts', 'identity']),
 });
 
 const formatZipCodeAndCity = (intervention: EventType) => {

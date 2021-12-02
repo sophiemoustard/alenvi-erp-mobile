@@ -2,10 +2,10 @@ import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import NiBottomModal from '../BottomModal';
-import { AuxiliaryType } from '../EventAuxiliaryEdition';
 import { formatIdentity } from '../../core/helpers/utils';
 import { EventEditionActionType, SET_AUXILIARY } from '../../screens/timeStamping/EventEdition';
 import { EventType } from '../../types/EventType';
+import { AuxiliaryType } from '../../types/UserType';
 
 interface EventAuxiliaryEditionModalProps {
   auxiliaryOptions: AuxiliaryType [],
