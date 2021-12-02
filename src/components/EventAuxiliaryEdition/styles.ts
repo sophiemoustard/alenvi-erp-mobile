@@ -1,9 +1,22 @@
 import { StyleSheet } from 'react-native';
-import { COPPER_GREY } from '../../styles/colors';
+import { COPPER_GREY, WHITE } from '../../styles/colors';
 import { FIRA_SANS_MEDIUM } from '../../styles/fonts';
-import { BORDER_RADIUS, MARGIN, PADDING, AVATAR_SIZE } from '../../styles/metrics';
+import { BORDER_RADIUS, MARGIN, PADDING, AVATAR_SIZE, BORDER_WIDTH } from '../../styles/metrics';
 
 export default StyleSheet.create({
+  auxiliaryCellEditable: {
+    flexDirection: 'row',
+    backgroundColor: WHITE,
+    height: 72,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingRight: PADDING.XXL,
+    paddingLeft: PADDING.LG,
+    borderWidth: BORDER_WIDTH,
+    borderRadius: BORDER_RADIUS.SM,
+    borderColor: COPPER_GREY[200],
+  },
   auxiliaryCellNotEditable: {
     flexDirection: 'row',
     width: '100%',

@@ -11,10 +11,15 @@ import { EventEditionActionType } from '../../screens/timeStamping/EventEdition'
 interface EventAuxiliaryEditionProps {
   auxiliary: EventType['auxiliary'],
   auxiliaryOptions: AuxiliaryType[],
+  isEditable: boolean,
   eventEditionDispatch: (action: EventEditionActionType) => void,
 }
 
-const EventAuxiliaryEdition = ({ auxiliary, auxiliaryOptions, eventEditionDispatch }: EventAuxiliaryEditionProps) => {
+const EventAuxiliaryEdition = ({
+  auxiliary,
+  auxiliaryOptions,
+  eventEditionDispatch,
+  isEditable }: EventAuxiliaryEditionProps) => {
   const [auxiliaryPicture, setAuxiliaryPicture] = useState<ImageSourcePropType>({});
   const [auxiliaryEditionModal, setAuxiliaryEditionModal] = useState<boolean>(false);
 
@@ -26,14 +31,19 @@ const EventAuxiliaryEdition = ({ auxiliary, auxiliaryOptions, eventEditionDispat
   return (
     <>
       <Text style={styles.sectionText}>Intervenant</Text>
-      <View style={styles.auxiliaryCellNotEditable}>
-        <TouchableOpacity style={styles.auxiliaryInfos} onPress={() => setAuxiliaryEditionModal(true)}>
+      <View style={isEditable ? styles.auxiliaryCellEditable : styles.auxiliaryCellNotEditable}>
+        <TouchableOpacity style={styles.auxiliaryInfos} onPress={() => setAuxiliaryEditionModal(true)}
+          disabled={!isEditable}>
           <Image source={auxiliaryPicture} style={styles.image} />
           <Text style={styles.auxiliaryText}>{formatIdentity(auxiliary.identity, 'FL')}</Text>
         </TouchableOpacity>
-        <FeatherButton name='chevron-down' onPress={() => setAuxiliaryEditionModal(true)} />
-        <NiEventAuxiliaryEditionModal visible={auxiliaryEditionModal} auxiliaryOptions={auxiliaryOptions}
-          onRequestClose={() => setAuxiliaryEditionModal(false)} eventEditionDispatch={eventEditionDispatch} />
+        { isEditable &&
+        <>
+          <FeatherButton name='chevron-down' onPress={() => setAuxiliaryEditionModal(true)} />
+          <NiEventAuxiliaryEditionModal visible={auxiliaryEditionModal} auxiliaryOptions={auxiliaryOptions}
+            onRequestClose={() => setAuxiliaryEditionModal(false)} eventEditionDispatch={eventEditionDispatch} />
+        </>
+        }
       </View>
     </>
   );
