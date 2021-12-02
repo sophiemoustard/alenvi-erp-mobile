@@ -97,7 +97,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       case SET_START:
         return { ...state, start: action.payload?.start || false };
       case SET_AUXILIARY:
-        return { ...state, auxiliary: action.payload?.auxiliary || {} };
+        return { ...state, auxiliary: action.payload?.auxiliary || state.auxiliary };
       default:
         return state;
     }

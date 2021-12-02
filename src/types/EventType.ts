@@ -1,3 +1,4 @@
+import { AuxiliaryType } from '../screens/timeStamping/EventEdition';
 import { UserType } from './UserType';
 
 export type EventTypeEnum = 'intervention'| 'absence'| 'internal_hour' | 'unavailability';
@@ -19,7 +20,7 @@ export type EventType = {
   startDateTimeStamp?: boolean,
   endDateTimeStamp?: boolean,
   isBilled?: boolean,
-  auxiliary: UserType,
+  auxiliary: UserType | AuxiliaryType,
   company: string,
 };
 

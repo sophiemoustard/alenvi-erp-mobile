@@ -5,6 +5,7 @@ import NiBottomModal from '../BottomModal';
 import { AuxiliaryType } from '../EventAuxiliaryEdition';
 import { formatIdentity } from '../../core/helpers/utils';
 import { EventEditionActionType, SET_AUXILIARY } from '../../screens/timeStamping/EventEdition';
+import { EventType } from '../../types/EventType';
 
 interface EventAuxiliaryEditionModalProps {
   auxiliaryOptions: AuxiliaryType [],
@@ -19,12 +20,12 @@ const EventAuxiliaryEditionModal = ({
   eventEditionDispatch,
   onRequestClose,
 }: EventAuxiliaryEditionModalProps) => {
-  const onPress = (aux: AuxiliaryType) => {
+  const onPress = (aux: EventType['auxiliary']) => {
     eventEditionDispatch({ type: SET_AUXILIARY, payload: { auxiliary: aux } });
     onRequestClose();
   };
 
-  const renderAuxiliary = (aux: AuxiliaryType) => (
+  const renderAuxiliary = (aux: EventType['auxiliary']) => (
     <TouchableOpacity onPress={() => onPress(aux)}>
       <Text>{formatIdentity(aux.identity, 'FL')}</Text>
     </TouchableOpacity>

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ImageSourcePropType, Image, TouchableOpacity } from 'react-native';
+import styles from './styles';
 import { formatIdentity } from '../../core/helpers/utils';
 import { EventType } from '../../types/EventType';
 import { AuxiliaryType } from '../../types/UserType';
 import FeatherButton from '../FeatherButton';
 import NiEventAuxiliaryEditionModal from '../EventAuxiliaryEditionModal';
-import styles from './styles';
 import { EventEditionActionType } from '../../screens/timeStamping/EventEdition';
 
 interface EventAuxiliaryEditionProps {
@@ -19,7 +19,8 @@ const EventAuxiliaryEdition = ({
   auxiliary,
   auxiliaryOptions,
   eventEditionDispatch,
-  isEditable }: EventAuxiliaryEditionProps) => {
+  isEditable,
+}: EventAuxiliaryEditionProps) => {
   const [auxiliaryPicture, setAuxiliaryPicture] = useState<ImageSourcePropType>({});
   const [auxiliaryEditionModal, setAuxiliaryEditionModal] = useState<boolean>(false);
 
