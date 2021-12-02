@@ -1,6 +1,6 @@
 import pick from 'lodash.pick';
 import get from 'lodash.get';
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import Events from '../../../api/Events';
@@ -29,7 +29,7 @@ interface EventEditionProps {
 
 export type EventEditionStateType = EventType & { start: boolean };
 
-export interface EventEditionActionType {
+export type EventEditionActionType = {
   type: string,
   payload?: { date?: Date, mode?: ModeType, start?: boolean },
 }
@@ -51,12 +51,13 @@ const formatZipCodeAndCity = (intervention: EventType) => {
 };
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
-  const initialState: EventEditionStateType = {
+  const initialState: EventEditionStateType = useMemo(() => ({
     ...route.params.event,
     startDate: new Date(route.params.event.startDate),
     endDate: new Date(route.params.event.endDate),
     start: false,
-  };
+  }), [route.params.event]);
+
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
@@ -128,6 +129,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       navigation.goBack();
     } catch (e) {
       if (e.response.status === 409) setErrorMessage(e.response.data.message);
+      else if (e.response.status === 422) setErrorMessage('Cette modification n\'est pas autorisée.');
       else setErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
     } finally {
       setLoading(false);
@@ -144,8 +146,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       const auxiliaries = await Users.listWithSectorHistories({ company });
       const filteredAuxiliaries = auxiliaries
         .filter((aux: UserType) => aux.contracts && aux.contracts
-          .some(c => isBefore(c.startDate, event.endDate) &&
-            (!c.endDate || isAfter(c.endDate, event.startDate))))
+          .some(c => isBefore(c.startDate, event.endDate) && (!c.endDate || isAfter(c.endDate, event.startDate))))
         .map((aux: UserType) => (formatAuxiliary(aux)));
 
       setActiveAuxiliaries(filteredAuxiliaries);

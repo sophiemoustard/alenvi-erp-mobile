@@ -10,6 +10,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingRight: PADDING.XXL,
+    marginBottom: MARGIN.SM,
   },
   image: {
     width: AVATAR_SIZE,
