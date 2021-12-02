@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import NiBottomModal from '../BottomModal';
 import { formatIdentity } from '../../core/helpers/utils';
@@ -7,9 +7,10 @@ import { EventType } from '../../types/EventType';
 import { AuxiliaryType } from '../../types/UserType';
 import { EventEditionActionType } from '../../screens/timeStamping/EventEdition/types';
 import { SET_AUXILIARY } from '../../screens/timeStamping/EventEdition';
+import styles from './styles';
 
-interface EventAuxiliaryEditionModalProps {
-  auxiliaryOptions: AuxiliaryType [],
+type EventAuxiliaryEditionModalProps = {
+  auxiliaryOptions: AuxiliaryType[],
   visible: boolean,
   onRequestClose: () => void,
   eventEditionDispatch: (action: EventEditionActionType) => void,
@@ -27,14 +28,16 @@ const EventAuxiliaryEditionModal = ({
   };
 
   const renderAuxiliary = (aux: EventType['auxiliary']) => (
-    <TouchableOpacity onPress={() => onPress(aux)}>
-      <Text>{formatIdentity(aux.identity, 'FL')}</Text>
+    <TouchableOpacity onPress={() => onPress(aux)} style={styles.auxiliaryItem}>
+      <Text style={styles.auxiliaryItemText}>{formatIdentity(aux.identity, 'FL')}</Text>
     </TouchableOpacity>
   );
 
+  const renderSeparator = () => <View style={styles.separator} />;
+
   return (
     <NiBottomModal visible={visible} onRequestClose={onRequestClose}>
-      <FlatList data={auxiliaryOptions} keyExtractor={item => item._id}
+      <FlatList data={auxiliaryOptions} keyExtractor={item => item._id} ItemSeparatorComponent={renderSeparator}
         renderItem={({ item }) => renderAuxiliary(item)} showsHorizontalScrollIndicator={false} />
     </NiBottomModal>
   );

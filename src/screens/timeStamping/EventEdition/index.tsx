@@ -22,7 +22,6 @@ import { UserType, AuxiliaryType } from '../../../types/UserType';
 import { EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
 import { TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
 
-export type ModeType = 'date' | 'time';
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';

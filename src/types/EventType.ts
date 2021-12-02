@@ -1,4 +1,4 @@
-import { UserType, AuxiliaryType } from './UserType';
+import { AuxiliaryType } from './UserType';
 
 export type EventTypeEnum = 'intervention'| 'absence'| 'internal_hour' | 'unavailability';
 
@@ -19,7 +19,7 @@ export type EventType = {
   startDateTimeStamp?: boolean,
   endDateTimeStamp?: boolean,
   isBilled?: boolean,
-  auxiliary: UserType | AuxiliaryType,
+  auxiliary: AuxiliaryType,
   company: string,
 };
 

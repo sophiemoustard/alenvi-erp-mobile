@@ -5,10 +5,10 @@ import { formatIdentity } from '../../core/helpers/utils';
 import { EventType } from '../../types/EventType';
 import { AuxiliaryType } from '../../types/UserType';
 import FeatherButton from '../FeatherButton';
-import NiEventAuxiliaryEditionModal from '../EventAuxiliaryEditionModal';
+import EventAuxiliaryEditionModal from '../EventAuxiliaryEditionModal';
 import { EventEditionActionType } from '../../screens/timeStamping/EventEdition/types';
 
-interface EventAuxiliaryEditionProps {
+type EventAuxiliaryEditionProps = {
   auxiliary: EventType['auxiliary'],
   auxiliaryOptions: AuxiliaryType[],
   isEditable: boolean,
@@ -38,13 +38,9 @@ const EventAuxiliaryEdition = ({
           <Image source={auxiliaryPicture} style={styles.image} />
           <Text style={styles.auxiliaryText}>{formatIdentity(auxiliary.identity, 'FL')}</Text>
         </TouchableOpacity>
-        { isEditable &&
-        <>
-          <FeatherButton name='chevron-down' onPress={() => setAuxiliaryEditionModal(true)} />
-          <NiEventAuxiliaryEditionModal visible={auxiliaryEditionModal} auxiliaryOptions={auxiliaryOptions}
-            onRequestClose={() => setAuxiliaryEditionModal(false)} eventEditionDispatch={eventEditionDispatch} />
-        </>
-        }
+        {isEditable && <FeatherButton name='chevron-down' onPress={() => setAuxiliaryEditionModal(true)} />}
+        <EventAuxiliaryEditionModal visible={auxiliaryEditionModal} auxiliaryOptions={auxiliaryOptions}
+          onRequestClose={() => setAuxiliaryEditionModal(false)} eventEditionDispatch={eventEditionDispatch} />
       </View>
     </>
   );

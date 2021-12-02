@@ -7,12 +7,12 @@ export default StyleSheet.create({
   auxiliaryCellEditable: {
     flexDirection: 'row',
     backgroundColor: WHITE,
-    height: 72,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingRight: PADDING.XXL,
     paddingLeft: PADDING.LG,
+    paddingVertical: PADDING.MD,
     borderWidth: BORDER_WIDTH,
     borderRadius: BORDER_RADIUS.SM,
     borderColor: COPPER_GREY[200],
@@ -22,7 +22,6 @@ export default StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingRight: PADDING.XXL,
     marginBottom: MARGIN.SM,
   },
   image: {
