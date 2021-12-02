@@ -7,9 +7,9 @@ export interface EventEditionProps {
   navigation: NavigationType,
 }
 
-export type EventEditionStateType = EventType & { start: boolean };
+export type EventEditionStateType = EventType & { start: boolean, histories: EventType['histories'] };
 
 export type EventEditionActionType = {
   type: string,
-  payload?: { date?: Date, mode?: ModeType, start?: boolean },
+  payload?: { date?: Date, mode?: ModeType, start?: boolean, histories?: EventType['histories'] },
 }

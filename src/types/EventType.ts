@@ -24,6 +24,7 @@ export type EventType = {
 };
 
 export type EventHistoryType = {
+  _id: string,
   action: string,
   update: { startHour?: Date, endHour?: Date },
   isCancelled: boolean,

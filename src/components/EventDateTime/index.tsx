@@ -1,6 +1,6 @@
 import { Feather } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { DATE, MONTHS, TIME } from '../../core/data/constants';
 import { formatTime } from '../../core/helpers/dates';
 import { capitalizeFirstLetter } from '../../core/helpers/utils';
@@ -12,11 +12,12 @@ import styles from './styles';
 interface EventDateTimeProps {
   date: Date,
   onPress: (mode: ModeType) => void,
+  loading: boolean,
   isTimeStamped?: boolean,
   disabled?: boolean,
 }
 
-const EventDateTime = ({ date, onPress, isTimeStamped = false, disabled }: EventDateTimeProps) => {
+const EventDateTime = ({ date, onPress, loading, isTimeStamped = false, disabled = false }: EventDateTimeProps) => {
   const [displayedDate, setDisplayedDate] = useState<string>('');
   const [displayedTime, setDisplayedTime] = useState<string>('');
 
@@ -39,6 +40,7 @@ const EventDateTime = ({ date, onPress, isTimeStamped = false, disabled }: Event
           <Feather name='check' size={ICON.XS} color={COPPER_GREY[500]} />
         </View>
       </View>}
+      {loading && !isTimeStamped && <ActivityIndicator style={styles.icon} size="small" color={COPPER_GREY[300]} />}
     </View>
   );
 };

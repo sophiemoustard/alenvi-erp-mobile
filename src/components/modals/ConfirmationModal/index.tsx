@@ -45,7 +45,7 @@ const ConfirmationModal = ({
       {!!contentText && <Text style={styles.contentText}>{contentText}</Text>}
       {children}
       <View style={styles.buttons}>
-        <TouchableOpacity style={styles.button} onPress={onPressCancelButton}>
+        <TouchableOpacity style={styles.button} onPress={onPressCancelButton} disabled={loading}>
           <Text style={styles.buttonText}>{cancelText}</Text>
         </TouchableOpacity>
         {loading
