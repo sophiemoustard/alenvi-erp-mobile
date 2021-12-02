@@ -54,6 +54,7 @@ module.exports = {
     'no-unused-vars': 'off', // Pour ne pas avoir l'erreur en doublon
     'prefer-destructuring': ['error', { VariableDeclarator: { object: true, array: false } }],
     'function-paren-newline': 0,
+    'no-continue': 0,
   },
   globals: {
     __DEV__: true,

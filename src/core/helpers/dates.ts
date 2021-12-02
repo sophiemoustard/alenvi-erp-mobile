@@ -8,6 +8,8 @@ const createDate = (date: DateProps) => (date ? new Date(date) : new Date());
 
 export const isBefore = (date1: DateProps, date2: DateProps) => createDate(date1) < createDate(date2);
 
+export const isAfter = (date1: DateProps, date2: DateProps) => createDate(date1) > createDate(date2);
+
 export const formatDate = (date: Date | string, short: Boolean = false) => {
   const formatedDate = new Date(date);
   const day = formatedDate.getDay();

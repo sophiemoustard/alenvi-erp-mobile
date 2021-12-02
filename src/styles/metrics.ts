@@ -55,6 +55,7 @@ export const TAB_BAR_HEIGHT = 72;
 export const HEADER_HEIGHT = 64;
 export const BUTTON_INTERVENTION_WIDTH = 128;
 export const TAB_BAR_LABEL_WIDTH = 110;
+export const AVATAR_SIZE = 48;
 
 export const SCREEN_HEIGHT = width < height ? height : width;
 export const SMALL_SCREEN_MAX_HEIGHT = 568;
