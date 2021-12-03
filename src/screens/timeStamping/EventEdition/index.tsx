@@ -185,7 +185,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   }, [event._id]);
 
   useEffect(() => { refreshHistories(); }, [refreshHistories]);
-  useEffect(() => { setIsAuxiliaryEditable(isEditable(event)); }, [event]);
+  useEffect(() => {
+    setErrorMessage('');
+    setIsAuxiliaryEditable(isEditable(event));
+  }, [event]);
 
   return (
     <View style={styles.screen}>

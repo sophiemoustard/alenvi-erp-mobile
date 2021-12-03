@@ -35,10 +35,15 @@ const EventAuxiliaryEditionModal = ({
 
   const renderSeparator = () => <View style={styles.separator} />;
 
+  const sortAuxiliaryOptions = (auxiliaries: AuxiliaryType[]) => (
+    auxiliaries.sort((a, b) => (a.identity.lastname).localeCompare(b.identity.lastname))
+  );
+
   return (
     <NiBottomModal visible={visible} onRequestClose={onRequestClose}>
-      <FlatList data={auxiliaryOptions} keyExtractor={item => item._id} ItemSeparatorComponent={renderSeparator}
-        renderItem={({ item }) => renderAuxiliary(item)} showsHorizontalScrollIndicator={false} />
+      <FlatList data={sortAuxiliaryOptions(auxiliaryOptions)} keyExtractor={item => item._id}
+        ItemSeparatorComponent={renderSeparator} renderItem={({ item }) => renderAuxiliary(item)}
+        showsHorizontalScrollIndicator={false} />
     </NiBottomModal>
   );
 };

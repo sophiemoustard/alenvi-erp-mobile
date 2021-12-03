@@ -17,10 +17,8 @@ export default StyleSheet.create({
   },
   billedHeader: {
     ...FIRA_SANS_REGULAR.MD,
-    flexDirection: 'row',
     backgroundColor: COPPER[400],
     color: WHITE,
-    alignItems: 'center',
     textAlign: 'center',
     paddingVertical: PADDING.MD,
   },
