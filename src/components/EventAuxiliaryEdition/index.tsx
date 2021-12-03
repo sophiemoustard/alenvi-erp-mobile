@@ -46,8 +46,8 @@ const EventAuxiliaryEdition = ({
         <TouchableOpacity style={styles.auxiliaryInfos} onPress={onPress}>
           <Image source={auxiliaryPicture} style={styles.image} />
           <Text style={styles.auxiliaryText}>{formatIdentity(auxiliary.identity, 'FL')}</Text>
+          {isEditable && <FeatherButton name='chevron-down' onPress={() => setAuxiliaryEditionModal(true)} />}
         </TouchableOpacity>
-        {isEditable && <FeatherButton name='chevron-down' onPress={() => setAuxiliaryEditionModal(true)} />}
         <EventAuxiliaryEditionModal visible={auxiliaryEditionModal} auxiliaryOptions={auxiliaryOptions}
           onRequestClose={() => setAuxiliaryEditionModal(false)} eventEditionDispatch={eventEditionDispatch} />
       </View>
