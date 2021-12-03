@@ -36,7 +36,7 @@ const EventAuxiliaryEditionModal = ({
   const renderSeparator = () => <View style={styles.separator} />;
 
   const sortAuxiliaryOptions = (auxiliaries: AuxiliaryType[]) => (
-    auxiliaries.sort((a, b) => (a.identity.lastname).localeCompare(b.identity.lastname))
+    auxiliaries.sort((a, b) => (a.identity.firstname).localeCompare(b.identity.firstname))
   );
 
   return (
