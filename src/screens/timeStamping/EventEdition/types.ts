@@ -11,5 +11,11 @@ export type EventEditionStateType = EventType & { start: boolean, histories: Eve
 
 export type EventEditionActionType = {
   type: string,
-  payload?: { date?: Date, mode?: ModeType, start?: boolean, histories?: EventType['histories'] },
+  payload?: {
+    date?: Date,
+    mode?: ModeType,
+    start?: boolean,
+    histories?: EventType['histories'],
+    auxiliary?: EventType['auxiliary'],
+  },
 }

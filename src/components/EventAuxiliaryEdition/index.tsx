@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageSourcePropType, Image } from 'react-native';
+import { View, Text, ImageSourcePropType, Image, TouchableOpacity } from 'react-native';
+import styles from './styles';
 import { formatIdentity } from '../../core/helpers/utils';
 import { EventType } from '../../types/EventType';
 import { AuxiliaryType } from '../../types/UserType';
-import styles from './styles';
+import FeatherButton from '../FeatherButton';
+import EventAuxiliaryEditionModal from '../EventAuxiliaryEditionModal';
+import { EventEditionActionType } from '../../screens/timeStamping/EventEdition/types';
 
-interface EventAuxiliaryEditionProps {
+type EventAuxiliaryEditionProps = {
   auxiliary: EventType['auxiliary'],
-  auxiliaryOptions: AuxiliaryType[]
+  auxiliaryOptions: AuxiliaryType[],
+  isEditable: boolean,
+  eventEditionDispatch: (action: EventEditionActionType) => void,
 }
 
-const EventAuxiliaryEdition = ({ auxiliary }: EventAuxiliaryEditionProps) => {
+const EventAuxiliaryEdition = ({
+  auxiliary,
+  auxiliaryOptions,
+  eventEditionDispatch,
+  isEditable,
+}: EventAuxiliaryEditionProps) => {
   const [auxiliaryPicture, setAuxiliaryPicture] = useState<ImageSourcePropType>({});
+  const [auxiliaryEditionModal, setAuxiliaryEditionModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (auxiliary?.picture?.link) setAuxiliaryPicture({ uri: auxiliary.picture.link });
@@ -21,11 +32,15 @@ const EventAuxiliaryEdition = ({ auxiliary }: EventAuxiliaryEditionProps) => {
   return (
     <>
       <Text style={styles.sectionText}>Intervenant</Text>
-      <View style={styles.auxiliaryCellNotEditable}>
-        <View style={styles.auxiliaryInfos}>
+      <View style={isEditable ? styles.auxiliaryCellEditable : styles.auxiliaryCellNotEditable}>
+        <TouchableOpacity style={styles.auxiliaryInfos} onPress={() => setAuxiliaryEditionModal(true)}
+          disabled={!isEditable}>
           <Image source={auxiliaryPicture} style={styles.image} />
           <Text style={styles.auxiliaryText}>{formatIdentity(auxiliary.identity, 'FL')}</Text>
-        </View>
+        </TouchableOpacity>
+        {isEditable && <FeatherButton name='chevron-down' onPress={() => setAuxiliaryEditionModal(true)} />}
+        <EventAuxiliaryEditionModal visible={auxiliaryEditionModal} auxiliaryOptions={auxiliaryOptions}
+          onRequestClose={() => setAuxiliaryEditionModal(false)} eventEditionDispatch={eventEditionDispatch} />
       </View>
     </>
   );

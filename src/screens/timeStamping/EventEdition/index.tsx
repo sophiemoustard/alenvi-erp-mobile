@@ -26,10 +26,12 @@ export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
 export const SET_START = 'setStart';
+export const SET_AUXILIARY = 'setAuxiliary';
 
 const formatAuxiliary = (auxiliary: UserType) => ({
   _id: auxiliary._id,
-  ...pick(auxiliary, ['picture', 'contracts', 'identity.firstname', 'identity.lastname']),
+  ...pick(auxiliary, ['picture', 'contracts']),
+  identity: { ...pick(auxiliary.identity, ['firstname', 'lastname']) },
 });
 
 const formatZipCodeAndCity = (intervention: EventType) => {
@@ -55,6 +57,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
+  const [isAuxiliaryEditable] = useState<boolean>(true);
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -88,11 +91,16 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       case SET_TIME:
         return {
           ...state,
-          ...(state.start && { startDate: action.payload?.date, endDate: changeEndHourOnStartHourChange() }),
-          ...(!state.start && { endDate: action.payload?.date }),
+          ...(state.start && {
+            startDate: action.payload?.date || state.startDate,
+            endDate: changeEndHourOnStartHourChange(),
+          }),
+          ...(!state.start && { endDate: action.payload?.date || state.endDate }),
         };
       case SET_START:
         return { ...state, start: action.payload?.start || false };
+      case SET_AUXILIARY:
+        return { ...state, auxiliary: action.payload?.auxiliary || state.auxiliary };
       default:
         return state;
     }
@@ -100,10 +108,19 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [event, eventDispatch] = useReducer(reducer, initialState);
 
   const onLeave = useCallback(
-    () => ((event.startDate === initialState.startDate && event.endDate === initialState.endDate)
+    () => ((event.startDate === initialState.startDate && event.endDate === initialState.endDate &&
+        event.auxiliary._id === initialState.auxiliary._id)
       ? navigation.goBack()
       : setExitModal(true)),
-    [initialState.endDate, initialState.startDate, event.endDate, event.startDate, navigation]
+    [
+      initialState.endDate,
+      initialState.startDate,
+      initialState.auxiliary,
+      event.endDate,
+      event.startDate,
+      event.auxiliary,
+      navigation,
+    ]
   );
 
   const hardwareBackPress = useCallback(() => {
@@ -189,7 +206,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         </View>
         <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
           loading={loading} />
-        <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries} />
+        <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries}
+          eventEditionDispatch={eventDispatch} isEditable={isAuxiliaryEditable} />
         <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
           visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
           cancelText="Poursuivre les modifications" confirmText="Supprimer" />
