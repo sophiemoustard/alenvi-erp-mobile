@@ -58,7 +58,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
   const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(
-    (!initialState?.startDateTimeStamp && !initialState.endDateTimeStamp) && !initialState.isBilled
+    !initialState?.startDateTimeStamp && !initialState.endDateTimeStamp && !initialState.isBilled
   );
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
@@ -187,7 +187,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   useEffect(() => { refreshHistories(); }, [refreshHistories]);
   useEffect(() => {
-    setIsAuxiliaryEditable((!event.startDateTimeStamp && !event.endDateTimeStamp) && !event.isBilled);
+    setIsAuxiliaryEditable(!event.startDateTimeStamp && !event.endDateTimeStamp && !event.isBilled);
   }, [event.startDateTimeStamp, event.endDateTimeStamp, event.isBilled]);
 
   return (
