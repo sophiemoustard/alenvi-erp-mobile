@@ -33,7 +33,7 @@ const EventAuxiliaryEdition = ({
     ? setAuxiliaryEditionModal(true)
     : Alert.alert(
       'Impossible',
-      'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée.',
+      'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.',
       [{ text: 'OK' }],
       { cancelable: false }
     )

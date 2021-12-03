@@ -58,7 +58,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
   const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(
-    !initialState?.startDateTimeStamp && !initialState.endDateTimeStamp
+    (!initialState?.startDateTimeStamp && !initialState.endDateTimeStamp) && !initialState.isBilled
   );
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
@@ -187,8 +187,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   useEffect(() => { refreshHistories(); }, [refreshHistories]);
   useEffect(() => {
-    setIsAuxiliaryEditable(!event.startDateTimeStamp && !event.endDateTimeStamp);
-  }, [event.startDateTimeStamp, event.endDateTimeStamp]);
+    setIsAuxiliaryEditable((!event.startDateTimeStamp && !event.endDateTimeStamp) && !event.isBilled);
+  }, [event.startDateTimeStamp, event.endDateTimeStamp, event.isBilled]);
 
   return (
     <View style={styles.screen}>
@@ -200,6 +200,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
             style={styles.button} />}
       </View>
+      {event.isBilled &&
+      <View style={styles.billedHeader}>
+        <Text style={styles.billedHeaderText}>
+          {'Intervention facturée'}
+        </Text>
+      </View>}
       <ScrollView style={styles.container}>
         <Text style={styles.name}>{formatIdentity(initialState.customer.identity, 'FL')}</Text>
         <View style={styles.addressContainer}>

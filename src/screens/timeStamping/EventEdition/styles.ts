@@ -1,7 +1,13 @@
 import { StyleSheet } from 'react-native';
 import { COPPER, COPPER_GREY, WHITE } from '../../../styles/colors';
 import { FIRA_SANS_BLACK, FIRA_SANS_REGULAR } from '../../../styles/fonts';
-import { BORDER_RADIUS, BUTTON_HEIGHT, HEADER_HEIGHT, MARGIN, PADDING } from '../../../styles/metrics';
+import {
+  BORDER_RADIUS,
+  BUTTON_HEIGHT,
+  HEADER_HEIGHT,
+  MARGIN, PADDING,
+  BILLED_HEADER_HEIGHT,
+} from '../../../styles/metrics';
 
 export default StyleSheet.create({
   screen: {
@@ -14,6 +20,18 @@ export default StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: PADDING.MD,
     height: HEADER_HEIGHT,
+  },
+  billedHeader: {
+    flexDirection: 'row',
+    backgroundColor: COPPER[400],
+    alignItems: 'center',
+    height: BILLED_HEADER_HEIGHT,
+  },
+  billedHeaderText: {
+    ...FIRA_SANS_REGULAR.MD,
+    color: WHITE,
+    textAlign: 'center',
+    flex: 1,
   },
   arrow: {
     marginHorizontal: MARGIN.SM,
