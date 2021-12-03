@@ -72,20 +72,20 @@ interface TimeStampingProps {
 }
 
 const TimeStampingCell = ({ event }: TimeStampingProps) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [eventInfos, eventInfosDispatch] = useReducer(reducer, initialState);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isEventStarting, setIsEventStarting] = useState<boolean>(true);
 
   const navigation = useNavigation();
 
-  useEffect(() => { if (event) dispatch({ type: SET_EVENT_INFOS, payload: { event } }); }, [event]);
+  useEffect(() => { if (event) eventInfosDispatch({ type: SET_EVENT_INFOS, payload: { event } }); }, [event]);
 
   useEffect(() => {
     if (event.histories) {
       const timeStampingHistories = event.histories
         .filter((h: EventHistoryType) => TIMESTAMPING_ACTION_TYPE_LIST.includes(h.action) && !h.isCancelled);
 
-      dispatch({
+      eventInfosDispatch({
         type: SET_TIMESTAMPED_INFOS,
         payload: {
           startDateTimeStamp: timeStampingHistories?.some((h: EventHistoryType) => !!h.update.startHour) || false,
@@ -115,7 +115,13 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   const goToEventEdition = () => navigation.navigate(
     'EventEdition',
-    { event: { ...event, startDateTimeStamp: state.startDateTimeStamp, endDateTimeStamp: state.endDateTimeStamp } }
+    {
+      event: {
+        ...event,
+        startDateTimeStamp: eventInfos.startDateTimeStamp,
+        endDateTimeStamp: eventInfos.endDateTimeStamp,
+      },
+    }
   );
 
   const requestPermission = async (eventStart: boolean) => {
@@ -139,7 +145,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       Alert.alert(
         'Accès refusé',
         'Vérifiez que l\'application a bien l\'autorisation d\'accéder à l\'appareil photo.',
-        [{ text: 'OK', onPress: () => setModalVisible(false) }], { cancelable: false }
+        [{ text: 'OK', onPress: () => setModalVisible(false) }],
+        { cancelable: false }
       );
       return;
     }
@@ -152,17 +159,17 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
       <TouchableOpacity onPress={goToEventEdition}>
-        <Text style={styles.title}>{CIVILITY_OPTIONS[state.civility]} {state.lastName.toUpperCase()}</Text>
+        <Text style={styles.title}>{CIVILITY_OPTIONS[eventInfos.civility]} {eventInfos.lastName.toUpperCase()}</Text>
         <View style={styles.sectionDelimiter} />
         <View style={styles.container}>
           <View>
             <Text style={styles.timeTitle}>Début</Text>
-            {!!state.startDate && <Text style={styles.scheduledTime}>{formatTime(state.startDate)}</Text>}
+            {!!eventInfos.startDate && <Text style={styles.scheduledTime}>{formatTime(eventInfos.startDate)}</Text>}
           </View>
-          {state.startDateTimeStamp
+          {eventInfos.startDateTimeStamp
             ? renderTimeStamp()
             : <>
-              {!state.endDateTimeStamp &&
+              {!eventInfos.endDateTimeStamp &&
                 <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => requestPermission(true)} />}
             </>}
         </View>
@@ -170,14 +177,14 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         <View style={styles.container}>
           <View>
             <Text style={styles.timeTitle}>Fin</Text>
-            {!!state.endDate && <Text style={styles.scheduledTime}>{formatTime(state.endDate)}</Text>}
+            {!!eventInfos.endDate && <Text style={styles.scheduledTime}>{formatTime(eventInfos.endDate)}</Text>}
           </View>
-          {state.endDateTimeStamp
+          {eventInfos.endDateTimeStamp
             ? renderTimeStamp()
             : <>
-              {!state.startDateTimeStamp &&
+              {!eventInfos.startDateTimeStamp &&
                 <NiSecondaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
-              {!!state.startDateTimeStamp &&
+              {!!eventInfos.startDateTimeStamp &&
                 <NiPrimaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
             </>}
         </View>

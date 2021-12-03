@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import React, { useContext, useEffect, useState } from 'react';
 import { ScrollView, View, Text, KeyboardAvoidingView, BackHandler } from 'react-native';
 import FeatherButton from '../../components/FeatherButton';
-import ExitModal from '../../components/modals/ExitModal';
+import ConfirmationModal from '../../components/modals/ConfirmationModal';
 import NiInput from '../../components/form/Input';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
 import NiErrorMessage from '../../components/ErrorMessage';
@@ -125,9 +125,9 @@ const ProfileEdition = () => {
       <ScrollView contentContainerStyle={styles.screen}>
         <View style={styles.header}>
           <FeatherButton name='x-circle' onPress={onPressExitModal} size={ICON.MD} />
-          <ExitModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
+          <ConfirmationModal onPressConfirmButton={goBack} visible={exitConfirmationModal}
             onPressCancelButton={() => setExitConfirmationModal(false)}
-            title={'Êtes-vous sûr(e) de cela ?'} contentText={'Vos modifications ne seront pas enregistrées.'} />
+            title="Êtes-vous sûr(e) de cela ?" contentText="Vos modifications ne seront pas enregistrées." />
         </View>
         <View style={styles.container}>
           <Text style={styles.title}>Modifier mes informations</Text>

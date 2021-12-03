@@ -6,7 +6,7 @@ import Events from '../../../api/Events';
 import { Context as AuthContext } from '../../../context/AuthContext';
 import { ACTIVE_STATE, INTERVENTION } from '../../../core/data/constants';
 import { formatWordToPlural } from '../../../core/helpers/utils';
-import { formatTime, formatDate } from '../../../core/helpers/dates';
+import { formatTime, formatDate, ascendingSortArray } from '../../../core/helpers/dates';
 import TimeStampingCell from '../../../components/TimeStampingCell';
 import styles from './styles';
 import { EventType } from '../../../types/EventType';
@@ -56,7 +56,7 @@ const TimeStampingProfile = () => {
           };
           const fetchedEvents = await Events.list(params);
 
-          if (isActive) setEvents(fetchedEvents);
+          if (isActive) setEvents(ascendingSortArray(fetchedEvents, 'startDate'));
         } catch (e) {
           console.error(e);
         }

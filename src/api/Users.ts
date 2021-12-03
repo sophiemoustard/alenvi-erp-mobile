@@ -25,4 +25,10 @@ export default {
     const baseURL = await Environment.getBaseUrl();
     await axiosLogged.put(`${baseURL}/users/${userId}`, data);
   },
+  listWithSectorHistories: async (params: { company: string }) => {
+    const baseURL = await Environment.getBaseUrl();
+    const users = await axiosLogged.get(`${baseURL}/users/sector-histories`, { params });
+
+    return users.data.data.users;
+  },
 };

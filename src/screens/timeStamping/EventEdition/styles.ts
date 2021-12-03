@@ -15,6 +15,13 @@ export default StyleSheet.create({
     paddingHorizontal: PADDING.MD,
     height: HEADER_HEIGHT,
   },
+  billedHeader: {
+    ...FIRA_SANS_REGULAR.MD,
+    backgroundColor: COPPER[400],
+    color: WHITE,
+    textAlign: 'center',
+    paddingVertical: PADDING.MD,
+  },
   arrow: {
     marginHorizontal: MARGIN.SM,
   },
@@ -48,14 +55,6 @@ export default StyleSheet.create({
     ...FIRA_SANS_BLACK.XL,
     marginVertical: MARGIN.XL,
     color: COPPER_GREY[800],
-  },
-  section: {
-    color: COPPER_GREY[700],
-    marginBottom: MARGIN.XL,
-  },
-  sectionText: {
-    color: COPPER_GREY[700],
-    marginBottom: MARGIN.SM,
   },
   addressContainer: {
     flexDirection: 'row',

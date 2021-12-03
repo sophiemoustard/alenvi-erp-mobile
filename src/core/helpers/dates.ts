@@ -1,3 +1,4 @@
+import { EventType } from '../../types/EventType';
 import { MONTHS_SHORT, DAYS, MONTHS } from '../data/constants';
 import { capitalizeFirstLetter } from './utils';
 
@@ -6,6 +7,8 @@ type DateProps = Date | string | null;
 const createDate = (date: DateProps) => (date ? new Date(date) : new Date());
 
 export const isBefore = (date1: DateProps, date2: DateProps) => createDate(date1) < createDate(date2);
+
+export const isAfter = (date1: DateProps, date2: DateProps) => createDate(date1) > createDate(date2);
 
 export const formatDate = (date: Date | string, short: Boolean = false) => {
   const formatedDate = new Date(date);
@@ -42,3 +45,7 @@ export const dateDiff = (newerDate: Date, olderDate: Date) => {
 };
 
 export const getEndOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
+
+export const ascendingSortArray = (array: Array<EventType>, key: 'startDate') => [...array].sort(
+  (a, b) => dateDiff(a[key], b[key])
+);

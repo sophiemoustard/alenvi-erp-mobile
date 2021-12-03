@@ -1,89 +1,88 @@
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
-import { View, ScrollView, Text, BackHandler, Platform } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import pick from 'lodash.pick';
+import get from 'lodash.get';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import { View, ScrollView, Text, BackHandler } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
-import { DATE, IOS, TIME } from '../../../core/data/constants';
-import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore } from '../../../core/helpers/dates';
-import EventDateTime from '../../../components/EventDateTime';
+import Users from '../../../api/Users';
+import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore, isAfter } from '../../../core/helpers/dates';
+import { formatIdentity } from '../../../core/helpers/utils';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
-import ExitModal from '../../../components/modals/ExitModal';
+import ConfirmationModal from '../../../components/modals/ConfirmationModal';
+import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
-import styles from './styles';
+import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';
-import { EventType } from '../../../types/EventType';
-import { NavigationType } from '../../../types/NavigationType';
+import styles from './styles';
+import { EventHistoryType, EventType } from '../../../types/EventType';
+import { UserType, AuxiliaryType } from '../../../types/UserType';
+import { EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
+import { TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
 
-export type ModeType = 'date' | 'time';
+export const SET_HISTORIES = 'setHistories';
+export const SET_DATES = 'setDates';
+export const SET_TIME = 'setTime';
+export const SET_START = 'setStart';
+export const SET_AUXILIARY = 'setAuxiliary';
 
-interface EventEditionProps {
-  route: { params: { event: EventType } },
-  navigation: NavigationType,
-}
+const formatAuxiliary = (auxiliary: UserType) => ({
+  _id: auxiliary._id,
+  ...pick(auxiliary, ['picture', 'contracts']),
+  identity: { ...pick(auxiliary.identity, ['firstname', 'lastname']) },
+});
 
-interface StateType {
-  startDate: Date,
-  endDate: Date,
-  mode: ModeType,
-  displayStartPicker: boolean,
-  displayEndPicker: boolean,
-  start: boolean,
-}
+const formatZipCodeAndCity = (intervention: EventType) => {
+  const zipCode = get(intervention, 'customer.contact.primaryAddress.zipCode') || '';
+  const city = get(intervention, 'customer.contact.primaryAddress.city') || '';
 
-interface ActionType {
-  type: string,
-  payload?: { date?: Date, mode?: ModeType, start?: boolean },
-}
+  return `${zipCode} ${city}`;
+};
 
-const SWITCH_PICKER = 'switchPicker';
-const HIDE_PICKER = 'hidePicker';
-const SET_DATES = 'setDates';
-const SET_TIME = 'setTime';
+const isTimeStampHistory = (eh: EventHistoryType) =>
+  TIMESTAMPING_ACTION_TYPE_LIST.includes(eh.action) && !eh.isCancelled;
+
+const isEditable = (ev: EventType) => !ev.startDateTimeStamp && !ev.endDateTimeStamp && !ev.isBilled;
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
-  const { event } = route.params;
-  const initialState: StateType = {
-    startDate: new Date(event.startDate),
-    endDate: new Date(event.endDate),
-    mode: DATE,
-    displayStartPicker: false,
-    displayEndPicker: false,
+  const initialState: EventEditionStateType = useMemo(() => ({
+    histories: [],
+    ...route.params.event,
+    startDate: new Date(route.params.event.startDate),
+    endDate: new Date(route.params.event.endDate),
     start: false,
-  };
+  }), [route.params.event]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
-  const isIOS = Platform.OS === IOS;
-  const dateDisabled = event.startDateTimeStamp || event.endDateTimeStamp || event.isBilled;
+  const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
+  const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(isEditable(initialState));
 
-  const reducer = (state: StateType, action: ActionType): StateType => {
+  const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
-      if (event.endDateTimeStamp) return state.endDate;
+      if (route.params.event.endDateTimeStamp) return state.endDate;
       if (isBefore(action.payload?.date || state.startDate, state.endDate)) return state.endDate;
 
-      const newDate = addTime(action.payload?.date || state.startDate, dateDiff(event.endDate, event.startDate));
+      const newDate = addTime(
+        action.payload?.date || state.startDate,
+        dateDiff(initialState.endDate, initialState.startDate)
+      );
       const newDateIsAfterMidnight = newDate.getDate() !== state.endDate.getDate();
       return newDateIsAfterMidnight ? getEndOfDay(state.endDate) : newDate;
     };
 
-    const isSamePayload = state.displayStartPicker === !!action.payload?.start &&
-      state.displayEndPicker === !action.payload?.start && state.mode === action.payload?.mode;
+    const timeStampHistories: EventHistoryType[] = action.payload?.histories?.filter(isTimeStampHistory) || [];
 
     switch (action.type) {
-      case SWITCH_PICKER:
-        if (isIOS && isSamePayload) return { ...state, displayStartPicker: false, displayEndPicker: false };
-
+      case SET_HISTORIES:
         return {
           ...state,
-          displayStartPicker: !!action.payload?.start,
-          displayEndPicker: !action.payload?.start,
-          mode: action.payload?.mode || DATE,
-          start: !!action.payload?.start,
+          histories: action.payload?.histories || [],
+          startDateTimeStamp: timeStampHistories.some((eh: EventHistoryType) => !!eh.update.startHour),
+          endDateTimeStamp: timeStampHistories.some((eh: EventHistoryType) => !!eh.update.endHour),
         };
-      case HIDE_PICKER:
-        return { ...state, displayStartPicker: false, displayEndPicker: false };
       case SET_DATES:
         return {
           ...state,
@@ -93,20 +92,37 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       case SET_TIME:
         return {
           ...state,
-          ...(state.start && { startDate: action.payload?.date, endDate: changeEndHourOnStartHourChange() }),
-          ...(!state.start && { endDate: action.payload?.date }),
+          ...(state.start && {
+            startDate: action.payload?.date || state.startDate,
+            endDate: changeEndHourOnStartHourChange(),
+          }),
+          ...(!state.start && { endDate: action.payload?.date || state.endDate }),
         };
+      case SET_START:
+        return { ...state, start: action.payload?.start || false };
+      case SET_AUXILIARY:
+        return { ...state, auxiliary: action.payload?.auxiliary || state.auxiliary };
       default:
         return state;
     }
   };
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [event, eventDispatch] = useReducer(reducer, initialState);
 
-  const onLeave = useCallback(() => (
-    (state.startDate === initialState.startDate && state.endDate === initialState.endDate)
+  const onLeave = useCallback(
+    () => ((event.startDate === initialState.startDate && event.endDate === initialState.endDate &&
+        event.auxiliary._id === initialState.auxiliary._id)
       ? navigation.goBack()
       : setExitModal(true)),
-  [initialState.endDate, initialState.startDate, state.endDate, state.startDate, navigation]);
+    [
+      initialState.endDate,
+      initialState.startDate,
+      initialState.auxiliary,
+      event.endDate,
+      event.startDate,
+      event.auxiliary,
+      navigation,
+    ]
+  );
 
   const hardwareBackPress = useCallback(() => {
     onLeave();
@@ -124,18 +140,16 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       setLoading(true);
       setErrorMessage('');
 
-      if (isBefore(state.endDate, state.startDate)) {
+      if (isBefore(event.endDate, event.startDate)) {
         setErrorMessage('La date de début est postérieure à la date de fin.');
         return;
       }
 
-      await Events.updateById(
-        event._id,
-        { auxiliary: event.auxiliary._id, startDate: state.startDate, endDate: state.endDate }
-      );
+      await Events.updateById(event._id, { auxiliary: event.auxiliary._id, ...pick(event, ['startDate', 'endDate']) });
       navigation.goBack();
     } catch (e) {
       if (e.response.status === 409) setErrorMessage(e.response.data.message);
+      else if (e.response.status === 422) setErrorMessage('Cette modification n\'est pas autorisée.');
       else setErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
     } finally {
       setLoading(false);
@@ -147,59 +161,62 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     navigation.goBack();
   };
 
-  const onPressPicker = (start: boolean, mode: ModeType) => dispatch({ type: SWITCH_PICKER, payload: { start, mode } });
+  const getActiveAuxiliaries = useCallback(async (company: string) => {
+    try {
+      const auxiliaries = await Users.listWithSectorHistories({ company });
+      const filteredAuxiliaries = auxiliaries
+        .filter((aux: UserType) => aux.contracts && aux.contracts
+          .some(c => isBefore(c.startDate, event.endDate) && (!c.endDate || isAfter(c.endDate, event.startDate))))
+        .map((aux: UserType) => (formatAuxiliary(aux)));
 
-  const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
-    if (!newDate) return;
+      setActiveAuxiliaries(filteredAuxiliaries);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [event.endDate, event.startDate]);
 
-    if (state.mode === DATE) dispatch({ type: SET_DATES, payload: { date: newDate } });
+  useEffect(() => { getActiveAuxiliaries(initialState.company); }, [initialState.company, getActiveAuxiliaries]);
 
-    if (state.mode === TIME) dispatch({ type: SET_TIME, payload: { date: newDate } });
+  const refreshHistories = useCallback(async () => {
+    setLoading(true);
+    const eventHistories = await EventHistories.list({ eventId: event._id });
+    eventDispatch({ type: SET_HISTORIES, payload: { histories: eventHistories } });
+    setLoading(false);
+  }, [event._id]);
 
-    if (!isIOS) dispatch({ type: HIDE_PICKER });
-  };
+  useEffect(() => { refreshHistories(); }, [refreshHistories]);
+  useEffect(() => {
+    setErrorMessage('');
+    setIsAuxiliaryEditable(isEditable(event));
+  }, [event]);
 
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
-        <FeatherButton style={styles.arrow} name='arrow-left' onPress={onLeave} color={COPPER[400]}
+        <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
-        <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
-        {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) && <NiPrimaryButton onPress={onSave}
-          title='Enregistrer' loading={loading} titleStyle={styles.buttonTitle} style={styles.button} />}
+        <Text style={styles.text}>{formatDate(initialState.startDate, true)}</Text>
+        {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) &&
+          <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
+            style={styles.button} />}
       </View>
+      {event.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
       <ScrollView style={styles.container}>
-        <Text style={styles.name}>
-          {`${event.customer?.identity?.firstname} ${event.customer?.identity?.lastname}`}
-        </Text>
+        <Text style={styles.name}>{formatIdentity(initialState.customer.identity, 'FL')}</Text>
         <View style={styles.addressContainer}>
-          <Feather name='map-pin' size={ICON.SM} color={COPPER_GREY[500]} />
+          <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
           <View>
-            <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
-            <Text style={styles.addressText}>
-              {`${event?.customer?.contact?.primaryAddress?.zipCode} ${event?.customer?.contact?.primaryAddress?.city}`}
-            </Text>
+            <Text style={styles.addressText}>{`${initialState?.customer?.contact?.primaryAddress?.street}`}</Text>
+            <Text style={styles.addressText}>{formatZipCodeAndCity(initialState)}</Text>
           </View>
         </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Début</Text>
-          <EventDateTime isTimeStamped={event.startDateTimeStamp} date={state.startDate} dateDisabled={dateDisabled}
-            onPress={(mode: ModeType) => onPressPicker(true, mode)}
-            timeDisabled={event.startDateTimeStamp || event.isBilled} />
-          {state.displayStartPicker && <DateTimePicker value={state.startDate} mode={state.mode}
-            is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
-            maximumDate={(state.mode === TIME && event.endDateTimeStamp) ? state.endDate : undefined} />}
-        </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionText}>Fin</Text>
-          <EventDateTime isTimeStamped={event.endDateTimeStamp} onPress={(mode: ModeType) => onPressPicker(false, mode)}
-            date={state.endDate} dateDisabled={dateDisabled} timeDisabled={event.endDateTimeStamp || event.isBilled} />
-          {state.displayEndPicker && <DateTimePicker value={state.endDate} mode={state.mode} is24Hour
-            display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} locale="fr-FR"
-            minimumDate={state.mode === TIME ? state.startDate : undefined} />}
-        </View>
-        <ExitModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
-          visible={exitModal} contentText={'Supprimer les modifications apportées à cet événement ?'} />
+        <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
+          loading={loading} />
+        <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries}
+          eventEditionDispatch={eventDispatch} isEditable={isAuxiliaryEditable} />
+        <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
+          visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
+          cancelText="Poursuivre les modifications" confirmText="Supprimer" />
         {!!errorMessage && <NiErrorMessage message={errorMessage} />}
       </ScrollView>
     </View>
