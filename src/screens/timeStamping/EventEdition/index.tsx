@@ -44,6 +44,8 @@ const formatZipCodeAndCity = (intervention: EventType) => {
 const isTimeStampHistory = (eh: EventHistoryType) =>
   TIMESTAMPING_ACTION_TYPE_LIST.includes(eh.action) && !eh.isCancelled;
 
+const isEditable = (ev: EventType) => !ev.startDateTimeStamp && !ev.endDateTimeStamp && !ev.isBilled;
+
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const initialState: EventEditionStateType = useMemo(() => ({
     histories: [],
@@ -52,14 +54,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     endDate: new Date(route.params.event.endDate),
     start: false,
   }), [route.params.event]);
-
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
-  const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(
-    !initialState?.startDateTimeStamp && !initialState.endDateTimeStamp && !initialState.isBilled
-  );
+  const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(isEditable(initialState));
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -186,9 +185,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   }, [event._id]);
 
   useEffect(() => { refreshHistories(); }, [refreshHistories]);
-  useEffect(() => {
-    setIsAuxiliaryEditable(!event.startDateTimeStamp && !event.endDateTimeStamp && !event.isBilled);
-  }, [event.startDateTimeStamp, event.endDateTimeStamp, event.isBilled]);
+  useEffect(() => { setIsAuxiliaryEditable(isEditable(event)); }, [event]);
 
   return (
     <View style={styles.screen}>
@@ -200,12 +197,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
             style={styles.button} />}
       </View>
-      {event.isBilled &&
-      <View style={styles.billedHeader}>
-        <Text style={styles.billedHeaderText}>
-          {'Intervention facturée'}
-        </Text>
-      </View>}
+      {event.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
       <ScrollView style={styles.container}>
         <Text style={styles.name}>{formatIdentity(initialState.customer.identity, 'FL')}</Text>
         <View style={styles.addressContainer}>
