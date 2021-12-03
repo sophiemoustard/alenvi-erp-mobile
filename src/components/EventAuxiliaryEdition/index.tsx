@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ImageSourcePropType, Image, TouchableOpacity } from 'react-native';
+import { View, Text, ImageSourcePropType, Image, TouchableOpacity, Alert } from 'react-native';
 import styles from './styles';
 import { formatIdentity } from '../../core/helpers/utils';
 import { EventType } from '../../types/EventType';
@@ -29,12 +29,21 @@ const EventAuxiliaryEdition = ({
     else setAuxiliaryPicture(require('../../../assets/images/default_avatar.png'));
   }, [auxiliary?.picture?.link]);
 
+  const onPress = () => (isEditable
+    ? setAuxiliaryEditionModal(true)
+    : Alert.alert(
+      'Impossible',
+      'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée.',
+      [{ text: 'OK' }],
+      { cancelable: false }
+    )
+  );
+
   return (
     <>
       <Text style={styles.sectionText}>Intervenant</Text>
       <View style={isEditable ? styles.auxiliaryCellEditable : styles.auxiliaryCellNotEditable}>
-        <TouchableOpacity style={styles.auxiliaryInfos} onPress={() => setAuxiliaryEditionModal(true)}
-          disabled={!isEditable}>
+        <TouchableOpacity style={styles.auxiliaryInfos} onPress={onPress}>
           <Image source={auxiliaryPicture} style={styles.image} />
           <Text style={styles.auxiliaryText}>{formatIdentity(auxiliary.identity, 'FL')}</Text>
         </TouchableOpacity>

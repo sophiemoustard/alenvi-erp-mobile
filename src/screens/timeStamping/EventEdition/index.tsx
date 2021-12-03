@@ -57,7 +57,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
-  const [isAuxiliaryEditable] = useState<boolean>(true);
+  const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(
+    !initialState?.startDateTimeStamp && !initialState.endDateTimeStamp
+  );
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -184,6 +186,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   }, [event._id]);
 
   useEffect(() => { refreshHistories(); }, [refreshHistories]);
+  useEffect(() => {
+    setIsAuxiliaryEditable(!event.startDateTimeStamp && !event.endDateTimeStamp);
+  }, [event.startDateTimeStamp, event.endDateTimeStamp]);
 
   return (
     <View style={styles.screen}>
@@ -191,7 +196,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
         <Text style={styles.text}>{formatDate(initialState.startDate, true)}</Text>
-        {!((initialState.startDateTimeStamp && initialState.endDateTimeStamp) || initialState.isBilled) &&
+        {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) &&
           <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
             style={styles.button} />}
       </View>

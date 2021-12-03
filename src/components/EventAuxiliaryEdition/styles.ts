@@ -13,6 +13,7 @@ export default StyleSheet.create({
     paddingRight: PADDING.XXL,
     paddingLeft: PADDING.LG,
     paddingVertical: PADDING.MD,
+    marginBottom: MARGIN.SM,
     borderWidth: BORDER_WIDTH,
     borderRadius: BORDER_RADIUS.SM,
     borderColor: COPPER_GREY[200],
