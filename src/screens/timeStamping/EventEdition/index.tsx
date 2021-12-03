@@ -30,7 +30,8 @@ export const SET_AUXILIARY = 'setAuxiliary';
 
 const formatAuxiliary = (auxiliary: UserType) => ({
   _id: auxiliary._id,
-  ...pick(auxiliary, ['picture', 'contracts', 'identity']),
+  ...pick(auxiliary, ['picture', 'contracts']),
+  identity: { ...pick(auxiliary.identity, ['firstname', 'lastname']) },
 });
 
 const formatZipCodeAndCity = (intervention: EventType) => {
@@ -90,8 +91,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       case SET_TIME:
         return {
           ...state,
-          ...(state.start && { startDate: action.payload?.date, endDate: changeEndHourOnStartHourChange() }),
-          ...(!state.start && { endDate: action.payload?.date }),
+          ...(state.start && {
+            startDate: action.payload?.date || state.startDate,
+            endDate: changeEndHourOnStartHourChange(),
+          }),
+          ...(!state.start && { endDate: action.payload?.date || state.endDate }),
         };
       case SET_START:
         return { ...state, start: action.payload?.start || false };
@@ -104,10 +108,19 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [event, eventDispatch] = useReducer(reducer, initialState);
 
   const onLeave = useCallback(
-    () => ((event.startDate === initialState.startDate && event.endDate === initialState.endDate)
+    () => ((event.startDate === initialState.startDate && event.endDate === initialState.endDate &&
+        event.auxiliary._id === initialState.auxiliary._id)
       ? navigation.goBack()
       : setExitModal(true)),
-    [initialState.endDate, initialState.startDate, event.endDate, event.startDate, navigation]
+    [
+      initialState.endDate,
+      initialState.startDate,
+      initialState.auxiliary,
+      event.endDate,
+      event.startDate,
+      event.auxiliary,
+      navigation,
+    ]
   );
 
   const hardwareBackPress = useCallback(() => {
