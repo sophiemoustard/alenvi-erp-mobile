@@ -10,8 +10,7 @@ export default StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingRight: PADDING.XXL,
-    paddingLeft: PADDING.LG,
+    paddingHorizontal: PADDING.LG,
     paddingVertical: PADDING.MD,
     marginBottom: MARGIN.SM,
     borderWidth: BORDER_WIDTH,
@@ -34,12 +33,14 @@ export default StyleSheet.create({
   auxiliaryInfos: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 1,
   },
   auxiliaryText: {
     color: COPPER_GREY[800],
     textAlign: 'left',
     marginLeft: MARGIN.MD,
     ...FIRA_SANS_MEDIUM.MD,
+    flex: 1,
   },
   sectionText: {
     color: COPPER_GREY[700],

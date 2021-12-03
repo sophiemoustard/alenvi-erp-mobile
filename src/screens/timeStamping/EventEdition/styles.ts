@@ -15,6 +15,13 @@ export default StyleSheet.create({
     paddingHorizontal: PADDING.MD,
     height: HEADER_HEIGHT,
   },
+  billedHeader: {
+    ...FIRA_SANS_REGULAR.MD,
+    backgroundColor: COPPER[400],
+    color: WHITE,
+    textAlign: 'center',
+    paddingVertical: PADDING.MD,
+  },
   arrow: {
     marginHorizontal: MARGIN.SM,
   },
