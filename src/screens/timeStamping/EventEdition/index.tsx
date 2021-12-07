@@ -30,7 +30,7 @@ export const SET_TIME = 'setTime';
 export const SET_START = 'setStart';
 export const SET_AUXILIARY = 'setAuxiliary';
 
-const formatAuxiliary = (auxiliary: UserType) => ({
+const formatAuxiliary = (auxiliary: UserType | AuxiliaryType) => ({
   _id: auxiliary._id,
   ...pick(auxiliary, ['picture', 'contracts']),
   identity: { ...pick(auxiliary.identity, ['firstname', 'lastname']) },
@@ -52,6 +52,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const initialState: EventEditionStateType = useMemo(() => ({
     histories: [],
     ...route.params.event,
+    auxiliary: formatAuxiliary(route.params.event.auxiliary),
     startDate: new Date(route.params.event.startDate),
     endDate: new Date(route.params.event.endDate),
     start: false,
@@ -112,8 +113,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const onLeave = useCallback(
     () => {
+      const formattedEventAuxiliary = {
+        ...event,
+        auxiliary: event.auxiliary.contracts ? omit(event.auxiliary, 'contracts') : event.auxiliary,
+      };
       const omitFields = ['histories', 'start'];
-      return isEqual(omit(event, omitFields), omit(initialState, omitFields))
+      return isEqual(omit(formattedEventAuxiliary, omitFields), omit(initialState, omitFields))
         ? navigation.goBack()
         : setExitModal(true);
     },
