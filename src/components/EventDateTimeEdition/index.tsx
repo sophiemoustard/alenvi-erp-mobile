@@ -116,7 +116,10 @@ const EventDateTimeEdition = ({
   );
 
   const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
-    if (!newDate) return;
+    if (!newDate) {
+      if (!isIOS) pickerDispatch({ type: HIDE_PICKER });
+      return;
+    }
 
     if (picker.mode === DATE) eventEditionDispatch({ type: SET_DATES, payload: { date: newDate } });
 
