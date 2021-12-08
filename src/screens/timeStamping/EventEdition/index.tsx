@@ -1,5 +1,4 @@
-import pick from 'lodash.pick';
-import omit from 'lodash.omit';
+import pick from 'lodash/pick';
 import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
@@ -30,10 +29,9 @@ export const SET_TIME = 'setTime';
 export const SET_START = 'setStart';
 export const SET_AUXILIARY = 'setAuxiliary';
 
-const formatAuxiliary = (auxiliary: UserType | AuxiliaryType) => ({
+const formatAuxiliary = (auxiliary: UserType) => ({
   _id: auxiliary._id,
-  ...pick(auxiliary, ['picture', 'contracts']),
-  identity: { ...pick(auxiliary.identity, ['firstname', 'lastname']) },
+  ...pick(auxiliary, ['picture', 'contracts', 'identity.firstname', 'identity.lastname']),
 });
 
 const formatZipCodeAndCity = (intervention: EventType) => {
@@ -52,7 +50,6 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const initialState: EventEditionStateType = useMemo(() => ({
     histories: [],
     ...route.params.event,
-    auxiliary: formatAuxiliary(route.params.event.auxiliary),
     startDate: new Date(route.params.event.startDate),
     endDate: new Date(route.params.event.endDate),
     start: false,
@@ -113,12 +110,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const onLeave = useCallback(
     () => {
-      const formattedEventAuxiliary = {
-        ...event,
-        auxiliary: event.auxiliary.contracts ? omit(event.auxiliary, 'contracts') : event.auxiliary,
-      };
-      const omitFields = ['histories', 'start'];
-      return isEqual(omit(formattedEventAuxiliary, omitFields), omit(initialState, omitFields))
+      const pickFields = ['startDate', 'endDate', 'auxiliary._id'];
+      return isEqual(pick(event, pickFields), pick(initialState, pickFields))
         ? navigation.goBack()
         : setExitModal(true);
     },
