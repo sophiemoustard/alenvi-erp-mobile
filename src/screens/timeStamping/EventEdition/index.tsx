@@ -1,5 +1,6 @@
-import pick from 'lodash.pick';
+import pick from 'lodash/pick';
 import get from 'lodash.get';
+import isEqual from 'lodash.isequal';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler } from 'react-native';
 import { Feather } from '@expo/vector-icons';
@@ -30,8 +31,7 @@ export const SET_AUXILIARY = 'setAuxiliary';
 
 const formatAuxiliary = (auxiliary: UserType) => ({
   _id: auxiliary._id,
-  ...pick(auxiliary, ['picture', 'contracts']),
-  identity: { ...pick(auxiliary.identity, ['firstname', 'lastname']) },
+  ...pick(auxiliary, ['picture', 'contracts', 'identity.firstname', 'identity.lastname']),
 });
 
 const formatZipCodeAndCity = (intervention: EventType) => {
@@ -109,19 +109,13 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [event, eventDispatch] = useReducer(reducer, initialState);
 
   const onLeave = useCallback(
-    () => ((event.startDate === initialState.startDate && event.endDate === initialState.endDate &&
-        event.auxiliary._id === initialState.auxiliary._id)
-      ? navigation.goBack()
-      : setExitModal(true)),
-    [
-      initialState.endDate,
-      initialState.startDate,
-      initialState.auxiliary,
-      event.endDate,
-      event.startDate,
-      event.auxiliary,
-      navigation,
-    ]
+    () => {
+      const pickFields = ['startDate', 'endDate', 'auxiliary._id'];
+      return isEqual(pick(event, pickFields), pick(initialState, pickFields))
+        ? navigation.goBack()
+        : setExitModal(true);
+    },
+    [initialState, event, navigation]
   );
 
   const hardwareBackPress = useCallback(() => {
@@ -175,7 +169,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     }
   }, [event.endDate, event.startDate]);
 
-  useEffect(() => { getActiveAuxiliaries(initialState.company); }, [initialState.company, getActiveAuxiliaries]);
+  useEffect(() => { getActiveAuxiliaries(event.company); }, [event.company, getActiveAuxiliaries]);
 
   const refreshHistories = useCallback(async () => {
     setLoading(true);
@@ -195,19 +189,19 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       <View style={styles.header}>
         <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
-        <Text style={styles.text}>{formatDate(initialState.startDate, true)}</Text>
+        <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
         {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) &&
           <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
             style={styles.button} />}
       </View>
       {event.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
       <ScrollView style={styles.container}>
-        <Text style={styles.name}>{formatIdentity(initialState.customer.identity, 'FL')}</Text>
+        <Text style={styles.name}>{formatIdentity(event.customer.identity, 'FL')}</Text>
         <View style={styles.addressContainer}>
           <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
           <View>
-            <Text style={styles.addressText}>{`${initialState?.customer?.contact?.primaryAddress?.street}`}</Text>
-            <Text style={styles.addressText}>{formatZipCodeAndCity(initialState)}</Text>
+            <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
+            <Text style={styles.addressText}>{formatZipCodeAndCity(event)}</Text>
           </View>
         </View>
         <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
