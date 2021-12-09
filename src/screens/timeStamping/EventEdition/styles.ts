@@ -66,4 +66,8 @@ export default StyleSheet.create({
     marginRight: MARGIN.MD,
     color: COPPER_GREY[500],
   },
+  keyboardAvoidingView: {
+    flex: 1,
+    backgroundColor: COPPER_GREY[50],
+  },
 });
