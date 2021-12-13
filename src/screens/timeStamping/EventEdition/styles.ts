@@ -47,6 +47,9 @@ export default StyleSheet.create({
     textAlign: 'center',
     marginRight: MARGIN.XS,
   },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     paddingHorizontal: PADDING.XL,
@@ -65,9 +68,5 @@ export default StyleSheet.create({
     marginLeft: MARGIN.SM,
     marginRight: MARGIN.MD,
     color: COPPER_GREY[500],
-  },
-  keyboardAvoidingView: {
-    flex: 1,
-    backgroundColor: COPPER_GREY[50],
   },
 });

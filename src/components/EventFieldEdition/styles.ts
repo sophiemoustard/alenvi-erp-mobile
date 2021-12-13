@@ -17,4 +17,7 @@ export default StyleSheet.create({
     borderColor: COPPER_GREY[300],
     paddingHorizontal: PADDING.SM,
   },
+  container: {
+    marginTop: MARGIN.MD,
+  },
 });

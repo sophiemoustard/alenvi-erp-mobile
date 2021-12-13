@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import NiInput from '../../components/form/Input';
 import styles from './styles';
 
@@ -25,15 +25,15 @@ const EventFieldEdition = ({
   const [displayText, setDisplayText] = useState<boolean>(!!text);
 
   return (
-    <>
+    <View style={styles.container}>
       {!displayText && !disabled &&
-      <TouchableOpacity style={styles.textContainer} onPress={() => setDisplayText(true)} >
-        {buttonIcon}
-        <Text style={styles.text}>{buttonTitle}</Text>
-      </TouchableOpacity>}
-      {displayText && <NiInput style={styles.input} caption={inputTitle} value={text} onChangeText={onChangeText}
-        multiline={multiline} disabled={disabled} />}
-    </>
+        <TouchableOpacity style={styles.textContainer} onPress={() => setDisplayText(true)}>
+          {buttonIcon}
+          <Text style={styles.text}>{buttonTitle}</Text>
+        </TouchableOpacity>}
+      {displayText && <NiInput caption={inputTitle} value={text} onChangeText={onChangeText}
+        multiline={multiline} disabled={disabled} inputStyleContainer={styles.input} />}
+    </View>
   );
 };
 
