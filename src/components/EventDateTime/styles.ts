@@ -20,7 +20,7 @@ export default StyleSheet.create({
     borderRightWidth: BORDER_WIDTH / 2,
     borderBottomLeftRadius: BORDER_RADIUS.SM,
     borderTopLeftRadius: BORDER_RADIUS.SM,
-    borderColor: COPPER_GREY[200],
+    borderColor: COPPER_GREY[300],
   },
   timeCell: {
     backgroundColor: WHITE,
@@ -33,7 +33,7 @@ export default StyleSheet.create({
     borderLeftWidth: BORDER_WIDTH / 2,
     borderBottomRightRadius: BORDER_RADIUS.SM,
     borderTopRightRadius: BORDER_RADIUS.SM,
-    borderColor: COPPER_GREY[200],
+    borderColor: COPPER_GREY[300],
     flex: 1,
   },
   text: {

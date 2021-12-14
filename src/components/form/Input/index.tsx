@@ -18,7 +18,6 @@ interface InputProps {
   validationMessage?: string,
   disabled?: boolean,
   multiline?: boolean,
-  inputStyleContainer?: Object,
 }
 
 const Input = ({
@@ -32,7 +31,6 @@ const Input = ({
   validationMessage = '',
   disabled = false,
   multiline = false,
-  inputStyleContainer = {},
 }: InputProps) => {
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(false);
@@ -65,7 +63,7 @@ const Input = ({
         <Text style={textStyle}>{caption}</Text>
       </View>
       <View style={inputStyle.container}>
-        <View style={[inputStyle.inputContainer, inputStyleContainer]}>
+        <View style={inputStyle.inputContainer}>
           <TextInput style={inputStyle.input} onChangeText={onChangeText} onBlur={() => setIsSelected(false)}
             onTouchStart={() => setIsSelected(true)} secureTextEntry={secureTextEntry} keyboardType={keyboardType}
             value={value} editable={!disabled} autoCapitalize={autoCapitalize} testID={caption} multiline={multiline} />

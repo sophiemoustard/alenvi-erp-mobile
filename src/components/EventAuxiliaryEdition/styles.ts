@@ -15,7 +15,7 @@ export default StyleSheet.create({
     marginBottom: MARGIN.SM,
     borderWidth: BORDER_WIDTH,
     borderRadius: BORDER_RADIUS.SM,
-    borderColor: COPPER_GREY[200],
+    borderColor: COPPER_GREY[300],
   },
   auxiliaryCellNotEditable: {
     flexDirection: 'row',
@@ -28,7 +28,7 @@ export default StyleSheet.create({
     width: AVATAR_SIZE,
     height: AVATAR_SIZE,
     borderRadius: BORDER_RADIUS.XXL,
-    borderColor: COPPER_GREY[200],
+    borderColor: COPPER_GREY[300],
   },
   auxiliaryInfos: {
     flexDirection: 'row',

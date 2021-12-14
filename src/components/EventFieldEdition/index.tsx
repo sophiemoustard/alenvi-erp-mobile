@@ -31,8 +31,11 @@ const EventFieldEdition = ({
           {buttonIcon}
           <Text style={styles.text}>{buttonTitle}</Text>
         </TouchableOpacity>}
-      {displayText && <NiInput caption={inputTitle} value={text} onChangeText={onChangeText}
-        multiline={multiline} disabled={disabled} inputStyleContainer={styles.input} />}
+      {displayText &&
+        <View style={styles.inputContainer}>
+          <NiInput caption={inputTitle} value={text} onChangeText={onChangeText} multiline={multiline}
+            disabled={disabled} />
+        </View>}
     </View>
   );
 };
