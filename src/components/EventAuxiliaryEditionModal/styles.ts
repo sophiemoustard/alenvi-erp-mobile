@@ -13,7 +13,7 @@ export default StyleSheet.create({
   auxiliaryItemText: {
     ...FIRA_SANS_REGULAR.MD,
   },
-  image: {
+  avatar: {
     ...AVATAR_SIZE.SM,
     borderColor: COPPER_GREY[200],
     borderWidth: BORDER_WIDTH,

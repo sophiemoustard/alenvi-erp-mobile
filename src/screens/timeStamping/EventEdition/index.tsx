@@ -19,8 +19,8 @@ import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
-import { UserType, AuxiliaryType } from '../../../types/UserType';
-import { EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
+import { UserType } from '../../../types/UserType';
+import { EventEditionActionType, EventEditionProps, EventEditionStateType, FormattedAuxiliaryType } from './types';
 import { TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 
@@ -29,9 +29,10 @@ export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
 export const SET_FIELD = 'setField';
 
-const formatAuxiliary = (auxiliary: UserType) => ({
+const formatAuxiliary = (auxiliary: UserType): FormattedAuxiliaryType => ({
   _id: auxiliary._id,
-  ...pick(auxiliary, ['picture', 'contracts', 'identity.firstname', 'identity.lastname']),
+  ...pick(auxiliary, ['picture', 'contracts', 'identity']),
+  formattedIdentity: formatIdentity(auxiliary.identity, 'FL'),
 });
 
 const formatZipCodeAndCity = (intervention: EventType) => {
@@ -57,7 +58,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
-  const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
+  const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
   const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(isEditable(initialState));
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {

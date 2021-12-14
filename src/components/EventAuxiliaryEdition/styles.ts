@@ -24,7 +24,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: MARGIN.SM,
   },
-  image: {
+  avatar: {
     ...AVATAR_SIZE.MD,
     borderColor: COPPER_GREY[200],
     borderWidth: BORDER_WIDTH,
