@@ -27,8 +27,6 @@ import EventFieldEdition from '../../../components/EventFieldEdition';
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
-export const SET_START = 'setStart';
-export const SET_AUXILIARY = 'setAuxiliary';
 export const SET_FIELD = 'setField';
 
 const formatAuxiliary = (auxiliary: UserType) => ({
@@ -100,10 +98,6 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           }),
           ...(!state.start && { endDate: action.payload?.date || state.endDate }),
         };
-      case SET_START:
-        return { ...state, start: action.payload?.start || false };
-      case SET_AUXILIARY:
-        return { ...state, auxiliary: action.payload?.auxiliary || state.auxiliary };
       case SET_FIELD:
         return { ...state, ...action.payload };
       default:
@@ -143,10 +137,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         return;
       }
 
-      await Events.updateById(
-        event._id,
-        { auxiliary: event.auxiliary._id, ...pick(event, ['startDate', 'endDate', 'misc']) }
-      );
+      const pickedFields = pick(event, ['startDate', 'endDate', 'misc']);
+      await Events.updateById(event._id, { auxiliary: event.auxiliary._id, ...pickedFields });
       navigation.goBack();
     } catch (e) {
       if (e.response.status === 409) setErrorMessage(e.response.data.message);
@@ -224,7 +216,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <EventFieldEdition text={event.misc} inputTitle="Note" disabled={event.isBilled || false}
             buttonTitle="Ajouter une note" multiline={false}
             buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />}
-            onChangeText={(value: string) => eventDispatch({ type: SET_FIELD, payload: { misc: value } })} />
+            onChangeText={(value: string) => eventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })} />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

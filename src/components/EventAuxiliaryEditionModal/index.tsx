@@ -6,7 +6,7 @@ import { formatIdentity } from '../../core/helpers/utils';
 import { EventType } from '../../types/EventType';
 import { AuxiliaryType } from '../../types/UserType';
 import { EventEditionActionType } from '../../screens/timeStamping/EventEdition/types';
-import { SET_AUXILIARY } from '../../screens/timeStamping/EventEdition';
+import { SET_FIELD } from '../../screens/timeStamping/EventEdition';
 import styles from './styles';
 
 type EventAuxiliaryEditionModalProps = {
@@ -23,7 +23,7 @@ const EventAuxiliaryEditionModal = ({
   onRequestClose,
 }: EventAuxiliaryEditionModalProps) => {
   const onPress = (aux: EventType['auxiliary']) => {
-    eventEditionDispatch({ type: SET_AUXILIARY, payload: { auxiliary: aux } });
+    eventEditionDispatch({ type: SET_FIELD, payload: { auxiliary: aux } });
     onRequestClose();
   };
 
