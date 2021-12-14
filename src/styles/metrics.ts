@@ -1,4 +1,4 @@
-import { Dimensions } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import { isIOS } from '../core/data/constants';
 
 const { width, height } = Dimensions.get('window');
@@ -25,12 +25,12 @@ export const MARGIN = {
 };
 
 export const BORDER_RADIUS = {
-  XS: 5,
-  SM: 10,
-  MD: 15,
-  LG: 20,
-  XL: 25,
-  XXL: 45,
+  XS: 4,
+  SM: 12,
+  MD: 16,
+  LG: 24,
+  XL: 32,
+  XXL: 48,
 };
 
 export const ICON = {
@@ -48,6 +48,19 @@ export const LINE_HEIGHT = {
   MD: 24,
 };
 
+export const AVATAR_SIZE = StyleSheet.create({
+  SM: {
+    width: BORDER_RADIUS.XL,
+    height: BORDER_RADIUS.XL,
+    borderRadius: BORDER_RADIUS.XL,
+  },
+  MD: {
+    width: BORDER_RADIUS.XXL,
+    height: BORDER_RADIUS.XXL,
+    borderRadius: BORDER_RADIUS.XXL,
+  },
+});
+
 export const BUTTON_HEIGHT = 48;
 export const INPUT_HEIGHT = 48;
 export const BORDER_WIDTH = 1;
@@ -55,7 +68,6 @@ export const TAB_BAR_HEIGHT = 72;
 export const HEADER_HEIGHT = 64;
 export const BUTTON_INTERVENTION_WIDTH = 128;
 export const TAB_BAR_LABEL_WIDTH = 110;
-export const AVATAR_SIZE = 48;
 
 export const SCREEN_HEIGHT = width < height ? height : width;
 export const SMALL_SCREEN_MAX_HEIGHT = 568;

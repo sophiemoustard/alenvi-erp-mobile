@@ -7,7 +7,7 @@ import styles from './styles';
 
 type NiBottomModalProps = {
   visible: boolean,
-  children: any,
+  children: JSX.Element,
   onRequestClose: () => void,
 }
 

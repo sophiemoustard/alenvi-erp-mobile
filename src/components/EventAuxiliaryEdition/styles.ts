@@ -25,10 +25,9 @@ export default StyleSheet.create({
     marginBottom: MARGIN.SM,
   },
   image: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: BORDER_RADIUS.XXL,
-    borderColor: COPPER_GREY[300],
+    ...AVATAR_SIZE.MD,
+    borderColor: COPPER_GREY[200],
+    borderWidth: BORDER_WIDTH,
   },
   auxiliaryInfos: {
     flexDirection: 'row',

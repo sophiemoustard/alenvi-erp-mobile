@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Image, Text, TouchableOpacity } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import NiBottomModal from '../BottomModal';
 import { formatIdentity } from '../../core/helpers/utils';
@@ -27,13 +27,18 @@ const EventAuxiliaryEditionModal = ({
     onRequestClose();
   };
 
-  const renderAuxiliary = (aux: EventType['auxiliary']) => (
-    <TouchableOpacity onPress={() => onPress(aux)} style={styles.auxiliaryItem}>
-      <Text style={styles.auxiliaryItemText}>{formatIdentity(aux.identity, 'FL')}</Text>
-    </TouchableOpacity>
-  );
+  const renderAuxiliary = (aux: EventType['auxiliary']) => {
+    const avatar = aux.picture?.link
+      ? { uri: aux.picture.link }
+      : require('../../../assets/images/default_avatar.png');
 
-  const renderSeparator = () => <View style={styles.separator} />;
+    return (
+      <TouchableOpacity onPress={() => onPress(aux)} style={styles.auxiliaryItem}>
+        <Image source={avatar} style={styles.image} />
+        <Text style={styles.auxiliaryItemText}>{formatIdentity(aux.identity, 'FL')}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   const sortAuxiliaryOptions = (auxiliaries: AuxiliaryType[]) => (
     auxiliaries.sort((a, b) => (a.identity.firstname).localeCompare(b.identity.firstname))
@@ -42,8 +47,7 @@ const EventAuxiliaryEditionModal = ({
   return (
     <NiBottomModal visible={visible} onRequestClose={onRequestClose}>
       <FlatList data={sortAuxiliaryOptions(auxiliaryOptions)} keyExtractor={item => item._id}
-        ItemSeparatorComponent={renderSeparator} renderItem={({ item }) => renderAuxiliary(item)}
-        showsHorizontalScrollIndicator={false} />
+        renderItem={({ item }) => renderAuxiliary(item)} showsHorizontalScrollIndicator={false} />
     </NiBottomModal>
   );
 };
