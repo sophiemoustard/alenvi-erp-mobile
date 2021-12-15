@@ -48,7 +48,8 @@ const EventAuxiliaryEdition = ({
           {isEditable && <FeatherButton name='chevron-down' onPress={() => setAuxiliaryEditionModal(true)} />}
         </TouchableOpacity>
         <EventAuxiliaryEditionModal visible={auxiliaryEditionModal} auxiliaryOptions={auxiliaryOptions}
-          onRequestClose={() => setAuxiliaryEditionModal(false)} eventEditionDispatch={eventEditionDispatch} />
+          onRequestClose={() => setAuxiliaryEditionModal(false)} eventEditionDispatch={eventEditionDispatch}
+          selectedAuxiliary={auxiliary} />
       </View>
     </>
   );
