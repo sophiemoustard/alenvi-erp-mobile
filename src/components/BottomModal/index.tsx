@@ -7,17 +7,17 @@ import styles from './styles';
 
 type NiBottomModalProps = {
   visible: boolean,
-  header?: JSX.Element,
   children: JSX.Element,
   onRequestClose: () => void,
+  header?: JSX.Element,
 }
 
-const BottomModal = ({ visible, header, children, onRequestClose }: NiBottomModalProps) => (
+const BottomModal = ({ visible, children, onRequestClose, header }: NiBottomModalProps) => (
   <Modal visible={visible} onRequestClose={onRequestClose} transparent>
     <View style={styles.modalContainer}>
       <View style={styles.modalContent}>
-        { header || <FeatherButton name='x-circle' onPress={onRequestClose} size={ICON.LG} color={COPPER_GREY[600]}
-          style={styles.goBack} /> }
+        {header || <FeatherButton name='x-circle' onPress={onRequestClose} size={ICON.LG} color={COPPER_GREY[600]}
+          style={styles.goBack} />}
         {children}
       </View>
     </View>

@@ -7,7 +7,7 @@ import { SET_FIELD } from '../../screens/timeStamping/EventEdition';
 import { EventEditionActionType, FormattedAuxiliaryType } from '../../screens/timeStamping/EventEdition/types';
 import styles from './styles';
 import { ICON } from '../../styles/metrics';
-import { COPPER_GREY } from '../../styles/colors';
+import { COPPER, COPPER_GREY } from '../../styles/colors';
 import FeatherButton from '../FeatherButton';
 
 type EventAuxiliaryEditionModalProps = {
@@ -35,10 +35,13 @@ const EventAuxiliaryEditionModal = ({
     setDisplayedAuxiliaries(filteredAuxiliaries);
   }, [searchText, auxiliaryOptions]);
 
-  useEffect(() => { setDisplayedAuxiliaries(auxiliaryOptions); }, [auxiliaryOptions]);
-
   const onPress = (aux: EventType['auxiliary']) => {
     eventEditionDispatch({ type: SET_FIELD, payload: { auxiliary: aux } });
+    onPressCloseButton();
+  };
+
+  const onPressCloseButton = () => {
+    setSearchText('');
     onRequestClose();
   };
 
@@ -46,15 +49,13 @@ const EventAuxiliaryEditionModal = ({
     <View style={style.header}>
       <Feather name="search" size={24} color={COPPER_GREY[400]} />
       <TextInput placeholder="Chercher un intervenant" value={searchText} onChangeText={setSearchText}
-        style={style.searchBar} />
-      <FeatherButton name="x" size={24} color={COPPER_GREY[400]} onPress={onRequestClose} />
+        style={style.searchBar} placeholderTextColor={COPPER_GREY[300]} />
+      <FeatherButton name="x" size={24} color={COPPER_GREY[400]} onPress={onPressCloseButton} />
     </View>
   );
 
   const renderAuxiliary = (aux: FormattedAuxiliaryType) => {
-    const avatar = aux.picture?.link
-      ? { uri: aux.picture.link }
-      : require('../../../assets/images/default_avatar.png');
+    const avatar = aux.picture?.link ? { uri: aux.picture.link } : require('../../../assets/images/default_avatar.png');
     const isSelectedAuxiliary = selectedAuxiliary._id === aux._id;
     style = styles({ isSelectedAuxiliary });
 
@@ -62,7 +63,7 @@ const EventAuxiliaryEditionModal = ({
       <TouchableOpacity onPress={() => onPress(aux)} style={style.auxiliaryItem}>
         <Image source={avatar} style={style.avatar} />
         <Text style={style.auxiliaryItemText}>{aux.formattedIdentity}</Text>
-        { isSelectedAuxiliary && <Feather name='check' size={ICON.XS} color={COPPER_GREY[500]} /> }
+        {isSelectedAuxiliary && <Feather name='check' size={ICON.XS} color={COPPER[500]} />}
       </TouchableOpacity>
     );
   };
@@ -72,7 +73,7 @@ const EventAuxiliaryEditionModal = ({
   );
 
   return (
-    <NiBottomModal visible={visible} onRequestClose={onRequestClose} header={renderHeader()}>
+    <NiBottomModal visible={visible} header={renderHeader()} onRequestClose={onRequestClose}>
       <FlatList data={sortAuxiliaryOptions(displayedAuxiliaries)} keyExtractor={item => item._id}
         renderItem={({ item }) => renderAuxiliary(item)} showsHorizontalScrollIndicator={false} />
     </NiBottomModal>
