@@ -7,15 +7,14 @@ export default ({ isSelectedAuxiliary }: { isSelectedAuxiliary?: boolean }) => S
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingBottom: 16,
+    paddingHorizontal: PADDING.LG,
+    paddingBottom: PADDING.LG,
     borderBottomColor: COPPER_GREY[200],
     borderBottomWidth: 1,
   },
   searchBar: {
-    height: 24,
     flex: 1,
-    marginLeft: 24,
+    marginLeft: MARGIN.LG,
   },
   auxiliaryItem: {
     paddingHorizontal: PADDING.LG,

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { COPPER_GREY, MODAL_BACKDROP_GREY, WHITE } from '../../styles/colors';
-import { BORDER_RADIUS, BORDER_WIDTH, PADDING } from '../../styles/metrics';
+import { MODAL_BACKDROP_GREY, WHITE } from '../../styles/colors';
+import { BORDER_RADIUS, PADDING } from '../../styles/metrics';
 
 export default StyleSheet.create({
   modalContainer: {
@@ -10,10 +10,6 @@ export default StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'column',
     backgroundColor: MODAL_BACKDROP_GREY,
-  },
-  separator: {
-    borderTopWidth: BORDER_WIDTH,
-    borderColor: COPPER_GREY[200],
   },
   modalContent: {
     display: 'flex',
