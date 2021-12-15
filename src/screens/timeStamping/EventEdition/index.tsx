@@ -2,8 +2,8 @@ import pick from 'lodash/pick';
 import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import { View, ScrollView, Text, BackHandler } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { View, ScrollView, Text, BackHandler, KeyboardAvoidingView } from 'react-native';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
@@ -16,18 +16,18 @@ import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
-import { ICON } from '../../../styles/metrics';
+import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
 import { UserType, AuxiliaryType } from '../../../types/UserType';
 import { EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
 import { TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
+import EventFieldEdition from '../../../components/EventFieldEdition';
 
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
-export const SET_START = 'setStart';
-export const SET_AUXILIARY = 'setAuxiliary';
+export const SET_FIELD = 'setField';
 
 const formatAuxiliary = (auxiliary: UserType) => ({
   _id: auxiliary._id,
@@ -98,10 +98,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           }),
           ...(!state.start && { endDate: action.payload?.date || state.endDate }),
         };
-      case SET_START:
-        return { ...state, start: action.payload?.start || false };
-      case SET_AUXILIARY:
-        return { ...state, auxiliary: action.payload?.auxiliary || state.auxiliary };
+      case SET_FIELD:
+        return { ...state, ...action.payload };
       default:
         return state;
     }
@@ -110,7 +108,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const onLeave = useCallback(
     () => {
-      const pickFields = ['startDate', 'endDate', 'auxiliary._id'];
+      const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
       return isEqual(pick(event, pickFields), pick(initialState, pickFields))
         ? navigation.goBack()
         : setExitModal(true);
@@ -139,7 +137,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         return;
       }
 
-      await Events.updateById(event._id, { auxiliary: event.auxiliary._id, ...pick(event, ['startDate', 'endDate']) });
+      const pickedFields = pick(event, ['startDate', 'endDate', 'misc']);
+      await Events.updateById(event._id, { auxiliary: event.auxiliary._id, ...pickedFields });
       navigation.goBack();
     } catch (e) {
       if (e.response.status === 409) setErrorMessage(e.response.data.message);
@@ -195,24 +194,31 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             style={styles.button} />}
       </View>
       {event.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
-      <ScrollView style={styles.container}>
-        <Text style={styles.name}>{formatIdentity(event.customer.identity, 'FL')}</Text>
-        <View style={styles.addressContainer}>
-          <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
-          <View>
-            <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
-            <Text style={styles.addressText}>{formatZipCodeAndCity(event)}</Text>
+      <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.keyboardAvoidingView}
+        keyboardVerticalOffset={MARGIN.XL}>
+        <ScrollView style={styles.container}>
+          <Text style={styles.name}>{formatIdentity(event.customer.identity, 'FL')}</Text>
+          <View style={styles.addressContainer}>
+            <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
+            <View>
+              <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
+              <Text style={styles.addressText}>{formatZipCodeAndCity(event)}</Text>
+            </View>
           </View>
-        </View>
-        <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
-          loading={loading} />
-        <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries}
-          eventEditionDispatch={eventDispatch} isEditable={isAuxiliaryEditable} />
-        <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
-          visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
-          cancelText="Poursuivre les modifications" confirmText="Supprimer" />
-        {!!errorMessage && <NiErrorMessage message={errorMessage} />}
-      </ScrollView>
+          <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
+            loading={loading} />
+          <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries}
+            eventEditionDispatch={eventDispatch} isEditable={isAuxiliaryEditable} />
+          <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
+            visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
+            cancelText="Poursuivre les modifications" confirmText="Supprimer" />
+          {!!errorMessage && <NiErrorMessage message={errorMessage} />}
+          <EventFieldEdition text={event.misc} inputTitle="Note" disabled={event.isBilled || false}
+            buttonTitle="Ajouter une note" multiline={false}
+            buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />}
+            onChangeText={(value: string) => eventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })} />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };

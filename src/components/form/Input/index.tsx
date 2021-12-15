@@ -17,6 +17,7 @@ interface InputProps {
   darkMode?: boolean,
   validationMessage?: string,
   disabled?: boolean,
+  multiline?: boolean,
 }
 
 const Input = ({
@@ -29,6 +30,7 @@ const Input = ({
   darkMode = false,
   validationMessage = '',
   disabled = false,
+  multiline = false,
 }: InputProps) => {
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(false);
@@ -62,9 +64,9 @@ const Input = ({
       </View>
       <View style={inputStyle.container}>
         <View style={inputStyle.inputContainer}>
-          <TextInput style={inputStyle.input} onChangeText={onChangeText} onTouchStart={() => setIsSelected(true)}
-            onBlur={() => setIsSelected(false)} secureTextEntry={secureTextEntry} keyboardType={keyboardType}
-            value={value} editable={!disabled} autoCapitalize={autoCapitalize} testID={caption} />
+          <TextInput style={inputStyle.input} onChangeText={onChangeText} onBlur={() => setIsSelected(false)}
+            onTouchStart={() => setIsSelected(true)} secureTextEntry={secureTextEntry} keyboardType={keyboardType}
+            value={value} editable={!disabled} autoCapitalize={autoCapitalize} testID={caption} multiline={multiline} />
           {type === PASSWORD &&
             <NiFeatherButton name={iconName} style={inputStyle.icon} onPress={onPasswordIconPress} />}
         </View>

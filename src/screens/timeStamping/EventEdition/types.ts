@@ -17,5 +17,6 @@ export type EventEditionActionType = {
     start?: boolean,
     histories?: EventType['histories'],
     auxiliary?: EventType['auxiliary'],
+    misc?: string,
   },
 }

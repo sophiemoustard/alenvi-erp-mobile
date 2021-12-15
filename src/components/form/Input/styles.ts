@@ -25,7 +25,7 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
   inputContainer: {
     width: '100%',
     borderWidth: BORDER_WIDTH,
-    borderColor: isSelected ? COPPER[500] : COPPER_GREY[600],
+    borderColor: isSelected ? COPPER[500] : COPPER_GREY[300],
     alignItems: 'center',
     borderRadius: BORDER_RADIUS.MD,
     display: 'flex',
