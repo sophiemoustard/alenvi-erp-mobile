@@ -109,7 +109,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const onLeave = useCallback(
     () => {
-      const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc', 'kmDuringEvent'];
+      const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
+      if (event.kmDuringEvent) pickFields.push('kmDuringEvent');
       return isEqual(pick(event, pickFields), pick(initialState, pickFields))
         ? navigation.goBack()
         : setExitModal(true);
@@ -201,7 +202,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
         <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
-        {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) &&
+        {!event.isBilled &&
           <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
             style={styles.button} />}
       </View>
