@@ -3,14 +3,13 @@ import { View, Text, ImageSourcePropType, Image, TouchableOpacity, Alert } from 
 import styles from './styles';
 import { formatIdentity } from '../../core/helpers/utils';
 import { EventType } from '../../types/EventType';
-import { AuxiliaryType } from '../../types/UserType';
 import FeatherButton from '../FeatherButton';
 import EventAuxiliaryEditionModal from '../EventAuxiliaryEditionModal';
-import { EventEditionActionType } from '../../screens/timeStamping/EventEdition/types';
+import { EventEditionActionType, FormattedAuxiliaryType } from '../../screens/timeStamping/EventEdition/types';
 
 type EventAuxiliaryEditionProps = {
   auxiliary: EventType['auxiliary'],
-  auxiliaryOptions: AuxiliaryType[],
+  auxiliaryOptions: FormattedAuxiliaryType[],
   isEditable: boolean,
   eventEditionDispatch: (action: EventEditionActionType) => void,
 }
@@ -44,12 +43,13 @@ const EventAuxiliaryEdition = ({
       <Text style={styles.sectionText}>Intervenant</Text>
       <View style={isEditable ? styles.auxiliaryCellEditable : styles.auxiliaryCellNotEditable}>
         <TouchableOpacity style={styles.auxiliaryInfos} onPress={onPress}>
-          <Image source={auxiliaryPicture} style={styles.image} />
+          <Image source={auxiliaryPicture} style={styles.avatar} />
           <Text style={styles.auxiliaryText}>{formatIdentity(auxiliary.identity, 'FL')}</Text>
           {isEditable && <FeatherButton name='chevron-down' onPress={() => setAuxiliaryEditionModal(true)} />}
         </TouchableOpacity>
         <EventAuxiliaryEditionModal visible={auxiliaryEditionModal} auxiliaryOptions={auxiliaryOptions}
-          onRequestClose={() => setAuxiliaryEditionModal(false)} eventEditionDispatch={eventEditionDispatch} />
+          onRequestClose={() => setAuxiliaryEditionModal(false)} eventEditionDispatch={eventEditionDispatch}
+          selectedAuxiliary={auxiliary} />
       </View>
     </>
   );
