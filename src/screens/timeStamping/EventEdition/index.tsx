@@ -225,15 +225,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />
           {!!errorMessage && <NiErrorMessage message={errorMessage} />}
-          <EventFieldEdition text={event.misc} inputTitle="Note" disabled={event.isBilled || false}
-            buttonTitle="Ajouter une note" multiline={false}
+          <EventFieldEdition text={event.misc} inputTitle="Note" disabled={!!event.isBilled}
+            buttonTitle="Ajouter une note"
             buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />}
             onChangeText={(value: string) => eventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })} />
-          <EventFieldEdition text={event.kmDuringEvent ? event.kmDuringEvent.toString() : ''}
-            disabled={event.isBilled || false} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} suffix={'km'}
-            buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" type={NUMBER}
-            buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />}
-            onChangeText={onChangeKmDuringEvent} />
+          <EventFieldEdition text={event.kmDuringEvent ? event.kmDuringEvent.toString() : ''} suffix={'km'}
+            disabled={!!event.isBilled} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} type={NUMBER}
+            buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" onChangeText={onChangeKmDuringEvent}
+            buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />} />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
