@@ -9,8 +9,10 @@ interface EventFieldEditionProps {
   disabled: boolean,
   inputTitle: string,
   text: string,
-  multiline: boolean,
   onChangeText: (value: string) => void,
+  multiline?: boolean,
+  suffix?: string,
+  type?: string,
 }
 
 const EventFieldEdition = ({
@@ -19,8 +21,10 @@ const EventFieldEdition = ({
   disabled,
   inputTitle,
   text,
-  multiline,
   onChangeText,
+  multiline = false,
+  suffix = '',
+  type = '',
 }: EventFieldEditionProps) => {
   const [displayText, setDisplayText] = useState<boolean>(!!text);
 
@@ -34,7 +38,7 @@ const EventFieldEdition = ({
       {displayText &&
         <View style={styles.inputContainer}>
           <NiInput caption={inputTitle} value={text} onChangeText={onChangeText} multiline={multiline}
-            disabled={disabled} />
+            disabled={disabled} suffix={suffix} type={type} />
         </View>}
     </View>
   );

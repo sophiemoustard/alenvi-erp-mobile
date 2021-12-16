@@ -3,7 +3,7 @@ import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, KeyboardAvoidingView } from 'react-native';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
@@ -21,7 +21,7 @@ import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
 import { UserType } from '../../../types/UserType';
 import { EventEditionActionType, EventEditionProps, EventEditionStateType, FormattedAuxiliaryType } from './types';
-import { TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
+import { NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 
 export const SET_HISTORIES = 'setHistories';
@@ -109,7 +109,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const onLeave = useCallback(
     () => {
-      const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
+      const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc', 'kmDuringEvent'];
       return isEqual(pick(event, pickFields), pick(initialState, pickFields))
         ? navigation.goBack()
         : setExitModal(true);
@@ -139,7 +139,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       }
 
       const pickedFields = pick(event, ['startDate', 'endDate', 'misc']);
-      await Events.updateById(event._id, { auxiliary: event.auxiliary._id, ...pickedFields });
+      await Events.updateById(
+        event._id,
+        {
+          auxiliary: event.auxiliary._id,
+          kmDuringEvent: Number.parseFloat(event.kmDuringEvent) || 0,
+          ...pickedFields,
+        }
+      );
       navigation.goBack();
     } catch (e) {
       if (e.response.status === 409) setErrorMessage(e.response.data.message);
@@ -168,6 +175,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       console.error(e);
     }
   }, [event.endDate, event.startDate]);
+
+  const onChangeKmDuringEvent = (value: string) => (
+    eventDispatch({ type: SET_FIELD, payload: { kmDuringEvent: value.replace(',', '.') || '' } })
+  );
 
   useEffect(() => { getActiveAuxiliaries(event.company); }, [event.company, getActiveAuxiliaries]);
 
@@ -218,6 +229,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             buttonTitle="Ajouter une note" multiline={false}
             buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />}
             onChangeText={(value: string) => eventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })} />
+          <EventFieldEdition text={event.kmDuringEvent ? event.kmDuringEvent.toString() : ''}
+            disabled={event.isBilled || false} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} suffix={'km'}
+            buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" type={NUMBER}
+            buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />}
+            onChangeText={onChangeKmDuringEvent} />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
