@@ -20,5 +20,6 @@ export type EventEditionActionType = {
     histories?: EventType['histories'],
     auxiliary?: EventType['auxiliary'],
     misc?: string,
+    kmDuringEvent?: string,
   },
 }

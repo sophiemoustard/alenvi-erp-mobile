@@ -12,6 +12,7 @@ export const PASSWORD = 'password';
 export const EMAIL = 'email';
 export const PHONE = 'phone';
 export const MOBILE = 'mobile';
+export const NUMBER = 'number';
 
 // REGEX
 export const EMAIL_REGEX = /^\s*[\w.+]+@([\w-]+\.)+[\w-]{2,4}\s*$/;

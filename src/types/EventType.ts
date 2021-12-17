@@ -22,6 +22,7 @@ export type EventType = {
   auxiliary: AuxiliaryType,
   company: string,
   misc: string,
+  kmDuringEvent: string,
 };
 
 export type EventHistoryType = {

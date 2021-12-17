@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, KeyboardTypeOptions } from 'react-native';
 import styles, { InputStyleType } from './styles';
 import NiFeatherButton from '../../FeatherButton';
-import { PASSWORD, EMAIL } from '../../../core/data/constants';
+import { PASSWORD, EMAIL, NUMBER } from '../../../core/data/constants';
 import { WHITE } from '../../../styles/colors';
 import Shadow from '../../design/Shadow';
 import { FeatherType } from '../../../types/IconType';
@@ -18,6 +18,7 @@ interface InputProps {
   validationMessage?: string,
   disabled?: boolean,
   multiline?: boolean,
+  suffix?: string,
 }
 
 const Input = ({
@@ -31,6 +32,7 @@ const Input = ({
   validationMessage = '',
   disabled = false,
   multiline = false,
+  suffix = '',
 }: InputProps) => {
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(false);
@@ -42,8 +44,11 @@ const Input = ({
 
   useEffect(() => {
     setAutoCapitalize(['password', 'email'].includes(type) ? 'none' : 'sentences');
-    setKeyboardType(type === EMAIL ? 'email-address' : 'default');
     setSecureTextEntry(type === PASSWORD);
+
+    if (type === EMAIL) setKeyboardType('email-address');
+    else if (type === NUMBER) setKeyboardType('decimal-pad');
+    else setKeyboardType('default');
   }, [type]);
 
   useEffect(() => setIconName(secureTextEntry ? 'eye-off' : 'eye'), [secureTextEntry]);
@@ -69,6 +74,7 @@ const Input = ({
             value={value} editable={!disabled} autoCapitalize={autoCapitalize} testID={caption} multiline={multiline} />
           {type === PASSWORD &&
             <NiFeatherButton name={iconName} style={inputStyle.icon} onPress={onPasswordIconPress} />}
+          {!!suffix && <Text style={styles({ isSelected }).suffix}>{suffix}</Text>}
         </View>
         {isSelected && <Shadow />}
       </View>

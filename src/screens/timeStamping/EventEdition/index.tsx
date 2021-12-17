@@ -3,7 +3,7 @@ import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, KeyboardAvoidingView } from 'react-native';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
@@ -21,7 +21,7 @@ import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
 import { UserType } from '../../../types/UserType';
 import { EventEditionActionType, EventEditionProps, EventEditionStateType, FormattedAuxiliaryType } from './types';
-import { TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
+import { NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 
 export const SET_HISTORIES = 'setHistories';
@@ -110,6 +110,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const onLeave = useCallback(
     () => {
       const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
+      if (event.kmDuringEvent) pickFields.push('kmDuringEvent');
       return isEqual(pick(event, pickFields), pick(initialState, pickFields))
         ? navigation.goBack()
         : setExitModal(true);
@@ -139,7 +140,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       }
 
       const pickedFields = pick(event, ['startDate', 'endDate', 'misc']);
-      await Events.updateById(event._id, { auxiliary: event.auxiliary._id, ...pickedFields });
+      await Events.updateById(
+        event._id,
+        {
+          auxiliary: event.auxiliary._id,
+          kmDuringEvent: Number.parseFloat(event.kmDuringEvent) || 0,
+          ...pickedFields,
+        }
+      );
       navigation.goBack();
     } catch (e) {
       if (e.response.status === 409) setErrorMessage(e.response.data.message);
@@ -169,6 +177,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     }
   }, [event.endDate, event.startDate]);
 
+  const onChangeKmDuringEvent = (value: string) => (
+    eventDispatch({ type: SET_FIELD, payload: { kmDuringEvent: value.replace(',', '.') || '' } })
+  );
+
   useEffect(() => { getActiveAuxiliaries(event.company); }, [event.company, getActiveAuxiliaries]);
 
   const refreshHistories = useCallback(async () => {
@@ -190,7 +202,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
         <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
-        {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) &&
+        {!event.isBilled &&
           <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
             style={styles.button} />}
       </View>
@@ -214,10 +226,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />
           {!!errorMessage && <NiErrorMessage message={errorMessage} />}
-          <EventFieldEdition text={event.misc} inputTitle="Note" disabled={event.isBilled || false}
-            buttonTitle="Ajouter une note" multiline={false}
+          <EventFieldEdition text={event.misc} inputTitle="Note" disabled={!!event.isBilled}
+            buttonTitle="Ajouter une note"
             buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />}
             onChangeText={(value: string) => eventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })} />
+          <EventFieldEdition text={event.kmDuringEvent ? event.kmDuringEvent.toString() : ''} suffix={'km'}
+            disabled={!!event.isBilled} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} type={NUMBER}
+            buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" onChangeText={onChangeKmDuringEvent}
+            buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />} />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

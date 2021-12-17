@@ -53,6 +53,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: PADDING.XL,
+    marginBottom: MARGIN.LG,
   },
   name: {
     ...FIRA_SANS_BLACK.XL,
