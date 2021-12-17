@@ -15,6 +15,7 @@ export interface InputStyleType {
   captionContainer: object,
   caption: object,
   invalid: object,
+  suffix: object,
 }
 
 const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
@@ -25,7 +26,7 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
   inputContainer: {
     width: '100%',
     borderWidth: BORDER_WIDTH,
-    borderColor: isSelected ? COPPER[500] : COPPER_GREY[600],
+    borderColor: isSelected ? COPPER[500] : COPPER_GREY[300],
     alignItems: 'center',
     borderRadius: BORDER_RADIUS.MD,
     display: 'flex',
@@ -55,6 +56,10 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
     ...FIRA_SANS_ITALIC.SM,
     color: ORANGE[600],
     marginTop: MARGIN.XXS,
+  },
+  suffix: {
+    paddingHorizontal: PADDING.LG,
+    color: COPPER_GREY[500],
   },
 });
 

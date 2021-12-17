@@ -15,7 +15,7 @@ export default StyleSheet.create({
     marginBottom: MARGIN.SM,
     borderWidth: BORDER_WIDTH,
     borderRadius: BORDER_RADIUS.SM,
-    borderColor: COPPER_GREY[200],
+    borderColor: COPPER_GREY[300],
   },
   auxiliaryCellNotEditable: {
     flexDirection: 'row',
@@ -24,11 +24,10 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: MARGIN.SM,
   },
-  image: {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: BORDER_RADIUS.XXL,
+  avatar: {
+    ...AVATAR_SIZE.MD,
     borderColor: COPPER_GREY[200],
+    borderWidth: BORDER_WIDTH,
   },
   auxiliaryInfos: {
     flexDirection: 'row',

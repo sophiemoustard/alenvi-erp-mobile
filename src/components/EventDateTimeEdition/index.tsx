@@ -8,7 +8,7 @@ import WarningBanner from '../WarningBanner';
 import NiInput from '../form/Input';
 import ConfirmationModal from '../modals/ConfirmationModal';
 import { EventEditionActionType, EventEditionStateType } from '../../screens/timeStamping/EventEdition/types';
-import { SET_DATES, SET_START, SET_TIME } from '../../screens/timeStamping/EventEdition';
+import { SET_DATES, SET_FIELD, SET_TIME } from '../../screens/timeStamping/EventEdition';
 import { EventHistoryType } from '../../types/EventType';
 import { ModeType } from '../../types/DateTimeType';
 import styles from './styles';
@@ -95,7 +95,7 @@ const EventDateTimeEdition = ({
 
     if ((event.startDateTimeStamp || event.endDateTimeStamp) && mode === DATE) return;
 
-    eventEditionDispatch({ type: SET_START, payload: { start } });
+    eventEditionDispatch({ type: SET_FIELD, payload: { start: start || false } });
     pickerDispatch({ type: SWITCH_PICKER, payload: { startPickerSelected: start, mode } });
   };
 
@@ -116,7 +116,10 @@ const EventDateTimeEdition = ({
   );
 
   const onChangePicker = (pickerEvent: any, newDate: Date | undefined) => {
-    if (!newDate) return;
+    if (!newDate) {
+      if (!isIOS) pickerDispatch({ type: HIDE_PICKER });
+      return;
+    }
 
     if (picker.mode === DATE) eventEditionDispatch({ type: SET_DATES, payload: { date: newDate } });
 

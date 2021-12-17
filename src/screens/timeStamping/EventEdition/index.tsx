@@ -1,8 +1,9 @@
-import pick from 'lodash.pick';
+import pick from 'lodash/pick';
 import get from 'lodash.get';
+import isEqual from 'lodash.isequal';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import { View, ScrollView, Text, BackHandler } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { View, ScrollView, Text, BackHandler, KeyboardAvoidingView } from 'react-native';
+import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
@@ -15,23 +16,23 @@ import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
-import { ICON } from '../../../styles/metrics';
+import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
-import { UserType, AuxiliaryType } from '../../../types/UserType';
-import { EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
-import { TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
+import { UserType } from '../../../types/UserType';
+import { EventEditionActionType, EventEditionProps, EventEditionStateType, FormattedAuxiliaryType } from './types';
+import { NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
+import EventFieldEdition from '../../../components/EventFieldEdition';
 
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
-export const SET_START = 'setStart';
-export const SET_AUXILIARY = 'setAuxiliary';
+export const SET_FIELD = 'setField';
 
-const formatAuxiliary = (auxiliary: UserType) => ({
+const formatAuxiliary = (auxiliary: UserType): FormattedAuxiliaryType => ({
   _id: auxiliary._id,
-  ...pick(auxiliary, ['picture', 'contracts']),
-  identity: { ...pick(auxiliary.identity, ['firstname', 'lastname']) },
+  ...pick(auxiliary, ['picture', 'contracts', 'identity']),
+  formattedIdentity: formatIdentity(auxiliary.identity, 'FL'),
 });
 
 const formatZipCodeAndCity = (intervention: EventType) => {
@@ -57,7 +58,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
-  const [activeAuxiliaries, setActiveAuxiliaries] = useState<AuxiliaryType[]>([]);
+  const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
   const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(isEditable(initialState));
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
@@ -98,10 +99,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           }),
           ...(!state.start && { endDate: action.payload?.date || state.endDate }),
         };
-      case SET_START:
-        return { ...state, start: action.payload?.start || false };
-      case SET_AUXILIARY:
-        return { ...state, auxiliary: action.payload?.auxiliary || state.auxiliary };
+      case SET_FIELD:
+        return { ...state, ...action.payload };
       default:
         return state;
     }
@@ -109,19 +108,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [event, eventDispatch] = useReducer(reducer, initialState);
 
   const onLeave = useCallback(
-    () => ((event.startDate === initialState.startDate && event.endDate === initialState.endDate &&
-        event.auxiliary._id === initialState.auxiliary._id)
-      ? navigation.goBack()
-      : setExitModal(true)),
-    [
-      initialState.endDate,
-      initialState.startDate,
-      initialState.auxiliary,
-      event.endDate,
-      event.startDate,
-      event.auxiliary,
-      navigation,
-    ]
+    () => {
+      const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
+      if (event.kmDuringEvent) pickFields.push('kmDuringEvent');
+      return isEqual(pick(event, pickFields), pick(initialState, pickFields))
+        ? navigation.goBack()
+        : setExitModal(true);
+    },
+    [initialState, event, navigation]
   );
 
   const hardwareBackPress = useCallback(() => {
@@ -145,7 +139,15 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         return;
       }
 
-      await Events.updateById(event._id, { auxiliary: event.auxiliary._id, ...pick(event, ['startDate', 'endDate']) });
+      const pickedFields = pick(event, ['startDate', 'endDate', 'misc']);
+      await Events.updateById(
+        event._id,
+        {
+          auxiliary: event.auxiliary._id,
+          kmDuringEvent: Number.parseFloat(event.kmDuringEvent) || 0,
+          ...pickedFields,
+        }
+      );
       navigation.goBack();
     } catch (e) {
       if (e.response.status === 409) setErrorMessage(e.response.data.message);
@@ -175,7 +177,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     }
   }, [event.endDate, event.startDate]);
 
-  useEffect(() => { getActiveAuxiliaries(initialState.company); }, [initialState.company, getActiveAuxiliaries]);
+  const onChangeKmDuringEvent = (value: string) => (
+    eventDispatch({ type: SET_FIELD, payload: { kmDuringEvent: value.replace(',', '.') || '' } })
+  );
+
+  useEffect(() => { getActiveAuxiliaries(event.company); }, [event.company, getActiveAuxiliaries]);
 
   const refreshHistories = useCallback(async () => {
     setLoading(true);
@@ -195,30 +201,41 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       <View style={styles.header}>
         <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
-        <Text style={styles.text}>{formatDate(initialState.startDate, true)}</Text>
-        {!((event.startDateTimeStamp && event.endDateTimeStamp) || event.isBilled) &&
+        <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
+        {!event.isBilled &&
           <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
             style={styles.button} />}
       </View>
       {event.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
-      <ScrollView style={styles.container}>
-        <Text style={styles.name}>{formatIdentity(initialState.customer.identity, 'FL')}</Text>
-        <View style={styles.addressContainer}>
-          <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
-          <View>
-            <Text style={styles.addressText}>{`${initialState?.customer?.contact?.primaryAddress?.street}`}</Text>
-            <Text style={styles.addressText}>{formatZipCodeAndCity(initialState)}</Text>
+      <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.keyboardAvoidingView}
+        keyboardVerticalOffset={MARGIN.XL}>
+        <ScrollView style={styles.container}>
+          <Text style={styles.name}>{formatIdentity(event.customer.identity, 'FL')}</Text>
+          <View style={styles.addressContainer}>
+            <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
+            <View>
+              <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
+              <Text style={styles.addressText}>{formatZipCodeAndCity(event)}</Text>
+            </View>
           </View>
-        </View>
-        <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
-          loading={loading} />
-        <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries}
-          eventEditionDispatch={eventDispatch} isEditable={isAuxiliaryEditable} />
-        <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
-          visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
-          cancelText="Poursuivre les modifications" confirmText="Supprimer" />
-        {!!errorMessage && <NiErrorMessage message={errorMessage} />}
-      </ScrollView>
+          <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
+            loading={loading} />
+          <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries}
+            eventEditionDispatch={eventDispatch} isEditable={isAuxiliaryEditable} />
+          <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
+            visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
+            cancelText="Poursuivre les modifications" confirmText="Supprimer" />
+          {!!errorMessage && <NiErrorMessage message={errorMessage} />}
+          <EventFieldEdition text={event.misc} inputTitle="Note" disabled={!!event.isBilled}
+            buttonTitle="Ajouter une note"
+            buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />}
+            onChangeText={(value: string) => eventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })} />
+          <EventFieldEdition text={event.kmDuringEvent ? event.kmDuringEvent.toString() : ''} suffix={'km'}
+            disabled={!!event.isBilled} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} type={NUMBER}
+            buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" onChangeText={onChangeKmDuringEvent}
+            buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />} />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 };

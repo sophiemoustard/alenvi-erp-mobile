@@ -11,7 +11,7 @@ export const formatPhoneForPayload = (phoneNumber: Number) => (phoneNumber
 
 export const formatEmailForPayload = (email: string) => email.trim();
 
-export const capitalizeFirstLetter = (s: string) => `${s.charAt(0).toUpperCase()}${s.substr(1)}`;
+export const capitalizeFirstLetter = (s: string) => `${s.charAt(0).toUpperCase()}${s.substring(1)}`;
 
 export const formatWordToPlural = (items: any, text: string) => (items.length > 1 ? `${text}s` : `${text}`);
 

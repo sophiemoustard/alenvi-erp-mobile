@@ -21,6 +21,8 @@ export type EventType = {
   isBilled?: boolean,
   auxiliary: AuxiliaryType,
   company: string,
+  misc: string,
+  kmDuringEvent: string,
 };
 
 export type EventHistoryType = {

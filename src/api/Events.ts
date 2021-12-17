@@ -3,6 +3,7 @@ import Environment from '../../environment';
 import { EventTypeEnum } from '../types/EventType';
 
 export type timeStampEventPayloadType = { action: string, reason?: string, startDate?: Date, endDate?: Date };
+type updateEventsPayloadType = { auxiliary: string, startDate: Date, endDate: Date, kmDuringEvent: number };
 
 export default {
   list: async (params: {
@@ -20,8 +21,8 @@ export default {
     const baseURL = await Environment.getBaseUrl();
     await axiosLogged.put(`${baseURL}/events/${id}/timestamping`, data);
   },
-  updateById: async (eventId: string, data: { auxiliary: string, startDate: Date, endDate: Date }) => {
+  updateById: async (eventId: string, payload: updateEventsPayloadType) => {
     const baseURL = await Environment.getBaseUrl();
-    await axiosLogged.put(`${baseURL}/events/${eventId}`, data);
+    await axiosLogged.put(`${baseURL}/events/${eventId}`, payload);
   },
 };

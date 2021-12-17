@@ -31,7 +31,7 @@ export const addTime = (date: Date, time: number) => {
 };
 
 export const changeDate = (oldDate: Date, newDate: Date): Date => {
-  const date = oldDate;
+  const date = new Date(oldDate);
   date.setFullYear(newDate.getFullYear());
   date.setMonth(newDate.getMonth());
   date.setDate(newDate.getDate());
