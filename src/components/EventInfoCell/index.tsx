@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { View, Text } from 'react-native';
 import { CIVILITY_OPTIONS } from '../../core/data/constants';
-import { formatTime } from '../../core/helpers/dates';
+import { formatTime } from '../../core/helpers/nativeDates';
 import styles from './styles';
 
 interface EventInfoCellProps {

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { isBefore } from '../helpers/dates';
+import { isBefore } from './nativeDates';
 import { ONE_YEAR_IN_MILLISECONDS } from '../data/constants';
 
 const isTokenValid = (token: string | null, tokenExpireDate: string | null): boolean =>

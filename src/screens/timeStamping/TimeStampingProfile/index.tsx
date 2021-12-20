@@ -6,10 +6,11 @@ import Events from '../../../api/Events';
 import { Context as AuthContext } from '../../../context/AuthContext';
 import { ACTIVE_STATE, INTERVENTION } from '../../../core/data/constants';
 import { formatWordToPlural } from '../../../core/helpers/utils';
-import { formatTime, formatDate, ascendingSortArray } from '../../../core/helpers/dates';
+import { formatTime, formatDate, ascendingSortArray } from '../../../core/helpers/nativeDates';
 import TimeStampingCell from '../../../components/TimeStampingCell';
 import styles from './styles';
 import { EventType } from '../../../types/EventType';
+import CompaniDate from '../../../core/helpers/dates/CompaniDates';
 
 const renderEvent = (event: EventType) => (
   <View key={event._id}>
@@ -73,6 +74,7 @@ const TimeStampingProfile = () => {
       <Text style={commonStyle.title}>Horodatage</Text>
       <View style={styles.container}>
         <View>
+          <Text>{CompaniDate().format('dd/LL/yyyy')}</Text>
           <Text style={styles.date}>{formatDate(displayedDate)}</Text>
           <Text style={styles.time}>{formatTime(displayedDate)}</Text>
         </View>

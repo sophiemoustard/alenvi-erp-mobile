@@ -3,7 +3,7 @@ import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import { Feather } from '@expo/vector-icons';
-import { formatTime } from '../../core/helpers/dates';
+import { formatTime } from '../../core/helpers/nativeDates';
 import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
 import styles from './styles';
 import { EventType, EventHistoryType } from '../../types/EventType';
