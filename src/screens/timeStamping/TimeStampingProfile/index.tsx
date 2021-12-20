@@ -6,7 +6,7 @@ import Events from '../../../api/Events';
 import { Context as AuthContext } from '../../../context/AuthContext';
 import { ACTIVE_STATE, INTERVENTION } from '../../../core/data/constants';
 import { formatWordToPlural } from '../../../core/helpers/utils';
-import { formatTime, formatDate, ascendingSortArray } from '../../../core/helpers/nativeDates';
+import { ascendingSortArray } from '../../../core/helpers/nativeDates';
 import TimeStampingCell from '../../../components/TimeStampingCell';
 import styles from './styles';
 import { EventType } from '../../../types/EventType';
@@ -45,13 +45,12 @@ const TimeStampingProfile = () => {
       let isActive = true;
 
       const fetchInterventions = async () => {
-        const today = new Date();
         try {
           if (!loggedUser || !loggedUser._id) return;
           const params = {
             auxiliary: loggedUser._id,
-            startDate: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 0, 0, 0, 0),
-            endDate: new Date(today.getFullYear(), today.getMonth(), today.getDate(), 23, 59, 59, 999),
+            startDate: CompaniDate().startOf('day').toDate(),
+            endDate: CompaniDate().endOf('day').toDate(),
             type: INTERVENTION,
             isCancelled: false,
           };
@@ -74,9 +73,8 @@ const TimeStampingProfile = () => {
       <Text style={commonStyle.title}>Horodatage</Text>
       <View style={styles.container}>
         <View>
-          <Text>{CompaniDate().format('dd/LL/yyyy')}</Text>
-          <Text style={styles.date}>{formatDate(displayedDate)}</Text>
-          <Text style={styles.time}>{formatTime(displayedDate)}</Text>
+          <Text style={styles.date}>{CompaniDate(displayedDate).format('cccc dd LLLL')}</Text>
+          <Text style={styles.time}>{CompaniDate(displayedDate).format('HH:mm')}</Text>
         </View>
         <View style={styles.viewIntervention}>
           <Text style={styles.textIntervention}>{events.length} {formatWordToPlural(events, 'intervention')}</Text>

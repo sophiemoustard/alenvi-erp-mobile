@@ -1,13 +1,16 @@
-import luxon from './luxon';
+import { DateTimeUnit, DateTime } from 'luxon';
 
 type CompaniDateType = {
-  _date: luxon.DateTime;
+  _date: DateTime;
   format: (str: string) => string,
+  toDate: () => Date,
+  startOf: (unit: DateTimeUnit) => CompaniDateType,
+  endOf: (unit: DateTimeUnit) => CompaniDateType,
 }
 
 const CompaniDate = (...args: any[]) => CompaniDateFactory(_formatMiscToCompaniDate(...args));
 
-const CompaniDateFactory = (inputDate: luxon.DateTime): CompaniDateType => {
+const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
   const _date = inputDate;
 
   return ({
@@ -21,29 +24,39 @@ const CompaniDateFactory = (inputDate: luxon.DateTime): CompaniDateType => {
       return _date.toFormat(fmt);
     },
 
+    toDate() {
+      return this._date.toUTC().toJSDate();
+    },
+
     // QUERY
 
     // MANIPULATE
+    startOf(unit: DateTimeUnit) {
+      return CompaniDateFactory(_date.startOf(unit));
+    },
 
+    endOf(unit: DateTimeUnit) {
+      return CompaniDateFactory(_date.endOf(unit));
+    },
   });
 };
 
 const _formatMiscToCompaniDate = (...args: any[]) => {
-  if (!args.length) return luxon.DateTime.now();
+  if (!args.length) return DateTime.now();
 
   if (args.length === 1) {
-    if (args[0] instanceof Object && args[0]?._date instanceof luxon.DateTime) return args[0]._getDate();
-    if (args[0] instanceof luxon.DateTime) return args[0];
-    if (args[0] instanceof Date) return luxon.DateTime.fromJSDate(args[0]);
-    if (typeof args[0] === 'string' && args[0] !== '') return luxon.DateTime.fromISO(args[0]);
+    if (args[0] instanceof Object && args[0]?._date instanceof DateTime) return args[0]._date();
+    if (args[0] instanceof DateTime) return args[0];
+    if (args[0] instanceof Date) return DateTime.fromJSDate(args[0]);
+    if (typeof args[0] === 'string' && args[0] !== '') return DateTime.fromISO(args[0]);
   }
 
   if (args.length === 2 && typeof args[0] === 'string' && typeof args[1] === 'string') {
     const options = args[0].endsWith('Z') ? { zone: 'utc' } : {};
-    return luxon.DateTime.fromFormat(args[0], args[1], options);
+    return DateTime.fromFormat(args[0], args[1], options);
   }
 
-  return luxon.DateTime.invalid('wrong arguments');
+  return DateTime.invalid('wrong arguments');
 };
 
 export default CompaniDate;
