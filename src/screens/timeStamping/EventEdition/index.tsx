@@ -21,7 +21,7 @@ import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
 import { UserType } from '../../../types/UserType';
 import { EventEditionActionType, EventEditionProps, EventEditionStateType, FormattedAuxiliaryType } from './types';
-import { NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
+import { FLOAT_REGEX, NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 
 export const SET_HISTORIES = 'setHistories';
@@ -139,6 +139,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         return;
       }
 
+      const isValidNumber = event.kmDuringEvent.match(FLOAT_REGEX);
+      if (!isValidNumber) {
+        setErrorMessage('Champ invalide : veuillez saisir un nombre.');
+        return;
+      }
+
       const pickedFields = pick(event, ['startDate', 'endDate', 'misc']);
       await Events.updateById(
         event._id,
@@ -225,7 +231,6 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />
-          {!!errorMessage && <NiErrorMessage message={errorMessage} />}
           <EventFieldEdition text={event.misc} inputTitle="Note" disabled={!!event.isBilled}
             buttonTitle="Ajouter une note"
             buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />}
@@ -234,6 +239,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             disabled={!!event.isBilled} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} type={NUMBER}
             buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" onChangeText={onChangeKmDuringEvent}
             buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />} />
+          {!!errorMessage && <NiErrorMessage message={errorMessage} />}
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
