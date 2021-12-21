@@ -1,4 +1,5 @@
-import { DateTimeUnit, DateTime } from 'luxon';
+import { DateTimeUnit } from 'luxon';
+import { DateTime } from './luxon';
 
 type CompaniDateType = {
   _date: DateTime;

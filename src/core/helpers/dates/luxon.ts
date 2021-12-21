@@ -13,4 +13,4 @@ Settings.defaultLocale = 'fr';
 Settings.defaultZone = 'Europe/Paris';
 Settings.throwOnInvalid = true;
 
-export { Settings, DateTime };
+export { DateTime };
