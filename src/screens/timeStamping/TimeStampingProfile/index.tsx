@@ -9,7 +9,7 @@ import { formatWordToPlural, ascendingSortArray } from '../../../core/helpers/ut
 import TimeStampingCell from '../../../components/TimeStampingCell';
 import styles from './styles';
 import { EventType } from '../../../types/EventType';
-import CompaniDate from '../../../core/helpers/dates/CompaniDates';
+import CompaniDate from '../../../core/helpers/dates/companiDates';
 
 const renderEvent = (event: EventType) => (
   <View key={event._id}>

@@ -3,7 +3,6 @@ import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import { Feather } from '@expo/vector-icons';
-import { formatTime } from '../../core/helpers/nativeDates';
 import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
 import styles from './styles';
 import { EventType, EventHistoryType } from '../../types/EventType';
@@ -12,6 +11,7 @@ import NiPrimaryButton from '../form/PrimaryButton';
 import NiSecondaryButton from '../form/SecondaryButton';
 import { WHITE } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
+import CompaniDate from '../../core/helpers/dates/companiDates';
 
 interface StateType {
   civility: string,
@@ -44,8 +44,8 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         ...state,
         civility: action.payload.event?.customer?.identity?.title || '',
         lastName: action.payload.event?.customer?.identity?.lastname || '',
-        startDate: action.payload.event?.startDate ? new Date(action.payload.event?.startDate) : null,
-        endDate: action.payload.event?.endDate ? new Date(action.payload.event?.endDate) : null,
+        startDate: action.payload.event?.startDate || null,
+        endDate: action.payload.event?.endDate || null,
       };
     case SET_TIMESTAMPED_INFOS:
       return {
@@ -164,7 +164,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         <View style={styles.container}>
           <View>
             <Text style={styles.timeTitle}>Début</Text>
-            {!!eventInfos.startDate && <Text style={styles.scheduledTime}>{formatTime(eventInfos.startDate)}</Text>}
+            {!!eventInfos.startDate &&
+              <Text style={styles.scheduledTime}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
           </View>
           {eventInfos.startDateTimeStamp
             ? renderTimeStamp()
@@ -177,7 +178,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         <View style={styles.container}>
           <View>
             <Text style={styles.timeTitle}>Fin</Text>
-            {!!eventInfos.endDate && <Text style={styles.scheduledTime}>{formatTime(eventInfos.endDate)}</Text>}
+            {!!eventInfos.endDate &&
+              <Text style={styles.scheduledTime}>{CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
           </View>
           {eventInfos.endDateTimeStamp
             ? renderTimeStamp()

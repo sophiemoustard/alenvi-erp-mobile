@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { View, Text } from 'react-native';
 import { CIVILITY_OPTIONS } from '../../core/data/constants';
-import { formatTime } from '../../core/helpers/nativeDates';
+import CompaniDate from '../../core/helpers/dates/companiDates';
 import styles from './styles';
 
 interface EventInfoCellProps {
@@ -21,7 +21,7 @@ const EventInfoCell = ({ identity, style }: EventInfoCellProps) => {
       <View style={styles.sectionDelimiter} />
       <View>
         <Text style={styles.subtitle}>Heure horodatée</Text>
-        <Text style={styles.info}>{formatTime(currentTime.current)}</Text>
+        <Text style={styles.info}>{CompaniDate(currentTime.current).format('HH:mm')}</Text>
       </View>
     </View>
   );
