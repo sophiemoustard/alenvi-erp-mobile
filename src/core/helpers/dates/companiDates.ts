@@ -1,16 +1,20 @@
 import { DateTimeUnit } from 'luxon';
 import { DateTime } from './luxon';
 
+type DateTypes = Date | CompaniDateType | string | DateTime;
+
 type CompaniDateType = {
   _date: DateTime;
   format: (str: string) => string,
   toDate: () => Date,
-  isBefore: (date: Date | CompaniDateType | string) => Boolean,
+  isBefore: (date: DateTypes) => Boolean,
   startOf: (unit: DateTimeUnit) => CompaniDateType,
   endOf: (unit: DateTimeUnit) => CompaniDateType,
 }
 
-const CompaniDate = (...args: any[]) => CompaniDateFactory(_formatMiscToCompaniDate(...args));
+const CompaniDate = (...args: [] | [DateTypes] | [DateTypes, string]) : CompaniDateType => (
+  CompaniDateFactory(_formatMiscToCompaniDate(...args))
+);
 
 const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
   const _date = inputDate;
@@ -31,7 +35,7 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
     },
 
     // QUERY
-    isBefore(miscTypeOtherDate : Date | CompaniDateType | string) {
+    isBefore(miscTypeOtherDate : DateTypes) {
       const otherDate = _formatMiscToCompaniDate(miscTypeOtherDate);
 
       return _date < otherDate;

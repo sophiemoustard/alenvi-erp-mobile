@@ -4,14 +4,14 @@ import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import { Feather } from '@expo/vector-icons';
 import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
-import styles from './styles';
+import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import CameraAccessModal from '../../components/modals/CameraAccessModal';
-import NiPrimaryButton from '../form/PrimaryButton';
-import NiSecondaryButton from '../form/SecondaryButton';
 import { WHITE } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
-import CompaniDate from '../../core/helpers/dates/companiDates';
+import NiPrimaryButton from '../form/PrimaryButton';
+import NiSecondaryButton from '../form/SecondaryButton';
+import styles from './styles';
 
 interface StateType {
   civility: string,
