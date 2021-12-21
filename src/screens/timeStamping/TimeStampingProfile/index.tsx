@@ -6,10 +6,10 @@ import Events from '../../../api/Events';
 import { Context as AuthContext } from '../../../context/AuthContext';
 import { ACTIVE_STATE, INTERVENTION } from '../../../core/data/constants';
 import { formatWordToPlural, ascendingSortArray } from '../../../core/helpers/utils';
-import TimeStampingCell from '../../../components/TimeStampingCell';
-import styles from './styles';
-import { EventType } from '../../../types/EventType';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
+import TimeStampingCell from '../../../components/TimeStampingCell';
+import { EventType } from '../../../types/EventType';
+import styles from './styles';
 
 const renderEvent = (event: EventType) => (
   <View key={event._id}>
