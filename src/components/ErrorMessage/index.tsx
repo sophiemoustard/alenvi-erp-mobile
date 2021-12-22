@@ -10,7 +10,7 @@ interface ErrorMessageProps {
 }
 
 const ErrorMessage = ({ message, type = ERROR }: ErrorMessageProps) => (
-  <Text style={styles(type).message}>{message}</Text>
+  <Text testID={message} style={styles(type).message}>{message}</Text>
 );
 
 export default ErrorMessage;
