@@ -19,7 +19,7 @@ const renderEvent = (event: EventType) => (
 );
 
 const TimeStampingProfile = () => {
-  const [displayedDate, setDisplayedDate] = useState<Date>(new Date());
+  const [displayedDate, setDisplayedDate] = useState<Date>(CompaniDate().toDate());
   const [events, setEvents] = useState<EventType[]>([]);
   const [isAppFocused, setIsAppFocused] = useState<boolean>(true);
   const { loggedUser } = useContext(AuthContext);
@@ -30,7 +30,7 @@ const TimeStampingProfile = () => {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => { setDisplayedDate(new Date()); }, 60000);
+    const interval = setInterval(() => { setDisplayedDate(CompaniDate().toDate()); }, 60000);
     AppState.addEventListener('change', handleBackground);
 
     return () => {
