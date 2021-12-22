@@ -1,4 +1,4 @@
-import { Settings, DateTime } from 'luxon';
+import { Settings, DateTime, DateTimeUnit } from 'luxon';
 import '@formatjs/intl-getcanonicallocales/polyfill';
 import '@formatjs/intl-locale/polyfill';
 import '@formatjs/intl-pluralrules/polyfill';
@@ -13,4 +13,4 @@ Settings.defaultLocale = 'fr';
 Settings.defaultZone = 'Europe/Paris';
 Settings.throwOnInvalid = true;
 
-export { DateTime };
+export { DateTime, DateTimeUnit };
