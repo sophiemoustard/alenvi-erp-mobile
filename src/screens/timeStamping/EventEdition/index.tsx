@@ -139,9 +139,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         return;
       }
 
-      const isValidNumber = event.kmDuringEvent.match(FLOAT_REGEX);
+      const isValidNumber = event.kmDuringEvent ? event.kmDuringEvent.toString().match(FLOAT_REGEX) : true;
       if (!isValidNumber) {
-        setErrorMessage('Champ invalide : veuillez saisir un nombre.');
+        setErrorMessage('Champ invalide : veuillez saisir un nombre positif.');
         return;
       }
 
@@ -239,7 +239,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             disabled={!!event.isBilled} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} type={NUMBER}
             buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" onChangeText={onChangeKmDuringEvent}
             buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />} />
-          {!!errorMessage && <NiErrorMessage message={errorMessage} />}
+          <NiErrorMessage message={errorMessage} />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
