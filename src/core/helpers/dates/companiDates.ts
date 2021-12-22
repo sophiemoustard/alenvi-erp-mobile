@@ -1,10 +1,10 @@
 import { DateTimeUnit } from 'luxon';
 import { DateTime } from './luxon';
 
-type DateTypes = Date | CompaniDateType | string | DateTime;
+type DateTypes = Date | CompaniDateType | string;
 
 type CompaniDateType = {
-  _date: DateTime;
+  getDate: DateTime,
   format: (str: string) => string,
   toDate: () => Date,
   isBefore: (date: DateTypes) => Boolean,
@@ -12,7 +12,7 @@ type CompaniDateType = {
   endOf: (unit: DateTimeUnit) => CompaniDateType,
 }
 
-const CompaniDate = (...args: [] | [DateTypes] | [DateTypes, string]) : CompaniDateType => (
+const CompaniDate = (...args: DateTypes[]) : CompaniDateType => (
   CompaniDateFactory(_formatMiscToCompaniDate(...args))
 );
 
@@ -21,7 +21,7 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
 
   return ({
     // GETTER
-    get _date() {
+    get getDate() {
       return _date;
     },
 
@@ -31,7 +31,7 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
     },
 
     toDate() {
-      return this._date.toUTC().toJSDate();
+      return _date.toUTC().toJSDate();
     },
 
     // QUERY
@@ -52,13 +52,12 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
   });
 };
 
-const _formatMiscToCompaniDate = (...args: any[]) => {
+const _formatMiscToCompaniDate = (...args: DateTypes[]) => {
   if (!args.length) return DateTime.now();
 
   if (args.length === 1) {
-    if (args[0] instanceof Object && args[0]?._date instanceof DateTime) return args[0]._date();
-    if (args[0] instanceof DateTime) return args[0];
     if (args[0] instanceof Date) return DateTime.fromJSDate(args[0]);
+    if (args[0] instanceof Object && args[0]?.getDate instanceof DateTime) return args[0].getDate;
     if (typeof args[0] === 'string' && args[0] !== '') return DateTime.fromISO(args[0]);
   }
 
