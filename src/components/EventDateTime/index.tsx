@@ -1,16 +1,15 @@
 import { Feather } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { DATE, MONTHS, TIME } from '../../core/data/constants';
-import { formatTime } from '../../core/helpers/nativeDates';
-import { capitalizeFirstLetter } from '../../core/helpers/utils';
+import { DATE, TIME } from '../../core/data/constants';
+import CompaniDate from '../../core/helpers/dates/companiDates';
 import { COPPER_GREY } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
 import { ModeType } from '../../types/DateTimeType';
 import styles from './styles';
 
 interface EventDateTimeProps {
-  date: Date,
+  date: string,
   onPress: (mode: ModeType) => void,
   loading: boolean,
   isTimeStamped?: boolean,
@@ -22,9 +21,8 @@ const EventDateTime = ({ date, onPress, loading, isTimeStamped = false, disabled
   const [displayedTime, setDisplayedTime] = useState<string>('');
 
   useEffect(() => {
-    const formattedDate = new Date(date);
-    setDisplayedDate(`${formattedDate.getDate()} ${capitalizeFirstLetter(MONTHS[formattedDate.getMonth()])}`);
-    setDisplayedTime(formatTime(formattedDate));
+    setDisplayedDate(CompaniDate(date).format('dd cccc'));
+    setDisplayedTime(CompaniDate(date).format('HH:mm'));
   }, [date]);
 
   return (
