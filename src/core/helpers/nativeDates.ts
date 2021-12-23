@@ -1,4 +1,3 @@
-import { EventType } from '../../types/EventType';
 import { MONTHS_SHORT, DAYS, MONTHS } from '../data/constants';
 import { capitalizeFirstLetter } from './utils';
 
@@ -45,7 +44,3 @@ export const dateDiff = (newerDate: Date, olderDate: Date) => {
 };
 
 export const getEndOfDay = (date: Date) => new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59);
-
-export const ascendingSortArray = (array: Array<EventType>, key: 'startDate') => [...array].sort(
-  (a, b) => dateDiff(a[key], b[key])
-);

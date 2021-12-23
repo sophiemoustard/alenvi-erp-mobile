@@ -7,7 +7,15 @@ import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-ico
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
-import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore, isAfter } from '../../../core/helpers/dates';
+import {
+  addTime,
+  changeDate,
+  dateDiff,
+  formatDate,
+  getEndOfDay,
+  isBefore,
+  isAfter,
+} from '../../../core/helpers/nativeDates';
 import { formatIdentity } from '../../../core/helpers/utils';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';

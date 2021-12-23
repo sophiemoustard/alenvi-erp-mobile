@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { DATE, MONTHS, TIME } from '../../core/data/constants';
-import { formatTime } from '../../core/helpers/dates';
+import { formatTime } from '../../core/helpers/nativeDates';
 import { capitalizeFirstLetter } from '../../core/helpers/utils';
 import { COPPER_GREY } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
