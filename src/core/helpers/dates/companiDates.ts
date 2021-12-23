@@ -3,9 +3,9 @@ import { DateTime, DateTimeUnit } from './luxon';
 type DateTypes = Date | CompaniDateType | string;
 
 type CompaniDateType = {
-  getDate: DateTime,
+  _getDate: DateTime,
   format: (str: string) => string,
-  toDate: () => Date,
+  toISO: () => string,
   isBefore: (date: DateTypes) => Boolean,
   startOf: (unit: DateTimeUnit) => CompaniDateType,
   endOf: (unit: DateTimeUnit) => CompaniDateType,
@@ -20,7 +20,7 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
 
   return ({
     // GETTER
-    get getDate() {
+    get _getDate() {
       return _date;
     },
 
@@ -29,8 +29,8 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
       return _date.toFormat(fmt);
     },
 
-    toDate() {
-      return _date.toUTC().toJSDate();
+    toISO() {
+      return _date.toUTC().toISO();
     },
 
     // QUERY
@@ -56,7 +56,7 @@ const _formatMiscToCompaniDate = (...args: DateTypes[]) => {
 
   if (args.length === 1) {
     if (args[0] instanceof Date) return DateTime.fromJSDate(args[0]);
-    if (args[0] instanceof Object && args[0]?.getDate instanceof DateTime) return args[0].getDate;
+    if (args[0] instanceof Object && args[0]?._getDate instanceof DateTime) return args[0]._getDate;
     if (typeof args[0] === 'string' && args[0] !== '') return DateTime.fromISO(args[0]);
   }
 

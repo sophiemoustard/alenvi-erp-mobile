@@ -19,7 +19,7 @@ const renderEvent = (event: EventType) => (
 );
 
 const TimeStampingProfile = () => {
-  const [displayedDate, setDisplayedDate] = useState<Date>(CompaniDate().toDate());
+  const [displayedDate, setDisplayedDate] = useState<string>(CompaniDate().toISO());
   const [events, setEvents] = useState<EventType[]>([]);
   const [isAppFocused, setIsAppFocused] = useState<boolean>(true);
   const { loggedUser } = useContext(AuthContext);
@@ -30,7 +30,7 @@ const TimeStampingProfile = () => {
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(() => { setDisplayedDate(CompaniDate().toDate()); }, 60000);
+    const interval = setInterval(() => { setDisplayedDate(CompaniDate().toISO()); }, 60000);
     AppState.addEventListener('change', handleBackground);
 
     return () => {
@@ -48,8 +48,8 @@ const TimeStampingProfile = () => {
           if (!loggedUser || !loggedUser._id) return;
           const params = {
             auxiliary: loggedUser._id,
-            startDate: CompaniDate().startOf('day').toDate(),
-            endDate: CompaniDate().endOf('day').toDate(),
+            startDate: CompaniDate().startOf('day').toISO(),
+            endDate: CompaniDate().endOf('day').toISO(),
             type: INTERVENTION,
             isCancelled: false,
           };

@@ -10,7 +10,7 @@ interface EventInfoCellProps {
 }
 
 const EventInfoCell = ({ identity, style }: EventInfoCellProps) => {
-  const currentTime = useRef<Date>(CompaniDate().toDate());
+  const currentTime = useRef<string>(CompaniDate().toISO());
 
   return (
     <View style={[styles.cell, style]}>
