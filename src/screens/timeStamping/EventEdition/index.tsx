@@ -7,16 +7,9 @@ import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-ico
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
-import {
-  addTime,
-  changeDate,
-  dateDiff,
-  formatDate,
-  getEndOfDay,
-  isBefore,
-  isAfter,
-} from '../../../core/helpers/nativeDates';
+import { formatDate, isAfter, isBefore } from '../../../core/helpers/nativeDates';
 import { formatIdentity } from '../../../core/helpers/utils';
+import CompaniDate from '../../../core/helpers/dates/companiDates';
 import FeatherButton from '../../../components/FeatherButton';
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
@@ -65,8 +58,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const initialState: EventEditionStateType = useMemo(() => ({
     histories: [],
     ...route.params.event,
-    startDate: new Date(route.params.event.startDate),
-    endDate: new Date(route.params.event.endDate),
+    startDate: CompaniDate(route.params.event.startDate).toISO(),
+    endDate: CompaniDate(route.params.event.endDate).toISO(),
     start: false,
   }), [route.params.event]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -86,14 +79,13 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
       if (route.params.event.endDateTimeStamp) return state.endDate;
-      if (isBefore(action.payload?.date || state.startDate, state.endDate)) return state.endDate;
 
-      const newDate = addTime(
-        action.payload?.date || state.startDate,
-        dateDiff(initialState.endDate, initialState.startDate)
-      );
-      const newDateIsAfterMidnight = newDate.getDate() !== state.endDate.getDate();
-      return newDateIsAfterMidnight ? getEndOfDay(state.endDate) : newDate;
+      const updatedDate = CompaniDate(action.payload?.date || state.startDate);
+      if (updatedDate.isBefore(state.endDate)) return state.endDate;
+
+      const newDate = updatedDate.add(CompaniDate(initialState.endDate).diff(initialState.startDate, 'minutes'));
+      const endOfDay = CompaniDate(state.endDate).endOf('day');
+      return CompaniDate(newDate).isBefore(endOfDay) ? newDate.toISO() : endOfDay.toISO();
     };
 
     const timeStampHistories: EventHistoryType[] = action.payload?.histories?.filter(isTimeStampHistory) || [];
@@ -106,12 +98,16 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           startDateTimeStamp: timeStampHistories.some((eh: EventHistoryType) => !!eh.update.startHour),
           endDateTimeStamp: timeStampHistories.some((eh: EventHistoryType) => !!eh.update.endHour),
         };
-      case SET_DATES:
+      case SET_DATES: {
+        const newDateUnits = action.payload?.date
+          ? CompaniDate(action.payload.date).getUnits(['year', 'month', 'day'])
+          : {};
         return {
           ...state,
-          startDate: changeDate(state.startDate, action.payload?.date || state.startDate),
-          endDate: changeDate(state.endDate, action.payload?.date || state.endDate),
+          startDate: newDateUnits ? CompaniDate(state.startDate).set(newDateUnits).toISO() : state.startDate,
+          endDate: newDateUnits ? CompaniDate(state.endDate).set(newDateUnits).toISO() : state.endDate,
         };
+      }
       case SET_TIME:
         return {
           ...state,
