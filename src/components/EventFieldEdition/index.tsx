@@ -13,6 +13,7 @@ interface EventFieldEditionProps {
   multiline?: boolean,
   suffix?: string,
   type?: string,
+  errorMessage?: string,
 }
 
 const EventFieldEdition = ({
@@ -25,6 +26,7 @@ const EventFieldEdition = ({
   multiline = false,
   suffix = '',
   type = '',
+  errorMessage = '',
 }: EventFieldEditionProps) => {
   const [displayText, setDisplayText] = useState<boolean>(!!text);
 
@@ -38,7 +40,7 @@ const EventFieldEdition = ({
       {displayText &&
         <View style={styles.inputContainer}>
           <NiInput caption={inputTitle} value={text} onChangeText={onChangeText} multiline={multiline}
-            disabled={disabled} suffix={suffix} type={type} />
+            disabled={disabled} suffix={suffix} type={type} validationMessage={errorMessage} />
         </View>}
     </View>
   );

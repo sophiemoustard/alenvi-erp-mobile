@@ -2,10 +2,11 @@ import React, { useReducer, useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import EventHistories from '../../api/EventHistories';
-import { DATE, isIOS, TIME, TIMESTAMPING_ACTION_TYPE_LIST } from '../../core/data/constants';
+import { DATE, isIOS, TIME, TIMESTAMPING_ACTION_TYPE_LIST, WARNING } from '../../core/data/constants';
 import EventDateTime from '../EventDateTime';
 import WarningBanner from '../WarningBanner';
 import NiInput from '../form/Input';
+import NiErrorMessage from '../ErrorMessage';
 import ConfirmationModal from '../modals/ConfirmationModal';
 import { EventEditionActionType, EventEditionStateType } from '../../screens/timeStamping/EventEdition/types';
 import { SET_DATES, SET_FIELD, SET_TIME } from '../../screens/timeStamping/EventEdition';
@@ -18,6 +19,7 @@ interface EventDateTimeEditionProps {
   eventEditionDispatch: (action: EventEditionActionType) => void,
   refreshHistories: () => void,
   loading: boolean,
+  dateErrorMessage?: string,
 }
 
 interface StateType {
@@ -70,6 +72,7 @@ const EventDateTimeEdition = ({
   eventEditionDispatch,
   refreshHistories,
   loading,
+  dateErrorMessage = '',
 }: EventDateTimeEditionProps) => {
   const [picker, pickerDispatch] = useReducer(reducer, initialState);
   const [maximumStartDate, setMaximumStartDate] = useState<Date | undefined>(undefined);
@@ -179,6 +182,7 @@ const EventDateTimeEdition = ({
           disabled={event.isBilled} onPress={(mode: ModeType) => onPressPicker(false, mode)} />
         {picker.displayEndPicker && <DateTimePicker value={event.endDate} mode={picker.mode} is24Hour locale="fr-FR"
           display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} minimumDate={minimumEndDate} />}
+        <NiErrorMessage message={dateErrorMessage} type={WARNING} />
       </View>
       <ConfirmationModal visible={confirmationModal} title="Cet évènement a déjà été horodaté" exitButton
         cancelText="Retour" confirmText="Annuler l'horodatage" onPressConfirmButton={openCancellationModal}

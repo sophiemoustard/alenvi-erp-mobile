@@ -10,7 +10,6 @@ import Users from '../../../api/Users';
 import { addTime, changeDate, dateDiff, formatDate, getEndOfDay, isBefore, isAfter } from '../../../core/helpers/dates';
 import { formatIdentity } from '../../../core/helpers/utils';
 import FeatherButton from '../../../components/FeatherButton';
-import NiErrorMessage from '../../../components/ErrorMessage';
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
@@ -57,6 +56,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   }), [route.params.event]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isDateError, setIsDateError] = useState<boolean>(false);
+  const [isKmDuringEventError, setIsKmDuringEventError] = useState<boolean>(false);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
   const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(isEditable(initialState));
@@ -133,14 +134,18 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     try {
       setLoading(true);
       setErrorMessage('');
+      setIsDateError(false);
+      setIsKmDuringEventError(false);
 
       if (isBefore(event.endDate, event.startDate)) {
-        setErrorMessage('La date de début est postérieure à la date de fin.');
+        setIsDateError(true);
+        setErrorMessage('Champ invalide: la date de début doit être antérieure à la date de fin.');
         return;
       }
 
-      const isValidNumber = event.kmDuringEvent ? event.kmDuringEvent.toString().match(FLOAT_REGEX) : true;
+      const isValidNumber = !event.kmDuringEvent || event.kmDuringEvent.toString().match(FLOAT_REGEX);
       if (!isValidNumber) {
+        setIsKmDuringEventError(true);
         setErrorMessage('Champ invalide : veuillez saisir un nombre positif.');
         return;
       }
@@ -197,6 +202,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   }, [event._id]);
 
   useEffect(() => { refreshHistories(); }, [refreshHistories]);
+
   useEffect(() => {
     setErrorMessage('');
     setIsAuxiliaryEditable(isEditable(event));
@@ -225,7 +231,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             </View>
           </View>
           <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
-            loading={loading} />
+            loading={loading} dateErrorMessage={isDateError ? errorMessage : ''}/>
           <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries}
             eventEditionDispatch={eventDispatch} isEditable={isAuxiliaryEditable} />
           <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
@@ -238,8 +244,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <EventFieldEdition text={event.kmDuringEvent ? event.kmDuringEvent.toString() : ''} suffix={'km'}
             disabled={!!event.isBilled} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} type={NUMBER}
             buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" onChangeText={onChangeKmDuringEvent}
-            buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />} />
-          <NiErrorMessage message={errorMessage} />
+            buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />}
+            errorMessage={isKmDuringEventError ? errorMessage : ''} />
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
