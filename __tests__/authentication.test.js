@@ -14,28 +14,28 @@ describe('authentication', () => {
   const baseURL = 'test';
   let loggedAxiosMock;
   let notLoggedAxiosMock;
-  let getEnvVarsStub;
-  let getBaseUrlStub;
+  let getEnvVars;
+  let getBaseUrl;
 
   beforeEach(() => {
-    mockAsyncStorage.clear();
     loggedAxiosMock = new MockAdapter(loggedAxios);
     notLoggedAxiosMock = new MockAdapter(notLoggedAxios);
-    getEnvVarsStub = sinon.stub(Environment, 'getEnvVars');
-    getBaseUrlStub = sinon.stub(Environment, 'getBaseUrl');
+    getEnvVars = sinon.stub(Environment, 'getEnvVars');
+    getBaseUrl = sinon.stub(Environment, 'getBaseUrl');
   });
 
   afterEach(() => {
     loggedAxiosMock.restore();
     notLoggedAxiosMock.restore();
-    getEnvVarsStub.restore();
-    getBaseUrlStub.restore();
+    getEnvVars.restore();
+    getBaseUrl.restore();
     cleanup();
+    mockAsyncStorage.clear();
   });
 
   test('should connect user if right credentials', async () => {
-    getEnvVarsStub.returns({ baseURL: 'test' });
-    getBaseUrlStub.returns('test');
+    getEnvVars.returns({ baseURL: 'test' });
+    getBaseUrl.returns('test');
 
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
       .reply(200, { data: { mustUpdate: false } })
@@ -55,8 +55,11 @@ describe('authentication', () => {
       );
 
     const currentDate = new Date();
-    const startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 0, 0, 0, 0);
-    const endDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 23, 59, 59, 999);
+    const baseDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+    const startDate = new Date(baseDate.setHours(0, 0, 0, 0));
+    const endDate = new Date(baseDate.setHours(23, 59, 59, 999));
+    const eventStartDate = new Date(baseDate.setHours(10, 0, 0, 0));
+    const eventEndDate = new Date(baseDate.setHours(12, 0, 0, 0));
 
     loggedAxiosMock.onGet(`${baseURL}/users/userId`)
       .reply(200, { data: { user: { _id: 'userId' } } })
@@ -64,7 +67,7 @@ describe('authentication', () => {
         `${baseURL}/events`,
         { params: { auxiliary: 'userId', startDate, endDate, type: INTERVENTION, isCancelled: false } }
       )
-      .reply(200, { data: { events: [{ _id: 'eventId', startDate: new Date() }] } });
+      .reply(200, { data: { events: [{ _id: 'eventId', startDate: eventStartDate, endDate: eventEndDate }] } });
 
     const element = render(
       <AuthProvider>
@@ -91,8 +94,8 @@ describe('authentication', () => {
   });
 
   test('should not connect user if wrong credentials', async () => {
-    getEnvVarsStub.returns({ baseURL: 'test' });
-    getBaseUrlStub.returns('test');
+    getEnvVars.returns({ baseURL: 'test' });
+    getBaseUrl.returns('test');
 
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
       .reply(200, { data: { mustUpdate: false } })
