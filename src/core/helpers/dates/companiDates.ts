@@ -17,7 +17,8 @@ type CompaniDateType = {
   format: (str: string) => string,
   toDate: () => Date,
   toISO: () => string,
-  isBefore: (date: DateTypes) => Boolean,
+  isBefore: (date: DateTypes) => boolean,
+  isAfter: (date: DateTypes) => boolean,
   startOf: (unit: DateTimeUnit) => CompaniDateType,
   endOf: (unit: DateTimeUnit) => CompaniDateType,
   diff: (date: DateTypes, unit: ToRelativeUnit) => ObjectDurationType,
@@ -60,6 +61,12 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
       const otherDate = _formatMiscToCompaniDate(miscTypeOtherDate);
 
       return _date < otherDate;
+    },
+
+    isAfter(miscTypeOtherDate : DateTypes) {
+      const otherDate = _formatMiscToCompaniDate(miscTypeOtherDate);
+
+      return _date > otherDate;
     },
 
     // MANIPULATE

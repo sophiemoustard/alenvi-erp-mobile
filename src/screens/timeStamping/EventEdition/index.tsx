@@ -7,7 +7,6 @@ import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-ico
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
-import { formatDate, isAfter, isBefore } from '../../../core/helpers/nativeDates';
 import { formatIdentity } from '../../../core/helpers/utils';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import FeatherButton from '../../../components/FeatherButton';
@@ -175,7 +174,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   useEffect(() => {
     setEditedEventValidations({
-      dateRange: isBefore(editedEvent.endDate, editedEvent.startDate),
+      dateRange: CompaniDate(editedEvent.endDate).isBefore(editedEvent.startDate),
       kmDuringEvent: !!editedEvent.kmDuringEvent && !editedEvent.kmDuringEvent.toString().match(FLOAT_REGEX),
     });
   }, [editedEvent]);
@@ -206,8 +205,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       const auxiliaries = await Users.listWithSectorHistories({ company });
       const filteredAuxiliaries = auxiliaries
         .filter((aux: UserType) => aux.contracts && aux.contracts
-          .some(c => isBefore(c.startDate, editedEvent.endDate) &&
-            (!c.endDate || isAfter(c.endDate, editedEvent.startDate))))
+          .some(c => CompaniDate(c.startDate).isBefore(editedEvent.endDate) &&
+            (!c.endDate || CompaniDate(c.endDate).isAfter(editedEvent.startDate))))
         .map((aux: UserType) => (formatAuxiliary(aux)));
 
       setActiveAuxiliaries(filteredAuxiliaries);
@@ -241,7 +240,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       <View style={styles.header}>
         <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
-        <Text style={styles.text}>{formatDate(editedEvent.startDate, true)}</Text>
+        <Text style={styles.text}>{CompaniDate(editedEvent.startDate).format('cccc dd LLL')}</Text>
         {!editedEvent.isBilled &&
           <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
             style={styles.button} />}
