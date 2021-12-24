@@ -22,11 +22,29 @@ import { UserType } from '../../../types/UserType';
 import { EventEditionActionType, EventEditionProps, EventEditionStateType, FormattedAuxiliaryType } from './types';
 import { FLOAT_REGEX, NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
 import EventFieldEdition from '../../../components/EventFieldEdition';
+import ErrorMessage from '../../../components/ErrorMessage';
+
+type errorStateType = {
+  dateErrorMessage: string,
+  kmDuringEventErrorMessage: string,
+  errorMessage: string,
+};
+
+type errorActionType = {
+  type: string,
+  payload?: {
+    dateErrorMessage?: string,
+    kmDuringEventErrorMessage?: string,
+    errorMessage?: string,
+  }
+};
 
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
 export const SET_FIELD = 'setField';
+const SET_ERROR = 'setError';
+const RESET_ERROR = 'resetError';
 
 const formatAuxiliary = (auxiliary: UserType): FormattedAuxiliaryType => ({
   _id: auxiliary._id,
@@ -55,12 +73,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     start: false,
   }), [route.params.event]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [isDateError, setIsDateError] = useState<boolean>(false);
-  const [isKmDuringEventError, setIsKmDuringEventError] = useState<boolean>(false);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
   const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(isEditable(initialState));
+  const [isError, setIsError] = useState<boolean>(false);
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -108,6 +124,29 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   };
   const [event, eventDispatch] = useReducer(reducer, initialState);
 
+  const initialErrorState: errorStateType = {
+    dateErrorMessage: '',
+    kmDuringEventErrorMessage: '',
+    errorMessage: '',
+  };
+
+  const errorReducer = (state: errorStateType, action: errorActionType) : errorStateType => {
+    switch (action.type) {
+      case SET_ERROR:
+        return {
+          ...state,
+          errorMessage: action.payload?.errorMessage || state.errorMessage,
+          kmDuringEventErrorMessage: action.payload?.kmDuringEventErrorMessage || state.kmDuringEventErrorMessage,
+          dateErrorMessage: action.payload?.dateErrorMessage || state.dateErrorMessage,
+        };
+      case RESET_ERROR:
+        return initialErrorState;
+      default:
+        return state;
+    }
+  };
+  const [error, errorDispatch] = useReducer(errorReducer, initialErrorState);
+
   const onLeave = useCallback(
     () => {
       const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
@@ -133,22 +172,26 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const onSave = async () => {
     try {
       setLoading(true);
-      setErrorMessage('');
-      setIsDateError(false);
-      setIsKmDuringEventError(false);
+      errorDispatch({ type: RESET_ERROR });
 
       if (isBefore(event.endDate, event.startDate)) {
-        setIsDateError(true);
-        setErrorMessage('Champ invalide: la date de début doit être antérieure à la date de fin.');
-        return;
+        errorDispatch({
+          type: SET_ERROR,
+          payload: { dateErrorMessage: 'Champ invalide: la date de début doit être antérieure à la date de fin.' },
+        });
+        setIsError(true);
       }
 
       const isValidNumber = !event.kmDuringEvent || event.kmDuringEvent.toString().match(FLOAT_REGEX);
       if (!isValidNumber) {
-        setIsKmDuringEventError(true);
-        setErrorMessage('Champ invalide : veuillez saisir un nombre positif.');
-        return;
+        errorDispatch({
+          type: SET_ERROR,
+          payload: { kmDuringEventErrorMessage: 'Champ invalide : veuillez saisir un nombre positif.' },
+        });
+        setIsError(true);
       }
+
+      if (isError) return;
 
       const pickedFields = pick(event, ['startDate', 'endDate', 'misc']);
       await Events.updateById(
@@ -161,9 +204,18 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       );
       navigation.goBack();
     } catch (e) {
-      if (e.response.status === 409) setErrorMessage(e.response.data.message);
-      else if (e.response.status === 422) setErrorMessage('Cette modification n\'est pas autorisée.');
-      else setErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
+      if (e.response.status === 409) {
+        errorDispatch({ type: SET_ERROR, payload: { errorMessage: e.response.data.message } });
+      } else if (e.response.status === 422) {
+        errorDispatch({ type: SET_ERROR, payload: { errorMessage: 'Cette modification n\'est pas autorisée.' } });
+      } else {
+        errorDispatch({
+          type: SET_ERROR,
+          payload: {
+            errorMessage: 'Une erreur s\'est produite, si le problème persiste, contactez le support technique.',
+          },
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -204,7 +256,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   useEffect(() => { refreshHistories(); }, [refreshHistories]);
 
   useEffect(() => {
-    setErrorMessage('');
+    errorDispatch({ type: RESET_ERROR });
     setIsAuxiliaryEditable(isEditable(event));
   }, [event]);
 
@@ -231,7 +283,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             </View>
           </View>
           <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
-            loading={loading} dateErrorMessage={isDateError ? errorMessage : ''}/>
+            loading={loading} dateErrorMessage={error.dateErrorMessage}/>
           <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries}
             eventEditionDispatch={eventDispatch} isEditable={isAuxiliaryEditable} />
           <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
@@ -245,7 +297,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             disabled={!!event.isBilled} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} type={NUMBER}
             buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" onChangeText={onChangeKmDuringEvent}
             buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />}
-            errorMessage={isKmDuringEventError ? errorMessage : ''} />
+            errorMessage={error.kmDuringEventErrorMessage} />
+          <ErrorMessage message={error.errorMessage}/>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
