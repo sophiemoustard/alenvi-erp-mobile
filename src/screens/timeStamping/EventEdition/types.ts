@@ -23,3 +23,5 @@ export type EventEditionActionType = {
     kmDuringEvent?: string,
   },
 }
+
+export type EditedEventValidType = { dateRange: boolean, kmDuringEvent: boolean };
