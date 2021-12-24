@@ -1,7 +1,8 @@
 import React from 'react';
 import MockAdapter from 'axios-mock-adapter';
 import sinon from 'sinon';
-import { render, cleanup, fireEvent, act } from '@testing-library/react-native';
+import { render, cleanup, fireEvent, act, waitFor } from '@testing-library/react-native';
+import mockAsyncStorage from '@react-native-async-storage/async-storage/jest/async-storage-mock';
 import notLoggedAxios from '../src/api/axios/notLogged';
 import loggedAxios from '../src/api/axios/logged';
 import { Provider as AuthProvider } from '../src/context/AuthContext';
@@ -9,34 +10,32 @@ import AppContainer from '../src/AppContainer';
 import Environment from '../environment';
 import { INTERVENTION } from '../src/core/data/constants';
 
-jest.mock('expo-constants', () => ({ manifest: { version: '1.0.0' } }));
-jest.mock('react-native/Libraries/Animated/src/NativeAnimatedHelper');
-
 describe('authentication', () => {
   const baseURL = 'test';
   let loggedAxiosMock;
   let notLoggedAxiosMock;
-  let getEnvVarsStub;
-  let getBaseUrlStub;
+  let getEnvVars;
+  let getBaseUrl;
 
   beforeEach(() => {
     loggedAxiosMock = new MockAdapter(loggedAxios);
     notLoggedAxiosMock = new MockAdapter(notLoggedAxios);
-    getEnvVarsStub = sinon.stub(Environment, 'getEnvVars');
-    getBaseUrlStub = sinon.stub(Environment, 'getBaseUrl');
+    getEnvVars = sinon.stub(Environment, 'getEnvVars');
+    getBaseUrl = sinon.stub(Environment, 'getBaseUrl');
   });
 
   afterEach(() => {
     loggedAxiosMock.restore();
     notLoggedAxiosMock.restore();
-    getEnvVarsStub.restore();
-    getBaseUrlStub.restore();
+    getEnvVars.restore();
+    getBaseUrl.restore();
     cleanup();
+    mockAsyncStorage.clear();
   });
 
   test('should connect user if right credentials', async () => {
-    getEnvVarsStub.returns({ baseURL: 'test' });
-    getBaseUrlStub.returns('test');
+    getEnvVars.returns({ baseURL: 'test' });
+    getBaseUrl.returns('test');
 
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
       .reply(200, { data: { mustUpdate: false } })
@@ -45,18 +44,30 @@ describe('authentication', () => {
       .onPost(`${baseURL}/users/authenticate`, { email: 'test@alenvi.io', password: '1234567' })
       .reply(
         200,
-        { data: { token: 'token', tokenExpireDate: '1234567890', refreshToken: 'refreshToken', userId: 'userId' } }
+        {
+          data: {
+            token: 'token',
+            tokenExpireDate: '1234567890',
+            refreshToken: 'refreshToken',
+            user: { _id: 'userId' },
+          },
+        }
       );
 
     const currentDate = new Date();
-    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-    loggedAxiosMock.onGet(`${baseURL}/users/usersId`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
-      .reply(200, { data: { _id: 'userId' } })
+    const baseDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+    const startDate = new Date(baseDate.setHours(0, 0, 0, 0));
+    const endDate = new Date(baseDate.setHours(23, 59, 59, 999));
+    const eventStartDate = new Date(baseDate.setHours(10, 0, 0, 0));
+    const eventEndDate = new Date(baseDate.setHours(12, 0, 0, 0));
+
+    loggedAxiosMock.onGet(`${baseURL}/users/userId`)
+      .reply(200, { data: { user: { _id: 'userId' } } })
       .onGet(
         `${baseURL}/events`,
-        { params: { auxiliary: 'userId', startDate: date, endDate: date, type: INTERVENTION } }
+        { params: { auxiliary: 'userId', startDate, endDate, type: INTERVENTION, isCancelled: false } }
       )
-      .reply(200, { data: [] });
+      .reply(200, { data: { events: [{ _id: 'eventId', startDate: eventStartDate, endDate: eventEndDate }] } });
 
     const element = render(
       <AuthProvider>
@@ -64,32 +75,33 @@ describe('authentication', () => {
       </AuthProvider>
     );
 
-    const emailInput = await element.findByTestId('Email');
-    const passwordInput = await element.findByTestId('Mot de Passe');
-    const sendButton = await element.findByTestId('Se connecter');
+    let emailInput;
+    let sendButton;
+    let passwordInput;
 
-    const changeEmail = async () => fireEvent.changeText(emailInput, 'test@alenvi.io');
-    const changePassword = async () => fireEvent.changeText(passwordInput, '1234567');
-    const press = async () => fireEvent.press(sendButton);
+    await waitFor(() => {
+      emailInput = element.getByTestId('Email');
+      passwordInput = element.getByTestId('Mot de Passe');
+      sendButton = element.getByTestId('Se connecter');
+    });
 
-    act(() => changeEmail())
-      .then(() => act(() => changePassword())
-        .then(() => act(() => press())
-          .then(async () => {
-            const page = await element.findByText('Horodatage');
-            expect(page).toBeInTheDocument();
-          })));
+    await act(async () => fireEvent.changeText(emailInput, 'test@alenvi.io'));
+    await act(async () => fireEvent.changeText(passwordInput, '1234567'));
+    await act(async () => fireEvent.press(sendButton));
+
+    const page = await element.getByTestId('TimeStampingProfile');
+    expect(page).toBeTruthy();
   });
 
   test('should not connect user if wrong credentials', async () => {
-    getEnvVarsStub.returns({ baseURL: 'test' });
-    getBaseUrlStub.returns('test');
+    getEnvVars.returns({ baseURL: 'test' });
+    getBaseUrl.returns('test');
 
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
       .reply(200, { data: { mustUpdate: false } })
       .onPost(`${baseURL}/users/logout`)
       .reply(200)
-      .onPost(`${baseURL}/users/authenticate`, { email: 'test@alenvi.io', password: '1234567' })
+      .onPost(`${baseURL}/users/authenticate`, { email: 'test@alenvi.io', password: 'wrong' })
       .reply(401, { response: {} });
 
     const element = render(
@@ -98,20 +110,21 @@ describe('authentication', () => {
       </AuthProvider>
     );
 
-    const emailInput = await element.findByTestId('Email');
-    const passwordInput = await element.findByTestId('Mot de Passe');
-    const sendButton = await element.findByTestId('Se connecter');
+    let emailInput;
+    let sendButton;
+    let passwordInput;
 
-    const changeEmail = async () => fireEvent.changeText(emailInput, 'test@alenvi.io');
-    const changePassword = async () => fireEvent.changeText(passwordInput, '1234567');
-    const press = async () => fireEvent.press(sendButton);
+    await waitFor(() => {
+      emailInput = element.getByTestId('Email');
+      passwordInput = element.getByTestId('Mot de Passe');
+      sendButton = element.getByTestId('Se connecter');
+    });
 
-    act(() => changeEmail())
-      .then(() => act(() => changePassword())
-        .then(() => act(() => press())
-          .then(async () => {
-            const errorMessage = await element.findByText('L\'e-mail et/ou le mot de passe est incorrect');
-            expect(errorMessage).toBeTruthy();
-          })));
+    await act(async () => fireEvent.changeText(emailInput, 'test@alenvi.io'));
+    await act(async () => fireEvent.changeText(passwordInput, 'wrong'));
+    await act(async () => fireEvent.press(sendButton));
+
+    const errorMessage = await element.getByTestId('L\'e-mail et/ou le mot de passe est incorrect');
+    expect(errorMessage).toBeTruthy();
   });
 });
