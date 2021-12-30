@@ -187,6 +187,7 @@ const EventDateTimeEdition = ({
         {picker.displayEndPicker && <DateTimePicker value={CompaniDate(event.endDate).toDate()} mode={picker.mode}
           is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
           minimumDate={minimumEndDate ? CompaniDate(minimumEndDate).toDate() : undefined} />}
+        <NiErrorMessage message={dateErrorMessage} type={WARNING} />
       </View>
       <ConfirmationModal visible={confirmationModal} title="Cet évènement a déjà été horodaté" exitButton
         cancelText="Retour" confirmText="Annuler l'horodatage" onPressConfirmButton={openCancellationModal}
