@@ -18,7 +18,6 @@ import {
 } from '../../../core/helpers/nativeDates';
 import { formatIdentity } from '../../../core/helpers/utils';
 import FeatherButton from '../../../components/FeatherButton';
-import NiErrorMessage from '../../../components/ErrorMessage';
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
@@ -28,9 +27,16 @@ import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../../styles/m
 import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
 import { UserType } from '../../../types/UserType';
-import { EventEditionActionType, EventEditionProps, EventEditionStateType, FormattedAuxiliaryType } from './types';
-import { NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
+import {
+  EditedEventValidType,
+  EventEditionActionType,
+  EventEditionProps,
+  EventEditionStateType,
+  FormattedAuxiliaryType,
+} from './types';
+import { FLOAT_REGEX, NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
 import EventFieldEdition from '../../../components/EventFieldEdition';
+import ErrorMessage from '../../../components/ErrorMessage';
 
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
@@ -64,10 +70,18 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     start: false,
   }), [route.params.event]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
   const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(isEditable(initialState));
+  const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
+  const [dateErrorMessage, setDateErrorMessage] = useState<string>('');
+  const [kmDuringEventErrorMessage, setKmDuringEventErrorMessage] = useState<string>('');
+  const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
+  const [isValid, setIsValid] = useState<boolean>(true);
+  const [editedEventValidations, setEditedEventValidations] = useState<EditedEventValidType>({
+    dateRange: false,
+    kmDuringEvent: false,
+  });
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -113,17 +127,17 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         return state;
     }
   };
-  const [event, eventDispatch] = useReducer(reducer, initialState);
+  const [editedEvent, editedEventDispatch] = useReducer(reducer, initialState);
 
   const onLeave = useCallback(
     () => {
       const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
-      if (event.kmDuringEvent) pickFields.push('kmDuringEvent');
-      return isEqual(pick(event, pickFields), pick(initialState, pickFields))
+      if (editedEvent.kmDuringEvent) pickFields.push('kmDuringEvent');
+      return isEqual(pick(editedEvent, pickFields), pick(initialState, pickFields))
         ? navigation.goBack()
         : setExitModal(true);
     },
-    [initialState, event, navigation]
+    [initialState, editedEvent, navigation]
   );
 
   const hardwareBackPress = useCallback(() => {
@@ -140,31 +154,51 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const onSave = async () => {
     try {
       setLoading(true);
-      setErrorMessage('');
+      setIsValidationAttempted(true);
 
-      if (isBefore(event.endDate, event.startDate)) {
-        setErrorMessage('La date de début est postérieure à la date de fin.');
-        return;
+      if (isValid) {
+        const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc']);
+        await Events.updateById(
+          editedEvent._id,
+          {
+            auxiliary: editedEvent.auxiliary._id,
+            kmDuringEvent: Number.parseFloat(editedEvent.kmDuringEvent) || 0,
+            ...pickedFields,
+          }
+        );
+        navigation.goBack();
       }
-
-      const pickedFields = pick(event, ['startDate', 'endDate', 'misc']);
-      await Events.updateById(
-        event._id,
-        {
-          auxiliary: event.auxiliary._id,
-          kmDuringEvent: Number.parseFloat(event.kmDuringEvent) || 0,
-          ...pickedFields,
-        }
-      );
-      navigation.goBack();
     } catch (e) {
-      if (e.response.status === 409) setErrorMessage(e.response.data.message);
-      else if (e.response.status === 422) setErrorMessage('Cette modification n\'est pas autorisée.');
-      else setErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
+      if (e.response.status === 409) setApiErrorMessage(e.response.data.message);
+      else if (e.response.status === 422) setApiErrorMessage('Cette modification n\'est pas autorisée.');
+      else setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setEditedEventValidations({
+      dateRange: isBefore(editedEvent.endDate, editedEvent.startDate),
+      kmDuringEvent: !!editedEvent.kmDuringEvent && !editedEvent.kmDuringEvent.toString().match(FLOAT_REGEX),
+    });
+  }, [editedEvent]);
+
+  useEffect(() => {
+    const { dateRange, kmDuringEvent } = editedEventValidations;
+    if (dateRange || kmDuringEvent) setIsValid(false);
+    else setIsValid(true);
+  }, [editedEventValidations]);
+
+  useEffect(() => {
+    if (editedEventValidations.dateRange && isValidationAttempted) {
+      setDateErrorMessage('Champ invalide: la date de début doit être antérieure à la date de fin.');
+    } else setDateErrorMessage('');
+
+    if (editedEventValidations.kmDuringEvent && isValidationAttempted) {
+      setKmDuringEventErrorMessage('Champ invalide : veuillez saisir un nombre positif.');
+    } else setKmDuringEventErrorMessage('');
+  }, [editedEventValidations, isValidationAttempted]);
 
   const onConfirmExit = () => {
     setExitModal(false);
@@ -176,72 +210,75 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       const auxiliaries = await Users.listWithSectorHistories({ company });
       const filteredAuxiliaries = auxiliaries
         .filter((aux: UserType) => aux.contracts && aux.contracts
-          .some(c => isBefore(c.startDate, event.endDate) && (!c.endDate || isAfter(c.endDate, event.startDate))))
+          .some(c => isBefore(c.startDate, editedEvent.endDate) &&
+            (!c.endDate || isAfter(c.endDate, editedEvent.startDate))))
         .map((aux: UserType) => (formatAuxiliary(aux)));
 
       setActiveAuxiliaries(filteredAuxiliaries);
     } catch (e) {
       console.error(e);
     }
-  }, [event.endDate, event.startDate]);
+  }, [editedEvent.endDate, editedEvent.startDate]);
 
   const onChangeKmDuringEvent = (value: string) => (
-    eventDispatch({ type: SET_FIELD, payload: { kmDuringEvent: value.replace(',', '.') || '' } })
+    editedEventDispatch({ type: SET_FIELD, payload: { kmDuringEvent: value.replace(',', '.') || '' } })
   );
 
-  useEffect(() => { getActiveAuxiliaries(event.company); }, [event.company, getActiveAuxiliaries]);
+  useEffect(() => { getActiveAuxiliaries(editedEvent.company); }, [editedEvent.company, getActiveAuxiliaries]);
 
   const refreshHistories = useCallback(async () => {
     setLoading(true);
-    const eventHistories = await EventHistories.list({ eventId: event._id });
-    eventDispatch({ type: SET_HISTORIES, payload: { histories: eventHistories } });
+    const eventHistories = await EventHistories.list({ eventId: editedEvent._id });
+    editedEventDispatch({ type: SET_HISTORIES, payload: { histories: eventHistories } });
     setLoading(false);
-  }, [event._id]);
+  }, [editedEvent._id]);
 
   useEffect(() => { refreshHistories(); }, [refreshHistories]);
+
   useEffect(() => {
-    setErrorMessage('');
-    setIsAuxiliaryEditable(isEditable(event));
-  }, [event]);
+    setApiErrorMessage('');
+    setIsAuxiliaryEditable(isEditable(editedEvent));
+  }, [editedEvent]);
 
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
         <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
-        <Text style={styles.text}>{formatDate(event.startDate, true)}</Text>
-        {!event.isBilled &&
+        <Text style={styles.text}>{formatDate(editedEvent.startDate, true)}</Text>
+        {!editedEvent.isBilled &&
           <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
             style={styles.button} />}
       </View>
-      {event.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
+      {editedEvent.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
       <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.keyboardAvoidingView}
         keyboardVerticalOffset={MARGIN.XL}>
         <ScrollView style={styles.container}>
-          <Text style={styles.name}>{formatIdentity(event.customer.identity, 'FL')}</Text>
+          <Text style={styles.name}>{formatIdentity(editedEvent.customer.identity, 'FL')}</Text>
           <View style={styles.addressContainer}>
             <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
             <View>
-              <Text style={styles.addressText}>{`${event?.customer?.contact?.primaryAddress?.street}`}</Text>
-              <Text style={styles.addressText}>{formatZipCodeAndCity(event)}</Text>
+              <Text style={styles.addressText}>{`${editedEvent?.customer?.contact?.primaryAddress?.street}`}</Text>
+              <Text style={styles.addressText}>{formatZipCodeAndCity(editedEvent)}</Text>
             </View>
           </View>
-          <EventDateTimeEdition event={event} eventEditionDispatch={eventDispatch} refreshHistories={refreshHistories}
-            loading={loading} />
-          <EventAuxiliaryEdition auxiliary={event.auxiliary} auxiliaryOptions={activeAuxiliaries}
-            eventEditionDispatch={eventDispatch} isEditable={isAuxiliaryEditable} />
+          <EventDateTimeEdition event={editedEvent} eventEditionDispatch={editedEventDispatch}
+            refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}/>
+          <EventAuxiliaryEdition auxiliary={editedEvent.auxiliary} auxiliaryOptions={activeAuxiliaries}
+            eventEditionDispatch={editedEventDispatch} isEditable={isAuxiliaryEditable} />
           <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />
-          {!!errorMessage && <NiErrorMessage message={errorMessage} />}
-          <EventFieldEdition text={event.misc} inputTitle="Note" disabled={!!event.isBilled}
+          <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
             buttonTitle="Ajouter une note"
-            buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />}
-            onChangeText={(value: string) => eventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })} />
-          <EventFieldEdition text={event.kmDuringEvent ? event.kmDuringEvent.toString() : ''} suffix={'km'}
-            disabled={!!event.isBilled} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} type={NUMBER}
+            onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
+            buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />} />
+          <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''} suffix={'km'}
+            disabled={!!editedEvent.isBilled} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} type={NUMBER}
             buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" onChangeText={onChangeKmDuringEvent}
-            buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />} />
+            buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />}
+            errorMessage={kmDuringEventErrorMessage || ''} />
+          <ErrorMessage message={apiErrorMessage || ''}/>
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
