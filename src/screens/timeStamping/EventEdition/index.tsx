@@ -79,10 +79,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     const changeEndHourOnStartHourChange = () => {
       if (route.params.event.endDateTimeStamp) return state.endDate;
 
-      const updatedDate = CompaniDate(action.payload?.date || state.startDate);
-      if (updatedDate.isBefore(state.endDate)) return state.endDate;
+      const updatedStartDate = CompaniDate(action.payload?.date || state.startDate);
+      if (updatedStartDate.isBefore(state.endDate)) return state.endDate;
 
-      const newDate = updatedDate.add(CompaniDate(initialState.endDate).diff(initialState.startDate, 'minutes'));
+      const newDate = updatedStartDate.add(CompaniDate(initialState.endDate).diff(initialState.startDate, 'minutes'));
       const endOfDay = CompaniDate(state.endDate).endOf('day');
       return CompaniDate(newDate).isBefore(endOfDay) ? newDate.toISO() : endOfDay.toISO();
     };
@@ -100,7 +100,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       case SET_DATES: {
         const newDateUnits = action.payload?.date
           ? CompaniDate(action.payload.date).getUnits(['year', 'month', 'day'])
-          : {};
+          : undefined;
         return {
           ...state,
           startDate: newDateUnits ? CompaniDate(state.startDate).set(newDateUnits).toISO() : state.startDate,
