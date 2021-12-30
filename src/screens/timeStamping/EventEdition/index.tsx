@@ -70,7 +70,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [kmDuringEventErrorMessage, setKmDuringEventErrorMessage] = useState<string>('');
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(true);
-  const [invalid, setInvalid] = useState<EditedEventValidType>({ dateRange: false, kmDuringEvent: false });
+  const [editedEventValidations, setEditedEventValidations] = useState<EditedEventValidType>({
+    dateRange: false,
+    kmDuringEvent: false,
+  });
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -167,27 +170,27 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   };
 
   useEffect(() => {
-    setInvalid({
+    setEditedEventValidations({
       dateRange: isBefore(editedEvent.endDate, editedEvent.startDate),
       kmDuringEvent: !!editedEvent.kmDuringEvent && !editedEvent.kmDuringEvent.toString().match(FLOAT_REGEX),
     });
   }, [editedEvent]);
 
   useEffect(() => {
-    const { dateRange, kmDuringEvent } = invalid;
+    const { dateRange, kmDuringEvent } = editedEventValidations;
     if (dateRange || kmDuringEvent) setIsValid(false);
     else setIsValid(true);
-  }, [invalid]);
+  }, [editedEventValidations]);
 
   useEffect(() => {
-    if (invalid.dateRange && isValidationAttempted) {
+    if (editedEventValidations.dateRange && isValidationAttempted) {
       setDateErrorMessage('Champ invalide: la date de début doit être antérieure à la date de fin.');
     } else setDateErrorMessage('');
 
-    if (invalid.kmDuringEvent && isValidationAttempted) {
+    if (editedEventValidations.kmDuringEvent && isValidationAttempted) {
       setKmDuringEventErrorMessage('Champ invalide : veuillez saisir un nombre positif.');
     } else setKmDuringEventErrorMessage('');
-  }, [invalid, isValidationAttempted]);
+  }, [editedEventValidations, isValidationAttempted]);
 
   const onConfirmExit = () => {
     setExitModal(false);
