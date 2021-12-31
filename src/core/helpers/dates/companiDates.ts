@@ -21,6 +21,7 @@ type CompaniDateType = {
   isAfter: (date: DateTypes) => boolean,
   startOf: (unit: DateTimeUnit) => CompaniDateType,
   endOf: (unit: DateTimeUnit) => CompaniDateType,
+  setDate: (obj: ObjectDateType) => CompaniDateType,
   diff: (date: DateTypes, unit: ToRelativeUnit) => ObjectDurationType,
   add: (amount: ObjectDurationType) => CompaniDateType,
   set: (values: ObjectDateType) => CompaniDateType,
@@ -76,6 +77,10 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
 
     endOf(unit: DateTimeUnit) {
       return CompaniDateFactory(_date.endOf(unit));
+    },
+
+    setDate(obj: ObjectDateType) {
+      return CompaniDateFactory(_date.set(obj));
     },
 
     diff(miscTypeOtherDate : DateTypes, unit: ToRelativeUnit) {
