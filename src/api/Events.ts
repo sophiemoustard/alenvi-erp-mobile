@@ -3,7 +3,7 @@ import Environment from '../../environment';
 import { EventTypeEnum } from '../types/EventType';
 
 export type timeStampEventPayloadType = { action: string, reason?: string, startDate?: Date, endDate?: Date };
-type updateEventsPayloadType = { auxiliary: string, startDate: Date, endDate: Date, kmDuringEvent: number };
+type updateEventsPayloadType = { auxiliary: string, startDate: string, endDate: string, kmDuringEvent: number };
 type getEventsQueryType = {
   auxiliary: string,
   startDate: string,

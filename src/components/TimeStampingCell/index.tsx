@@ -16,8 +16,8 @@ import styles from './styles';
 interface StateType {
   civility: string,
   lastName: string,
-  startDate: Date | null,
-  endDate: Date | null,
+  startDate: string | null,
+  endDate: string | null,
   startDateTimeStamp: boolean,
   endDateTimeStamp: boolean,
 }

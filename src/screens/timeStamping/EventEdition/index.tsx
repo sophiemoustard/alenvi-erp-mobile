@@ -7,16 +7,8 @@ import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-ico
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
-import {
-  addTime,
-  changeDate,
-  dateDiff,
-  formatDate,
-  getEndOfDay,
-  isBefore,
-  isAfter,
-} from '../../../core/helpers/nativeDates';
 import { formatIdentity } from '../../../core/helpers/utils';
+import CompaniDate from '../../../core/helpers/dates/companiDates';
 import FeatherButton from '../../../components/FeatherButton';
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
@@ -65,8 +57,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const initialState: EventEditionStateType = useMemo(() => ({
     histories: [],
     ...route.params.event,
-    startDate: new Date(route.params.event.startDate),
-    endDate: new Date(route.params.event.endDate),
+    startDate: CompaniDate(route.params.event.startDate).toISO(),
+    endDate: CompaniDate(route.params.event.endDate).toISO(),
     start: false,
   }), [route.params.event]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -86,14 +78,13 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
       if (route.params.event.endDateTimeStamp) return state.endDate;
-      if (isBefore(action.payload?.date || state.startDate, state.endDate)) return state.endDate;
 
-      const newDate = addTime(
-        action.payload?.date || state.startDate,
-        dateDiff(initialState.endDate, initialState.startDate)
-      );
-      const newDateIsAfterMidnight = newDate.getDate() !== state.endDate.getDate();
-      return newDateIsAfterMidnight ? getEndOfDay(state.endDate) : newDate;
+      const updatedStartDate = CompaniDate(action.payload?.date || state.startDate);
+      if (updatedStartDate.isBefore(state.endDate)) return state.endDate;
+
+      const newDate = updatedStartDate.add(CompaniDate(initialState.endDate).diff(initialState.startDate, 'minutes'));
+      const endOfDay = CompaniDate(state.endDate).endOf('day');
+      return CompaniDate(newDate).isBefore(endOfDay) ? newDate.toISO() : endOfDay.toISO();
     };
 
     const timeStampHistories: EventHistoryType[] = action.payload?.histories?.filter(isTimeStampHistory) || [];
@@ -106,12 +97,16 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           startDateTimeStamp: timeStampHistories.some((eh: EventHistoryType) => !!eh.update.startHour),
           endDateTimeStamp: timeStampHistories.some((eh: EventHistoryType) => !!eh.update.endHour),
         };
-      case SET_DATES:
+      case SET_DATES: {
+        const newDateUnits = action.payload?.date
+          ? CompaniDate(action.payload.date).getUnits(['year', 'month', 'day'])
+          : undefined;
         return {
           ...state,
-          startDate: changeDate(state.startDate, action.payload?.date || state.startDate),
-          endDate: changeDate(state.endDate, action.payload?.date || state.endDate),
+          startDate: newDateUnits ? CompaniDate(state.startDate).set(newDateUnits).toISO() : state.startDate,
+          endDate: newDateUnits ? CompaniDate(state.endDate).set(newDateUnits).toISO() : state.endDate,
         };
+      }
       case SET_TIME:
         return {
           ...state,
@@ -179,7 +174,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   useEffect(() => {
     setEditedEventValidations({
-      dateRange: isBefore(editedEvent.endDate, editedEvent.startDate),
+      dateRange: CompaniDate(editedEvent.endDate).isBefore(editedEvent.startDate),
       kmDuringEvent: !!editedEvent.kmDuringEvent && !editedEvent.kmDuringEvent.toString().match(FLOAT_REGEX),
     });
   }, [editedEvent]);
@@ -210,8 +205,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       const auxiliaries = await Users.listWithSectorHistories({ company });
       const filteredAuxiliaries = auxiliaries
         .filter((aux: UserType) => aux.contracts && aux.contracts
-          .some(c => isBefore(c.startDate, editedEvent.endDate) &&
-            (!c.endDate || isAfter(c.endDate, editedEvent.startDate))))
+          .some(c => CompaniDate(c.startDate).isBefore(editedEvent.endDate) &&
+            (!c.endDate || CompaniDate(c.endDate).isAfter(editedEvent.startDate))))
         .map((aux: UserType) => (formatAuxiliary(aux)));
 
       setActiveAuxiliaries(filteredAuxiliaries);
@@ -245,7 +240,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       <View style={styles.header}>
         <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
           size={ICON.SM} />
-        <Text style={styles.text}>{formatDate(editedEvent.startDate, true)}</Text>
+        <Text style={styles.text}>{CompaniDate(editedEvent.startDate).format('cccc dd LLL')}</Text>
         {!editedEvent.isBilled &&
           <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
             style={styles.button} />}

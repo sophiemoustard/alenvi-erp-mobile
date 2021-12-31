@@ -1,14 +1,29 @@
-import { DateTime, DateTimeUnit } from './luxon';
+import pick from 'lodash/pick';
+import { DateTime, DateTimeUnit, ToRelativeUnit } from './luxon';
 
 type DateTypes = Date | CompaniDateType | string;
 
+type ObjectDateType = {
+  [key in DateTimeUnit]?: number
+};
+
+type ObjectDurationType = {
+  [key in ToRelativeUnit]?: number;
+};
+
 type CompaniDateType = {
   _getDate: DateTime,
+  getUnits: (units: DateTimeUnit[]) => ObjectDateType,
   format: (str: string) => string,
+  toDate: () => Date,
   toISO: () => string,
-  isBefore: (date: DateTypes) => Boolean,
+  isBefore: (date: DateTypes) => boolean,
+  isAfter: (date: DateTypes) => boolean,
   startOf: (unit: DateTimeUnit) => CompaniDateType,
   endOf: (unit: DateTimeUnit) => CompaniDateType,
+  diff: (date: DateTypes, unit: ToRelativeUnit) => ObjectDurationType,
+  add: (amount: ObjectDurationType) => CompaniDateType,
+  set: (values: ObjectDateType) => CompaniDateType,
 }
 
 const CompaniDate = (...args: DateTypes[]) : CompaniDateType => (
@@ -24,9 +39,17 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
       return _date;
     },
 
+    getUnits(units: DateTimeUnit[]) {
+      return pick(_date.toObject(), units);
+    },
+
     // DISPLAY
     format(fmt: string) {
       return _date.toFormat(fmt);
+    },
+
+    toDate() {
+      return _date.toUTC().toJSDate();
     },
 
     toISO() {
@@ -40,6 +63,12 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
       return _date < otherDate;
     },
 
+    isAfter(miscTypeOtherDate : DateTypes) {
+      const otherDate = _formatMiscToCompaniDate(miscTypeOtherDate);
+
+      return _date > otherDate;
+    },
+
     // MANIPULATE
     startOf(unit: DateTimeUnit) {
       return CompaniDateFactory(_date.startOf(unit));
@@ -47,6 +76,22 @@ const CompaniDateFactory = (inputDate: DateTime): CompaniDateType => {
 
     endOf(unit: DateTimeUnit) {
       return CompaniDateFactory(_date.endOf(unit));
+    },
+
+    diff(miscTypeOtherDate : DateTypes, unit: ToRelativeUnit) {
+      const otherDate = _formatMiscToCompaniDate(miscTypeOtherDate);
+      const floatedDiff = _date.diff(otherDate, unit).as(unit);
+      const roundedDiff = floatedDiff > 0 ? Math.floor(floatedDiff) : Math.ceil(floatedDiff);
+
+      return { [unit]: roundedDiff };
+    },
+
+    add(amount: ObjectDurationType) {
+      return CompaniDateFactory(_date.plus(amount));
+    },
+
+    set(values: ObjectDateType) {
+      return CompaniDateFactory(_date.set(values));
     },
   });
 };

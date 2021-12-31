@@ -14,7 +14,7 @@ export type FormattedAuxiliaryType = EventType['auxiliary'] & { formattedIdentit
 export type EventEditionActionType = {
   type: string,
   payload?: {
-    date?: Date,
+    date?: string,
     mode?: ModeType,
     start?: boolean,
     histories?: EventType['histories'],
