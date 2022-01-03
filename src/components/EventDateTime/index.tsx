@@ -21,7 +21,7 @@ const EventDateTime = ({ date, onPress, loading, isTimeStamped = false, disabled
   const [displayedTime, setDisplayedTime] = useState<string>('');
 
   useEffect(() => {
-    setDisplayedDate(CompaniDate(date).format('dd cccc'));
+    setDisplayedDate(CompaniDate(date).format('dd LLLL'));
     setDisplayedTime(CompaniDate(date).format('HH:mm'));
   }, [date]);
 

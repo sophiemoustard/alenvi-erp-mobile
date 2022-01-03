@@ -55,11 +55,10 @@ describe('authentication', () => {
         }
       );
 
-    const currentDate = CompaniDate().toISO();
-    const startDate = CompaniDate(currentDate).startOf('day').toISO();
-    const endDate = CompaniDate(currentDate).endOf('day').toISO();
-    const eventStartDate = CompaniDate(startDate).setDate({ hour: 10, minute: 0, second: 0, millisecond: 0 }).toISO();
-    const eventEndDate = CompaniDate(endDate).setDate({ hour: 12, minute: 0, second: 0, millisecond: 0 }).toISO();
+    const startDate = CompaniDate().startOf('day').toISO();
+    const endDate = CompaniDate().endOf('day').toISO();
+    const eventStartDate = CompaniDate().set({ hour: 10, minute: 0, second: 0, millisecond: 0 }).toISO();
+    const eventEndDate = CompaniDate().set({ hour: 12, minute: 0, second: 0, millisecond: 0 }).toISO();
 
     loggedAxiosMock.onGet(`${baseURL}/users/userId`)
       .reply(200, { data: { user: { _id: 'userId' } } })
