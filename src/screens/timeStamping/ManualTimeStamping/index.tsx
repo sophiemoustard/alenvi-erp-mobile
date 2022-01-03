@@ -3,6 +3,7 @@ import { Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { Camera } from 'expo-camera';
 import { ERROR, MANUAL_TIME_STAMPING, WARNING, GRANTED } from '../../../core/data/constants';
+import CompaniDate from '../../../core/helpers/dates/companiDates';
 import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
@@ -81,8 +82,8 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       }
       setType(ERROR);
       const payload: timeStampEventPayloadType = { action: MANUAL_TIME_STAMPING, reason };
-      if (route.params.eventStart) payload.startDate = new Date();
-      else payload.endDate = new Date();
+      if (route.params.eventStart) payload.startDate = CompaniDate().toISO();
+      else payload.endDate = CompaniDate().toISO();
 
       await Events.timeStampEvent(route.params?.event?._id, payload);
       goBack();

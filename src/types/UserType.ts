@@ -5,7 +5,7 @@ export interface UserType {
   picture?: { link: string },
   company?: { name: string },
   contact?: { phone: string, primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string } },
-  contracts?: [{ _id: string, startDate: Date, endDate: Date }],
+  contracts?: [{ _id: string, startDate: string, endDate: string }],
 }
 
 export type AuxiliaryType = {

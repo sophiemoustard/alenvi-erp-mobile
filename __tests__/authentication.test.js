@@ -9,6 +9,7 @@ import { Provider as AuthProvider } from '../src/context/AuthContext';
 import AppContainer from '../src/AppContainer';
 import Environment from '../environment';
 import { INTERVENTION } from '../src/core/data/constants';
+import CompaniDate from '../src/core/helpers/dates/companiDates';
 
 describe('authentication', () => {
   const baseURL = 'test';
@@ -54,12 +55,10 @@ describe('authentication', () => {
         }
       );
 
-    const currentDate = new Date();
-    const baseDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-    const startDate = new Date(baseDate.setHours(0, 0, 0, 0));
-    const endDate = new Date(baseDate.setHours(23, 59, 59, 999));
-    const eventStartDate = new Date(baseDate.setHours(10, 0, 0, 0));
-    const eventEndDate = new Date(baseDate.setHours(12, 0, 0, 0));
+    const startDate = CompaniDate().startOf('day').toISO();
+    const endDate = CompaniDate().endOf('day').toISO();
+    const eventStartDate = CompaniDate().set({ hour: 10, minute: 0, second: 0, millisecond: 0 }).toISO();
+    const eventEndDate = CompaniDate().set({ hour: 12, minute: 0, second: 0, millisecond: 0 }).toISO();
 
     loggedAxiosMock.onGet(`${baseURL}/users/userId`)
       .reply(200, { data: { user: { _id: 'userId' } } })

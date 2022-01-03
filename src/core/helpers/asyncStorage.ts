@@ -1,9 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { isBefore } from './nativeDates';
-import { ONE_YEAR_IN_MILLISECONDS } from '../data/constants';
+import CompaniDate from './dates/companiDates';
 
 const isTokenValid = (token: string | null, tokenExpireDate: string | null): boolean =>
-  !!token && !!tokenExpireDate && isBefore(new Date(), tokenExpireDate);
+  !!token && !!tokenExpireDate && CompaniDate().isBefore(tokenExpireDate);
 
 interface CompaniToken {
   companiToken: string | null,
@@ -31,9 +30,9 @@ interface RefreshToken {
 }
 
 const setRefreshToken = async (token: string): Promise<void> => {
-  const refreshTokenExpireDate = new Date(Date.now() + ONE_YEAR_IN_MILLISECONDS);
+  const refreshTokenExpireDate = CompaniDate().add({ years: 1 }).toISO();
   await AsyncStorage.setItem('refreshToken', token);
-  await AsyncStorage.setItem('refreshTokenExpireDate', refreshTokenExpireDate.toString());
+  await AsyncStorage.setItem('refreshTokenExpireDate', refreshTokenExpireDate);
 };
 
 const getRefreshToken = async (): Promise<RefreshToken> => ({

@@ -6,6 +6,7 @@ import styles from './styles';
 import { WHITE } from '../../../styles/colors';
 import { hitSlop, ICON } from '../../../styles/metrics';
 import { isIOS, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
+import CompaniDate from '../../../core/helpers/dates/companiDates';
 import FeatherButton from '../../../components/FeatherButton';
 import EventInfoCell from '../../../components/EventInfoCell';
 import NiErrorCell from '../../../components/ErrorCell';
@@ -85,8 +86,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         route.params?.event?._id,
         {
           action: QR_CODE_TIME_STAMPING,
-          ...(route.params.eventStart && { startDate: new Date() }),
-          ...(!route.params.eventStart && { endDate: new Date() }),
+          ...(route.params.eventStart && { startDate: CompaniDate().toISO() }),
+          ...(!route.params.eventStart && { endDate: CompaniDate().toISO() }),
         }
       );
 
