@@ -4,6 +4,7 @@ import createAuthContext, { StateType, ActionType } from './createAuthContext';
 import Authentication from '../api/Authentication';
 import Users from '../api/Users';
 import asyncStorage from '../core/helpers/asyncStorage';
+import CompaniDate from '../core/helpers/dates/companiDates';
 
 const authReducer = (state: StateType, action: ActionType) => {
   switch (action.type) {
@@ -57,6 +58,18 @@ const refreshCompaniToken = (dispatch: React.Dispatch<ActionType>) => async (ref
   }
 };
 
+// ensures the transition of token from stringedJSDate to CompaniDate. To be removed in march 2022 or after.
+const checkAndResetExpireDate = async () => {
+  const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
+  if (!refreshTokenExpireDate || !refreshToken) return;
+
+  try {
+    CompaniDate(refreshTokenExpireDate).toISO(); // throw error if date is stringedJSDate
+  } catch {
+    asyncStorage.setRefreshToken(refreshToken);
+  }
+};
+
 const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
   try {
     const { companiToken, companiTokenExpireDate } = await asyncStorage.getCompaniToken();
@@ -64,10 +77,14 @@ const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
     if (asyncStorage.isTokenValid(companiToken, companiTokenExpireDate)) {
       dispatch({ type: 'signIn', payload: companiToken });
     } else {
+      await checkAndResetExpireDate();
+
       const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
       if (asyncStorage.isTokenValid(refreshToken, refreshTokenExpireDate)) {
         await refreshCompaniToken(dispatch)(refreshToken);
-      } else await signOut(dispatch)();
+      } else {
+        await signOut(dispatch)();
+      }
     }
   } catch (e) {
     console.error(e);

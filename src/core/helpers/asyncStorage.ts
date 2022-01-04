@@ -1,18 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CompaniDate from './dates/companiDates';
 
-const isTokenValid = (token: string | null, tokenExpireDate: string | null): boolean => {
-  if (!token || !tokenExpireDate) return false;
+const isTokenValid = (token: string | null, tokenExpireDate: string | null): boolean =>
+  !!token && !!tokenExpireDate && CompaniDate().isBefore(tokenExpireDate);
 
-  let formattedTokenExpireDate;
-  try {
-    formattedTokenExpireDate = CompaniDate(tokenExpireDate);
-  } catch { // if date format is a stringed JSDate (ex: "Tue Jan 04 2022 11:47:04 GMT+0100 (CET)")
-    formattedTokenExpireDate = CompaniDate(new Date(tokenExpireDate));
-  }
-
-  return CompaniDate().isBefore(formattedTokenExpireDate);
-};
 interface CompaniToken {
   companiToken: string | null,
   companiTokenExpireDate: string | null,
