@@ -103,6 +103,13 @@ const _formatMiscToCompaniDate = (...args: DateTypes[]) => {
     if (args[0] instanceof Date) return DateTime.fromJSDate(args[0]);
     if (args[0] instanceof Object && args[0]?._getDate instanceof DateTime) return args[0]._getDate;
     if (typeof args[0] === 'string' && args[0] !== '') return DateTime.fromISO(args[0]);
+    // if (typeof args[0] === 'string' && args[0] !== '') {
+    //   try {
+    //     return DateTime.fromISO(args[0]);
+    //   } catch { // if date is a stringed JS Date (ex: "Tue Jan 04 2022 11:47:04 GMT+0100 (CET)")
+    //     return DateTime.fromJSDate(new Date(args[0]));
+    //   }
+    // }
   }
 
   if (args.length === 2 && typeof args[0] === 'string' && typeof args[1] === 'string') {
