@@ -58,18 +58,23 @@ const refreshCompaniToken = (dispatch: React.Dispatch<ActionType>) => async (ref
 };
 
 const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
-  const { companiToken, companiTokenExpireDate } = await asyncStorage.getCompaniToken();
+  try {
+    const { companiToken, companiTokenExpireDate } = await asyncStorage.getCompaniToken();
 
-  if (asyncStorage.isTokenValid(companiToken, companiTokenExpireDate)) {
-    dispatch({ type: 'signIn', payload: companiToken });
-  } else {
-    const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
-    if (asyncStorage.isTokenValid(refreshToken, refreshTokenExpireDate)) {
-      await refreshCompaniToken(dispatch)(refreshToken);
-    } else await signOut(dispatch)();
+    if (asyncStorage.isTokenValid(companiToken, companiTokenExpireDate)) {
+      dispatch({ type: 'signIn', payload: companiToken });
+    } else {
+      const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
+      if (asyncStorage.isTokenValid(refreshToken, refreshTokenExpireDate)) {
+        await refreshCompaniToken(dispatch)(refreshToken);
+      } else await signOut(dispatch)();
+    }
+  } catch (e) {
+    console.error(e);
+    await signOut(dispatch)();
+  } finally {
+    dispatch({ type: 'render' });
   }
-
-  dispatch({ type: 'render' });
 };
 
 export const { Context, Provider } = createAuthContext(
