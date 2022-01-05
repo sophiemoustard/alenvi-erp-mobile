@@ -59,14 +59,18 @@ const refreshCompaniToken = (dispatch: React.Dispatch<ActionType>) => async (ref
 };
 
 // ensures the transition of token from stringedJSDate to CompaniDate. To be removed in march 2022 or after.
-const checkAndResetExpireDate = async () => {
+const getTokenFromAsyncStorageAndReset = async () => {
   const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
-  if (!refreshTokenExpireDate || !refreshToken) return;
+  if (!refreshToken || !refreshTokenExpireDate) throw Error('invalid token in asyncStorage');
 
   try {
     CompaniDate(refreshTokenExpireDate).toISO(); // throw error if date is stringedJSDate
+
+    return { refreshToken, refreshTokenExpireDate };
   } catch {
-    asyncStorage.setRefreshToken(refreshToken);
+    await asyncStorage.setRefreshToken(refreshToken);
+
+    return asyncStorage.getRefreshToken();
   }
 };
 
@@ -77,9 +81,8 @@ const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
     if (asyncStorage.isTokenValid(companiToken, companiTokenExpireDate)) {
       dispatch({ type: 'signIn', payload: companiToken });
     } else {
-      await checkAndResetExpireDate();
+      const { refreshToken, refreshTokenExpireDate } = await getTokenFromAsyncStorageAndReset();
 
-      const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
       if (asyncStorage.isTokenValid(refreshToken, refreshTokenExpireDate)) {
         await refreshCompaniToken(dispatch)(refreshToken);
       } else {
