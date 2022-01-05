@@ -4,6 +4,7 @@ import createAuthContext, { StateType, ActionType } from './createAuthContext';
 import Authentication from '../api/Authentication';
 import Users from '../api/Users';
 import asyncStorage from '../core/helpers/asyncStorage';
+import CompaniDate from '../core/helpers/dates/companiDates';
 
 const authReducer = (state: StateType, action: ActionType) => {
   switch (action.type) {
@@ -57,19 +58,43 @@ const refreshCompaniToken = (dispatch: React.Dispatch<ActionType>) => async (ref
   }
 };
 
-const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
-  const { companiToken, companiTokenExpireDate } = await asyncStorage.getCompaniToken();
+// ensures the transition of token from stringedJSDate to CompaniDate. To be removed in march 2022 or after.
+const getTokenFromAsyncStorageAndReset = async () => {
+  const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
+  if (!refreshToken || !refreshTokenExpireDate) return { refreshToken, refreshTokenExpireDate };
 
-  if (asyncStorage.isTokenValid(companiToken, companiTokenExpireDate)) {
-    dispatch({ type: 'signIn', payload: companiToken });
-  } else {
-    const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
-    if (asyncStorage.isTokenValid(refreshToken, refreshTokenExpireDate)) {
-      await refreshCompaniToken(dispatch)(refreshToken);
-    } else await signOut(dispatch)();
+  try {
+    CompaniDate(refreshTokenExpireDate).toISO(); // throw error if date is stringedJSDate
+
+    return { refreshToken, refreshTokenExpireDate };
+  } catch {
+    await asyncStorage.setRefreshToken(refreshToken);
+
+    return asyncStorage.getRefreshToken();
   }
+};
 
-  dispatch({ type: 'render' });
+const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
+  try {
+    const { companiToken, companiTokenExpireDate } = await asyncStorage.getCompaniToken();
+
+    if (asyncStorage.isTokenValid(companiToken, companiTokenExpireDate)) {
+      dispatch({ type: 'signIn', payload: companiToken });
+    } else {
+      const { refreshToken, refreshTokenExpireDate } = await getTokenFromAsyncStorageAndReset();
+
+      if (asyncStorage.isTokenValid(refreshToken, refreshTokenExpireDate)) {
+        await refreshCompaniToken(dispatch)(refreshToken);
+      } else {
+        await signOut(dispatch)();
+      }
+    }
+  } catch (e) {
+    console.error(e);
+    await signOut(dispatch)();
+  } finally {
+    dispatch({ type: 'render' });
+  }
 };
 
 export const { Context, Provider } = createAuthContext(
