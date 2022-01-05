@@ -61,7 +61,7 @@ const refreshCompaniToken = (dispatch: React.Dispatch<ActionType>) => async (ref
 // ensures the transition of token from stringedJSDate to CompaniDate. To be removed in march 2022 or after.
 const getTokenFromAsyncStorageAndReset = async () => {
   const { refreshToken, refreshTokenExpireDate } = await asyncStorage.getRefreshToken();
-  if (!refreshToken || !refreshTokenExpireDate) throw Error('invalid token in asyncStorage');
+  if (!refreshToken || !refreshTokenExpireDate) return { refreshToken, refreshTokenExpireDate };
 
   try {
     CompaniDate(refreshTokenExpireDate).toISO(); // throw error if date is stringedJSDate
