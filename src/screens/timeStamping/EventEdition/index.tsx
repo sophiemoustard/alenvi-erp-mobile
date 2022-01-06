@@ -269,8 +269,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
             buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />} />
           <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''} suffix={'km'}
-            disabled={!!editedEvent.isBilled} inputTitle={'Déplacement véhiculé avec le/la bénéficiaire'} type={NUMBER}
-            buttonTitle="Ajouter un déplacement véhiculé avec le/la bénéficiaire" onChangeText={onChangeKmDuringEvent}
+            disabled={!!editedEvent.isBilled} inputTitle={'Déplacement véhiculé avec bénéficiaire'} type={NUMBER}
+            buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
             buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />}
             errorMessage={kmDuringEventErrorMessage || ''} />
           <ErrorMessage message={apiErrorMessage || ''}/>
