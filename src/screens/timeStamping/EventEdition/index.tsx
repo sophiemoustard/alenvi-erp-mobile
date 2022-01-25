@@ -16,7 +16,7 @@ import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
-import { ICON } from '../../../styles/metrics';
+import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
 import { UserType } from '../../../types/UserType';
@@ -247,7 +247,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             style={styles.button} />}
       </View>
       {editedEvent.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP}>
         <ScrollView style={styles.container}>
           <Text style={styles.name}>{formatIdentity(editedEvent.customer.identity, 'FL')}</Text>
           <View style={styles.addressContainer}>
@@ -265,7 +265,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled || loading}
-            buttonTitle="Ajouter une note"
+            buttonTitle="Ajouter une note" multiline
             onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
             buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />} />
           <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''} suffix={'km'}

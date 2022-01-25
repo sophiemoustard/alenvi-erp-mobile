@@ -8,6 +8,9 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: COPPER_GREY[50],
   },
+  keyboard: {
+    flex: 1,
+  },
   header: {
     flexDirection: 'row',
     backgroundColor: COPPER_GREY[800],
