@@ -236,7 +236,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     setIsAuxiliaryEditable(isEditable(editedEvent));
   }, [editedEvent]);
 
-  const goToCustomerProfile = () => navigation.navigate('CustomerProfile');
+  const goToCustomerProfile = (id: string) => navigation.navigate('CustomerProfile', { customerId: id });
 
   return (
     <View style={styles.screen}>
@@ -252,7 +252,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         <ScrollView style={styles.container}>
           <Text style={styles.name}>{formatIdentity(editedEvent.customer.identity, 'FL')}</Text>
-          <TouchableOpacity style={styles.customerProfileButton} onPress={goToCustomerProfile} >
+          <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
+            onPress={() => goToCustomerProfile(editedEvent.customer._id)}>
             <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
             <Feather name="chevron-right" color={COPPER[500]}/>
           </TouchableOpacity>
