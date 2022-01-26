@@ -25,6 +25,15 @@ export default StyleSheet.create({
   arrow: {
     marginHorizontal: MARGIN.SM,
   },
+  customerProfileButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: MARGIN.XS,
+    marginBottom: MARGIN.XL,
+  },
+  customerProfileButtonTitle: {
+    color: COPPER[500],
+  },
   text: {
     ...FIRA_SANS_REGULAR.MD,
     color: WHITE,
@@ -54,7 +63,7 @@ export default StyleSheet.create({
   },
   name: {
     ...FIRA_SANS_BLACK.XL,
-    marginVertical: MARGIN.XL,
+    marginTop: MARGIN.XL,
     color: COPPER_GREY[800],
   },
   addressContainer: {

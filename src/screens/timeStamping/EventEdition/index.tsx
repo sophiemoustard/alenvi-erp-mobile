@@ -2,7 +2,7 @@ import pick from 'lodash/pick';
 import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import { View, ScrollView, Text, BackHandler } from 'react-native';
+import { View, ScrollView, Text, BackHandler, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import EventHistories from '../../../api/EventHistories';
@@ -236,6 +236,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     setIsAuxiliaryEditable(isEditable(editedEvent));
   }, [editedEvent]);
 
+  const goToCustomerProfile = () => navigation.navigate('CustomerProfile');
+
   return (
     <View style={styles.screen}>
       <View style={styles.header}>
@@ -250,6 +252,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         <ScrollView style={styles.container}>
           <Text style={styles.name}>{formatIdentity(editedEvent.customer.identity, 'FL')}</Text>
+          <TouchableOpacity style={styles.customerProfileButton} onPress={goToCustomerProfile} >
+            <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
+            <Feather name="chevron-right" color={COPPER[500]}/>
+          </TouchableOpacity>
           <View style={styles.addressContainer}>
             <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
             <View>
