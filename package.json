@@ -11,26 +11,15 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "transform": {
-      "^.+\\.[jt]sx?$": "babel-jest"
-    },
+    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "transform": { "^.+\\.[jt]sx?$": "babel-jest" },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "testPathIgnorePatterns": [
-      "\\.snap$",
-      "<rootDir>/node_modules/"
-    ],
+    "testPathIgnorePatterns": ["\\.snap$", "<rootDir>/node_modules/"],
     "transformIgnorePatterns": [
       "node_modules/(?!(jest-)?react-native|@react-native|react-clone-referenced-element|@react-native-community|@react-native-async-storage|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
     ],
     "cacheDirectory": ".jest/cache",
-    "setupFiles": [
-      "./mock.js"
-    ]
+    "setupFiles": ["./mock.js"]
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",

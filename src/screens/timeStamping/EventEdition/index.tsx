@@ -264,7 +264,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />
-          <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled || loading}
+          <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
             buttonTitle="Ajouter une note" multiline
             onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
             buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />} />
