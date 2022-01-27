@@ -3,13 +3,14 @@ import { View, TouchableOpacity, Text, ActivityIndicator, Image, Dimensions } fr
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import styles from './styles';
-import { WHITE } from '../../../styles/colors';
+import { TRANSPARENT_COPPER, WHITE } from '../../../styles/colors';
 import { hitSlop, ICON } from '../../../styles/metrics';
 import { isIOS, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import FeatherButton from '../../../components/FeatherButton';
 import EventInfoCell from '../../../components/EventInfoCell';
 import NiErrorCell from '../../../components/ErrorCell';
+import NiSwitch from '../../../components/Switch';
 import Events from '../../../api/Events';
 
 interface BarCodeType {
@@ -70,6 +71,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const camera = useRef<Camera | null>(null);
   const [ratio, setRatio] = useState<string | undefined>();
   const isFocused = useIsFocused();
+  const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.eventStart);
 
   const navigation = useNavigation();
 
@@ -125,6 +127,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     setRatio(supportedratios[index]);
   };
 
+  const toggleSwitch = () => setTimeStampStart(previousValue => !previousValue);
+
   const displayEventInfos = () => (
     <>
       <View>
@@ -132,6 +136,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         <Text style={styles.title}>
           {route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention'}
         </Text>
+        <NiSwitch options={[{ label: 'Début', value: true }, { label: 'Fin', value: false }]} onChange={toggleSwitch}
+          value={timeStampStart} backgroundColor={TRANSPARENT_COPPER} />
         <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
         <View style={styles.limitsContainer}>
           <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-limiter.png' }}
