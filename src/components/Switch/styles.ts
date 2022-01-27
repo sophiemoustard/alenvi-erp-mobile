@@ -14,6 +14,7 @@ const switchStyle = ({ backgroundColor, unselectedTextColor } : SwitchStyleProps
     height: BUTTON_HEIGHT,
     marginHorizontal: MARGIN.LG,
     justifyContent: 'center',
+    flexDirection: 'row',
   },
 });
 
