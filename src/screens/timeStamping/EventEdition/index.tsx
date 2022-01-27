@@ -247,7 +247,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             style={styles.button} />}
       </View>
       {editedEvent.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
-      <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid={true}>
+      <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         <ScrollView style={styles.container}>
           <Text style={styles.name}>{formatIdentity(editedEvent.customer.identity, 'FL')}</Text>
           <View style={styles.addressContainer}>
