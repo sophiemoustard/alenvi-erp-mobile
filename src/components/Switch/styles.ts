@@ -5,10 +5,9 @@ import { FIRA_SANS_MEDIUM } from '../../styles/fonts';
 
 type SwitchStyleProps = {
   backgroundColor: string,
-  unselectedTextColor: string,
 };
 
-const switchStyle = ({ backgroundColor, unselectedTextColor } : SwitchStyleProps) => StyleSheet.create({
+const switchStyle = ({ backgroundColor } : SwitchStyleProps) => StyleSheet.create({
   container: {
     backgroundColor,
     borderRadius: BORDER_RADIUS.XXL,

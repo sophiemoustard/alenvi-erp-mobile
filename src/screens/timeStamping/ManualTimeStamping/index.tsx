@@ -2,17 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { Camera } from 'expo-camera';
-import { ERROR, MANUAL_TIME_STAMPING, WARNING, GRANTED } from '../../../core/data/constants';
+import { ERROR, MANUAL_TIME_STAMPING, WARNING, GRANTED, TIME_STAMP_SWITCH_OPTIONS } from '../../../core/data/constants';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import NiRadioButtonList from '../../../components/RadioButtonList';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import FeatherButton from '../../../components/FeatherButton';
 import NiErrorMessage from '../../../components/ErrorMessage';
+import NiSwitch from '../../../components/Switch';
 import { hitSlop, ICON } from '../../../styles/metrics';
 import { errorType } from '../../../types/ErrorType';
 import styles from './styles';
 import Events, { timeStampEventPayloadType } from '../../../api/Events';
 import EventInfoCell from '../../../components/EventInfoCell';
+import { COPPER_GREY } from '../../../styles/colors';
 
 interface ManualTimeStampingProps {
   route: {
@@ -35,17 +37,16 @@ const optionList = [
 
 const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [identity, setIdentity] = useState({ title: '', lastname: '' });
-  const [title, setTitle] = useState<string>('');
   const [reason, setReason] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [type, setType] = useState<errorType>(ERROR);
+  const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.eventStart);
 
   const navigation = useNavigation();
 
   useEffect(() => {
     setIdentity(route.params.event?.customer?.identity);
-    setTitle(route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention');
   }, [route.params]);
 
   const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
@@ -97,12 +98,15 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     }
   };
 
+  const toggleSwitch = () => setTimeStampStart(previousValue => !previousValue);
+
   return (
     <View style={styles.screen}>
       <FeatherButton name='x-circle' onPress={goBack} size={ICON.MD} />
       <ScrollView style={styles.container}>
-        <Text style={styles.title}>{title}</Text>
         <EventInfoCell identity={identity} />
+        <NiSwitch options={TIME_STAMP_SWITCH_OPTIONS} backgroundColor={COPPER_GREY[100]} onChange={toggleSwitch}
+          value={timeStampStart} unselectedTextColor={COPPER_GREY[500]} />
         <View style={styles.reasons}>
           <Text style={styles.question}>Pourquoi horodatez-vous manuellement ?</Text>
           <NiRadioButtonList options={optionList} setOption={setReason} />

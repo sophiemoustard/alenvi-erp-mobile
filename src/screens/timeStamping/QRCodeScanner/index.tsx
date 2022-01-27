@@ -5,7 +5,7 @@ import { Camera } from 'expo-camera';
 import styles from './styles';
 import { TRANSPARENT_COPPER, WHITE } from '../../../styles/colors';
 import { hitSlop, ICON } from '../../../styles/metrics';
-import { isIOS, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
+import { isIOS, QR_CODE_TIME_STAMPING, TIME_STAMP_SWITCH_OPTIONS } from '../../../core/data/constants';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import FeatherButton from '../../../components/FeatherButton';
 import EventInfoCell from '../../../components/EventInfoCell';
@@ -134,7 +134,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       <View>
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
         <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
-        <NiSwitch options={[{ label: 'Début', value: true }, { label: 'Fin', value: false }]} onChange={toggleSwitch}
+        <NiSwitch options={TIME_STAMP_SWITCH_OPTIONS} onChange={toggleSwitch} unselectedTextColor={WHITE}
           value={timeStampStart} backgroundColor={TRANSPARENT_COPPER} />
         <View style={styles.limitsContainer}>
           <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-limiter.png' }}

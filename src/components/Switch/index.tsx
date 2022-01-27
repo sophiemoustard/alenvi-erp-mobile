@@ -4,7 +4,7 @@ import { COPPER_GREY, WHITE } from '../../styles/colors';
 import { MARGIN } from '../../styles/metrics';
 import styles from './styles';
 
-type OptionType = { label: string, value: boolean };
+export type OptionType = { label: string, value: boolean };
 
 type SwitchProps = {
   value: boolean,
@@ -15,7 +15,7 @@ type SwitchProps = {
 };
 
 const Switch = ({ value, options, backgroundColor, unselectedTextColor, onChange }: SwitchProps) => {
-  const switchStyles = styles({ backgroundColor, unselectedTextColor });
+  const switchStyles = styles({ backgroundColor });
   const animationTextLeftValue = useRef(new Animated.Value(value ? 1 : 0)).current;
   const animationTextRightValue = useRef(new Animated.Value(value ? 0 : 1)).current;
   const animationToggleValue = useRef(new Animated.Value(value ? 1 : 0)).current;
@@ -48,7 +48,7 @@ const Switch = ({ value, options, backgroundColor, unselectedTextColor, onChange
       }) }],
     }),
     text: (animation: Animated.Value) => ({
-      color: animation.interpolate({ inputRange: [0, 1], outputRange: [WHITE, COPPER_GREY[900]] }),
+      color: animation.interpolate({ inputRange: [0, 1], outputRange: [unselectedTextColor, COPPER_GREY[900]] }),
     }),
   };
 
