@@ -1,13 +1,13 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import FeatherButton from '../../components/FeatherButton';
-import { ICON } from '../../styles/metrics';
-import { COPPER } from '../../styles/colors';
+import { ScrollView, Text } from 'react-native';
 import Customers from '../../api/Customers';
 import { UserType } from '../../types/UserType';
 import { formatIdentity } from '../../core/helpers/utils';
+import NiHeader from '../../components/Header';
 import styles from './style';
+import { ICON } from '../../styles/metrics';
+import { COPPER } from '../../styles/colors';
 
 type CustomerProfileProp = {
   route: { params: { customerId: string } },
@@ -32,12 +32,12 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const onLeave = () => navigation.goBack();
 
   return (
-    <ScrollView style={styles.screen}>
-      <View style={styles.header}>
-        <FeatherButton name="arrow-left" onPress={onLeave} size={ICON.SM} color={COPPER[500]} />
-      </View>
-      <Text style={styles.identity}>{formatIdentity(customer?.identity, 'FL')}</Text>
-    </ScrollView>
+    <>
+      <NiHeader iconTitle="arrow-left" iconSize={ICON.MD} iconColor={COPPER[500]} onPressIcon={onLeave} />
+      <ScrollView style={styles.screen}>
+        <Text style={styles.identity}>{formatIdentity(customer?.identity, 'FL')}</Text>
+      </ScrollView>
+    </>
   );
 };
 
