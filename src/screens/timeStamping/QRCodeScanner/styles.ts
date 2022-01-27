@@ -1,27 +1,17 @@
 import { StyleSheet } from 'react-native';
 import { COPPER_GREY, WHITE } from '../../../styles/colors';
-import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../../styles/fonts';
-import { MARGIN } from '../../../styles/metrics';
+import { FIRA_SANS_REGULAR } from '../../../styles/fonts';
+import { MARGIN, PADDING } from '../../../styles/metrics';
 
 export default StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'space-between',
     backgroundColor: COPPER_GREY[900],
-  },
-  closeButton: {
-    marginTop: MARGIN.LG,
-    marginLeft: MARGIN.MD,
-  },
-  title: {
-    ...FIRA_SANS_BOLD.XL,
-    color: WHITE,
-    marginTop: MARGIN.XL,
-    marginLeft: MARGIN.LG,
+    padding: PADDING.XL,
   },
   cell: {
     alignSelf: 'center',
-    marginHorizontal: MARGIN.LG,
   },
   limitsContainer: {
     alignItems: 'center',

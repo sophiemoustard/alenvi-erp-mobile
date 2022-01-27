@@ -12,7 +12,6 @@ const switchStyle = ({ backgroundColor } : SwitchStyleProps) => StyleSheet.creat
     backgroundColor,
     borderRadius: BORDER_RADIUS.XXL,
     height: BUTTON_HEIGHT,
-    marginHorizontal: MARGIN.LG,
     marginBottom: MARGIN.XL,
     justifyContent: 'center',
   },

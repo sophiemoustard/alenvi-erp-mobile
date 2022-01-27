@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { TouchableWithoutFeedback, View, Animated, LayoutChangeEvent } from 'react-native';
-import { COPPER_GREY, WHITE } from '../../styles/colors';
+import { COPPER_GREY } from '../../styles/colors';
 import { MARGIN } from '../../styles/metrics';
 import styles from './styles';
 
@@ -16,8 +16,10 @@ type SwitchProps = {
 
 const Switch = ({ value, options, backgroundColor, unselectedTextColor, onChange }: SwitchProps) => {
   const switchStyles = styles({ backgroundColor });
-  const animationTextLeftValue = useRef(new Animated.Value(value ? 1 : 0)).current;
-  const animationTextRightValue = useRef(new Animated.Value(value ? 0 : 1)).current;
+  const getAnimatedValue = useCallback((optionValue: boolean, switchValue: boolean) =>
+    (optionValue === switchValue ? 1 : 0), []);
+  const animationTextLeftValue = useRef(new Animated.Value(getAnimatedValue(options[0].value, value))).current;
+  const animationTextRightValue = useRef(new Animated.Value(getAnimatedValue(options[1].value, value))).current;
   const animationToggleValue = useRef(new Animated.Value(value ? 1 : 0)).current;
   const [containerWidth, setContainerWidth] = useState<number>(0);
 
@@ -26,19 +28,19 @@ const Switch = ({ value, options, backgroundColor, unselectedTextColor, onChange
   useEffect(() => {
     Animated.timing(
       animationTextLeftValue,
-      { toValue: value ? 1 : 0, duration: 300, useNativeDriver: false }
+      { toValue: getAnimatedValue(options[0].value, value), duration: 300, useNativeDriver: false }
     ).start();
 
     Animated.timing(
       animationTextRightValue,
-      { toValue: value ? 0 : 1, duration: 300, useNativeDriver: false }
+      { toValue: getAnimatedValue(options[1].value, value), duration: 300, useNativeDriver: false }
     ).start();
 
     Animated.timing(
       animationToggleValue,
       { toValue: value ? 0 : 1, duration: 300, useNativeDriver: true }
     ).start();
-  }, [animationTextLeftValue, animationTextRightValue, animationToggleValue, value]);
+  }, [animationTextLeftValue, animationTextRightValue, animationToggleValue, value, getAnimatedValue, options]);
 
   const dynamicStyles = {
     toggle: (animation: Animated.Value) => ({

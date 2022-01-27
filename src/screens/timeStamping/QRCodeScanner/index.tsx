@@ -132,7 +132,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const displayEventInfos = () => (
     <>
       <View>
-        <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
+        <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} />
         <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
         <NiSwitch options={TIME_STAMP_SWITCH_OPTIONS} onChange={toggleSwitch} unselectedTextColor={WHITE}
           value={timeStampStart} backgroundColor={TRANSPARENT_COPPER} />
