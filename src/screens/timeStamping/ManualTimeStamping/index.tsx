@@ -20,7 +20,7 @@ interface ManualTimeStampingProps {
   route: {
     params: {
       event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } },
-      eventStart: boolean,
+      timeStampStart: boolean,
     }
   },
 }
@@ -41,7 +41,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [type, setType] = useState<errorType>(ERROR);
-  const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.eventStart);
+  const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.timeStampStart);
 
   const navigation = useNavigation();
 
@@ -51,7 +51,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
 
   const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
 
-  const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner', route.params);
+  const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner', { ...route.params, timeStampStart });
 
   const requestPermission = async () => {
     let { status } = await Camera.getCameraPermissionsAsync();
@@ -83,7 +83,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       }
       setType(ERROR);
       const payload: timeStampEventPayloadType = { action: MANUAL_TIME_STAMPING, reason };
-      if (route.params.eventStart) payload.startDate = CompaniDate().toISO();
+      if (route.params.timeStampStart) payload.startDate = CompaniDate().toISO();
       else payload.endDate = CompaniDate().toISO();
 
       await Events.timeStampEvent(route.params?.event?._id, payload);

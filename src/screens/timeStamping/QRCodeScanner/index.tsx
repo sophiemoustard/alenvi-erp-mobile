@@ -22,7 +22,7 @@ interface QRCodeScannerProps {
   route: {
     params: {
       event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } },
-      eventStart: boolean,
+      timeStampStart: boolean,
     },
   },
 }
@@ -71,7 +71,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const camera = useRef<Camera | null>(null);
   const [ratio, setRatio] = useState<string | undefined>();
   const isFocused = useIsFocused();
-  const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.eventStart);
+  const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.timeStampStart);
 
   const navigation = useNavigation();
 
@@ -88,8 +88,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         route.params?.event?._id,
         {
           action: QR_CODE_TIME_STAMPING,
-          ...(route.params.eventStart && { startDate: CompaniDate().toISO() }),
-          ...(!route.params.eventStart && { endDate: CompaniDate().toISO() }),
+          ...(timeStampStart && { startDate: CompaniDate().toISO() }),
+          ...(!timeStampStart && { endDate: CompaniDate().toISO() }),
         }
       );
 
@@ -106,8 +106,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
 
   const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
 
-  const goToManualTimeStamping = (eventStart: boolean) => {
-    navigation.navigate('ManualTimeStamping', { event: route.params.event, eventStart });
+  const goToManualTimeStamping = () => {
+    navigation.navigate('ManualTimeStamping', { ...route.params, timeStampStart });
   };
 
   const setScreenDimension = async () => {
@@ -144,7 +144,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       <View>
         {state.loading && <ActivityIndicator color={WHITE} size="small" />}
         {!!state.errorMessage && <NiErrorCell message={state.errorMessage} />}
-        <TouchableOpacity onPress={() => goToManualTimeStamping(route.params.eventStart)} hitSlop={hitSlop}>
+        <TouchableOpacity onPress={goToManualTimeStamping} hitSlop={hitSlop}>
           <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
         </TouchableOpacity>
       </View>

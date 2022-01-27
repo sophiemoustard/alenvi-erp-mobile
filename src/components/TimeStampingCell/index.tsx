@@ -95,9 +95,12 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     }
   }, [event.histories]);
 
-  const goToBarCodeScanner = (eventStart: boolean) => navigation.navigate(
+  const goToBarCodeScanner = (timeStampStart: boolean) => navigation.navigate(
     'QRCodeScanner',
-    { event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } }, eventStart }
+    {
+      event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } },
+      timeStampStart,
+    }
   );
 
   const goToManualTimeStamping = () => {
@@ -107,7 +110,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         'ManualTimeStamping',
         {
           event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } },
-          eventStart: isEventStarting,
+          timeStampStart: isEventStarting,
         }
       )
     );
@@ -124,8 +127,8 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     }
   );
 
-  const requestPermission = async (eventStart: boolean) => {
-    setIsEventStarting(eventStart);
+  const requestPermission = async (timeStampStart: boolean) => {
+    setIsEventStarting(timeStampStart);
     let { status } = await Camera.getCameraPermissionsAsync();
 
     if (status !== GRANTED) {
@@ -133,7 +136,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       status = newStatus;
     }
 
-    if (status === GRANTED) goToBarCodeScanner(eventStart);
+    if (status === GRANTED) goToBarCodeScanner(timeStampStart);
 
     setModalVisible(status !== GRANTED);
   };
