@@ -29,9 +29,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   useEffect(() => { getCustomer(); }, [getCustomer]);
 
-  const onLeave = () => {
-    navigation.goBack();
-  };
+  const onLeave = () => navigation.goBack();
 
   return (
     <ScrollView style={styles.screen}>

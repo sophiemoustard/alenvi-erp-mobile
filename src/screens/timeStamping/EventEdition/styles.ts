@@ -32,6 +32,8 @@ export default StyleSheet.create({
     marginBottom: MARGIN.XL,
   },
   customerProfileButtonTitle: {
+    ...FIRA_SANS_REGULAR.MD,
+    marginRight: MARGIN.XS,
     color: COPPER[500],
   },
   text: {
