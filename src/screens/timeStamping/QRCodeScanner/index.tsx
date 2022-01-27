@@ -133,12 +133,9 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     <>
       <View>
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
-        <Text style={styles.title}>
-          {route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention'}
-        </Text>
+        <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
         <NiSwitch options={[{ label: 'Début', value: true }, { label: 'Fin', value: false }]} onChange={toggleSwitch}
           value={timeStampStart} backgroundColor={TRANSPARENT_COPPER} />
-        <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
         <View style={styles.limitsContainer}>
           <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-limiter.png' }}
             style={styles.limits} />

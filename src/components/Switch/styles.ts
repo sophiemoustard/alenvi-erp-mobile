@@ -1,5 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { BORDER_RADIUS, PADDING, MARGIN, BUTTON_HEIGHT } from '../../styles/metrics';
+import { FIRA_SANS_MEDIUM } from '../../styles/fonts';
 
 type SwitchStyleProps = {
   backgroundColor: string,
@@ -13,8 +14,13 @@ const switchStyle = ({ backgroundColor, unselectedTextColor } : SwitchStyleProps
     paddingHorizontal: PADDING.LG,
     height: BUTTON_HEIGHT,
     marginHorizontal: MARGIN.LG,
-    justifyContent: 'center',
+    marginBottom: MARGIN.XL,
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  text: {
+    ...FIRA_SANS_MEDIUM.MD,
   },
 });
 
