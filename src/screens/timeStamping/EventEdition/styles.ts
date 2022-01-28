@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { COPPER, COPPER_GREY, WHITE } from '../../../styles/colors';
 import { FIRA_SANS_BLACK, FIRA_SANS_REGULAR } from '../../../styles/fonts';
-import { BORDER_RADIUS, BUTTON_HEIGHT, MARGIN, PADDING } from '../../../styles/metrics';
+import { MARGIN, PADDING } from '../../../styles/metrics';
 
 export default StyleSheet.create({
   container: {

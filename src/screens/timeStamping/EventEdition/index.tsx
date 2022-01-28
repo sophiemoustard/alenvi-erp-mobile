@@ -241,8 +241,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   return (
     <>
-      <NiHeader iconTitle='arrow-left' iconSize={ICON.MD} iconColor={COPPER[500]} onPressIcon={onLeave}
-        title={headerTitle} buttonTitle='Enregistrer' loading={loading} onPressButton={onSave}/>
+      <NiHeader onPressIcon={onLeave} title={headerTitle} buttonTitle='Enregistrer' loading={loading}
+        onPressButton={onSave}/>
       {editedEvent.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         <ScrollView style={styles.container}>

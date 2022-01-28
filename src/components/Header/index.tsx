@@ -1,15 +1,17 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { COPPER } from '../../styles/colors';
+import { ICON } from '../../styles/metrics';
 import { FeatherType } from '../../types/IconType';
 import FeatherButton from '../FeatherButton';
 import NiPrimaryButton from '../form/PrimaryButton';
 import styles from './style';
 
 type HeaderProps = {
-  iconTitle: FeatherType,
-  iconSize: number,
-  iconColor: string,
   onPressIcon: () => void,
+  iconTitle?: FeatherType,
+  iconSize?: number,
+  iconColor?: string,
   buttonTitle?: string,
   onPressButton?: () => {}
   disabled?: boolean,
@@ -18,10 +20,10 @@ type HeaderProps = {
 };
 
 const Header = ({
-  iconTitle,
-  iconSize,
-  iconColor,
   onPressIcon,
+  iconTitle = 'arrow-left',
+  iconSize = ICON.MD,
+  iconColor = COPPER[500],
   buttonTitle = '',
   onPressButton,
   disabled = false,
@@ -29,8 +31,7 @@ const Header = ({
   title = '',
 }: HeaderProps) => (
   <View style={styles.container}>
-    <FeatherButton name={iconTitle} onPress={onPressIcon} color={iconColor}
-      size={iconSize} />
+    <FeatherButton name={iconTitle} onPress={onPressIcon} color={iconColor} size={iconSize} />
     <Text style={styles.title}>{title}</Text>
     {!disabled && !!buttonTitle &&
       <NiPrimaryButton onPress={onPressButton} title={buttonTitle} loading={loading} titleStyle={styles.buttonTitle}
