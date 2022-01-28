@@ -16,4 +16,7 @@ export default StyleSheet.create({
     ...FIRA_SANS_BLACK.XL,
     color: COPPER_GREY[800],
   },
+  input: {
+    marginBottom: MARGIN.XS,
+  },
 });
