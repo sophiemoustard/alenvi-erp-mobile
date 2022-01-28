@@ -100,6 +100,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     {
       event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } },
       timeStampStart,
+      startDateTimeStamp: eventInfos.startDateTimeStamp,
     }
   );
 
@@ -111,6 +112,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
         {
           event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } },
           timeStampStart: isEventStarting,
+          startDateTimeStamp: eventInfos.startDateTimeStamp,
         }
       )
     );

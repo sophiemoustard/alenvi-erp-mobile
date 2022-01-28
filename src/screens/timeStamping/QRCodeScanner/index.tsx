@@ -23,6 +23,7 @@ interface QRCodeScannerProps {
     params: {
       event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } },
       timeStampStart: boolean,
+      startDateTimeStamp: boolean,
     },
   },
 }
@@ -127,7 +128,10 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     setRatio(supportedratios[index]);
   };
 
-  const toggleSwitch = () => setTimeStampStart(previousValue => !previousValue);
+  const toggleSwitch = () => {
+    if (route.params.startDateTimeStamp) setTimeStampStart(false);
+    else setTimeStampStart(previousValue => !previousValue);
+  };
 
   const displayEventInfos = () => (
     <>

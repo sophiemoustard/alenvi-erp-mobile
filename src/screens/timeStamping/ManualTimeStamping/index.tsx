@@ -21,6 +21,7 @@ interface ManualTimeStampingProps {
     params: {
       event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } },
       timeStampStart: boolean,
+      startDateTimeStamp: boolean,
     }
   },
 }
@@ -83,7 +84,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       }
       setType(ERROR);
       const payload: timeStampEventPayloadType = { action: MANUAL_TIME_STAMPING, reason };
-      if (route.params.timeStampStart) payload.startDate = CompaniDate().toISO();
+      if (timeStampStart) payload.startDate = CompaniDate().toISO();
       else payload.endDate = CompaniDate().toISO();
 
       await Events.timeStampEvent(route.params?.event?._id, payload);
@@ -98,7 +99,10 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     }
   };
 
-  const toggleSwitch = () => setTimeStampStart(previousValue => !previousValue);
+  const toggleSwitch = () => {
+    if (route.params.startDateTimeStamp) setTimeStampStart(false);
+    else setTimeStampStart(previousValue => !previousValue);
+  };
 
   return (
     <View style={styles.screen}>
