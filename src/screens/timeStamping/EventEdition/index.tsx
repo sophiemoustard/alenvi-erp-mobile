@@ -2,7 +2,8 @@ import pick from 'lodash/pick';
 import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import { View, ScrollView, Text, BackHandler, KeyboardAvoidingView } from 'react-native';
+import { View, ScrollView, Text, BackHandler } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
@@ -15,7 +16,7 @@ import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiPrimaryButton from '../../../components/form/PrimaryButton';
 import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
-import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '../../../styles/metrics';
+import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
 import { UserType } from '../../../types/UserType';
@@ -246,8 +247,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             style={styles.button} />}
       </View>
       {editedEvent.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
-      <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.keyboardAvoidingView}
-        keyboardVerticalOffset={MARGIN.XL}>
+      <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         <ScrollView style={styles.container}>
           <Text style={styles.name}>{formatIdentity(editedEvent.customer.identity, 'FL')}</Text>
           <View style={styles.addressContainer}>
@@ -265,7 +265,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
-            buttonTitle="Ajouter une note"
+            buttonTitle="Ajouter une note" multiline
             onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
             buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />} />
           <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''} suffix={'km'}
@@ -275,7 +275,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             errorMessage={kmDuringEventErrorMessage || ''} />
           <ErrorMessage message={apiErrorMessage || ''}/>
         </ScrollView>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </View>
   );
 };

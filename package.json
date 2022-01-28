@@ -12,9 +12,7 @@
   "jest": {
     "preset": "jest-expo",
     "moduleFileExtensions": ["ts", "tsx", "js"],
-    "transform": {
-      "^.+\\.[jt]sx?$": "babel-jest"
-    },
+    "transform": { "^.+\\.[jt]sx?$": "babel-jest" },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
     "testPathIgnorePatterns": ["\\.snap$", "<rootDir>/node_modules/"],
     "transformIgnorePatterns": [
@@ -57,6 +55,7 @@
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
     "react-native-gesture-handler": "~1.10.2",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.8.0",
     "sentry-expo": "^4.0.0"
