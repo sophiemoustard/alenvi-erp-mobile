@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useRef } from 'react';
+import React, { useState, useReducer, useRef, useEffect } from 'react';
 import { View, TouchableOpacity, Text, ActivityIndicator, Image, Dimensions } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
@@ -71,10 +71,11 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const [state, dispatch] = useReducer(reducer, { errorMessage: '', scanned: false, loading: false });
   const camera = useRef<Camera | null>(null);
   const [ratio, setRatio] = useState<string | undefined>();
-  const isFocused = useIsFocused();
   const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.timeStampStart);
-
+  const isFocused = useIsFocused();
   const navigation = useNavigation();
+
+  useEffect(() => { setTimeStampStart(route.params.timeStampStart); }, [route.params.timeStampStart, isFocused]);
 
   const handleBarCodeScanned = async ({ data }: BarCodeType) => {
     try {

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Text, View, ScrollView, TouchableOpacity, Alert, BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { Camera } from 'expo-camera';
 import { ERROR, MANUAL_TIME_STAMPING, WARNING, GRANTED, TIME_STAMP_SWITCH_OPTIONS } from '../../../core/data/constants';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
@@ -44,17 +45,19 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [type, setType] = useState<errorType>(ERROR);
   const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.timeStampStart);
 
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
 
   useEffect(() => {
     setIdentity(route.params.event?.customer?.identity);
-  }, [route.params]);
+  }, [route.params.event]);
 
   const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
 
-  const goToQRCodeScanner = () => navigation.navigate('QRCodeScanner', { ...route.params, timeStampStart });
+  const goToQRCodeScanner = useCallback(() => {
+    navigation.navigate('QRCodeScanner', { ...route.params, timeStampStart });
+  }, [navigation, route.params, timeStampStart]);
 
-  const requestPermission = async () => {
+  const requestPermission = useCallback(async () => {
     let { status } = await Camera.getCameraPermissionsAsync();
 
     if (status !== GRANTED) {
@@ -71,7 +74,18 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
         { cancelable: false }
       );
     }
-  };
+  }, [goToQRCodeScanner]);
+
+  const hardwareBackPress = useCallback(() => {
+    requestPermission();
+    return true;
+  }, [requestPermission]);
+
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
+
+    return () => { BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress); };
+  }, [hardwareBackPress]);
 
   const timeStampEvent = async () => {
     try {
