@@ -2,7 +2,7 @@ import pick from 'lodash/pick';
 import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
-import { View, ScrollView, Text, BackHandler } from 'react-native';
+import { View, ScrollView, Text, BackHandler, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import EventHistories from '../../../api/EventHistories';
@@ -10,10 +10,9 @@ import Events from '../../../api/Events';
 import Users from '../../../api/Users';
 import { formatIdentity } from '../../../core/helpers/utils';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
-import FeatherButton from '../../../components/FeatherButton';
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
-import NiPrimaryButton from '../../../components/form/PrimaryButton';
+import NiHeader from '../../../components/Header';
 import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
@@ -236,20 +235,23 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     setIsAuxiliaryEditable(isEditable(editedEvent));
   }, [editedEvent]);
 
+  const goToCustomerProfile = (id: string) => navigation.navigate('CustomerProfile', { customerId: id });
+
+  const headerTitle = CompaniDate(editedEvent.startDate).format('cccc dd LLL');
+
   return (
-    <View style={styles.screen}>
-      <View style={styles.header}>
-        <FeatherButton style={styles.arrow} name="arrow-left" onPress={onLeave} color={COPPER[400]}
-          size={ICON.SM} />
-        <Text style={styles.text}>{CompaniDate(editedEvent.startDate).format('cccc dd LLL')}</Text>
-        {!editedEvent.isBilled &&
-          <NiPrimaryButton onPress={onSave} title="Enregistrer" loading={loading} titleStyle={styles.buttonTitle}
-            style={styles.button} />}
-      </View>
+    <>
+      <NiHeader onPressIcon={onLeave} title={headerTitle} buttonTitle='Enregistrer' loading={loading}
+        onPressButton={onSave}/>
       {editedEvent.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         <ScrollView style={styles.container}>
           <Text style={styles.name}>{formatIdentity(editedEvent.customer.identity, 'FL')}</Text>
+          <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
+            onPress={() => goToCustomerProfile(editedEvent.customer._id)}>
+            <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
+            <Feather name="chevron-right" color={COPPER[500]}/>
+          </TouchableOpacity>
           <View style={styles.addressContainer}>
             <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
             <View>
@@ -276,7 +278,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <ErrorMessage message={apiErrorMessage || ''}/>
         </ScrollView>
       </KeyboardAwareScrollView>
-    </View>
+    </>
   );
 };
 
