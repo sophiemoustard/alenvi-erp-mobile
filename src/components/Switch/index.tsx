@@ -36,37 +36,35 @@ const Switch = ({ value, options, backgroundColor, unselectedTextColor, onChange
       { toValue: getAnimatedValue(options[1].value, value), duration: 300, useNativeDriver: false }
     ).start();
 
-    Animated.timing(
-      animationToggleValue,
-      { toValue: value ? 0 : 1, duration: 300, useNativeDriver: true }
-    ).start();
+    Animated.timing(animationToggleValue, { toValue: value ? 0 : 1, duration: 300, useNativeDriver: true }).start();
   }, [animationTextLeftValue, animationTextRightValue, animationToggleValue, value, getAnimatedValue, options]);
 
   const dynamicStyles = {
     toggle: (animation: Animated.Value) => ({
-      transform: [{ translateX: animation.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0, containerWidth - MARGIN.XS * 2],
-      }) }],
+      transform: [
+        { translateX: animation.interpolate({ inputRange: [0, 1], outputRange: [0, containerWidth - MARGIN.XS * 2] }) },
+      ],
     }),
     text: (animation: Animated.Value) => ({
       color: animation.interpolate({ inputRange: [0, 1], outputRange: [unselectedTextColor, COPPER_GREY[900]] }),
     }),
   };
 
-  return <TouchableWithoutFeedback onPress={onChange}>
-    <View style={switchStyles.container}>
-      <Animated.View style={[dynamicStyles.toggle(animationToggleValue), switchStyles.toggle]} onLayout={onLayout} />
-      <View style={switchStyles.textContainer}>
-        <Animated.Text style={[dynamicStyles.text(animationTextLeftValue), switchStyles.text]}>
-          {options[0]?.label}
-        </Animated.Text>
-        <Animated.Text style={[dynamicStyles.text(animationTextRightValue), switchStyles.text]}>
-          {options[1]?.label}
-        </Animated.Text>
+  return (
+    <TouchableWithoutFeedback onPress={onChange}>
+      <View style={switchStyles.container}>
+        <Animated.View style={[dynamicStyles.toggle(animationToggleValue), switchStyles.toggle]} onLayout={onLayout} />
+        <View style={switchStyles.textContainer}>
+          <Animated.Text style={[dynamicStyles.text(animationTextLeftValue), switchStyles.text]}>
+            {options[0]?.label}
+          </Animated.Text>
+          <Animated.Text style={[dynamicStyles.text(animationTextRightValue), switchStyles.text]}>
+            {options[1]?.label}
+          </Animated.Text>
+        </View>
       </View>
-    </View>
-  </TouchableWithoutFeedback>;
+    </TouchableWithoutFeedback>
+  );
 };
 
 export default Switch;
