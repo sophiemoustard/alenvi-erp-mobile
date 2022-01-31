@@ -21,7 +21,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
   const scrollRef = useRef<ScrollView>(null);
   const [passswordError, dispatchPasswordError] = useReducer(errorReducer, initialErrorState);
   const [confirmationError, dispatchConfirmationError] = useReducer(errorReducer, initialErrorState);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [error, dispatchError] = useReducer(errorReducer, initialErrorState);
   const [isValidPassword, setIsValidPassword] = useState<boolean>(false);
   const [isValidConfirmation, setIsValidConfirmation] = useState<boolean>(false);
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
@@ -53,7 +53,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
 
   useEffect(() => {
     if (!isValidationAttempted || isValidPassword) dispatchPasswordError({ type: RESET_ERROR });
-    else dispatchPasswordError({ type: SET_ERROR, payload: 'Le mot de passe doit comporter au minimum 6 caractères' });
+    else dispatchPasswordError({ type: SET_ERROR, payload: 'Le mot de passe doit comporter au minimum 6 caractères.' });
   }, [isValidationAttempted, isValidPassword]);
 
   useEffect(() => {
@@ -74,7 +74,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
   };
 
   const savePassword = async () => {
-    setErrorMessage('');
+    dispatchError({ type: RESET_ERROR });
     setIsValidationAttempted(true);
     if (!isValidConfirmation || !isValidPassword) return;
 
@@ -82,7 +82,10 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
       setIsLoading(true);
       await onPress(password);
     } catch (e) {
-      setErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
+      dispatchError({
+        type: SET_ERROR,
+        payload: 'Une erreur s\'est produite, si le problème persiste, contactez le support technique.',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -104,7 +107,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
         <NiInput caption="Confirmer mot de passe" value={confirmation} onChangeText={setConfirmation}
           type="password" validationMessage={confirmationError.message} style={styles.input} />
         <View style={styles.footer}>
-          {!!errorMessage && <NiErrorMessage message={errorMessage} />}
+          {!!error.value && <NiErrorMessage message={error.message} />}
           <NiPrimaryButton title="Valider" onPress={savePassword} loading={isLoading} />
         </View>
       </ScrollView>

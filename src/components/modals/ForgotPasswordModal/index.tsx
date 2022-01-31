@@ -92,7 +92,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
       onRequestClose();
       navigation.navigate('PasswordReset', { userId: checkToken.user._id, email, token: checkToken.token });
     } catch (e) {
-      dispatchError({ type: SET_ERROR, payload: 'Oops, le code n\'est pas valide' });
+      dispatchError({ type: SET_ERROR, payload: 'Oops, le code n\'est pas valide.' });
     } finally {
       setIsLoading(false);
     }
