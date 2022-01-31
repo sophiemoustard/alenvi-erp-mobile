@@ -72,7 +72,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         <ScrollView style={styles.screen}>
           <Text style={styles.identity}>{formatIdentity(customer?.identity, 'FL')}</Text>
-          { !loading &&
+          {!loading &&
             <NiInput style={styles.input} caption="Environnement" value={editedFollowUp.environment} multiline
               onChangeText={(value: string) => { setEditedFollowUp({ ...editedFollowUp, environment: value }); }}
               placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille, voisinage,
@@ -80,7 +80,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
           <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />
-          <ErrorMessage message={apiErrorMessage || ''}/>
+          <ErrorMessage message={apiErrorMessage || ''} />
         </ScrollView>
       </KeyboardAwareScrollView>
     </>
