@@ -1,5 +1,6 @@
 import { Platform } from 'react-native';
 import { EventTypeEnum } from '../../types/EventType';
+import { OptionType } from '../../components/Switch';
 
 export const ERP = 'erp';
 export const IOS = 'ios';
@@ -54,3 +55,9 @@ export const WARNING = 'warning';
 
 // PERMISSIONS
 export const GRANTED = 'granted';
+
+// SWITCH OPTIONS
+export const TIME_STAMP_SWITCH_OPTIONS: [OptionType, OptionType] = [
+  { label: 'Début', value: true },
+  { label: 'Fin', value: false },
+];
