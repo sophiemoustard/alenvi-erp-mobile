@@ -20,7 +20,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
   const [confirmation, setConfirmation] = useState<string>('');
   const scrollRef = useRef<ScrollView>(null);
   const [passswordError, dispatchPasswordError] = useReducer(errorReducer, initialErrorState);
-  const [confirmationError, setConfirmationError] = useState<string>('');
+  const [confirmationError, dispatchConfirmationError] = useReducer(errorReducer, initialErrorState);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isValidPassword, setIsValidPassword] = useState<boolean>(false);
   const [isValidConfirmation, setIsValidConfirmation] = useState<boolean>(false);
@@ -57,8 +57,13 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
   }, [isValidationAttempted, isValidPassword]);
 
   useEffect(() => {
-    if (!isValidationAttempted || isValidConfirmation) setConfirmationError('');
-    else setConfirmationError('Votre nouveau mot de passe et sa confirmation ne correspondent pas.');
+    if (!isValidationAttempted || isValidConfirmation) dispatchConfirmationError({ type: RESET_ERROR });
+    else {
+      dispatchConfirmationError({
+        type: SET_ERROR,
+        payload: 'Votre nouveau mot de passe et sa confirmation ne correspondent pas.',
+      });
+    }
   }, [isValidationAttempted, isValidConfirmation]);
 
   const toggleModal = () => setExitConfirmationModal(!exitConfirmationModal);
@@ -97,7 +102,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
         <NiInput caption="Nouveau mot de passe" value={password} onChangeText={setPassword} type="password"
           validationMessage={passswordError.message} style={styles.input} />
         <NiInput caption="Confirmer mot de passe" value={confirmation} onChangeText={setConfirmation}
-          type="password" validationMessage={confirmationError} style={styles.input} />
+          type="password" validationMessage={confirmationError.message} style={styles.input} />
         <View style={styles.footer}>
           {!!errorMessage && <NiErrorMessage message={errorMessage} />}
           <NiPrimaryButton title="Valider" onPress={savePassword} loading={isLoading} />
