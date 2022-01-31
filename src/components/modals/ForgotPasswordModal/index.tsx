@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { Text, View, ScrollView, TextInput, Keyboard } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import Authentication from '../../../api/Authentication';
@@ -8,6 +8,7 @@ import { EMAIL, PHONE, MOBILE } from '../../../core/data/constants';
 import { ICON, IS_LARGE_SCREEN } from '../../../styles/metrics';
 import styles from './styles';
 import NiErrorMessage from '../../ErrorMessage';
+import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../../reducers/error';
 
 interface ForgotPasswordModalProps {
   visible: boolean,
@@ -18,7 +19,7 @@ interface ForgotPasswordModalProps {
 const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotPasswordModalProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [chosenMethod, setChosenMethod] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [error, dispatchError] = useReducer(errorReducer, initialErrorState);
   const [recipient, setRecipient] = useState<string>('');
   const inputRefs: Array<any> = [
     React.createRef(),
@@ -45,8 +46,8 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
 
   useEffect(() => {
     const isCodeInvalid = code.some(char => char === '' || !Number.isInteger(Number(char)));
-    if (recipient && isCodeInvalid) setErrorMessage('Le format du code est incorrect');
-    else setErrorMessage('');
+    if (recipient && isCodeInvalid) dispatchError({ type: SET_ERROR, payload: 'Le format du code est incorrect' });
+    else dispatchError({ type: RESET_ERROR });
   }, [code, recipient]);
 
   const onChangeText = (char: string, index: number) => {
@@ -78,10 +79,10 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
     setCode(['', '', '', '']);
     setIsKeyboardOpen(false);
     setIsValidationAttempted(false);
-    setErrorMessage('');
     setRecipient('');
     setChosenMethod('');
     setForgotPasswordModal(false);
+    dispatchError({ type: RESET_ERROR });
   }, [setForgotPasswordModal]);
 
   const sendCode = useCallback(async (formattedCode: string) => {
@@ -91,15 +92,15 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
       onRequestClose();
       navigation.navigate('PasswordReset', { userId: checkToken.user._id, email, token: checkToken.token });
     } catch (e) {
-      setErrorMessage('Oops, le code n\'est pas valide');
+      dispatchError({ type: SET_ERROR, payload: 'Oops, le code n\'est pas valide' });
     } finally {
       setIsLoading(false);
     }
   }, [email, onRequestClose, navigation]);
 
   useEffect(() => {
-    if (!errorMessage && isValidationAttempted) sendCode(`${code[0]}${code[1]}${code[2]}${code[3]}`);
-  }, [sendCode, code, errorMessage, isValidationAttempted]);
+    if (!error.value && isValidationAttempted) sendCode(`${code[0]}${code[1]}${code[2]}${code[3]}`);
+  }, [sendCode, code, error.value, isValidationAttempted]);
 
   const sendEmail = async () => {
     try {
@@ -108,7 +109,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
       await Authentication.forgotPassword({ email, origin: MOBILE, type: EMAIL });
       setRecipient(email);
     } catch (e) {
-      setErrorMessage('Oops, erreur lors de la transmission de l\'email.');
+      dispatchError({ type: SET_ERROR, payload: 'Oops, erreur lors de la transmission de l\'email.' });
     } finally {
       setIsLoading(false);
     }
@@ -121,7 +122,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
       const { phone } = await Authentication.forgotPassword({ email, origin: MOBILE, type: PHONE });
       setRecipient(phone || '');
     } catch (e) {
-      setErrorMessage('Oops, erreur lors de la transmission du numéro de téléphone.');
+      dispatchError({ type: SET_ERROR, payload: 'Oops, erreur lors de la transmission du numéro de téléphone.' });
     } finally {
       setIsLoading(false);
     }
@@ -136,7 +137,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
         loading={isLoading && chosenMethod === EMAIL} />
       <NiPrimaryButton title='Recevoir le code par SMS' style={styles.button} onPress={sendSMS}
         loading={isLoading && chosenMethod === PHONE} />
-      {!!chosenMethod && <NiErrorMessage message={errorMessage} />}
+      {!!chosenMethod && <NiErrorMessage message={error.message} />}
     </>
   );
 
@@ -163,7 +164,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
         ))}
       </View>
       <NiPrimaryButton title='Valider' style={styles.button} onPress={validateCode} loading={isLoading} />
-      {isValidationAttempted && <NiErrorMessage message={errorMessage} />}
+      {isValidationAttempted && <NiErrorMessage message={error.message} />}
     </>
   );
 
