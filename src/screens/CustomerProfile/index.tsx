@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, Text, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { isEqual, pick } from 'lodash';
@@ -23,6 +23,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const { customerId } = route.params;
   const [customer, setCustomer] = useState<UserType | null>(null);
   const [editedFollowUp, setEditedFollowUp] = useState<UserType['followUp']>({ environment: '' });
+  const initialCustomerFollowUp = useRef<UserType['followUp']>(editedFollowUp);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
@@ -33,6 +34,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       const currentCustomer = await Customers.getById(customerId);
       setCustomer(currentCustomer);
       setEditedFollowUp({ environment: currentCustomer?.followUp.environment || '' });
+      initialCustomerFollowUp.current = currentCustomer?.followUp || {};
     } catch (e) {
       console.error(e);
     } finally {
@@ -43,8 +45,9 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   useEffect(() => { getCustomer(); }, [getCustomer]);
 
   const onLeave = () => {
-    if (isEqual(pick(editedFollowUp, ['environment']), pick(customer?.followUp, ['environment']))) navigation.goBack();
-    else setExitModal(true);
+    if (isEqual(pick(editedFollowUp, ['environment']), pick(initialCustomerFollowUp.current, ['environment']))) {
+      navigation.goBack();
+    } else setExitModal(true);
   };
 
   const onConfirmExit = () => {
@@ -56,7 +59,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     try {
       setLoading(true);
       await Customers.updateById(customerId, { followUp: editedFollowUp });
-      navigation.goBack();
+      initialCustomerFollowUp.current = editedFollowUp;
     } catch (e) {
       console.error(e);
       setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');

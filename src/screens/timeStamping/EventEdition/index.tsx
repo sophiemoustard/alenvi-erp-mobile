@@ -161,7 +161,6 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             ...pickedFields,
           }
         );
-        navigation.goBack();
       }
     } catch (e) {
       if (e.response.status === 409) setApiErrorMessage(e.response.data.message);
