@@ -1,7 +1,7 @@
 import pick from 'lodash/pick';
 import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
@@ -61,6 +61,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     endDate: CompaniDate(route.params.event.endDate).toISO(),
     start: false,
   }), [route.params.event]);
+  const initialEvent = useRef<EventEditionStateType>(initialState);
   const [loading, setLoading] = useState<boolean>(false);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
@@ -128,11 +129,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     () => {
       const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
       if (editedEvent.kmDuringEvent) pickFields.push('kmDuringEvent');
-      return isEqual(pick(editedEvent, pickFields), pick(initialState, pickFields))
+      return isEqual(pick(editedEvent, pickFields), pick(initialEvent.current, pickFields))
         ? navigation.goBack()
         : setExitModal(true);
     },
-    [initialState, editedEvent, navigation]
+    [editedEvent, navigation]
   );
 
   const hardwareBackPress = useCallback(() => {
@@ -153,14 +154,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
       if (isValid) {
         const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc']);
-        await Events.updateById(
-          editedEvent._id,
-          {
-            auxiliary: editedEvent.auxiliary._id,
-            kmDuringEvent: Number.parseFloat(editedEvent.kmDuringEvent) || 0,
-            ...pickedFields,
-          }
-        );
+        const payload = {
+          auxiliary: editedEvent.auxiliary._id,
+          kmDuringEvent: Number.parseFloat(editedEvent.kmDuringEvent) || 0,
+          ...pickedFields,
+        };
+
+        await Events.updateById(editedEvent._id, payload);
+        initialEvent.current = editedEvent;
       }
     } catch (e) {
       if (e.response.status === 409) setApiErrorMessage(e.response.data.message);
