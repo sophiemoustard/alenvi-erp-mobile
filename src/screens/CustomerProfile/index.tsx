@@ -31,13 +31,13 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       setLoading(true);
       const currentCustomer = await Customers.getById(customerId);
       setCustomer(currentCustomer);
-      setEditedFollowUp({ environment: customer?.followUp.environment || '' });
+      setEditedFollowUp({ environment: currentCustomer?.followUp.environment || '' });
     } catch (e) {
       console.error(e);
     } finally {
       setLoading(false);
     }
-  }, [customer?.followUp.environment, customerId]);
+  }, [customerId]);
 
   useEffect(() => { getCustomer(); }, [getCustomer]);
 
@@ -68,12 +68,15 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   return (
     <>
-      <NiHeader onPressIcon={onLeave} buttonTitle="Enregistrer" onPressButton={onSave} loading={loading} />
+      <NiHeader onPressIcon={onLeave} onPressButton={onSave} loading={loading} />
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         <ScrollView style={styles.screen}>
           <Text style={styles.identity}>{formatIdentity(customer?.identity, 'FL')}</Text>
-          <NiInput style={styles.input} caption="Environnement" value={editedFollowUp.environment} multiline
-            onChangeText={(value: string) => { setEditedFollowUp({ ...editedFollowUp, environment: value }); } }/>
+          { !loading &&
+            <NiInput style={styles.input} caption="Environnement" value={editedFollowUp.environment} multiline
+              onChangeText={(value: string) => { setEditedFollowUp({ ...editedFollowUp, environment: value }); }}
+              placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille, voisinage,
+                histoire de vie, contexte actuel..." />}
           <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />
