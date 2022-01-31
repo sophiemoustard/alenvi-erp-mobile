@@ -17,6 +17,7 @@ export default StyleSheet.create({
     color: COPPER_GREY[800],
   },
   input: {
+    marginTop: MARGIN.LG,
     marginBottom: MARGIN.XS,
   },
 });

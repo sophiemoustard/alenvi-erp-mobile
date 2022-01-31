@@ -43,9 +43,18 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     navigation.goBack();
   };
 
+  const onSave = async () => {
+    try {
+      await Customers.updateById(customerId, { followUp: editedFollowUp });
+      navigation.goBack();
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   return (
     <>
-      <NiHeader onPressIcon={onLeave} />
+      <NiHeader onPressIcon={onLeave} buttonTitle="Enregistrer" onPressButton={onSave} />
       <ScrollView style={styles.screen}>
         <Text style={styles.identity}>{formatIdentity(customer?.identity, 'FL')}</Text>
         <NiInput style={styles.input} caption="Environnement" value={editedFollowUp.environment} multiline
