@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { isEqual, pick } from 'lodash';
 import Customers from '../../api/Customers';
 import { UserType } from '../../types/UserType';
@@ -8,6 +9,8 @@ import { formatIdentity } from '../../core/helpers/utils';
 import NiHeader from '../../components/Header';
 import NiInput from '../../components/form/Input';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
+import ErrorMessage from '../../components/ErrorMessage';
+import { KEYBOARD_PADDING_TOP } from '../../styles/metrics';
 import styles from './style';
 
 type CustomerProfileProp = {
@@ -20,14 +23,19 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const [customer, setCustomer] = useState<UserType | null>(null);
   const [editedFollowUp, setEditedFollowUp] = useState<UserType['followUp']>({ environment: '' });
   const [exitModal, setExitModal] = useState<boolean>(false);
+  const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const getCustomer = useCallback(async () => {
     try {
+      setLoading(true);
       const currentCustomer = await Customers.getById(customerId);
       setCustomer(currentCustomer);
       setEditedFollowUp({ environment: customer?.followUp.environment || '' });
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   }, [customer?.followUp.environment, customerId]);
 
@@ -45,24 +53,33 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   const onSave = async () => {
     try {
+      setLoading(true);
       await Customers.updateById(customerId, { followUp: editedFollowUp });
       navigation.goBack();
     } catch (e) {
       console.error(e);
+      setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  useEffect(() => setApiErrorMessage(''), [setApiErrorMessage, editedFollowUp]);
+
   return (
     <>
-      <NiHeader onPressIcon={onLeave} buttonTitle="Enregistrer" onPressButton={onSave} />
-      <ScrollView style={styles.screen}>
-        <Text style={styles.identity}>{formatIdentity(customer?.identity, 'FL')}</Text>
-        <NiInput style={styles.input} caption="Environnement" value={editedFollowUp.environment} multiline
-          onChangeText={(value: string) => { setEditedFollowUp({ ...editedFollowUp, environment: value }); } }/>
-        <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
-          visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
-          cancelText="Poursuivre les modifications" confirmText="Supprimer" />
-      </ScrollView>
+      <NiHeader onPressIcon={onLeave} buttonTitle="Enregistrer" onPressButton={onSave} loading={loading} />
+      <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
+        <ScrollView style={styles.screen}>
+          <Text style={styles.identity}>{formatIdentity(customer?.identity, 'FL')}</Text>
+          <NiInput style={styles.input} caption="Environnement" value={editedFollowUp.environment} multiline
+            onChangeText={(value: string) => { setEditedFollowUp({ ...editedFollowUp, environment: value }); } }/>
+          <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
+            visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
+            cancelText="Poursuivre les modifications" confirmText="Supprimer" />
+          <ErrorMessage message={apiErrorMessage || ''}/>
+        </ScrollView>
+      </KeyboardAwareScrollView>
     </>
   );
 };
