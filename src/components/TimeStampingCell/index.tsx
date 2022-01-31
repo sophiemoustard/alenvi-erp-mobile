@@ -95,11 +95,11 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
     }
   }, [event.histories]);
 
-  const goToBarCodeScanner = (timeStampStart: boolean) => navigation.navigate(
+  const goToBarCodeScanner = () => navigation.navigate(
     'QRCodeScanner',
     {
       event: { _id: event._id, customer: { _id: event.customer._id, identity: event.customer.identity } },
-      timeStampStart,
+      timeStampStart: isEventStarting,
       startDateTimeStamp: eventInfos.startDateTimeStamp,
     }
   );
@@ -138,7 +138,7 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
       status = newStatus;
     }
 
-    if (status === GRANTED) goToBarCodeScanner(timeStampStart);
+    if (status === GRANTED) goToBarCodeScanner();
 
     setModalVisible(status !== GRANTED);
   };
