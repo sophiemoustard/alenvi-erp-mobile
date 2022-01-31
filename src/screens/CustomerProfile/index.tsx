@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, Text, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { isEqual, pick } from 'lodash';
 import Customers from '../../api/Customers';
@@ -12,6 +12,7 @@ import ConfirmationModal from '../../components/modals/ConfirmationModal';
 import ErrorMessage from '../../components/ErrorMessage';
 import { KEYBOARD_PADDING_TOP } from '../../styles/metrics';
 import styles from './style';
+import { COPPER } from '../../styles/colors';
 
 type CustomerProfileProp = {
   route: { params: { customerId: string } },
@@ -24,7 +25,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const [editedFollowUp, setEditedFollowUp] = useState<UserType['followUp']>({ environment: '' });
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const getCustomer = useCallback(async () => {
     try {
@@ -70,18 +71,19 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     <>
       <NiHeader onPressIcon={onLeave} onPressButton={onSave} loading={loading} />
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
-        <ScrollView style={styles.screen}>
-          <Text style={styles.identity}>{formatIdentity(customer?.identity, 'FL')}</Text>
-          {!loading &&
+        {loading && <ActivityIndicator style={styles.loader} size="small" color={COPPER[500]} />}
+        {!loading &&
+          <ScrollView style={styles.screen}>
+            <Text style={styles.identity}>{formatIdentity(customer?.identity, 'FL')}</Text>
             <NiInput style={styles.input} caption="Environnement" value={editedFollowUp.environment} multiline
               onChangeText={(value: string) => { setEditedFollowUp({ ...editedFollowUp, environment: value }); }}
               placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille, voisinage,
-                histoire de vie, contexte actuel..." />}
-          <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
-            visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
-            cancelText="Poursuivre les modifications" confirmText="Supprimer" />
-          <ErrorMessage message={apiErrorMessage || ''} />
-        </ScrollView>
+                histoire de vie, contexte actuel..." />
+            <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
+              visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
+              cancelText="Poursuivre les modifications" confirmText="Supprimer" />
+            <ErrorMessage message={apiErrorMessage || ''} />
+          </ScrollView>}
       </KeyboardAwareScrollView>
     </>
   );

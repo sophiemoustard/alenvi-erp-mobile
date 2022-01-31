@@ -9,6 +9,9 @@ export default StyleSheet.create({
     paddingVertical: PADDING.XXL,
     paddingHorizontal: PADDING.XL,
   },
+  loader: {
+    margin: MARGIN.XXXL,
+  },
   header: {
     marginBottom: MARGIN.XL,
   },
