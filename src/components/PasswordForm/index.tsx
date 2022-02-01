@@ -19,7 +19,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
   const [password, setPassword] = useState<string>('');
   const [confirmation, setConfirmation] = useState<string>('');
   const scrollRef = useRef<ScrollView>(null);
-  const [passswordError, dispatchPasswordError] = useReducer(errorReducer, initialErrorState);
+  const [passwordError, dispatchPasswordError] = useReducer(errorReducer, initialErrorState);
   const [confirmationError, dispatchConfirmationError] = useReducer(errorReducer, initialErrorState);
   const [error, dispatchError] = useReducer(errorReducer, initialErrorState);
   const [isValidPassword, setIsValidPassword] = useState<boolean>(false);
@@ -103,7 +103,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
       <ScrollView contentContainerStyle={styles.container} ref={scrollRef} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Modifier mon mot de passe</Text>
         <NiInput caption="Nouveau mot de passe" value={password} onChangeText={setPassword} type="password"
-          validationMessage={passswordError.message} style={styles.input} />
+          validationMessage={passwordError.message} style={styles.input} />
         <NiInput caption="Confirmer mot de passe" value={confirmation} onChangeText={setConfirmation}
           type="password" validationMessage={confirmationError.message} style={styles.input} />
         <View style={styles.footer}>

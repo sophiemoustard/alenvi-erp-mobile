@@ -92,7 +92,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
       onRequestClose();
       navigation.navigate('PasswordReset', { userId: checkToken.user._id, email, token: checkToken.token });
     } catch (e) {
-      dispatchError({ type: SET_ERROR, payload: 'Oops, le code n\'est pas valide.' });
+      dispatchError({ type: SET_ERROR, payload: 'Oups, le code n\'est pas valide.' });
     } finally {
       setIsLoading(false);
     }
@@ -109,7 +109,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
       await Authentication.forgotPassword({ email, origin: MOBILE, type: EMAIL });
       setRecipient(email);
     } catch (e) {
-      dispatchError({ type: SET_ERROR, payload: 'Oops, erreur lors de la transmission de l\'email.' });
+      dispatchError({ type: SET_ERROR, payload: 'Oups, erreur lors de la transmission de l\'email.' });
     } finally {
       setIsLoading(false);
     }
@@ -122,7 +122,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
       const { phone } = await Authentication.forgotPassword({ email, origin: MOBILE, type: PHONE });
       setRecipient(phone || '');
     } catch (e) {
-      dispatchError({ type: SET_ERROR, payload: 'Oops, erreur lors de la transmission du numéro de téléphone.' });
+      dispatchError({ type: SET_ERROR, payload: 'Oups, erreur lors de la transmission du numéro de téléphone.' });
     } finally {
       setIsLoading(false);
     }
