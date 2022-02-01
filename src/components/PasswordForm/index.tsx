@@ -53,7 +53,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
 
   useEffect(() => {
     if (!isValidationAttempted || isValidPassword) dispatchPasswordError({ type: RESET_ERROR });
-    else dispatchPasswordError({ type: SET_ERROR, payload: 'Le mot de passe doit comporter au minimum 6 caractères.' });
+    else dispatchPasswordError({ type: SET_ERROR, payload: 'Le mot de passe doit comporter au minimum 6 caractères' });
   }, [isValidationAttempted, isValidPassword]);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
     else {
       dispatchConfirmationError({
         type: SET_ERROR,
-        payload: 'Votre nouveau mot de passe et sa confirmation ne correspondent pas.',
+        payload: 'Votre nouveau mot de passe et sa confirmation ne correspondent pas',
       });
     }
   }, [isValidationAttempted, isValidConfirmation]);
