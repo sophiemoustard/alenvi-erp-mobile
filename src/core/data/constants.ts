@@ -49,8 +49,8 @@ export const MANUAL_TIME_STAMPING = 'manual_time_stamping';
 export const QR_CODE_TIME_STAMPING = 'qr_code_time_stamping';
 export const TIMESTAMPING_ACTION_TYPE_LIST = [MANUAL_TIME_STAMPING, QR_CODE_TIME_STAMPING];
 
-export const PUBLIC_TRANSPORT = 'public_transport';
-export const PRIVATE_TRANSPORT = 'private_transport';
+export const PUBLIC_TRANSPORT = 'public';
+export const PRIVATE_TRANSPORT = 'private';
 export const COMPANY_TRANSPORT = 'company_transport';
 export const EVENT_TRANSPORT_OPTIONS = [
   { label: 'Pas de mode de transport spécifique', value: '' },
