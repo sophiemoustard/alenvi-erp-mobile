@@ -9,11 +9,18 @@ export default StyleSheet.create({
     paddingVertical: PADDING.XXL,
     paddingHorizontal: PADDING.XL,
   },
+  loader: {
+    margin: MARGIN.XXXL,
+  },
   header: {
     marginBottom: MARGIN.XL,
   },
   identity: {
     ...FIRA_SANS_BLACK.XL,
     color: COPPER_GREY[800],
+  },
+  input: {
+    marginTop: MARGIN.LG,
+    marginBottom: MARGIN.XS,
   },
 });

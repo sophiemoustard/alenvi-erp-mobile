@@ -24,7 +24,7 @@ const Header = ({
   iconTitle = 'arrow-left',
   iconSize = ICON.MD,
   iconColor = COPPER[500],
-  buttonTitle = '',
+  buttonTitle = 'Enregistrer',
   onPressButton,
   disabled = false,
   loading = false,
@@ -33,7 +33,7 @@ const Header = ({
   <View style={styles.container}>
     <FeatherButton name={iconTitle} onPress={onPressIcon} color={iconColor} size={iconSize} />
     <Text style={styles.title}>{title}</Text>
-    {!disabled && !!buttonTitle &&
+    {!disabled &&
       <NiPrimaryButton onPress={onPressButton} title={buttonTitle} loading={loading} titleStyle={styles.buttonTitle}
         style={styles.button} />}
   </View>

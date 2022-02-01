@@ -1,7 +1,7 @@
 import pick from 'lodash/pick';
 import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
@@ -54,13 +54,14 @@ const isTimeStampHistory = (eh: EventHistoryType) =>
 const isEditable = (ev: EventType) => !ev.startDateTimeStamp && !ev.endDateTimeStamp && !ev.isBilled;
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
-  const initialState: EventEditionStateType = useMemo(() => ({
+  const [initialState, setInitialState] = useState<EventEditionStateType>({
     histories: [],
     ...route.params.event,
     startDate: CompaniDate(route.params.event.startDate).toISO(),
     endDate: CompaniDate(route.params.event.endDate).toISO(),
     start: false,
-  }), [route.params.event]);
+  });
+
   const [loading, setLoading] = useState<boolean>(false);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
@@ -132,7 +133,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         ? navigation.goBack()
         : setExitModal(true);
     },
-    [initialState, editedEvent, navigation]
+    [editedEvent, initialState, navigation]
   );
 
   const hardwareBackPress = useCallback(() => {
@@ -153,15 +154,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
       if (isValid) {
         const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc']);
-        await Events.updateById(
-          editedEvent._id,
-          {
-            auxiliary: editedEvent.auxiliary._id,
-            kmDuringEvent: Number.parseFloat(editedEvent.kmDuringEvent) || 0,
-            ...pickedFields,
-          }
-        );
-        navigation.goBack();
+        const payload = {
+          auxiliary: editedEvent.auxiliary._id,
+          kmDuringEvent: Number.parseFloat(editedEvent.kmDuringEvent) || 0,
+          ...pickedFields,
+        };
+
+        await Events.updateById(editedEvent._id, payload);
+        setInitialState(editedEvent);
       }
     } catch (e) {
       if (e.response.status === 409) setApiErrorMessage(e.response.data.message);
@@ -241,8 +241,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   return (
     <>
-      <NiHeader onPressIcon={onLeave} title={headerTitle} buttonTitle='Enregistrer' loading={loading}
-        onPressButton={onSave}/>
+      <NiHeader onPressIcon={onLeave} title={headerTitle} loading={loading} onPressButton={onSave} />
       {editedEvent.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         <ScrollView style={styles.container}>
