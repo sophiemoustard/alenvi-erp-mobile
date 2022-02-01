@@ -5,16 +5,19 @@ import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import { Picker } from '@react-native-picker/picker';
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
 import { formatIdentity } from '../../../core/helpers/utils';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
+import { FLOAT_REGEX, NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiHeader from '../../../components/Header';
 import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
+import EventFieldEdition from '../../../components/EventFieldEdition';
+import ErrorMessage from '../../../components/ErrorMessage';
+import EventTransportModeEdition from '../../../components/EventTransportModeEdition';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
@@ -27,14 +30,6 @@ import {
   EventEditionStateType,
   FormattedAuxiliaryType,
 } from './types';
-import {
-  EVENT_TRANSPORT_OPTIONS,
-  FLOAT_REGEX,
-  NUMBER,
-  TIMESTAMPING_ACTION_TYPE_LIST,
-} from '../../../core/data/constants';
-import EventFieldEdition from '../../../components/EventFieldEdition';
-import ErrorMessage from '../../../components/ErrorMessage';
 
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
@@ -229,12 +224,6 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     editedEventDispatch({ type: SET_FIELD, payload: { kmDuringEvent: value.replace(',', '.') || '' } })
   );
 
-  const selectTransportMode = (itemValue: string) => {
-    editedEventDispatch({
-      type: SET_FIELD,
-      payload: { transportMode: itemValue },
-    });
-  };
   useEffect(() => { getActiveAuxiliaries(editedEvent.company); }, [editedEvent.company, getActiveAuxiliaries]);
 
   const refreshHistories = useCallback(async () => {
@@ -278,9 +267,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}/>
           <EventAuxiliaryEdition auxiliary={editedEvent.auxiliary} auxiliaryOptions={activeAuxiliaries}
             eventEditionDispatch={editedEventDispatch} isEditable={isAuxiliaryEditable} />
-          <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
-            visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
-            cancelText="Poursuivre les modifications" confirmText="Supprimer" />
+          <EventTransportModeEdition transportMode={editedEvent.transportMode}
+            eventEditionDispatch={editedEventDispatch} />
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
             buttonTitle="Ajouter une note" multiline
             onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
@@ -290,12 +278,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
             buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />}
             errorMessage={kmDuringEventErrorMessage || ''} />
-          <Picker selectedValue={editedEvent.transportMode} onValueChange={selectTransportMode}
-            itemStyle={{ fontSize: 16 }}>
-            {EVENT_TRANSPORT_OPTIONS.map((option, index) => (
-              <Picker.Item label={option.label} value={option.value} key={index} />
-            ))}
-          </Picker>
+          <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
+            visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
+            cancelText="Poursuivre les modifications" confirmText="Supprimer" />
           <ErrorMessage message={apiErrorMessage || ''} />
         </ScrollView>
       </KeyboardAwareScrollView>
