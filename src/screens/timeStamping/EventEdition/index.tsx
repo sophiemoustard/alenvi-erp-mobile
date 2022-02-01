@@ -45,6 +45,7 @@ const formatAuxiliary = (auxiliary: UserType): FormattedAuxiliaryType => ({
   _id: auxiliary._id,
   ...pick(auxiliary, ['picture', 'contracts', 'identity']),
   formattedIdentity: formatIdentity(auxiliary.identity, 'FL'),
+  administrative: { transportInvoice: { transportType: auxiliary.administrative?.transportInvoice?.transportType } },
 });
 
 const formatZipCodeAndCity = (intervention: EventType) => {

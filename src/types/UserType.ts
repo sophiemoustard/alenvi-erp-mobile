@@ -6,7 +6,7 @@ export interface UserType {
   company?: { name: string },
   contact?: { phone: string, primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string } },
   contracts?: [{ _id: string, startDate: string, endDate: string }],
-  administrative?: { transportInvoice: { transportType: string } },
+  administrative?: { transportInvoice?: { transportType?: string } },
 }
 
 export type AuxiliaryType = {

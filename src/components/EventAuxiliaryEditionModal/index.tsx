@@ -37,6 +37,10 @@ const EventAuxiliaryEditionModal = ({
 
   const onPress = (aux: EventType['auxiliary']) => {
     eventEditionDispatch({ type: SET_FIELD, payload: { auxiliary: aux } });
+    eventEditionDispatch({
+      type: SET_FIELD,
+      payload: { transportMode: aux.administrative?.transportInvoice?.transportType },
+    });
     onPressCloseButton();
   };
 
