@@ -66,6 +66,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     startDate: CompaniDate(route.params.event.startDate).toISO(),
     endDate: CompaniDate(route.params.event.endDate).toISO(),
     start: false,
+    transportMode: route.params.event.transportMode ||
+    route.params.event.auxiliary?.administrative?.transportInvoice?.transportType ||
+    '',
   });
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -133,9 +136,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const onLeave = useCallback(
     () => {
-      const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
-      if (editedEvent.kmDuringEvent) pickFields.push('kmDuringEvent');
-      return isEqual(pick(editedEvent, pickFields), pick(initialState, pickFields))
+      const pickedFields = ['startDate', 'endDate', 'auxiliary._id', 'misc', 'transportMode'];
+      if (editedEvent.kmDuringEvent) pickedFields.push('kmDuringEvent');
+      return isEqual(pick(editedEvent, pickedFields), pick(initialState, pickedFields))
         ? navigation.goBack()
         : setExitModal(true);
     },
@@ -159,7 +162,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       setIsValidationAttempted(true);
 
       if (isValid) {
-        const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc']);
+        const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc', 'transportMode']);
         const payload = {
           auxiliary: editedEvent.auxiliary._id,
           kmDuringEvent: Number.parseFloat(editedEvent.kmDuringEvent) || 0,
@@ -225,6 +228,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     editedEventDispatch({ type: SET_FIELD, payload: { kmDuringEvent: value.replace(',', '.') || '' } })
   );
 
+  const selectTransportMode = (itemValue: string) => {
+    editedEventDispatch({
+      type: SET_FIELD,
+      payload: { transportMode: itemValue },
+    });
+  };
   useEffect(() => { getActiveAuxiliaries(editedEvent.company); }, [editedEvent.company, getActiveAuxiliaries]);
 
   const refreshHistories = useCallback(async () => {
@@ -242,11 +251,6 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   }, [editedEvent]);
 
   const goToCustomerProfile = (id: string) => navigation.navigate('CustomerProfile', { customerId: id });
-
-  const selectTransportMode = (itemValue: string) => editedEventDispatch({
-    type: SET_FIELD,
-    payload: { transportMode: itemValue },
-  });
 
   const headerTitle = CompaniDate(editedEvent.startDate).format('cccc dd LLL');
 
@@ -291,7 +295,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
               <Picker.Item label={option.label} value={option.value} key={index} />
             ))}
           </Picker>
-          <ErrorMessage message={apiErrorMessage || ''}/>
+          <ErrorMessage message={apiErrorMessage || ''} />
         </ScrollView>
       </KeyboardAwareScrollView>
     </>

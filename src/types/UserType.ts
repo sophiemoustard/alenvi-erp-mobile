@@ -6,6 +6,8 @@ export type UserType = {
   company?: { name: string },
   contact?: { phone: string, primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string } },
   contracts?: [{ _id: string, startDate: string, endDate: string }],
+  followUp: { environment: string },
+  administrative?: { transportInvoice: { transportType: string } },
 }
 
 export type AuxiliaryType = {
@@ -13,6 +15,7 @@ export type AuxiliaryType = {
   identity: UserType['identity'],
   picture?: UserType['picture'],
   contracts?: UserType['contracts'],
+  administrative?: UserType['administrative'],
 }
 
 export type CustomerType = {
