@@ -1,7 +1,7 @@
 import pick from 'lodash/pick';
 import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
-import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
@@ -54,14 +54,14 @@ const isTimeStampHistory = (eh: EventHistoryType) =>
 const isEditable = (ev: EventType) => !ev.startDateTimeStamp && !ev.endDateTimeStamp && !ev.isBilled;
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
-  const initialState: EventEditionStateType = useMemo(() => ({
+  const [initialState, setInitialState] = useState<EventEditionStateType>({
     histories: [],
     ...route.params.event,
     startDate: CompaniDate(route.params.event.startDate).toISO(),
     endDate: CompaniDate(route.params.event.endDate).toISO(),
     start: false,
-  }), [route.params.event]);
-  const initialEvent = useRef<EventEditionStateType>(initialState);
+  });
+
   const [loading, setLoading] = useState<boolean>(false);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
@@ -129,11 +129,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     () => {
       const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
       if (editedEvent.kmDuringEvent) pickFields.push('kmDuringEvent');
-      return isEqual(pick(editedEvent, pickFields), pick(initialEvent.current, pickFields))
+      return isEqual(pick(editedEvent, pickFields), pick(initialState, pickFields))
         ? navigation.goBack()
         : setExitModal(true);
     },
-    [editedEvent, navigation]
+    [editedEvent, initialState, navigation]
   );
 
   const hardwareBackPress = useCallback(() => {
@@ -161,7 +161,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         };
 
         await Events.updateById(editedEvent._id, payload);
-        initialEvent.current = editedEvent;
+        setInitialState(editedEvent);
       }
     } catch (e) {
       if (e.response.status === 409) setApiErrorMessage(e.response.data.message);

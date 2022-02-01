@@ -1,8 +1,8 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { isEqual, pick } from 'lodash';
+import { get, isEqual, pick } from 'lodash';
 import Customers from '../../api/Customers';
 import { UserType } from '../../types/UserType';
 import { formatIdentity } from '../../core/helpers/utils';
@@ -21,9 +21,14 @@ type CustomerProfileProp = {
 const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const navigation = useNavigation();
   const { customerId } = route.params;
-  const [customer, setCustomer] = useState<UserType | null>(null);
-  const [editedFollowUp, setEditedFollowUp] = useState<UserType['followUp']>({ environment: '' });
-  const initialCustomerFollowUp = useRef<UserType['followUp']>(editedFollowUp);
+  const customer = {
+    _id: '',
+    identity: { firstname: '', lastname: '' },
+    local: { email: '' },
+    followUp: { environment: '' },
+  };
+  const [initialCustomer, setInitialCustomer] = useState<UserType>(customer);
+  const [editedCustomer, setEditedCustomer] = useState<UserType>(customer);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
@@ -32,9 +37,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     try {
       setLoading(true);
       const currentCustomer = await Customers.getById(customerId);
-      setCustomer(currentCustomer);
-      setEditedFollowUp({ environment: currentCustomer?.followUp.environment || '' });
-      initialCustomerFollowUp.current = currentCustomer?.followUp || {};
+      setInitialCustomer(currentCustomer);
     } catch (e) {
       console.error(e);
     } finally {
@@ -44,8 +47,11 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   useEffect(() => { getCustomer(); }, [getCustomer]);
 
+  useEffect(() => { setEditedCustomer(initialCustomer); }, [initialCustomer]);
+
   const onLeave = () => {
-    if (isEqual(pick(editedFollowUp, ['environment']), pick(initialCustomerFollowUp.current, ['environment']))) {
+    const pickedFields = ['environment'];
+    if (isEqual(pick(editedCustomer?.followUp, pickedFields), pick(initialCustomer?.followUp, pickedFields))) {
       navigation.goBack();
     } else setExitModal(true);
   };
@@ -58,8 +64,9 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const onSave = async () => {
     try {
       setLoading(true);
-      await Customers.updateById(customerId, { followUp: editedFollowUp });
-      initialCustomerFollowUp.current = editedFollowUp;
+      const payload = { followUp: { environment: get(editedCustomer?.followUp, 'environment', '') } };
+      await Customers.updateById(customerId, payload);
+      setInitialCustomer(editedCustomer);
     } catch (e) {
       console.error(e);
       setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
@@ -68,7 +75,11 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     }
   };
 
-  useEffect(() => setApiErrorMessage(''), [setApiErrorMessage, editedFollowUp]);
+  useEffect(() => setApiErrorMessage(''), [setApiErrorMessage, editedCustomer]);
+
+  const onChangeEnvironment = (value: string) => {
+    setEditedCustomer({ ...editedCustomer, followUp: { environment: value } });
+  };
 
   return (
     <>
@@ -77,9 +88,9 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
         {loading && <ActivityIndicator style={styles.loader} size="small" color={COPPER[500]} />}
         {!loading &&
           <ScrollView style={styles.screen}>
-            <Text style={styles.identity}>{formatIdentity(customer?.identity, 'FL')}</Text>
-            <NiInput style={styles.input} caption="Environnement" value={editedFollowUp.environment} multiline
-              onChangeText={(value: string) => { setEditedFollowUp({ ...editedFollowUp, environment: value }); }}
+            <Text style={styles.identity}>{formatIdentity(initialCustomer?.identity, 'FL')}</Text>
+            <NiInput style={styles.input} caption="Environnement" value={get(editedCustomer?.followUp, 'environment')}
+              multiline onChangeText={onChangeEnvironment}
               placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille, voisinage,
                 histoire de vie, contexte actuel..." />
             <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
