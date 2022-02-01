@@ -123,7 +123,7 @@ describe('authentication', () => {
     await act(async () => fireEvent.changeText(passwordInput, 'wrong'));
     await act(async () => fireEvent.press(sendButton));
 
-    const errorMessage = await element.getByTestId('L\'e-mail et/ou le mot de passe est incorrect');
+    const errorMessage = await element.getByTestId('L\'e-mail et/ou le mot de passe est incorrect.');
     expect(errorMessage).toBeTruthy();
   });
 });
