@@ -21,6 +21,7 @@ export type EventEditionActionType = {
     auxiliary?: EventType['auxiliary'],
     misc?: string,
     kmDuringEvent?: string,
+    transportMode?: string,
   },
 }
 

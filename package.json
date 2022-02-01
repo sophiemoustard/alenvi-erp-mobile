@@ -58,7 +58,8 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.8.0",
-    "sentry-expo": "^4.0.0"
+    "sentry-expo": "^4.0.0",
+    "@react-native-picker/picker": "2.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

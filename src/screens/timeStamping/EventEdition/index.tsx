@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
@@ -26,7 +27,12 @@ import {
   EventEditionStateType,
   FormattedAuxiliaryType,
 } from './types';
-import { FLOAT_REGEX, NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
+import {
+  EVENT_TRANSPORT_OPTIONS,
+  FLOAT_REGEX,
+  NUMBER,
+  TIMESTAMPING_ACTION_TYPE_LIST,
+} from '../../../core/data/constants';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 import ErrorMessage from '../../../components/ErrorMessage';
 
@@ -237,6 +243,11 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const goToCustomerProfile = (id: string) => navigation.navigate('CustomerProfile', { customerId: id });
 
+  const selectTransportMode = (itemValue: string) => editedEventDispatch({
+    type: SET_FIELD,
+    payload: { transportMode: itemValue },
+  });
+
   const headerTitle = CompaniDate(editedEvent.startDate).format('cccc dd LLL');
 
   return (
@@ -274,6 +285,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
             buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />}
             errorMessage={kmDuringEventErrorMessage || ''} />
+          <Picker selectedValue={editedEvent.transportMode} onValueChange={selectTransportMode}
+            itemStyle={{ fontSize: 16 }}>
+            {EVENT_TRANSPORT_OPTIONS.map((option, index) => (
+              <Picker.Item label={option.label} value={option.value} key={index} />
+            ))}
+          </Picker>
           <ErrorMessage message={apiErrorMessage || ''}/>
         </ScrollView>
       </KeyboardAwareScrollView>
