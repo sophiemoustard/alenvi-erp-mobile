@@ -25,7 +25,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     _id: '',
     identity: { firstname: '', lastname: '' },
     local: { email: '' },
-    followUp: { environment: '' },
+    followUp: { environment: '', objectives: '' },
   };
   const [initialCustomer, setInitialCustomer] = useState<UserType>(customer);
   const [editedCustomer, setEditedCustomer] = useState<UserType>(customer);
@@ -50,7 +50,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   useEffect(() => { setEditedCustomer(initialCustomer); }, [initialCustomer]);
 
   const onLeave = () => {
-    const pickedFields = ['environment'];
+    const pickedFields = ['environment', 'objectives'];
     if (isEqual(pick(editedCustomer?.followUp, pickedFields), pick(initialCustomer?.followUp, pickedFields))) {
       navigation.goBack();
     } else setExitModal(true);
@@ -64,7 +64,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const onSave = async () => {
     try {
       setLoading(true);
-      const payload = { followUp: { environment: get(editedCustomer?.followUp, 'environment', '') } };
+      const payload = { followUp: get(editedCustomer, 'followUp', { environment: '', objectives: '' }) };
+
       await Customers.updateById(customerId, payload);
       setInitialCustomer(editedCustomer);
     } catch (e) {
@@ -77,8 +78,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   useEffect(() => setApiErrorMessage(''), [setApiErrorMessage, editedCustomer]);
 
-  const onChangeEnvironment = (value: string) => {
-    setEditedCustomer({ ...editedCustomer, followUp: { environment: value } });
+  const onChangeFollowUpText = (key: string) => (text: string) => {
+    setEditedCustomer({ ...editedCustomer, followUp: { ...editedCustomer.followUp, [key]: text } });
   };
 
   return (
@@ -90,9 +91,12 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
           <ScrollView style={styles.screen}>
             <Text style={styles.identity}>{formatIdentity(initialCustomer?.identity, 'FL')}</Text>
             <NiInput style={styles.input} caption="Environnement" value={get(editedCustomer?.followUp, 'environment')}
-              multiline onChangeText={onChangeEnvironment}
+              multiline onChangeText={onChangeFollowUpText('environment')}
               placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille, voisinage,
                 histoire de vie, contexte actuel..." />
+            <NiInput style={styles.input} caption="Objectifs" value={get(editedCustomer.followUp, 'objectives')}
+              multiline onChangeText={onChangeFollowUpText('objectives')} placeholder="Précisez les objectifs
+                de l'accompagnement : lever, toilette, préparation des repas, courses, déplacement véhiculé..." />
             <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
               visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
               cancelText="Poursuivre les modifications" confirmText="Supprimer" />
