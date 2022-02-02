@@ -36,7 +36,7 @@ const EventTransportModeEdition = ({ transportMode, eventEditionDispatch }: Even
     }
 
     return (
-      <TouchableOpacity onPress={() => { selectTransportMode(option.value); }} style={styles.pickerItem} key={index}>
+      <TouchableOpacity onPress={() => selectTransportMode(option.value)} style={styles.pickerItem} key={index}>
         <Text style={styles.pickerItemText}>{option.label}</Text>
       </TouchableOpacity>
     );
