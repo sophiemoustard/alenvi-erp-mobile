@@ -38,6 +38,7 @@ export default StyleSheet.create({
   },
   pickerItem: {
     backgroundColor: WHITE,
+    borderRadius: BORDER_RADIUS.XS,
     paddingLeft: PADDING.LG,
     paddingVertical: PADDING.LG,
   },
@@ -46,6 +47,7 @@ export default StyleSheet.create({
     color: COPPER_GREY[700],
   },
   selectedPickerItem: {
+    borderRadius: BORDER_RADIUS.XS,
     flexDirection: 'row',
     backgroundColor: COPPER_GREY[100],
     padding: PADDING.LG,
