@@ -1,6 +1,7 @@
 export const WHITE = 'white';
 export const MODAL_BACKDROP_GREY = '#00000099';
 export const TRANSPARENT_COPPER = 'rgba(71, 96, 105, 0.2)';
+export const SHADOW_COPPER = 'rgb(206, 225, 229)';
 export const RED = '#FF0000';
 
 export const COPPER_GREY = {
