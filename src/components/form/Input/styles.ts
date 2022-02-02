@@ -34,7 +34,8 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
     backgroundColor: WHITE,
   },
   input: {
-    ...FIRA_SANS_MEDIUM.MD,
+    ...FIRA_SANS_REGULAR.MD,
+    color: COPPER_GREY[900],
     paddingHorizontal: PADDING.MD,
     marginVertical: MARGIN.MD,
     flex: 1,
