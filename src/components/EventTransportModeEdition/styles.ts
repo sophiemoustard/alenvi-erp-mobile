@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { COPPER_GREY, WHITE } from '../../styles/colors';
-import { FIRA_SANS_REGULAR } from '../../styles/fonts';
+import { COPPER, COPPER_GREY, WHITE } from '../../styles/colors';
+import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, MARGIN, PADDING, BORDER_WIDTH } from '../../styles/metrics';
 
 export default StyleSheet.create({
@@ -21,11 +21,39 @@ export default StyleSheet.create({
     borderRadius: BORDER_RADIUS.MD,
     borderColor: COPPER_GREY[300],
   },
+  selectedCell: {
+    borderColor: COPPER[500],
+  },
   transportText: {
     ...FIRA_SANS_REGULAR.MD,
     flex: 1,
-    color: COPPER_GREY[800],
-    textAlign: 'left',
+    color: COPPER_GREY[900],
     marginVertical: MARGIN.SM,
+  },
+  picker: {
+    marginHorizontal: MARGIN.XS,
+    borderWidth: BORDER_WIDTH,
+    borderRadius: BORDER_RADIUS.XS,
+    borderColor: COPPER_GREY[300],
+  },
+  pickerItem: {
+    backgroundColor: WHITE,
+    paddingLeft: PADDING.LG,
+    paddingVertical: PADDING.LG,
+  },
+  pickerItemText: {
+    ...FIRA_SANS_REGULAR.MD,
+    color: COPPER_GREY[700],
+  },
+  selectedPickerItem: {
+    flexDirection: 'row',
+    backgroundColor: COPPER_GREY[100],
+    padding: PADDING.LG,
+    alignItems: 'center',
+  },
+  selectedPickerItemText: {
+    ...FIRA_SANS_BOLD.MD,
+    color: COPPER_GREY[700],
+    flex: 1,
   },
 });
