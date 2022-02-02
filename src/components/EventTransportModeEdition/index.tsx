@@ -11,21 +11,18 @@ import { ICON } from '../../styles/metrics';
 import Shadow from '../design/Shadow';
 
 type EventTransportModeEditionProps = {
-  transportMode: any,
+  transportMode: string,
   eventEditionDispatch: (action: EventEditionActionType) => void,
 }
 
-const EventTransportModeEdition = ({
-  transportMode,
-  eventEditionDispatch,
-}: EventTransportModeEditionProps) => {
-  const [showPicker, setShowPicker] = useState(false);
+const EventTransportModeEdition = ({ transportMode, eventEditionDispatch }: EventTransportModeEditionProps) => {
+  const [displayPicker, setDisplayPicker] = useState<boolean>(false);
 
-  const onPressCell = () => { setShowPicker(prevValue => !prevValue); };
+  const onPressCell = () => setDisplayPicker(prevValue => !prevValue);
 
   const selectTransportMode = (itemValue: string) => {
     eventEditionDispatch({ type: SET_FIELD, payload: { transportMode: itemValue } });
-    setShowPicker(false);
+    setDisplayPicker(false);
   };
 
   const renderEventTransportItem = (option: { label: string, value: string }, index: number) => {
@@ -49,17 +46,17 @@ const EventTransportModeEdition = ({
     <>
       <Text style={styles.sectionText}>Transport pour aller à l&apos;intervention</Text>
       <View>
-        <TouchableOpacity style={[styles.transportCell, showPicker && styles.selectedCell]} onPress={onPressCell}>
+        <TouchableOpacity style={[styles.transportCell, displayPicker && styles.selectedCell]} onPress={onPressCell}>
           <Text style={styles.transportText}>
             {(EVENT_TRANSPORT_OPTIONS.find(item => item.value === transportMode))?.label || ''}
           </Text>
-          {showPicker
+          {displayPicker
             ? <FeatherButton name='chevron-up' onPress={onPressCell} />
             : <FeatherButton name='chevron-down' onPress={onPressCell} />}
         </TouchableOpacity>
-        {showPicker && <Shadow />}
+        {displayPicker && <Shadow />}
       </View>
-      {showPicker &&
+      {displayPicker &&
         <View style={styles.picker}>
           {EVENT_TRANSPORT_OPTIONS.map(renderEventTransportItem)}
         </View>
