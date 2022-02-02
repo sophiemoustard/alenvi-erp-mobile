@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { BORDER_RADIUS, PADDING, MARGIN, BUTTON_HEIGHT } from '../../styles/metrics';
+import { BORDER_RADIUS, PADDING, MARGIN, BUTTON_HEIGHT, SWITCH_TEXT_WIDTH } from '../../styles/metrics';
 import { WHITE } from '../../styles/colors';
 import { FIRA_SANS_MEDIUM } from '../../styles/fonts';
 
@@ -18,12 +18,13 @@ const switchStyle = ({ backgroundColor } : SwitchStyleProps) => StyleSheet.creat
   textContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: PADDING.LG,
     justifyContent: 'space-around',
     height: '100%',
   },
   text: {
     ...FIRA_SANS_MEDIUM.MD,
+    width: SWITCH_TEXT_WIDTH,
+    textAlign: 'center',
   },
   toggle: {
     backgroundColor: WHITE,
