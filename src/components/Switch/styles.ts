@@ -18,8 +18,9 @@ const switchStyle = ({ backgroundColor } : SwitchStyleProps) => StyleSheet.creat
   textContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: PADDING.LG,
-    justifyContent: 'space-around',
+    paddingLeft: '19%',
+    paddingRight: '22%',
+    justifyContent: 'space-between',
     height: '100%',
   },
   text: {
