@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { get, isEqual, pick } from 'lodash';
+import { isEqual, pick } from 'lodash';
 import Customers from '../../api/Customers';
 import { UserType } from '../../types/UserType';
 import { formatIdentity } from '../../core/helpers/utils';
@@ -64,7 +64,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const onSave = async () => {
     try {
       setLoading(true);
-      const payload = { followUp: get(editedCustomer, 'followUp', { environment: '', objectives: '' }) };
+      const payload = { followUp: editedCustomer?.followUp || { environment: '', objectives: '' } };
 
       await Customers.updateById(customerId, payload);
       setInitialCustomer(editedCustomer);
@@ -90,11 +90,11 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
         {!loading &&
           <ScrollView style={styles.screen}>
             <Text style={styles.identity}>{formatIdentity(initialCustomer?.identity, 'FL')}</Text>
-            <NiInput style={styles.input} caption="Environnement" value={get(editedCustomer?.followUp, 'environment')}
+            <NiInput style={styles.input} caption="Environnement" value={editedCustomer?.followUp.environment}
               multiline onChangeText={onChangeFollowUpText('environment')}
               placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille, voisinage,
                 histoire de vie, contexte actuel..." />
-            <NiInput style={styles.input} caption="Objectifs" value={get(editedCustomer.followUp, 'objectives')}
+            <NiInput style={styles.input} caption="Objectifs" value={editedCustomer?.followUp?.objectives}
               multiline onChangeText={onChangeFollowUpText('objectives')} placeholder="Précisez les objectifs
                 de l'accompagnement : lever, toilette, préparation des repas, courses, déplacement véhiculé..." />
             <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}

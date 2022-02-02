@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { WHITE, COPPER_GREY, COPPER, ORANGE } from '../../../styles/colors';
 import { BORDER_RADIUS, PADDING, MARGIN, BORDER_WIDTH } from '../../../styles/metrics';
-import { FIRA_SANS_REGULAR, FIRA_SANS_MEDIUM, FIRA_SANS_ITALIC } from '../../../styles/fonts';
+import { FIRA_SANS_REGULAR, FIRA_SANS_ITALIC } from '../../../styles/fonts';
 
 interface inputStyleProps{
   isSelected: Boolean,
