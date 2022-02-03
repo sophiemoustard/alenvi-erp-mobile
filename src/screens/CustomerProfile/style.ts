@@ -21,5 +21,6 @@ export default StyleSheet.create({
   },
   input: {
     marginTop: MARGIN.MD,
+    marginHorizontal: MARGIN.XS,
   },
 });
