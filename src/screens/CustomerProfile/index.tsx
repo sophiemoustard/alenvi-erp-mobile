@@ -4,7 +4,7 @@ import { ScrollView, Text, ActivityIndicator } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { isEqual, pick } from 'lodash';
 import Customers from '../../api/Customers';
-import { UserType } from '../../types/UserType';
+import { CustomerType } from '../../types/UserType';
 import { formatIdentity } from '../../core/helpers/utils';
 import NiHeader from '../../components/Header';
 import NiInput from '../../components/form/Input';
@@ -24,11 +24,10 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const customer = {
     _id: '',
     identity: { firstname: '', lastname: '' },
-    local: { email: '' },
     followUp: { environment: '', objectives: '' },
   };
-  const [initialCustomer, setInitialCustomer] = useState<UserType>(customer);
-  const [editedCustomer, setEditedCustomer] = useState<UserType>(customer);
+  const [initialCustomer, setInitialCustomer] = useState<CustomerType>(customer);
+  const [editedCustomer, setEditedCustomer] = useState<CustomerType>(customer);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
@@ -90,7 +89,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
         {!loading &&
           <ScrollView style={styles.screen}>
             <Text style={styles.identity}>{formatIdentity(initialCustomer?.identity, 'FL')}</Text>
-            <NiInput style={styles.input} caption="Environnement" value={editedCustomer?.followUp.environment}
+            <NiInput style={styles.input} caption="Environnement" value={editedCustomer?.followUp?.environment}
               multiline onChangeText={onChangeFollowUpText('environment')}
               placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille, voisinage,
                 histoire de vie, contexte actuel..." />
