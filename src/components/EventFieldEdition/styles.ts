@@ -16,7 +16,4 @@ export default StyleSheet.create({
   container: {
     marginTop: MARGIN.MD,
   },
-  inputContainer: {
-    marginHorizontal: MARGIN.XS,
-  },
 });
