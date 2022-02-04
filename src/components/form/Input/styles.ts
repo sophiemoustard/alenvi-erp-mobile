@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { WHITE, COPPER_GREY, COPPER, ORANGE } from '../../../styles/colors';
-import { INPUT_HEIGHT, BORDER_RADIUS, PADDING, MARGIN, BORDER_WIDTH } from '../../../styles/metrics';
-import { FIRA_SANS_REGULAR, FIRA_SANS_MEDIUM, FIRA_SANS_ITALIC } from '../../../styles/fonts';
+import { BORDER_RADIUS, PADDING, MARGIN, BORDER_WIDTH } from '../../../styles/metrics';
+import { FIRA_SANS_REGULAR, FIRA_SANS_ITALIC } from '../../../styles/fonts';
 
 interface inputStyleProps{
   isSelected: Boolean,
@@ -34,9 +34,10 @@ const inputStyle = ({ isSelected } : inputStyleProps) => StyleSheet.create({
     backgroundColor: WHITE,
   },
   input: {
-    ...FIRA_SANS_MEDIUM.MD,
-    height: INPUT_HEIGHT,
+    ...FIRA_SANS_REGULAR.MD,
+    color: COPPER_GREY[900],
     paddingHorizontal: PADDING.MD,
+    marginVertical: MARGIN.MD,
     flex: 1,
   },
   icon: {

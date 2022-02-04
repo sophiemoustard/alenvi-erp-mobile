@@ -26,8 +26,8 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
     try {
       await signIn({ email, password });
     } catch (e) {
-      if (e.response.status === 401) setErrorMessage('L\'e-mail et/ou le mot de passe est incorrect');
-      else setErrorMessage('Impossible de se connecter');
+      if (e.response?.status === 401) setErrorMessage('L\'e-mail et/ou le mot de passe est incorrect.');
+      else setErrorMessage('Impossible de se connecter.');
     }
   };
 

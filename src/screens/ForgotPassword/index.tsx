@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useReducer } from 'react';
 import { KeyboardAvoidingView, View, Text, BackHandler } from 'react-native';
 import Users from '../../api/Users';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
@@ -11,6 +11,7 @@ import { formatEmailForPayload } from '../../core/helpers/utils';
 import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
 import { NavigationType } from '../../types/NavigationType';
 import styles from './styles';
+import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
 
 interface EmailFormProps {
   navigation: NavigationType,
@@ -18,7 +19,7 @@ interface EmailFormProps {
 
 const ForgotPassword = ({ navigation }: EmailFormProps) => {
   const [email, setEmail] = useState<string>('');
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [error, dispatchError] = useReducer(errorReducer, initialErrorState);
   const [exitConfirmationModal, setExitConfirmationModal] = useState<boolean>(false);
   const [invalidEmail, setInvalidEmail] = useState<boolean>(false);
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
@@ -38,8 +39,9 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
 
   useEffect(() => {
     setInvalidEmail(!email.match(EMAIL_REGEX));
-    if (!email.match(EMAIL_REGEX) && isValidationAttempted) setErrorMessage('Votre e-mail n\'est pas valide');
-    else setErrorMessage('');
+    if (!email.match(EMAIL_REGEX) && isValidationAttempted) {
+      dispatchError({ type: SET_ERROR, payload: 'Votre e-mail n\'est pas valide' });
+    } else dispatchError({ type: RESET_ERROR });
   }, [email, isValidationAttempted]);
 
   const goBack = () => {
@@ -53,11 +55,11 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
       if (!invalidEmail) {
         setIsLoading(true);
         const exists = await Users.exists({ email: formatEmailForPayload(email) });
-        if (!exists) setErrorMessage('Oups ! Cet e-mail n\'est pas reconnu.');
+        if (!exists) dispatchError({ type: SET_ERROR, payload: 'Oups ! Cet e-mail n\'est pas reconnu.' });
         else setForgotPasswordModal(true);
       }
     } catch (e) {
-      setErrorMessage('Une erreur s\'est produite, veuillez réessayer ultérieurement.');
+      dispatchError({ type: SET_ERROR, payload: 'Une erreur s\'est produite, veuillez réessayer ultérieurement.' });
     } finally {
       setIsLoading(false);
     }
@@ -77,7 +79,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
           <View style={styles.content}>
             <Text style={styles.title}>Quel est votre e-mail ?</Text>
             <NiInput style={styles.input} caption='Email' type={EMAIL} onChangeText={setEmail} value={email}
-              validationMessage={errorMessage} disabled={isLoading} />
+              validationMessage={error.message} disabled={isLoading} />
           </View>
           <NiPrimaryButton title='Valider' onPress={validateEmail} loading={isLoading} />
         </View>

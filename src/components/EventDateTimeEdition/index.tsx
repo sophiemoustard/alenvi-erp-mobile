@@ -2,11 +2,13 @@ import React, { useReducer, useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import EventHistories from '../../api/EventHistories';
-import { DATE, isIOS, TIME, TIMESTAMPING_ACTION_TYPE_LIST } from '../../core/data/constants';
+import { DATE, isIOS, TIME, TIMESTAMPING_ACTION_TYPE_LIST, WARNING } from '../../core/data/constants';
 import EventDateTime from '../EventDateTime';
 import WarningBanner from '../WarningBanner';
 import NiInput from '../form/Input';
+import NiErrorMessage from '../ErrorMessage';
 import ConfirmationModal from '../modals/ConfirmationModal';
+import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventEditionActionType, EventEditionStateType } from '../../screens/timeStamping/EventEdition/types';
 import { SET_DATES, SET_FIELD, SET_TIME } from '../../screens/timeStamping/EventEdition';
 import { EventHistoryType } from '../../types/EventType';
@@ -18,6 +20,7 @@ interface EventDateTimeEditionProps {
   eventEditionDispatch: (action: EventEditionActionType) => void,
   refreshHistories: () => void,
   loading: boolean,
+  dateErrorMessage?: string,
 }
 
 interface StateType {
@@ -70,10 +73,11 @@ const EventDateTimeEdition = ({
   eventEditionDispatch,
   refreshHistories,
   loading,
+  dateErrorMessage = '',
 }: EventDateTimeEditionProps) => {
   const [picker, pickerDispatch] = useReducer(reducer, initialState);
-  const [maximumStartDate, setMaximumStartDate] = useState<Date | undefined>(undefined);
-  const [minimumEndDate, setMinimumEndDate] = useState<Date | undefined>(undefined);
+  const [maximumStartDate, setMaximumStartDate] = useState<string | undefined>(undefined);
+  const [minimumEndDate, setMinimumEndDate] = useState<string | undefined>(undefined);
   const [confirmationModal, setConfirmationModal] = useState<boolean>(false);
   const [cancellationModal, setCancellationModal] = useState<boolean>(false);
   const [reason, setReason] = useState<string>('');
@@ -121,9 +125,11 @@ const EventDateTimeEdition = ({
       return;
     }
 
-    if (picker.mode === DATE) eventEditionDispatch({ type: SET_DATES, payload: { date: newDate } });
+    if (picker.mode === DATE) {
+      eventEditionDispatch({ type: SET_DATES, payload: { date: CompaniDate(newDate).toISO() } });
+    }
 
-    if (picker.mode === TIME) eventEditionDispatch({ type: SET_TIME, payload: { date: newDate } });
+    if (picker.mode === TIME) eventEditionDispatch({ type: SET_TIME, payload: { date: CompaniDate(newDate).toISO() } });
 
     if (!isIOS) pickerDispatch({ type: HIDE_PICKER });
   };
@@ -170,15 +176,18 @@ const EventDateTimeEdition = ({
         <Text style={styles.sectionText}>Début</Text>
         <EventDateTime isTimeStamped={event.startDateTimeStamp} date={event.startDate} loading={loading}
           disabled={event.isBilled} onPress={(mode: ModeType) => onPressPicker(true, mode)} />
-        {picker.displayStartPicker && <DateTimePicker value={event.startDate} mode={picker.mode} is24Hour locale="fr-FR"
-          display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} maximumDate={maximumStartDate} />}
+        {picker.displayStartPicker && <DateTimePicker value={CompaniDate(event.startDate).toDate()} mode={picker.mode}
+          is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
+          maximumDate={maximumStartDate ? CompaniDate(maximumStartDate).toDate() : undefined} />}
       </View>
       <View style={styles.section}>
         <Text style={styles.sectionText}>Fin</Text>
         <EventDateTime isTimeStamped={event.endDateTimeStamp} date={event.endDate} loading={loading}
           disabled={event.isBilled} onPress={(mode: ModeType) => onPressPicker(false, mode)} />
-        {picker.displayEndPicker && <DateTimePicker value={event.endDate} mode={picker.mode} is24Hour locale="fr-FR"
-          display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker} minimumDate={minimumEndDate} />}
+        {picker.displayEndPicker && <DateTimePicker value={CompaniDate(event.endDate).toDate()} mode={picker.mode}
+          is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
+          minimumDate={minimumEndDate ? CompaniDate(minimumEndDate).toDate() : undefined} />}
+        <NiErrorMessage message={dateErrorMessage} type={WARNING} />
       </View>
       <ConfirmationModal visible={confirmationModal} title="Cet évènement a déjà été horodaté" exitButton
         cancelText="Retour" confirmText="Annuler l'horodatage" onPressConfirmButton={openCancellationModal}

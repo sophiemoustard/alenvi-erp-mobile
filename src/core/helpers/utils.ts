@@ -1,3 +1,6 @@
+import { EventType } from '../../types/EventType';
+import CompaniDate from './dates/companiDates';
+
 export const formatPhone = (phoneNumber : any) => (phoneNumber
   ? phoneNumber.replace(/^(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/, '$1 $2 $3 $4 $5') : '');
 
@@ -33,3 +36,6 @@ export const formatIdentity = (identity: any, format: string) => {
 
   return values.join(' ');
 };
+
+export const ascendingSortArray = (array: EventType[], key: 'startDate') => [...array]
+  .sort((a, b) => (CompaniDate(a[key]).isBefore(b[key]) ? -1 : 1));

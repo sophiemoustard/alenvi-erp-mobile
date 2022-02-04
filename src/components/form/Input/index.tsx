@@ -3,7 +3,7 @@ import { View, Text, TextInput, KeyboardTypeOptions } from 'react-native';
 import styles, { InputStyleType } from './styles';
 import NiFeatherButton from '../../FeatherButton';
 import { PASSWORD, EMAIL, NUMBER } from '../../../core/data/constants';
-import { WHITE } from '../../../styles/colors';
+import { COPPER_GREY, WHITE } from '../../../styles/colors';
 import Shadow from '../../design/Shadow';
 import { FeatherType } from '../../../types/IconType';
 
@@ -19,6 +19,8 @@ interface InputProps {
   disabled?: boolean,
   multiline?: boolean,
   suffix?: string,
+  placeholder?: string,
+  placeholderTextColor?: string,
 }
 
 const Input = ({
@@ -33,6 +35,8 @@ const Input = ({
   disabled = false,
   multiline = false,
   suffix = '',
+  placeholder = '',
+  placeholderTextColor = COPPER_GREY[400],
 }: InputProps) => {
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(false);
@@ -71,7 +75,8 @@ const Input = ({
         <View style={inputStyle.inputContainer}>
           <TextInput style={inputStyle.input} onChangeText={onChangeText} onBlur={() => setIsSelected(false)}
             onTouchStart={() => setIsSelected(true)} secureTextEntry={secureTextEntry} keyboardType={keyboardType}
-            value={value} editable={!disabled} autoCapitalize={autoCapitalize} testID={caption} multiline={multiline} />
+            value={value} editable={!disabled} autoCapitalize={autoCapitalize} testID={caption} multiline={multiline}
+            placeholder={placeholder} placeholderTextColor={placeholderTextColor} />
           {type === PASSWORD &&
             <NiFeatherButton name={iconName} style={inputStyle.icon} onPress={onPasswordIconPress} />}
           {!!suffix && <Text style={styles({ isSelected }).suffix}>{suffix}</Text>}

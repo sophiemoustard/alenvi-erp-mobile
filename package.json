@@ -11,18 +11,30 @@
   },
   "jest": {
     "preset": "jest-expo",
+    "moduleFileExtensions": ["ts", "tsx", "js"],
+    "transform": { "^.+\\.[jt]sx?$": "babel-jest" },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
+    "testPathIgnorePatterns": ["\\.snap$", "<rootDir>/node_modules/"],
     "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
-    ]
+      "node_modules/(?!(jest-)?react-native|@react-native|react-clone-referenced-element|@react-native-community|@react-native-async-storage|expo(nent)?|@expo(nent)?/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|@sentry/.*)"
+    ],
+    "cacheDirectory": ".jest/cache",
+    "setupFiles": ["./mock.js"]
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
+    "@formatjs/intl-datetimeformat": "^4.3.0",
+    "@formatjs/intl-getcanonicallocales": "^1.8.0",
+    "@formatjs/intl-locale": "^2.4.41",
+    "@formatjs/intl-numberformat": "^7.3.0",
+    "@formatjs/intl-pluralrules": "^4.2.0",
     "@react-native-async-storage/async-storage": "~1.15.0",
     "@react-native-community/datetimepicker": "3.5.2",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/bottom-tabs": "^5.11.10",
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.4",
+    "@types/luxon": "^2.0.8",
     "axios": "^0.24.0",
     "expo": "^43.0.0",
     "expo-app-loading": "~1.2.1",
@@ -37,11 +49,13 @@
     "lodash.get": "^4.4.2",
     "lodash.isequal": "^4.5.0",
     "lodash.pick": "^4.4.0",
+    "luxon": "^2.2.0",
     "qs": "^6.10.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
     "react-native-gesture-handler": "~1.10.2",
+    "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.8.0",
     "sentry-expo": "^4.0.0"

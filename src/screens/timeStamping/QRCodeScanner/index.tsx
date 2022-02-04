@@ -1,14 +1,16 @@
-import React, { useState, useReducer, useRef } from 'react';
+import React, { useState, useReducer, useRef, useEffect } from 'react';
 import { View, TouchableOpacity, Text, ActivityIndicator, Image, Dimensions } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import styles from './styles';
-import { WHITE } from '../../../styles/colors';
+import { TRANSPARENT_COPPER, WHITE } from '../../../styles/colors';
 import { hitSlop, ICON } from '../../../styles/metrics';
-import { isIOS, QR_CODE_TIME_STAMPING } from '../../../core/data/constants';
+import { isIOS, QR_CODE_TIME_STAMPING, TIME_STAMP_SWITCH_OPTIONS } from '../../../core/data/constants';
+import CompaniDate from '../../../core/helpers/dates/companiDates';
 import FeatherButton from '../../../components/FeatherButton';
 import EventInfoCell from '../../../components/EventInfoCell';
 import NiErrorCell from '../../../components/ErrorCell';
+import NiSwitch from '../../../components/Switch';
 import Events from '../../../api/Events';
 
 interface BarCodeType {
@@ -20,7 +22,8 @@ interface QRCodeScannerProps {
   route: {
     params: {
       event: { _id: string, customer: { _id: string, identity: { title: string, lastname: string } } },
-      eventStart: boolean,
+      timeStampStart: boolean,
+      startDateTimeStamp: boolean,
     },
   },
 }
@@ -68,9 +71,11 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const [state, dispatch] = useReducer(reducer, { errorMessage: '', scanned: false, loading: false });
   const camera = useRef<Camera | null>(null);
   const [ratio, setRatio] = useState<string | undefined>();
+  const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.timeStampStart);
   const isFocused = useIsFocused();
-
   const navigation = useNavigation();
+
+  useEffect(() => { setTimeStampStart(route.params.timeStampStart); }, [route.params.timeStampStart, isFocused]);
 
   const handleBarCodeScanned = async ({ data }: BarCodeType) => {
     try {
@@ -85,8 +90,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         route.params?.event?._id,
         {
           action: QR_CODE_TIME_STAMPING,
-          ...(route.params.eventStart && { startDate: new Date() }),
-          ...(!route.params.eventStart && { endDate: new Date() }),
+          ...(timeStampStart && { startDate: CompaniDate().toISO() }),
+          ...(!timeStampStart && { endDate: CompaniDate().toISO() }),
         }
       );
 
@@ -103,8 +108,8 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
 
   const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
 
-  const goToManualTimeStamping = (eventStart: boolean) => {
-    navigation.navigate('ManualTimeStamping', { event: route.params.event, eventStart });
+  const goToManualTimeStamping = () => {
+    navigation.navigate('ManualTimeStamping', { ...route.params, timeStampStart });
   };
 
   const setScreenDimension = async () => {
@@ -124,14 +129,18 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     setRatio(supportedratios[index]);
   };
 
+  const toggleSwitch = () => {
+    if (route.params.startDateTimeStamp) setTimeStampStart(false);
+    else setTimeStampStart(previousValue => !previousValue);
+  };
+
   const displayEventInfos = () => (
     <>
       <View>
-        <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} style={styles.closeButton} />
-        <Text style={styles.title}>
-          {route.params.eventStart ? 'Début de l\'intervention' : 'Fin de l\'intervention'}
-        </Text>
+        <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} />
         <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
+        <NiSwitch options={TIME_STAMP_SWITCH_OPTIONS} onChange={toggleSwitch} unselectedTextColor={WHITE}
+          value={timeStampStart} backgroundColor={TRANSPARENT_COPPER} />
         <View style={styles.limitsContainer}>
           <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-limiter.png' }}
             style={styles.limits} />
@@ -140,7 +149,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       <View>
         {state.loading && <ActivityIndicator color={WHITE} size="small" />}
         {!!state.errorMessage && <NiErrorCell message={state.errorMessage} />}
-        <TouchableOpacity onPress={() => goToManualTimeStamping(route.params.eventStart)} hitSlop={hitSlop}>
+        <TouchableOpacity onPress={goToManualTimeStamping} hitSlop={hitSlop}>
           <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
         </TouchableOpacity>
       </View>
