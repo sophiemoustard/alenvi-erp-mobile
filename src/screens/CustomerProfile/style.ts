@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { COPPER_GREY } from '../../styles/colors';
-import { FIRA_SANS_BLACK } from '../../styles/fonts';
-import { MARGIN, PADDING } from '../../styles/metrics';
+import { FIRA_SANS_BLACK, FIRA_SANS_MEDIUM } from '../../styles/fonts';
+import { BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
 
 export default StyleSheet.create({
   screen: {
@@ -21,6 +21,15 @@ export default StyleSheet.create({
   },
   input: {
     marginTop: MARGIN.MD,
-    marginHorizontal: MARGIN.XS,
+  },
+  separator: {
+    marginVertical: MARGIN.MD,
+    width: '100%',
+    borderWidth: BORDER_WIDTH / 2,
+    borderColor: COPPER_GREY[200],
+  },
+  sectionText: {
+    ...FIRA_SANS_MEDIUM.MD,
+    color: COPPER_GREY[700],
   },
 });

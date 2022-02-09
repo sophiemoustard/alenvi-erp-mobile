@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, Text, ActivityIndicator } from 'react-native';
+import { ScrollView, Text, ActivityIndicator, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { isEqual, pick } from 'lodash';
 import Customers from '../../api/Customers';
@@ -87,8 +87,12 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         {loading && <ActivityIndicator style={styles.loader} size="small" color={COPPER[500]} />}
         {!loading &&
-          <ScrollView style={styles.screen}>
+          <ScrollView contentContainerStyle={styles.screen}>
             <Text style={styles.identity}>{formatIdentity(initialCustomer?.identity, 'FL')}</Text>
+            <View style={styles.separator}></View>
+            <Text style={styles.sectionText}>Infos pratiques</Text>
+            <View style={styles.separator}></View>
+            <Text style={styles.sectionText}>Accompagnement</Text>
             <NiInput style={styles.input} caption="Environnement" value={editedCustomer?.followUp?.environment}
               multiline onChangeText={onChangeFollowUpText('environment')}
               placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille, voisinage,
