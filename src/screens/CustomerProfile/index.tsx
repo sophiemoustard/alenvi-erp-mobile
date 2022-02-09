@@ -103,21 +103,21 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Infos pratiques</Text>
               <View style={styles.view}>
-                <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
+                <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[400]} />
                 <Text style={styles.infoText}>{initialCustomer?.contact?.primaryAddress.fullAddress}</Text>
               </View>
               <View style={styles.view}>
-                <MaterialIcons name="phone" size={ICON.SM} color={COPPER_GREY[500]} />
+                <MaterialIcons name="phone" size={ICON.SM} color={COPPER_GREY[400]} />
                 <Text style={styles.infoText}>
-                  {initialCustomer?.contact?.phone ? formatPhone(initialCustomer?.contact?.phone) : 'non Renseigné'}
+                  {initialCustomer?.contact?.phone ? formatPhone(initialCustomer?.contact?.phone) : 'non renseigné'}
                 </Text>
               </View>
               <View style={styles.view}>
-                <MaterialIcons name="cake" size={ICON.SM} color={COPPER_GREY[500]} />
+                <MaterialIcons name="cake" size={ICON.SM} color={COPPER_GREY[400]} />
                 <Text style={styles.infoText}>
                   {initialCustomer?.identity?.birthDate
                     ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')} (${customerAge} ans)`
-                    : 'non Renseigné'}
+                    : 'non renseigné'}
                 </Text>
               </View>
             </View>
