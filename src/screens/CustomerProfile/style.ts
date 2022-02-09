@@ -37,7 +37,7 @@ export default StyleSheet.create({
     ...FIRA_SANS_MEDIUM.MD,
     color: COPPER_GREY[700],
   },
-  view: {
+  infoContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',

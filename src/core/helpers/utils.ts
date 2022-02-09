@@ -1,4 +1,5 @@
 import { EventType } from '../../types/EventType';
+import { BASE_JS_YEAR } from '../data/constants';
 import CompaniDate from './dates/companiDates';
 
 export const formatPhone = (phoneNumber : any) => (phoneNumber
@@ -39,3 +40,6 @@ export const formatIdentity = (identity: any, format: string) => {
 
 export const ascendingSortArray = (array: EventType[], key: 'startDate') => [...array]
   .sort((a, b) => (CompaniDate(a[key]).isBefore(b[key]) ? -1 : 1));
+
+export const durationInYears = (date1: string, date2: string) =>
+  new Date(Math.abs(new Date(date1).getTime() - new Date(date2).getTime())).getFullYear() - BASE_JS_YEAR;

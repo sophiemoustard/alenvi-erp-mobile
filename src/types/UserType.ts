@@ -1,6 +1,6 @@
 export type UserType = {
   _id: string,
-  identity: { firstname: string, lastname: string },
+  identity: { firstname: string, lastname: string, birthDate?: string },
   local: { email: string },
   picture?: { link: string },
   company?: { name: string },
@@ -17,7 +17,7 @@ export type AuxiliaryType = {
 
 export type CustomerType = {
   _id: UserType['_id'],
-  identity: { firstname: string, lastname: string, birthDate: string },
+  identity: UserType['identity'],
   followUp : { environment: string, objectives: string },
   contact: UserType['contact'],
 }

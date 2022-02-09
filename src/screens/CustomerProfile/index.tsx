@@ -6,7 +6,7 @@ import { isEqual, pick } from 'lodash';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import Customers from '../../api/Customers';
 import { CustomerType } from '../../types/UserType';
-import { formatIdentity, formatPhone } from '../../core/helpers/utils';
+import { durationInYears, formatIdentity, formatPhone } from '../../core/helpers/utils';
 import NiHeader from '../../components/Header';
 import NiInput from '../../components/form/Input';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
@@ -25,7 +25,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const { customerId } = route.params;
   const customer = {
     _id: '',
-    identity: { firstname: '', lastname: '', birthDate: CompaniDate().toISO() },
+    identity: { firstname: '', lastname: '', birthDate: '' },
     contact: { phone: '', primaryAddress: { fullAddress: '', street: '', zipCode: '', city: '' } },
     followUp: { environment: '', objectives: '' },
   };
@@ -52,8 +52,14 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   useEffect(() => {
     setEditedCustomer(initialCustomer);
-    setCustomerAge(new Date(new Date().getTime() - new Date(initialCustomer?.identity?.birthDate).getTime())
-      .getFullYear() - 1970);
+
+    if (initialCustomer?.identity?.birthDate) {
+      const age = durationInYears(
+        CompaniDate(initialCustomer?.identity?.birthDate).toISO(),
+        CompaniDate().toISO()
+      );
+      setCustomerAge(age);
+    }
   }, [initialCustomer]);
 
   const onLeave = () => {
@@ -102,17 +108,17 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             </View>
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Infos pratiques</Text>
-              <View style={styles.view}>
+              <View style={styles.infoContainer}>
                 <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[400]} />
                 <Text style={styles.infoText}>{initialCustomer?.contact?.primaryAddress.fullAddress}</Text>
               </View>
-              <View style={styles.view}>
+              <View style={styles.infoContainer}>
                 <MaterialIcons name="phone" size={ICON.SM} color={COPPER_GREY[400]} />
                 <Text style={styles.infoText}>
                   {initialCustomer?.contact?.phone ? formatPhone(initialCustomer?.contact?.phone) : 'non renseigné'}
                 </Text>
               </View>
-              <View style={styles.view}>
+              <View style={styles.infoContainer}>
                 <MaterialIcons name="cake" size={ICON.SM} color={COPPER_GREY[400]} />
                 <Text style={styles.infoText}>
                   {initialCustomer?.identity?.birthDate
@@ -121,7 +127,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                 </Text>
               </View>
             </View>
-            <View style={styles.separator}></View>
+            <View style={styles.separator} />
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Accompagnement</Text>
               <NiInput style={styles.input} caption="Environnement" value={editedCustomer?.followUp?.environment}
