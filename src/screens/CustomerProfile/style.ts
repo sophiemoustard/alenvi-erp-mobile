@@ -1,13 +1,18 @@
 import { StyleSheet } from 'react-native';
 import { COPPER_GREY } from '../../styles/colors';
-import { FIRA_SANS_BLACK, FIRA_SANS_MEDIUM } from '../../styles/fonts';
+import { FIRA_SANS_BLACK, FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
 
 export default StyleSheet.create({
   screen: {
     flex: 1,
-    paddingVertical: PADDING.XXL,
-    paddingHorizontal: PADDING.XL,
+    paddingTop: PADDING.XL,
+    paddingHorizontal: PADDING.LG,
+  },
+  infosContainer: {
+    flex: 1,
+    paddingHorizontal: PADDING.LG,
+    paddingTop: PADDING.XL,
   },
   loader: {
     margin: MARGIN.XXXL,
@@ -23,7 +28,7 @@ export default StyleSheet.create({
     marginTop: MARGIN.MD,
   },
   separator: {
-    marginVertical: MARGIN.MD,
+    marginTop: MARGIN.MD,
     width: '100%',
     borderWidth: BORDER_WIDTH / 2,
     borderColor: COPPER_GREY[200],
@@ -31,5 +36,16 @@ export default StyleSheet.create({
   sectionText: {
     ...FIRA_SANS_MEDIUM.MD,
     color: COPPER_GREY[700],
+  },
+  view: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: MARGIN.SM,
+  },
+  infoText: {
+    ...FIRA_SANS_REGULAR.MD,
+    color: COPPER_GREY[900],
+    marginHorizontal: MARGIN.SM,
   },
 });
