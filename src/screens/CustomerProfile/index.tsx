@@ -31,6 +31,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   };
   const [initialCustomer, setInitialCustomer] = useState<CustomerType>(customer);
   const [editedCustomer, setEditedCustomer] = useState<CustomerType>(customer);
+  const [customerAge, setCustomerAge] = useState<number>(0);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
@@ -49,7 +50,11 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   useEffect(() => { getCustomer(); }, [getCustomer]);
 
-  useEffect(() => { setEditedCustomer(initialCustomer); }, [initialCustomer]);
+  useEffect(() => {
+    setEditedCustomer(initialCustomer);
+    setCustomerAge(new Date(new Date().getTime() - new Date(initialCustomer?.identity?.birthDate).getTime())
+      .getFullYear() - 1970);
+  }, [initialCustomer]);
 
   const onLeave = () => {
     const pickedFields = ['environment', 'objectives'];
@@ -111,7 +116,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                 <MaterialIcons name="cake" size={ICON.SM} color={COPPER_GREY[500]} />
                 <Text style={styles.infoText}>
                   {initialCustomer?.identity?.birthDate
-                    ? CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')
+                    ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')} (${customerAge} ans)`
                     : 'non Renseigné'}
                 </Text>
               </View>
