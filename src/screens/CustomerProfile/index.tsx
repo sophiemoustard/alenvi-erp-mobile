@@ -6,7 +6,7 @@ import { isEqual, pick } from 'lodash';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import Customers from '../../api/Customers';
 import { CustomerType } from '../../types/UserType';
-import { durationInYears, formatIdentity, formatPhone } from '../../core/helpers/utils';
+import { formatIdentity, formatPhone } from '../../core/helpers/utils';
 import NiHeader from '../../components/Header';
 import NiInput from '../../components/form/Input';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
@@ -31,7 +31,6 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   };
   const [initialCustomer, setInitialCustomer] = useState<CustomerType>(customer);
   const [editedCustomer, setEditedCustomer] = useState<CustomerType>(customer);
-  const [customerAge, setCustomerAge] = useState<number>(0);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
@@ -50,17 +49,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   useEffect(() => { getCustomer(); }, [getCustomer]);
 
-  useEffect(() => {
-    setEditedCustomer(initialCustomer);
-
-    if (initialCustomer?.identity?.birthDate) {
-      const age = durationInYears(
-        CompaniDate(initialCustomer?.identity?.birthDate).toISO(),
-        CompaniDate().toISO()
-      );
-      setCustomerAge(age);
-    }
-  }, [initialCustomer]);
+  useEffect(() => { setEditedCustomer(initialCustomer); }, [initialCustomer]);
 
   const onLeave = () => {
     const pickedFields = ['environment', 'objectives'];
@@ -122,7 +111,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                 <MaterialIcons name="cake" size={ICON.SM} color={COPPER_GREY[400]} />
                 <Text style={styles.infoText}>
                   {initialCustomer?.identity?.birthDate
-                    ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')} (${customerAge} ans)`
+                    ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')}`
+                    + ` (${CompaniDate().diff(initialCustomer?.identity?.birthDate, 'years').years} ans)`
                     : 'non renseigné'}
                 </Text>
               </View>

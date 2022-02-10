@@ -43,7 +43,6 @@ export const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'j
   'novembre', 'décembre'];
 export const MONTHS_SHORT = ['janv.', 'fév.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.',
   'déc.'];
-export const BASE_JS_YEAR = 1970;
 
 // EVENT
 export const MANUAL_TIME_STAMPING = 'manual_time_stamping';
