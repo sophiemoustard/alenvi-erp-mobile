@@ -31,14 +31,17 @@ export default StyleSheet.create({
     marginVertical: MARGIN.SM,
   },
   picker: {
-    marginHorizontal: MARGIN.XS,
-    borderWidth: BORDER_WIDTH,
-    borderRadius: BORDER_RADIUS.XS,
-    borderColor: COPPER_GREY[300],
+    paddingTop: 0,
+    paddingHorizontal: 0,
+    paddingBottom: PADDING.LG,
+  },
+  pickerCloseButton: {
+    alignSelf: 'flex-end',
+    marginRight: PADDING.MD,
+    marginVertical: PADDING.MD,
   },
   pickerItem: {
     backgroundColor: WHITE,
-    borderRadius: BORDER_RADIUS.XS,
     paddingLeft: PADDING.LG,
     paddingVertical: PADDING.LG,
   },
@@ -47,7 +50,6 @@ export default StyleSheet.create({
     color: COPPER_GREY[700],
   },
   selectedPickerItem: {
-    borderRadius: BORDER_RADIUS.XS,
     flexDirection: 'row',
     backgroundColor: COPPER_GREY[100],
     padding: PADDING.LG,

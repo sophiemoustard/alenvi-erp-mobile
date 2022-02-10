@@ -6,13 +6,14 @@ interface NiModalProps {
   visible: boolean,
   children: JSX.Element,
   style?: Object,
+  contentStyle?: Object,
   onRequestClose?: () => void,
 }
 
-const NiModal = ({ visible, children, style, onRequestClose }: NiModalProps) => (
+const NiModal = ({ visible, children, style, contentStyle, onRequestClose }: NiModalProps) => (
   <Modal visible={visible} transparent={true} onRequestClose={onRequestClose}>
     <View style={[styles.modalContainer, style]}>
-      <View style={styles.modalContent}>
+      <View style={[styles.modalContent, contentStyle]}>
         {children}
       </View>
     </View>

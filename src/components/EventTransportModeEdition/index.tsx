@@ -3,10 +3,11 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import styles from './styles';
 import FeatherButton from '../FeatherButton';
+import Modal from '../modals/Modal';
 import { EventEditionActionType } from '../../screens/timeStamping/EventEdition/types';
 import { EVENT_TRANSPORT_OPTIONS } from '../../core/data/constants';
 import { SET_FIELD } from '../../screens/timeStamping/EventEdition';
-import { COPPER } from '../../styles/colors';
+import { COPPER, COPPER_GREY } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
 import Shadow from '../design/Shadow';
 
@@ -56,11 +57,15 @@ const EventTransportModeEdition = ({ transportMode, eventEditionDispatch }: Even
         </TouchableOpacity>
         {displayPicker && <Shadow />}
       </View>
-      {displayPicker &&
-        <View style={styles.picker}>
-          {EVENT_TRANSPORT_OPTIONS.map(renderEventTransportItem)}
-        </View>
-      }
+      <Modal visible={displayPicker} contentStyle={styles.picker}>
+        <>
+          <FeatherButton name="x" size={24} color={COPPER_GREY[400]} onPress={() => setDisplayPicker(false)}
+            style={styles.pickerCloseButton} />
+          <View>
+            {EVENT_TRANSPORT_OPTIONS.map(renderEventTransportItem)}
+          </View>
+        </>
+      </Modal>
     </>
   );
 };
