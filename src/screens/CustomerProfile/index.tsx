@@ -108,17 +108,17 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             </View>
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Infos pratiques</Text>
-              <View style={styles.infoContainer}>
+              <View style={styles.infoItem}>
                 <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[400]} />
                 <Text style={styles.infoText}>{initialCustomer?.contact?.primaryAddress.fullAddress}</Text>
               </View>
-              <View style={styles.infoContainer}>
+              <View style={styles.infoItem}>
                 <MaterialIcons name="phone" size={ICON.SM} color={COPPER_GREY[400]} />
                 <Text style={styles.infoText}>
                   {initialCustomer?.contact?.phone ? formatPhone(initialCustomer?.contact?.phone) : 'non renseigné'}
                 </Text>
               </View>
-              <View style={styles.infoContainer}>
+              <View style={styles.infoItem}>
                 <MaterialIcons name="cake" size={ICON.SM} color={COPPER_GREY[400]} />
                 <Text style={styles.infoText}>
                   {initialCustomer?.identity?.birthDate
