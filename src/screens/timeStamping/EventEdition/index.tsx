@@ -10,14 +10,19 @@ import Events from '../../../api/Events';
 import Users from '../../../api/Users';
 import { formatIdentity } from '../../../core/helpers/utils';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
-import { FLOAT_REGEX, NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
+import {
+  EVENT_TRANSPORT_OPTIONS,
+  FLOAT_REGEX,
+  NUMBER,
+  TIMESTAMPING_ACTION_TYPE_LIST,
+} from '../../../core/data/constants';
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiHeader from '../../../components/Header';
 import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 import ErrorMessage from '../../../components/ErrorMessage';
-import EventTransportModeEdition from '../../../components/EventTransportModeEdition';
+import NiPicker from '../../../components/Picker';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
@@ -224,6 +229,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     editedEventDispatch({ type: SET_FIELD, payload: { kmDuringEvent: value.replace(',', '.') || '' } })
   );
 
+  const selectTransportMode = (value: string) => {
+    editedEventDispatch({ type: SET_FIELD, payload: { transportMode: value } });
+  };
+
   useEffect(() => { getActiveAuxiliaries(editedEvent.company); }, [editedEvent.company, getActiveAuxiliaries]);
 
   const refreshHistories = useCallback(async () => {
@@ -267,8 +276,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}/>
           <EventAuxiliaryEdition auxiliary={editedEvent.auxiliary} auxiliaryOptions={activeAuxiliaries}
             eventEditionDispatch={editedEventDispatch} isEditable={isAuxiliaryEditable} />
-          <EventTransportModeEdition transportMode={editedEvent.transportMode}
-            eventEditionDispatch={editedEventDispatch} />
+          <NiPicker selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
+            options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} />
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
             buttonTitle="Ajouter une note" multiline
             onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
