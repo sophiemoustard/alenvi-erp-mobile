@@ -1,18 +1,20 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ScrollView, Text, ActivityIndicator } from 'react-native';
+import { ScrollView, Text, ActivityIndicator, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { isEqual, pick } from 'lodash';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
 import Customers from '../../api/Customers';
 import { CustomerType } from '../../types/UserType';
-import { formatIdentity } from '../../core/helpers/utils';
+import { formatIdentity, formatPhone } from '../../core/helpers/utils';
 import NiHeader from '../../components/Header';
 import NiInput from '../../components/form/Input';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
 import ErrorMessage from '../../components/ErrorMessage';
-import { KEYBOARD_PADDING_TOP } from '../../styles/metrics';
+import { ICON, KEYBOARD_PADDING_TOP } from '../../styles/metrics';
 import styles from './style';
-import { COPPER } from '../../styles/colors';
+import { COPPER, COPPER_GREY } from '../../styles/colors';
+import CompaniDate from '../../core/helpers/dates/companiDates';
 
 type CustomerProfileProp = {
   route: { params: { customerId: string } },
@@ -23,7 +25,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const { customerId } = route.params;
   const customer = {
     _id: '',
-    identity: { firstname: '', lastname: '' },
+    identity: { firstname: '', lastname: '', birthDate: '' },
+    contact: { phone: '', primaryAddress: { fullAddress: '', street: '', zipCode: '', city: '' } },
     followUp: { environment: '', objectives: '' },
   };
   const [initialCustomer, setInitialCustomer] = useState<CustomerType>(customer);
@@ -83,19 +86,48 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   return (
     <>
-      <NiHeader onPressIcon={onLeave} onPressButton={onSave} loading={loading} />
+      <NiHeader onPressIcon={onLeave} onPressButton={onSave} loading={loading}
+        title={formatIdentity(initialCustomer?.identity, 'FL')} />
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         {loading && <ActivityIndicator style={styles.loader} size="small" color={COPPER[500]} />}
         {!loading &&
-          <ScrollView style={styles.screen}>
-            <Text style={styles.identity}>{formatIdentity(initialCustomer?.identity, 'FL')}</Text>
-            <NiInput style={styles.input} caption="Environnement" value={editedCustomer?.followUp?.environment}
-              multiline onChangeText={onChangeFollowUpText('environment')}
-              placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille, voisinage,
-                histoire de vie, contexte actuel..." />
-            <NiInput style={styles.input} caption="Objectifs" value={editedCustomer?.followUp?.objectives}
-              multiline onChangeText={onChangeFollowUpText('objectives')} placeholder="Précisez les objectifs
-                de l'accompagnement : lever, toilette, préparation des repas, courses, déplacement véhiculé..." />
+          <ScrollView>
+            <View style={styles.screen}>
+              <Text style={styles.identity}>{formatIdentity(initialCustomer?.identity, 'FL')}</Text>
+            </View>
+            <View style={styles.infosContainer}>
+              <Text style={styles.sectionText}>Infos pratiques</Text>
+              <View style={styles.infoItem}>
+                <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[400]} />
+                <Text style={styles.infoText}>{initialCustomer?.contact?.primaryAddress.fullAddress}</Text>
+              </View>
+              <View style={styles.infoItem}>
+                <MaterialIcons name="phone" size={ICON.SM} color={COPPER_GREY[400]} />
+                <Text style={styles.infoText}>
+                  {initialCustomer?.contact?.phone ? formatPhone(initialCustomer?.contact?.phone) : 'non renseigné'}
+                </Text>
+              </View>
+              <View style={styles.infoItem}>
+                <MaterialIcons name="cake" size={ICON.SM} color={COPPER_GREY[400]} />
+                <Text style={styles.infoText}>
+                  {initialCustomer?.identity?.birthDate
+                    ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')}`
+                    + ` (${CompaniDate().diff(initialCustomer?.identity?.birthDate, 'years').years} ans)`
+                    : 'non renseigné'}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.separator} />
+            <View style={styles.infosContainer}>
+              <Text style={styles.sectionText}>Accompagnement</Text>
+              <NiInput style={styles.input} caption="Environnement" value={editedCustomer?.followUp?.environment}
+                multiline onChangeText={onChangeFollowUpText('environment')}
+                placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille,
+                  voisinage,histoire de vie, contexte actuel..." />
+              <NiInput style={styles.input} caption="Objectifs" value={editedCustomer?.followUp?.objectives}
+                multiline onChangeText={onChangeFollowUpText('objectives')} placeholder="Précisez les objectifs
+                  de l'accompagnement : lever, toilette, préparation des repas, courses, déplacement véhiculé..." />
+            </View>
             <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
               visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
               cancelText="Poursuivre les modifications" confirmText="Supprimer" />
