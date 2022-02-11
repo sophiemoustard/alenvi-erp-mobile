@@ -9,7 +9,7 @@ export default StyleSheet.create({
     marginBottom: MARGIN.SM,
     marginTop: MARGIN.LG,
   },
-  transportCell: {
+  optionCell: {
     flexDirection: 'row',
     backgroundColor: WHITE,
     width: '100%',
@@ -24,7 +24,7 @@ export default StyleSheet.create({
   selectedCell: {
     borderColor: COPPER[500],
   },
-  transportText: {
+  optionText: {
     ...FIRA_SANS_REGULAR.MD,
     flex: 1,
     color: COPPER_GREY[900],

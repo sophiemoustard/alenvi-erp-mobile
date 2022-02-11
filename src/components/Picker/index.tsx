@@ -15,7 +15,7 @@ type OptionType = {
 
 type NiPickerProps = {
   caption: string,
-  options: Array<OptionType>,
+  options: OptionType[],
   selectedItem: string,
   onItemSelect: (item: string) => void,
 }
@@ -51,8 +51,8 @@ const Picker = ({ caption, options, selectedItem, onItemSelect }: NiPickerProps)
     <>
       <Text style={styles.sectionText}>{caption}</Text>
       <View>
-        <TouchableOpacity style={[styles.transportCell, displayPicker && styles.selectedCell]} onPress={onPressCell}>
-          <Text style={styles.transportText}>
+        <TouchableOpacity style={[styles.optionCell, displayPicker && styles.selectedCell]} onPress={onPressCell}>
+          <Text style={styles.optionText}>
             {(options.find(item => item.value === selectedItem))?.label || ''}
           </Text>
           {displayPicker
@@ -70,7 +70,8 @@ const Picker = ({ caption, options, selectedItem, onItemSelect }: NiPickerProps)
           </View>
         </>
       </Modal>
-    </>);
+    </>
+  );
 };
 
 export default Picker;
