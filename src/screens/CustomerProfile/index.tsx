@@ -123,7 +123,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                     : 'non renseigné'}
                 </Text>
               </View>
-              <NiInput style={styles.input} caption="Accès" value={editedCustomer?.contact?.accessCodes}
+              <NiInput style={styles.input} caption="Accès" value={editedCustomer?.contact?.accessCodes || ''}
                 multiline onChangeText={onChangeContactText} />
             </View>
             <View style={styles.separator} />
