@@ -1,15 +1,10 @@
-export type UserContactType = {
-  phone?: string,
-  primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string },
-}
-
 export type UserType = {
   _id: string,
   identity: { firstname: string, lastname: string, birthDate?: string },
   local: { email: string },
   picture?: { link: string },
   company?: { name: string },
-  contact?: UserContactType,
+  contact?: { phone?: string, primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string } },
   contracts?: [{ _id: string, startDate: string, endDate: string }],
   followUp: { environment: string },
   administrative?: { transportInvoice?: { transportType?: string } },
@@ -27,5 +22,5 @@ export type CustomerType = {
   _id: UserType['_id'],
   identity: UserType['identity'],
   followUp : { environment: string, objectives: string },
-  contact: UserContactType & { accessCodes?: string },
+  contact: UserType['contact'] & { accessCodes?: string },
 }
