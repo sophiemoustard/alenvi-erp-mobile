@@ -22,5 +22,9 @@ export type CustomerType = {
   _id: UserType['_id'],
   identity: UserType['identity'],
   followUp : { environment: string, objectives: string },
-  contact: UserType['contact'],
+  contact: {
+    phone: string,
+    primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string },
+    accessCodes: string,
+  },
 }
