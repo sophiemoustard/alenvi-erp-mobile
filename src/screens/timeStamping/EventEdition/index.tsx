@@ -179,6 +179,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       else setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
     } finally {
       setLoading(false);
+      navigation.goBack();
     }
   };
 
