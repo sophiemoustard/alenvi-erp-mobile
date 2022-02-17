@@ -26,7 +26,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const customer = {
     _id: '',
     identity: { firstname: '', lastname: '', birthDate: '' },
-    contact: { phone: '', primaryAddress: { fullAddress: '', street: '', zipCode: '', city: '' } },
+    contact: { phone: '', primaryAddress: { fullAddress: '', street: '', zipCode: '', city: '' }, accessCodes: '' },
     followUp: { environment: '', objectives: '' },
   };
   const [initialCustomer, setInitialCustomer] = useState<CustomerType>(customer);
@@ -52,8 +52,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   useEffect(() => { setEditedCustomer(initialCustomer); }, [initialCustomer]);
 
   const onLeave = () => {
-    const pickedFields = ['environment', 'objectives'];
-    if (isEqual(pick(editedCustomer?.followUp, pickedFields), pick(initialCustomer?.followUp, pickedFields))) {
+    const pickedFields = ['followUp.environment', 'followUp.objectives', 'contact.accessCodes'];
+    if (isEqual(pick(editedCustomer, pickedFields), pick(initialCustomer, pickedFields))) {
       navigation.goBack();
     } else setExitModal(true);
   };
@@ -66,7 +66,10 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const onSave = async () => {
     try {
       setLoading(true);
-      const payload = { followUp: editedCustomer?.followUp || { environment: '', objectives: '' } };
+      const payload = {
+        followUp: editedCustomer.followUp,
+        contact: { accessCodes: editedCustomer.contact.accessCodes },
+      };
 
       await Customers.updateById(customerId, payload);
       setInitialCustomer(editedCustomer);
@@ -82,6 +85,10 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   const onChangeFollowUpText = (key: string) => (text: string) => {
     setEditedCustomer({ ...editedCustomer, followUp: { ...editedCustomer.followUp, [key]: text } });
+  };
+
+  const onChangeContactText = (text: string) => {
+    setEditedCustomer({ ...editedCustomer, contact: { ...editedCustomer.contact, accessCodes: text } });
   };
 
   return (
@@ -116,6 +123,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                     : 'non renseigné'}
                 </Text>
               </View>
+              <NiInput style={styles.input} caption="Accès" value={editedCustomer?.contact?.accessCodes || ''}
+                multiline onChangeText={onChangeContactText} />
             </View>
             <View style={styles.separator} />
             <View style={styles.infosContainer}>

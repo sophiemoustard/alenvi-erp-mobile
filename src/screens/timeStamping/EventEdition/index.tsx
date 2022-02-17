@@ -68,8 +68,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     endDate: CompaniDate(route.params.event.endDate).toISO(),
     start: false,
     transportMode: route.params.event.transportMode ||
-    route.params.event.auxiliary?.administrative?.transportInvoice?.transportType ||
-    '',
+      route.params.event.auxiliary?.administrative?.transportInvoice?.transportType ||
+      '',
   });
 
   const [loading, setLoading] = useState<boolean>(false);
