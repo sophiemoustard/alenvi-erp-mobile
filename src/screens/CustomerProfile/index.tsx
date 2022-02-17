@@ -124,7 +124,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                 </Text>
               </View>
               <NiInput style={styles.input} caption="Accès" value={editedCustomer?.contact?.accessCodes || ''}
-                multiline onChangeText={onChangeContactText} hasSubText={false} />
+                multiline onChangeText={onChangeContactText} />
             </View>
             <View style={styles.separator} />
             <View style={styles.infosContainer}>

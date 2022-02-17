@@ -36,12 +36,13 @@ export default StyleSheet.create({
   sectionText: {
     ...FIRA_SANS_MEDIUM.MD,
     color: COPPER_GREY[700],
+    marginBottom: MARGIN.SM,
   },
   infoItem: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: MARGIN.SM,
+    marginVertical: MARGIN.SM,
   },
   infoText: {
     ...FIRA_SANS_REGULAR.MD,

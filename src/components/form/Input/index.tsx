@@ -21,7 +21,6 @@ interface InputProps {
   suffix?: string,
   placeholder?: string,
   placeholderTextColor?: string,
-  hasSubText?: boolean,
 }
 
 const Input = ({
@@ -38,7 +37,6 @@ const Input = ({
   suffix = '',
   placeholder = '',
   placeholderTextColor = COPPER_GREY[400],
-  hasSubText = true,
 }: InputProps) => {
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [secureTextEntry, setSecureTextEntry] = useState<boolean>(false);
@@ -85,7 +83,7 @@ const Input = ({
         </View>
         {isSelected && <Shadow />}
       </View>
-      {hasSubText && <Text style={[inputStyle.invalid, validationStyle]}>{validationMessage}</Text>}
+      <Text style={[inputStyle.invalid, validationStyle]}>{validationMessage}</Text>
     </View>
   );
 };
