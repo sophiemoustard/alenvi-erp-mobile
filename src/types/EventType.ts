@@ -23,6 +23,7 @@ export type EventType = {
   company: string,
   misc: string,
   kmDuringEvent: string,
+  transportMode: string,
 };
 
 export type EventHistoryType = {

@@ -10,10 +10,19 @@ import Events from '../../../api/Events';
 import Users from '../../../api/Users';
 import { formatIdentity } from '../../../core/helpers/utils';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
+import {
+  EVENT_TRANSPORT_OPTIONS,
+  FLOAT_REGEX,
+  NUMBER,
+  TIMESTAMPING_ACTION_TYPE_LIST,
+} from '../../../core/data/constants';
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiHeader from '../../../components/Header';
 import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
+import EventFieldEdition from '../../../components/EventFieldEdition';
+import ErrorMessage from '../../../components/ErrorMessage';
+import NiPicker from '../../../components/Picker';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
@@ -26,9 +35,6 @@ import {
   EventEditionStateType,
   FormattedAuxiliaryType,
 } from './types';
-import { FLOAT_REGEX, NUMBER, TIMESTAMPING_ACTION_TYPE_LIST } from '../../../core/data/constants';
-import EventFieldEdition from '../../../components/EventFieldEdition';
-import ErrorMessage from '../../../components/ErrorMessage';
 
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
@@ -39,6 +45,7 @@ const formatAuxiliary = (auxiliary: UserType): FormattedAuxiliaryType => ({
   _id: auxiliary._id,
   ...pick(auxiliary, ['picture', 'contracts', 'identity']),
   formattedIdentity: formatIdentity(auxiliary.identity, 'FL'),
+  administrative: { transportInvoice: { transportType: auxiliary.administrative?.transportInvoice?.transportType } },
 });
 
 const formatZipCodeAndCity = (intervention: EventType) => {
@@ -60,6 +67,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     startDate: CompaniDate(route.params.event.startDate).toISO(),
     endDate: CompaniDate(route.params.event.endDate).toISO(),
     start: false,
+    transportMode: route.params.event.transportMode ||
+      route.params.event.auxiliary?.administrative?.transportInvoice?.transportType ||
+      '',
   });
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -127,9 +137,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const onLeave = useCallback(
     () => {
-      const pickFields = ['startDate', 'endDate', 'auxiliary._id', 'misc'];
-      if (editedEvent.kmDuringEvent) pickFields.push('kmDuringEvent');
-      return isEqual(pick(editedEvent, pickFields), pick(initialState, pickFields))
+      const pickedFields = ['startDate', 'endDate', 'auxiliary._id', 'misc', 'transportMode'];
+      if (editedEvent.kmDuringEvent) pickedFields.push('kmDuringEvent');
+      return isEqual(pick(editedEvent, pickedFields), pick(initialState, pickedFields))
         ? navigation.goBack()
         : setExitModal(true);
     },
@@ -153,7 +163,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       setIsValidationAttempted(true);
 
       if (isValid) {
-        const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc']);
+        const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc', 'transportMode']);
         const payload = {
           auxiliary: editedEvent.auxiliary._id,
           kmDuringEvent: Number.parseFloat(editedEvent.kmDuringEvent) || 0,
@@ -169,6 +179,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       else setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
     } finally {
       setLoading(false);
+      navigation.goBack();
     }
   };
 
@@ -219,6 +230,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     editedEventDispatch({ type: SET_FIELD, payload: { kmDuringEvent: value.replace(',', '.') || '' } })
   );
 
+  const selectTransportMode = (value: string) => {
+    editedEventDispatch({ type: SET_FIELD, payload: { transportMode: value } });
+  };
+
   useEffect(() => { getActiveAuxiliaries(editedEvent.company); }, [editedEvent.company, getActiveAuxiliaries]);
 
   const refreshHistories = useCallback(async () => {
@@ -262,9 +277,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}/>
           <EventAuxiliaryEdition auxiliary={editedEvent.auxiliary} auxiliaryOptions={activeAuxiliaries}
             eventEditionDispatch={editedEventDispatch} isEditable={isAuxiliaryEditable} />
-          <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
-            visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
-            cancelText="Poursuivre les modifications" confirmText="Supprimer" />
+          <NiPicker selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
+            options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} />
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
             buttonTitle="Ajouter une note" multiline
             onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
@@ -274,7 +288,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
             buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />}
             errorMessage={kmDuringEventErrorMessage || ''} />
-          <ErrorMessage message={apiErrorMessage || ''}/>
+          <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
+            visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
+            cancelText="Poursuivre les modifications" confirmText="Supprimer" />
+          <ErrorMessage message={apiErrorMessage || ''} />
         </ScrollView>
       </KeyboardAwareScrollView>
     </>

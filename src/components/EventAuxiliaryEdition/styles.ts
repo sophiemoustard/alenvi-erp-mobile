@@ -14,7 +14,7 @@ export default StyleSheet.create({
     paddingVertical: PADDING.MD,
     marginBottom: MARGIN.SM,
     borderWidth: BORDER_WIDTH,
-    borderRadius: BORDER_RADIUS.SM,
+    borderRadius: BORDER_RADIUS.MD,
     borderColor: COPPER_GREY[300],
   },
   auxiliaryCellNotEditable: {

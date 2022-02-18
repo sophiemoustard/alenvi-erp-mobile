@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { TRANSPARENT_COPPER } from '../../../styles/colors';
+import { SHADOW_COPPER } from '../../../styles/colors';
 import { BORDER_RADIUS } from '../../../styles/metrics';
 
 export default StyleSheet.create({
@@ -10,7 +10,7 @@ export default StyleSheet.create({
     left: -3,
     right: -3,
     zIndex: -1,
-    backgroundColor: TRANSPARENT_COPPER,
+    backgroundColor: SHADOW_COPPER,
     borderRadius: BORDER_RADIUS.MD,
   },
 });
