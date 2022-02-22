@@ -20,6 +20,12 @@ type CustomerProfileProp = {
   route: { params: { customerId: string } },
 };
 
+const OBJECTIVES_PLACEHOLDER = 'Précisez les objectifs de l\'accompagnement : lever, toilette, préparation des repas,'
+  + 'courses, déplacement véhiculé...';
+
+const ENVIRONMENT_PLACEHOLDER = 'Précisez l\'environnement de l\'accompagnement : entourage de la personne, famille,'
+  + 'voisinage,histoire de vie, contexte actuel...';
+
 const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const navigation = useNavigation();
   const { customerId } = route.params;
@@ -134,12 +140,9 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Accompagnement</Text>
               <NiInput style={styles.input} caption="Environnement" value={editedCustomer?.followUp?.environment}
-                multiline onChangeText={onChangeFollowUpText('environment')}
-                placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille,
-                  voisinage,histoire de vie, contexte actuel..." />
+                multiline onChangeText={onChangeFollowUpText('environment')} placeholder={ENVIRONMENT_PLACEHOLDER} />
               <NiInput style={styles.input} caption="Objectifs" value={editedCustomer?.followUp?.objectives}
-                multiline onChangeText={onChangeFollowUpText('objectives')} placeholder="Précisez les objectifs
-                  de l'accompagnement : lever, toilette, préparation des repas, courses, déplacement véhiculé..." />
+                multiline onChangeText={onChangeFollowUpText('objectives')} placeholder={OBJECTIVES_PLACEHOLDER} />
             </View>
             <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
               visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
