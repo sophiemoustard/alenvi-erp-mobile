@@ -34,6 +34,15 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
+  const [customerBirth, setCustomerBirth] = useState<string>('');
+
+  useEffect(() => {
+    const birthDate = initialCustomer?.identity?.birthDate
+      ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')}`
+        + ` (${CompaniDate().diff(initialCustomer?.identity?.birthDate, 'years').years} ans)`
+      : 'non renseigné';
+    setCustomerBirth(birthDate);
+  }, [initialCustomer?.identity?.birthDate]);
 
   const getCustomer = useCallback(async () => {
     try {
@@ -116,12 +125,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               </View>
               <View style={styles.infoItem}>
                 <MaterialIcons name="cake" size={ICON.SM} color={COPPER_GREY[400]} />
-                <Text style={styles.infoText}>
-                  {initialCustomer?.identity?.birthDate
-                    ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')}`
-                    + ` (${CompaniDate().diff(initialCustomer?.identity?.birthDate, 'years').years} ans)`
-                    : 'non renseigné'}
-                </Text>
+                <Text style={styles.infoText}>{customerBirth}</Text>
               </View>
               <NiInput style={styles.input} caption="Accès" value={editedCustomer?.contact?.accessCodes || ''}
                 multiline onChangeText={onChangeContactText} />
