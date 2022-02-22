@@ -33,7 +33,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     _id: '',
     identity: { firstname: '', lastname: '', birthDate: '' },
     contact: { phone: '', primaryAddress: { fullAddress: '', street: '', zipCode: '', city: '' }, accessCodes: '' },
-    followUp: { environment: '', objectives: '' },
+    followUp: { environment: '', objectives: '', misc: '' },
   };
   const [initialCustomer, setInitialCustomer] = useState<CustomerType>(customer);
   const [editedCustomer, setEditedCustomer] = useState<CustomerType>(customer);
@@ -67,7 +67,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   useEffect(() => { setEditedCustomer(initialCustomer); }, [initialCustomer]);
 
   const onLeave = () => {
-    const pickedFields = ['followUp.environment', 'followUp.objectives', 'contact.accessCodes'];
+    const pickedFields = ['followUp.environment', 'followUp.objectives', 'followUp.misc', 'contact.accessCodes'];
     if (isEqual(pick(editedCustomer, pickedFields), pick(initialCustomer, pickedFields))) {
       navigation.goBack();
     } else setExitModal(true);
@@ -143,6 +143,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                 multiline onChangeText={onChangeFollowUpText('environment')} placeholder={ENVIRONMENT_PLACEHOLDER} />
               <NiInput style={styles.input} caption="Objectifs" value={editedCustomer?.followUp?.objectives}
                 multiline onChangeText={onChangeFollowUpText('objectives')} placeholder={OBJECTIVES_PLACEHOLDER} />
+              <NiInput style={styles.input} caption="Autres" value={editedCustomer?.followUp?.misc}
+                multiline onChangeText={onChangeFollowUpText('misc')} />
             </View>
             <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
               visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"

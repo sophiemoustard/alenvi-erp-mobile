@@ -21,6 +21,6 @@ export type AuxiliaryType = {
 export type CustomerType = {
   _id: UserType['_id'],
   identity: UserType['identity'],
-  followUp : { environment: string, objectives: string },
+  followUp : { environment: string, objectives: string, misc: string },
   contact: UserType['contact'] & { accessCodes?: string },
 }
