@@ -20,6 +20,12 @@ type CustomerProfileProp = {
   route: { params: { customerId: string } },
 };
 
+const OBJECTIVES_PLACEHOLDER = 'Précisez les objectifs de l\'accompagnement : lever, toilette, préparation des repas,'
+  + ' courses, déplacement véhiculé...';
+
+const ENVIRONMENT_PLACEHOLDER = 'Précisez l\'environnement de l\'accompagnement : entourage de la personne, famille,'
+  + ' voisinage, histoire de vie, contexte actuel...';
+
 const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const navigation = useNavigation();
   const { customerId } = route.params;
@@ -27,13 +33,22 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     _id: '',
     identity: { firstname: '', lastname: '', birthDate: '' },
     contact: { phone: '', primaryAddress: { fullAddress: '', street: '', zipCode: '', city: '' }, accessCodes: '' },
-    followUp: { environment: '', objectives: '' },
+    followUp: { environment: '', objectives: '', misc: '' },
   };
   const [initialCustomer, setInitialCustomer] = useState<CustomerType>(customer);
   const [editedCustomer, setEditedCustomer] = useState<CustomerType>(customer);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
+  const [customerBirth, setCustomerBirth] = useState<string>('');
+
+  useEffect(() => {
+    const birthDate = initialCustomer?.identity?.birthDate
+      ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')}`
+        + ` (${CompaniDate().diff(initialCustomer?.identity?.birthDate, 'years').years} ans)`
+      : 'non renseigné';
+    setCustomerBirth(birthDate);
+  }, [initialCustomer?.identity?.birthDate]);
 
   const getCustomer = useCallback(async () => {
     try {
@@ -52,7 +67,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   useEffect(() => { setEditedCustomer(initialCustomer); }, [initialCustomer]);
 
   const onLeave = () => {
-    const pickedFields = ['followUp.environment', 'followUp.objectives', 'contact.accessCodes'];
+    const pickedFields = ['followUp.environment', 'followUp.objectives', 'followUp.misc', 'contact.accessCodes'];
     if (isEqual(pick(editedCustomer, pickedFields), pick(initialCustomer, pickedFields))) {
       navigation.goBack();
     } else setExitModal(true);
@@ -68,7 +83,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       setLoading(true);
       const payload = {
         followUp: editedCustomer.followUp,
-        contact: { accessCodes: editedCustomer.contact.accessCodes },
+        contact: { accessCodes: editedCustomer.contact.accessCodes || '' },
       };
 
       await Customers.updateById(customerId, payload);
@@ -116,12 +131,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               </View>
               <View style={styles.infoItem}>
                 <MaterialIcons name="cake" size={ICON.SM} color={COPPER_GREY[400]} />
-                <Text style={styles.infoText}>
-                  {initialCustomer?.identity?.birthDate
-                    ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')}`
-                    + ` (${CompaniDate().diff(initialCustomer?.identity?.birthDate, 'years').years} ans)`
-                    : 'non renseigné'}
-                </Text>
+                <Text style={styles.infoText}>{customerBirth}</Text>
               </View>
               <NiInput style={styles.input} caption="Accès" value={editedCustomer?.contact?.accessCodes || ''}
                 multiline onChangeText={onChangeContactText} />
@@ -130,12 +140,11 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Accompagnement</Text>
               <NiInput style={styles.input} caption="Environnement" value={editedCustomer?.followUp?.environment}
-                multiline onChangeText={onChangeFollowUpText('environment')}
-                placeholder="Précisez l'environnement de l'accompagnement : entourage de la personne, famille,
-                  voisinage,histoire de vie, contexte actuel..." />
+                multiline onChangeText={onChangeFollowUpText('environment')} placeholder={ENVIRONMENT_PLACEHOLDER} />
               <NiInput style={styles.input} caption="Objectifs" value={editedCustomer?.followUp?.objectives}
-                multiline onChangeText={onChangeFollowUpText('objectives')} placeholder="Précisez les objectifs
-                  de l'accompagnement : lever, toilette, préparation des repas, courses, déplacement véhiculé..." />
+                multiline onChangeText={onChangeFollowUpText('objectives')} placeholder={OBJECTIVES_PLACEHOLDER} />
+              <NiInput style={styles.input} caption="Autres" value={editedCustomer?.followUp?.misc}
+                multiline onChangeText={onChangeFollowUpText('misc')} />
             </View>
             <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
               visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
