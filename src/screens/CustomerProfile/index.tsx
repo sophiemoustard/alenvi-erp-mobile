@@ -21,10 +21,10 @@ type CustomerProfileProp = {
 };
 
 const OBJECTIVES_PLACEHOLDER = 'Précisez les objectifs de l\'accompagnement : lever, toilette, préparation des repas,'
-  + 'courses, déplacement véhiculé...';
+  + ' courses, déplacement véhiculé...';
 
 const ENVIRONMENT_PLACEHOLDER = 'Précisez l\'environnement de l\'accompagnement : entourage de la personne, famille,'
-  + 'voisinage,histoire de vie, contexte actuel...';
+  + ' voisinage, histoire de vie, contexte actuel...';
 
 const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const navigation = useNavigation();
