@@ -83,7 +83,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       setLoading(true);
       const payload = {
         followUp: editedCustomer.followUp,
-        contact: { accessCodes: editedCustomer.contact.accessCodes },
+        contact: { accessCodes: editedCustomer.contact.accessCodes || '' },
       };
 
       await Customers.updateById(customerId, payload);
