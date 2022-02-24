@@ -19,7 +19,7 @@ import {
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiHeader from '../../../components/Header';
-import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
+import NiPersonSelect from '../../../components/PersonSelect';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NiPicker from '../../../components/Picker';
@@ -27,7 +27,7 @@ import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
-import { UserType } from '../../../types/UserType';
+import { AuxiliaryType, UserType } from '../../../types/UserType';
 import {
   EditedEventValidType,
   EventEditionActionType,
@@ -254,6 +254,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const headerTitle = CompaniDate(editedEvent.startDate).format('cccc dd LLL');
 
+  const onSelectPerson = (aux: AuxiliaryType) => {
+    editedEventDispatch({ type: SET_FIELD, payload: { auxiliary: aux } });
+    editedEventDispatch({
+      type: SET_FIELD,
+      payload: { transportMode: aux.administrative?.transportInvoice?.transportType },
+    });
+  };
+
   return (
     <>
       <NiHeader onPressIcon={onLeave} title={headerTitle} loading={loading} onPressButton={onSave} />
@@ -275,8 +283,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           </View>
           <EventDateTimeEdition event={editedEvent} eventEditionDispatch={editedEventDispatch}
             refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}/>
-          <EventAuxiliaryEdition auxiliary={editedEvent.auxiliary} auxiliaryOptions={activeAuxiliaries}
-            eventEditionDispatch={editedEventDispatch} isEditable={isAuxiliaryEditable} />
+          <NiPersonSelect title={'Intervenant'} person={editedEvent.auxiliary} personOptions={activeAuxiliaries}
+            onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
+            errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'} />
           <NiPicker selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
             options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} />
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
