@@ -11,19 +11,21 @@ import { AuxiliaryType } from '../../types/UserType';
 type PersonSelectProps = {
   person: EventType['auxiliary'],
   personOptions: FormattedAuxiliaryType[],
-  isEditable: boolean,
   title: string,
   onSelectPerson: (aux: AuxiliaryType) => void,
   errorMessage?: string,
+  isEditable?: boolean,
+  placeHolder?: string,
 }
 
 const PersonSelect = ({
   person,
   personOptions,
   onSelectPerson,
-  isEditable,
   title,
   errorMessage = '',
+  isEditable = true,
+  placeHolder = '',
 }: PersonSelectProps) => {
   const [personPicture, setPersonPicture] = useState<ImageSourcePropType>({});
   const [personEditionModal, setPersonEditionModal] = useState<boolean>(false);
@@ -44,7 +46,7 @@ const PersonSelect = ({
       <View style={isEditable ? styles.personCellEditable : styles.personCellNotEditable}>
         <TouchableOpacity style={styles.personInfos} onPress={onPress}>
           <Image source={personPicture} style={styles.avatar} />
-          <Text style={styles.personText}>{formatIdentity(person?.identity, 'FL')}</Text>
+          <Text style={styles.personText}>{formatIdentity(person?.identity, 'FL') || placeHolder}</Text>
           {isEditable && <FeatherButton name='chevron-down' onPress={() => setPersonEditionModal(true)} />}
         </TouchableOpacity>
         <NiPersonEditionModal visible={personEditionModal} personOptions={personOptions}

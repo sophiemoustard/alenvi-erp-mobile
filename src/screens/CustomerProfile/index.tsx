@@ -9,6 +9,7 @@ import { CustomerType } from '../../types/UserType';
 import { formatIdentity, formatPhone } from '../../core/helpers/utils';
 import NiHeader from '../../components/Header';
 import NiInput from '../../components/form/Input';
+import NiPersonSelect from '../../components/PersonSelect';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
 import ErrorMessage from '../../components/ErrorMessage';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../styles/metrics';
@@ -135,6 +136,12 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               </View>
               <NiInput style={styles.input} caption="Accès" value={editedCustomer?.contact?.accessCodes || ''}
                 multiline onChangeText={onChangeContactText} />
+            </View>
+            <View style={styles.separator} />
+            <View style={styles.infosContainer}>
+              <Text style={styles.sectionText}>Référents</Text>
+              <NiPersonSelect title={'Auxiliaire référent(e)'} person={editedCustomer?.referent}
+                personOptions={[]} placeHolder={'Pas d\'auxiliaire référent(e)'} />
             </View>
             <View style={styles.separator} />
             <View style={styles.infosContainer}>
