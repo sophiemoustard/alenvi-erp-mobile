@@ -24,4 +24,5 @@ export type CustomerType = {
   followUp : { environment: string, objectives: string, misc: string },
   contact: UserType['contact'] & { accessCodes?: string },
   referent? : AuxiliaryType,
+  company : string,
 }

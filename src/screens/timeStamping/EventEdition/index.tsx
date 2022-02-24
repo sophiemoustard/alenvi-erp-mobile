@@ -8,7 +8,7 @@ import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-ico
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
-import { formatIdentity } from '../../../core/helpers/utils';
+import { formatAuxiliary, formatIdentity } from '../../../core/helpers/utils';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import {
   EVENT_TRANSPORT_OPTIONS,
@@ -40,13 +40,6 @@ export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
 export const SET_FIELD = 'setField';
-
-const formatAuxiliary = (auxiliary: UserType): FormattedAuxiliaryType => ({
-  _id: auxiliary._id,
-  ...pick(auxiliary, ['picture', 'contracts', 'identity']),
-  formattedIdentity: formatIdentity(auxiliary.identity, 'FL'),
-  administrative: { transportInvoice: { transportType: auxiliary.administrative?.transportInvoice?.transportType } },
-});
 
 const formatZipCodeAndCity = (intervention: EventType) => {
   const zipCode = get(intervention, 'customer.contact.primaryAddress.zipCode') || '';

@@ -1,4 +1,7 @@
+import { pick } from 'lodash';
+import { FormattedAuxiliaryType } from '../../screens/timeStamping/EventEdition/types';
 import { EventType } from '../../types/EventType';
+import { UserType } from '../../types/UserType';
 import CompaniDate from './dates/companiDates';
 
 export const formatPhone = (phoneNumber : any) => (phoneNumber
@@ -39,3 +42,10 @@ export const formatIdentity = (identity: any, format: string) => {
 
 export const ascendingSortArray = (array: EventType[], key: 'startDate') => [...array]
   .sort((a, b) => (CompaniDate(a[key]).isBefore(b[key]) ? -1 : 1));
+
+export const formatAuxiliary = (auxiliary: UserType): FormattedAuxiliaryType => ({
+  _id: auxiliary._id,
+  ...pick(auxiliary, ['picture', 'contracts', 'identity']),
+  formattedIdentity: formatIdentity(auxiliary.identity, 'FL'),
+  administrative: { transportInvoice: { transportType: auxiliary.administrative?.transportInvoice?.transportType } },
+});

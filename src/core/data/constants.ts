@@ -70,3 +70,7 @@ export const TIME_STAMP_SWITCH_OPTIONS: [OptionType, OptionType] = [
   { label: 'Début', value: true },
   { label: 'Fin', value: false },
 ];
+
+// ROLE
+export const AUXILIARY = 'auxiliary';
+export const PLANNING_REFERENT = 'planning_referent';
