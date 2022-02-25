@@ -94,7 +94,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     }
   }, [initialCustomer.company]);
 
-  useEffect(() => { getActiveAuxiliaries(); }, [getActiveAuxiliaries, getCustomer]);
+  useEffect(() => { getActiveAuxiliaries(); }, [getActiveAuxiliaries]);
 
   const onLeave = () => {
     const pickedFields = [
