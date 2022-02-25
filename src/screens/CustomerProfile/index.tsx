@@ -6,7 +6,8 @@ import { isEqual, pick } from 'lodash';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import Customers from '../../api/Customers';
 import { AuxiliaryType, CustomerType, UserType } from '../../types/UserType';
-import { formatAuxiliary, formatIdentity, formatPhone } from '../../core/helpers/utils';
+import { formatIdentity, formatPhone } from '../../core/helpers/utils';
+import { formatAuxiliary } from '../../core/helpers/auxiliaries';
 import NiHeader from '../../components/Header';
 import NiInput from '../../components/form/Input';
 import NiPersonSelect from '../../components/PersonSelect';
@@ -180,7 +181,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                 personOptions={activeAuxiliaries} placeHolder={'Pas d\'auxiliaire référent(e)'}
                 onSelectPerson={(aux: AuxiliaryType) => { setEditedCustomer({ ...editedCustomer, referent: aux }); }}
                 style={styles.referent} />
-              { !!editedCustomer.referent?.contact?.phone &&
+              {!!editedCustomer.referent?.contact?.phone &&
                 <View style={styles.infoItem}>
                   <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
                   <Text style={styles.phoneReferent}>{formatPhone(editedCustomer?.referent?.contact?.phone)}</Text>

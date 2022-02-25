@@ -8,7 +8,8 @@ import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-ico
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
-import { formatAuxiliary, formatIdentity } from '../../../core/helpers/utils';
+import { formatIdentity } from '../../../core/helpers/utils';
+import { formatAuxiliary } from '../../../core/helpers/auxiliaries';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import {
   EVENT_TRANSPORT_OPTIONS,
@@ -166,13 +167,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         await Events.updateById(editedEvent._id, payload);
         setInitialState(editedEvent);
       }
+      navigation.goBack();
     } catch (e) {
+      console.error(e);
       if (e.response.status === 409) setApiErrorMessage(e.response.data.message);
       else if (e.response.status === 422) setApiErrorMessage('Cette modification n\'est pas autorisée.');
       else setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
     } finally {
       setLoading(false);
-      navigation.goBack();
     }
   };
 
