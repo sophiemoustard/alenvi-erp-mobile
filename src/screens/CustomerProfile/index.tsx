@@ -53,8 +53,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [customerBirth, setCustomerBirth] = useState<string>('');
-  const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>();
-  const [selectedPerson, setSelectedPerson] = useState<AuxiliaryType>(customer.referent);
+  const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
 
   useEffect(() => {
     const birthDate = initialCustomer?.identity?.birthDate
@@ -76,37 +75,35 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     }
   }, [customerId]);
 
+  useEffect(() => { getCustomer(); }, [getCustomer]);
+
+  useEffect(() => { setEditedCustomer(initialCustomer); }, [initialCustomer]);
+
   const getActiveAuxiliaries = useCallback(async () => {
     try {
-      const activeAux = await Users.getActive({
-        role: [AUXILIARY, PLANNING_REFERENT],
-        company: initialCustomer.company,
-      });
-      const formattedAux = activeAux.map((aux: UserType) => (formatAuxiliary(aux)));
-      setActiveAuxiliaries(formattedAux);
+      if (initialCustomer.company) {
+        const activeAux = await Users.getActive({
+          role: [AUXILIARY, PLANNING_REFERENT],
+          company: initialCustomer.company,
+        });
+        const formattedAux = activeAux.map((aux: UserType) => (formatAuxiliary(aux)));
+        setActiveAuxiliaries(formattedAux);
+      }
     } catch (e) {
       console.error(e);
     }
   }, [initialCustomer.company]);
 
-  const fetchData = useCallback(() => {
-    const promises = [];
-    try {
-      promises.push(getCustomer());
-      promises.push(getActiveAuxiliaries());
-
-      Promise.all(promises);
-    } catch (e) {
-      console.error(e);
-    }
-  }, [getActiveAuxiliaries, getCustomer]);
-
-  useEffect(() => { fetchData(); }, [fetchData, getActiveAuxiliaries, getCustomer]);
-
-  useEffect(() => { setEditedCustomer(initialCustomer); }, [initialCustomer]);
+  useEffect(() => { getActiveAuxiliaries(); }, [getActiveAuxiliaries, getCustomer]);
 
   const onLeave = () => {
-    const pickedFields = ['followUp.environment', 'followUp.objectives', 'followUp.misc', 'contact.accessCodes'];
+    const pickedFields = [
+      'followUp.environment',
+      'followUp.objectives',
+      'followUp.misc',
+      'contact.accessCodes',
+      'referent',
+    ];
     if (isEqual(pick(editedCustomer, pickedFields), pick(initialCustomer, pickedFields))) {
       navigation.goBack();
     } else setExitModal(true);
@@ -123,6 +120,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       const payload = {
         followUp: editedCustomer.followUp,
         contact: { accessCodes: editedCustomer.contact.accessCodes || '' },
+        referent: editedCustomer?.referent?._id || '',
       };
 
       await Customers.updateById(customerId, payload);
@@ -144,8 +142,6 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const onChangeContactText = (text: string) => {
     setEditedCustomer({ ...editedCustomer, contact: { ...editedCustomer.contact, accessCodes: text } });
   };
-
-  useEffect(() => { getActiveAuxiliaries(); }, [getActiveAuxiliaries, initialCustomer]);
 
   return (
     <>
@@ -180,9 +176,9 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             <View style={styles.separator} />
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Référents</Text>
-              <NiPersonSelect title={'Auxiliaire référent(e)'} person={selectedPerson}
+              <NiPersonSelect title={'Auxiliaire référent(e)'} person={editedCustomer.referent || customer.referent}
                 personOptions={activeAuxiliaries} placeHolder={'Pas d\'auxiliaire référent(e)'}
-                onSelectPerson={(aux: AuxiliaryType) => { setSelectedPerson(aux); }}
+                onSelectPerson={(aux: AuxiliaryType) => { setEditedCustomer({ ...editedCustomer, referent: aux }); }}
               />
             </View>
             <View style={styles.separator} />
