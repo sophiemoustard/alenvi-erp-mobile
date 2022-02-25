@@ -180,6 +180,11 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                 personOptions={activeAuxiliaries} placeHolder={'Pas d\'auxiliaire référent(e)'}
                 onSelectPerson={(aux: AuxiliaryType) => { setEditedCustomer({ ...editedCustomer, referent: aux }); }}
                 style={styles.referent} />
+              { !!editedCustomer.referent?.contact?.phone &&
+                <View style={styles.infoItem}>
+                  <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
+                  <Text style={styles.phoneReferent}>{formatPhone(editedCustomer?.referent?.contact?.phone)}</Text>
+                </View>}
             </View>
             <View style={styles.separator} />
             <View style={styles.infosContainer}>

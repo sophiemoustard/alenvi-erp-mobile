@@ -13,6 +13,7 @@ export type UserType = {
 export type AuxiliaryType = {
   _id: UserType['_id'],
   identity: UserType['identity'],
+  contact? : { phone?: string },
   picture?: UserType['picture'],
   contracts?: UserType['contracts'],
   administrative?: UserType['administrative'],
