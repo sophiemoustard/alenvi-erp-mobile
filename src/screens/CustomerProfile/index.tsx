@@ -179,12 +179,12 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               <NiPersonSelect title={'Auxiliaire référent(e)'} person={editedCustomer.referent || customer.referent}
                 personOptions={activeAuxiliaries} placeHolder={'Pas d\'auxiliaire référent(e)'}
                 onSelectPerson={(aux: AuxiliaryType) => { setEditedCustomer({ ...editedCustomer, referent: aux }); }}
-              />
+                style={styles.referent} />
             </View>
             <View style={styles.separator} />
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Accompagnement</Text>
-              <NiInput style={styles.input} caption="Environnement" value={editedCustomer?.followUp?.environment}
+              <NiInput caption="Environnement" value={editedCustomer?.followUp?.environment}
                 multiline onChangeText={onChangeFollowUpText('environment')} placeholder={ENVIRONMENT_PLACEHOLDER} />
               <NiInput style={styles.input} caption="Objectifs" value={editedCustomer?.followUp?.objectives}
                 multiline onChangeText={onChangeFollowUpText('objectives')} placeholder={OBJECTIVES_PLACEHOLDER} />

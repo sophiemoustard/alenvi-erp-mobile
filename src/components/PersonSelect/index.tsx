@@ -16,6 +16,7 @@ type PersonSelectProps = {
   errorMessage?: string,
   isEditable?: boolean,
   placeHolder?: string,
+  style?: Object,
 }
 
 const PersonSelect = ({
@@ -26,6 +27,7 @@ const PersonSelect = ({
   errorMessage = '',
   isEditable = true,
   placeHolder = '',
+  style = {},
 }: PersonSelectProps) => {
   const [personPicture, setPersonPicture] = useState<ImageSourcePropType>({});
   const [personEditionModal, setPersonEditionModal] = useState<boolean>(false);
@@ -41,7 +43,7 @@ const PersonSelect = ({
   );
 
   return (
-    <>
+    <View style={style}>
       <Text style={styles.sectionText}>{title}</Text>
       <View style={isEditable ? styles.personCellEditable : styles.personCellNotEditable}>
         <TouchableOpacity style={styles.personInfos} onPress={onPress}>
@@ -53,7 +55,7 @@ const PersonSelect = ({
           onRequestClose={() => setPersonEditionModal(false)} onSelectPerson={onSelectPerson}
           selectedPerson={person} />
       </View>
-    </>
+    </View>
   );
 };
 

@@ -33,16 +33,19 @@ export default StyleSheet.create({
     borderWidth: BORDER_WIDTH / 2,
     borderColor: COPPER_GREY[200],
   },
+  referent: {
+    paddingBottom: PADDING.MD,
+  },
   sectionText: {
     ...FIRA_SANS_MEDIUM.MD,
     color: COPPER_GREY[700],
-    marginBottom: MARGIN.SM,
+    marginBottom: MARGIN.MD,
   },
   infoItem: {
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: MARGIN.SM,
+    marginBottom: MARGIN.MD,
   },
   infoText: {
     ...FIRA_SANS_REGULAR.MD,
