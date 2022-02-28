@@ -68,7 +68,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     try {
       setLoading(true);
       const currentCustomer = await Customers.getById(customerId);
-      setInitialCustomer(currentCustomer);
+      setInitialCustomer({ ...currentCustomer, referent: formatAuxiliary(currentCustomer.referent) });
     } catch (e) {
       console.error(e);
     } finally {
@@ -104,8 +104,9 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       'followUp.objectives',
       'followUp.misc',
       'contact.accessCodes',
-      'referent',
+      'referent._id',
     ];
+
     if (isEqual(pick(editedCustomer, pickedFields), pick(initialCustomer, pickedFields))) {
       navigation.goBack();
     } else setExitModal(true);
@@ -145,6 +146,10 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     setEditedCustomer({ ...editedCustomer, contact: { ...editedCustomer.contact, accessCodes: text } });
   };
 
+  const onSelectAuxiliary = (aux: UserType) => {
+    setEditedCustomer({ ...editedCustomer, referent: formatAuxiliary(aux) });
+  };
+
   return (
     <>
       <NiHeader onPressIcon={onLeave} onPressButton={onSave} loading={loading}
@@ -178,11 +183,11 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             <View style={styles.separator} />
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Référents</Text>
-              <NiPersonSelect title={'Auxiliaire référent(e)'} person={editedCustomer.referent || customer.referent}
-                personOptions={activeAuxiliaries} placeHolder={'Pas d\'auxiliaire référent(e)'}
-                onSelectPerson={(aux: UserType) => { setEditedCustomer({ ...editedCustomer, referent: aux }); }}
-                style={styles.referent} />
-              {!!editedCustomer.referent?.contact?.phone &&
+              <NiPersonSelect title={'Auxiliaire référent(e)'} placeHolder={'Pas d\'auxiliaire référent(e)'}
+                person={formatAuxiliary(editedCustomer.referent || customer.referent)}
+                personOptions={activeAuxiliaries} style={styles.referent}
+                onSelectPerson={onSelectAuxiliary} />
+              {!!editedCustomer?.referent?.contact?.phone &&
                 <View style={styles.infoItem}>
                   <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
                   <Text style={styles.phoneReferent}>{formatPhone(editedCustomer?.referent?.contact?.phone)}</Text>
