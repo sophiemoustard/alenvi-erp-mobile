@@ -6,7 +6,7 @@ export type UserType = {
   company?: { name: string },
   contact?: { phone?: string, primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string } },
   contracts?: [{ _id: string, startDate: string, endDate: string }],
-  followUp: { environment: string },
+  followUp?: { environment?: string },
   administrative?: { transportInvoice?: { transportType?: string } },
 }
 
@@ -24,6 +24,8 @@ export type CustomerType = {
   identity: UserType['identity'],
   followUp : { environment: string, objectives: string, misc: string },
   contact: UserType['contact'] & { accessCodes?: string },
-  referent? : AuxiliaryType,
+  referent? : UserType,
   company : string,
 }
+
+export type FormattedUserType = UserType & { formattedIdentity: string }

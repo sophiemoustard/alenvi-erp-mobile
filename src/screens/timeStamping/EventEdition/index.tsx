@@ -28,14 +28,8 @@ import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
-import { AuxiliaryType, UserType } from '../../../types/UserType';
-import {
-  EditedEventValidType,
-  EventEditionActionType,
-  EventEditionProps,
-  EventEditionStateType,
-  FormattedAuxiliaryType,
-} from './types';
+import { UserType, FormattedUserType } from '../../../types/UserType';
+import { EditedEventValidType, EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
 
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
@@ -68,7 +62,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [exitModal, setExitModal] = useState<boolean>(false);
-  const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
+  const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedUserType[]>([]);
   const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(isEditable(initialState));
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [dateErrorMessage, setDateErrorMessage] = useState<string>('');
@@ -249,7 +243,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const headerTitle = CompaniDate(editedEvent.startDate).format('cccc dd LLL');
 
-  const onSelectPerson = (aux: AuxiliaryType) => {
+  const onSelectPerson = (aux: UserType) => {
     editedEventDispatch({ type: SET_FIELD, payload: { auxiliary: aux } });
     editedEventDispatch({
       type: SET_FIELD,

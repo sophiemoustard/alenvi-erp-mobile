@@ -2,17 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, ImageSourcePropType, Image, TouchableOpacity, Alert } from 'react-native';
 import styles from './styles';
 import { formatIdentity } from '../../core/helpers/utils';
-import { EventType } from '../../types/EventType';
 import FeatherButton from '../FeatherButton';
 import NiPersonEditionModal from '../PersonEditionModal';
-import { FormattedAuxiliaryType } from '../../screens/timeStamping/EventEdition/types';
-import { AuxiliaryType } from '../../types/UserType';
+import { UserType, FormattedUserType } from '../../types/UserType';
 
 type PersonSelectProps = {
-  person: EventType['auxiliary'],
-  personOptions: FormattedAuxiliaryType[],
+  person: UserType,
+  personOptions: FormattedUserType[],
   title: string,
-  onSelectPerson: (aux: AuxiliaryType) => void,
+  onSelectPerson: (person: UserType) => void,
   errorMessage?: string,
   isEditable?: boolean,
   placeHolder?: string,

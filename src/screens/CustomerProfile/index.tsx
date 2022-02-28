@@ -5,7 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { isEqual, pick } from 'lodash';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import Customers from '../../api/Customers';
-import { AuxiliaryType, CustomerType, UserType } from '../../types/UserType';
+import { CustomerType, UserType, FormattedUserType } from '../../types/UserType';
 import { formatIdentity, formatPhone } from '../../core/helpers/utils';
 import { formatAuxiliary } from '../../core/helpers/auxiliaries';
 import NiHeader from '../../components/Header';
@@ -19,7 +19,6 @@ import { COPPER, COPPER_GREY } from '../../styles/colors';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import Users from '../../api/Users';
 import { AUXILIARY, PLANNING_REFERENT } from '../../core/data/constants';
-import { FormattedAuxiliaryType } from '../timeStamping/EventEdition/types';
 
 type CustomerProfileProp = {
   route: { params: { customerId: string } },
@@ -43,9 +42,10 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     referent: {
       _id: '',
       identity: { firstname: '', lastname: '' },
+      local: { email: '' },
       contact: { phone: '', primaryAddress: { fullAddress: '', street: '', zipCode: '', city: '' }, accessCodes: '' },
       followUp: { environment: '', objectives: '', misc: '' },
-      company: '',
+      company: { name: '' },
     },
   };
   const [initialCustomer, setInitialCustomer] = useState<CustomerType>(customer);
@@ -54,7 +54,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [customerBirth, setCustomerBirth] = useState<string>('');
-  const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
+  const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedUserType[]>([]);
 
   useEffect(() => {
     const birthDate = initialCustomer?.identity?.birthDate
@@ -180,7 +180,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               <Text style={styles.sectionText}>Référents</Text>
               <NiPersonSelect title={'Auxiliaire référent(e)'} person={editedCustomer.referent || customer.referent}
                 personOptions={activeAuxiliaries} placeHolder={'Pas d\'auxiliaire référent(e)'}
-                onSelectPerson={(aux: AuxiliaryType) => { setEditedCustomer({ ...editedCustomer, referent: aux }); }}
+                onSelectPerson={(aux: UserType) => { setEditedCustomer({ ...editedCustomer, referent: aux }); }}
                 style={styles.referent} />
               {!!editedCustomer.referent?.contact?.phone &&
                 <View style={styles.infoItem}>
