@@ -92,6 +92,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       }
     } catch (e) {
       console.error(e);
+      setActiveAuxiliaries([]);
     }
   }, [initialCustomer.company]);
 
