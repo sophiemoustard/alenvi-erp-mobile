@@ -6,7 +6,7 @@ import { Feather } from '@expo/vector-icons';
 import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
-import CameraAccessModal from '../../components/modals/CameraAccessModal';
+import CameraAccessModal from '../modals/CameraAccessModal';
 import { WHITE } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
 import NiPrimaryButton from '../form/PrimaryButton';
@@ -71,7 +71,7 @@ interface TimeStampingProps {
   event: EventType,
 }
 
-const TimeStampingCell = ({ event }: TimeStampingProps) => {
+const EventCell = ({ event }: TimeStampingProps) => {
   const [eventInfos, eventInfosDispatch] = useReducer(reducer, initialState);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isEventStarting, setIsEventStarting] = useState<boolean>(true);
@@ -200,4 +200,4 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
   );
 };
 
-export default TimeStampingCell;
+export default EventCell;
