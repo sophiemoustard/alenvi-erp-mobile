@@ -43,8 +43,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       _id: '',
       identity: { firstname: '', lastname: '' },
       local: { email: '' },
-      contact: { phone: '', primaryAddress: { fullAddress: '', street: '', zipCode: '', city: '' }, accessCodes: '' },
-      followUp: { environment: '', objectives: '', misc: '' },
+      contact: { phone: '' },
       company: { name: '' },
     },
   };
@@ -165,7 +164,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               <Text style={styles.sectionText}>Infos pratiques</Text>
               <View style={styles.infoItem}>
                 <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[400]} />
-                <Text style={styles.infoText}>{initialCustomer?.contact?.primaryAddress.fullAddress}</Text>
+                <Text style={styles.infoText}>{initialCustomer?.contact?.primaryAddress?.fullAddress}</Text>
               </View>
               <View style={styles.infoItem}>
                 <MaterialIcons name="phone" size={ICON.SM} color={COPPER_GREY[400]} />

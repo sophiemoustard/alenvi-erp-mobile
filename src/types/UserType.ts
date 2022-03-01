@@ -1,10 +1,10 @@
 export type UserType = {
   _id: string,
   identity: { firstname: string, lastname: string, birthDate?: string },
-  local: { email: string },
+  local?: { email?: string },
   picture?: { link: string },
   company?: { name: string },
-  contact?: { phone?: string, primaryAddress: { fullAddress: string, street: string, zipCode: string, city: string } },
+  contact?: { phone?: string, primaryAddress?: { fullAddress: string, street: string, zipCode: string, city: string } },
   contracts?: [{ _id: string, startDate: string, endDate: string }],
   followUp?: { environment?: string },
   administrative?: { transportInvoice?: { transportType?: string } },
