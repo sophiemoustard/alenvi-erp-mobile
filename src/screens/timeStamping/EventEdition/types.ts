@@ -9,8 +9,6 @@ export interface EventEditionProps {
 
 export type EventEditionStateType = EventType & { start: boolean, histories: EventType['histories'] };
 
-export type FormattedAuxiliaryType = EventType['auxiliary'] & { formattedIdentity: string }
-
 export type EventEditionActionType = {
   type: string,
   payload?: {

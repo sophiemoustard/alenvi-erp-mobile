@@ -9,6 +9,7 @@ import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
 import { formatIdentity } from '../../../core/helpers/utils';
+import { formatAuxiliary } from '../../../core/helpers/auxiliaries';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import {
   EVENT_TRANSPORT_OPTIONS,
@@ -19,7 +20,7 @@ import {
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
 import NiHeader from '../../../components/Header';
-import EventAuxiliaryEdition from '../../../components/EventAuxiliaryEdition';
+import NiPersonSelect from '../../../components/PersonSelect';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NiPicker from '../../../components/Picker';
@@ -27,26 +28,13 @@ import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
-import { UserType } from '../../../types/UserType';
-import {
-  EditedEventValidType,
-  EventEditionActionType,
-  EventEditionProps,
-  EventEditionStateType,
-  FormattedAuxiliaryType,
-} from './types';
+import { UserType, FormattedUserType } from '../../../types/UserType';
+import { EditedEventValidType, EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
 
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
 export const SET_FIELD = 'setField';
-
-const formatAuxiliary = (auxiliary: UserType): FormattedAuxiliaryType => ({
-  _id: auxiliary._id,
-  ...pick(auxiliary, ['picture', 'contracts', 'identity']),
-  formattedIdentity: formatIdentity(auxiliary.identity, 'FL'),
-  administrative: { transportInvoice: { transportType: auxiliary.administrative?.transportInvoice?.transportType } },
-});
 
 const formatZipCodeAndCity = (intervention: EventType) => {
   const zipCode = get(intervention, 'customer.contact.primaryAddress.zipCode') || '';
@@ -74,7 +62,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [exitModal, setExitModal] = useState<boolean>(false);
-  const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedAuxiliaryType[]>([]);
+  const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedUserType[]>([]);
   const [isAuxiliaryEditable, setIsAuxiliaryEditable] = useState<boolean>(isEditable(initialState));
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [dateErrorMessage, setDateErrorMessage] = useState<string>('');
@@ -173,13 +161,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         await Events.updateById(editedEvent._id, payload);
         setInitialState(editedEvent);
       }
+      navigation.goBack();
     } catch (e) {
+      console.error(e);
       if (e.response.status === 409) setApiErrorMessage(e.response.data.message);
       else if (e.response.status === 422) setApiErrorMessage('Cette modification n\'est pas autorisée.');
       else setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
     } finally {
       setLoading(false);
-      navigation.goBack();
     }
   };
 
@@ -254,6 +243,14 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const headerTitle = CompaniDate(editedEvent.startDate).format('cccc dd LLL');
 
+  const onSelectPerson = (aux: UserType) => {
+    editedEventDispatch({ type: SET_FIELD, payload: { auxiliary: aux } });
+    editedEventDispatch({
+      type: SET_FIELD,
+      payload: { transportMode: aux.administrative?.transportInvoice?.transportType },
+    });
+  };
+
   return (
     <>
       <NiHeader onPressIcon={onLeave} title={headerTitle} loading={loading} onPressButton={onSave} />
@@ -275,8 +272,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           </View>
           <EventDateTimeEdition event={editedEvent} eventEditionDispatch={editedEventDispatch}
             refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}/>
-          <EventAuxiliaryEdition auxiliary={editedEvent.auxiliary} auxiliaryOptions={activeAuxiliaries}
-            eventEditionDispatch={editedEventDispatch} isEditable={isAuxiliaryEditable} />
+          <NiPersonSelect title={'Intervenant'} person={editedEvent.auxiliary} personOptions={activeAuxiliaries}
+            onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
+            errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'} />
           <NiPicker selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
             options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} />
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}

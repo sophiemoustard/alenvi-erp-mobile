@@ -31,4 +31,10 @@ export default {
 
     return users.data.data.users;
   },
+  getActive: async (params: { role: string | string[], company: string }) => {
+    const baseURL = await Environment.getBaseUrl();
+    const users = await axiosLogged.get(`${baseURL}/users/active`, { params });
+
+    return users.data.data.users;
+  },
 };
