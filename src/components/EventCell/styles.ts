@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { GREEN, COPPER_GREY, WHITE } from '../../styles/colors';
-import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR, NUNITO_REGULAR } from '../../styles/fonts';
+import { GREEN, COPPER_GREY, WHITE, COPPER } from '../../styles/colors';
+import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING, BUTTON_INTERVENTION_WIDTH, ICON } from '../../styles/metrics';
 
 export default StyleSheet.create({
@@ -11,33 +11,32 @@ export default StyleSheet.create({
   cell: {
     borderRadius: BORDER_RADIUS.MD,
     borderWidth: BORDER_WIDTH,
-    borderColor: COPPER_GREY[200],
+    borderLeftWidth: BORDER_WIDTH * 12,
+    borderColor: COPPER[200],
     backgroundColor: WHITE,
     marginHorizontal: MARGIN.MD,
+    paddingHorizontal: PADDING.XL,
+    paddingVertical: PADDING.LG,
   },
-  container: {
+  infoContainer: {
+    display: 'flex',
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    padding: PADDING.LG,
   },
   title: {
     ...FIRA_SANS_BOLD.MD,
-    color: COPPER_GREY[900],
-    marginVertical: MARGIN.SM,
-    marginHorizontal: MARGIN.MD,
-  },
-  timeTitle: {
-    ...FIRA_SANS_REGULAR.SM,
-    color: COPPER_GREY[700],
-    marginBottom: MARGIN.SM,
+    color: COPPER_GREY[800],
   },
   scheduledTime: {
-    ...NUNITO_REGULAR.XXL,
-    color: COPPER_GREY[900],
+    ...FIRA_SANS_REGULAR.MD,
+    color: COPPER_GREY[800],
   },
   button: {
     width: BUTTON_INTERVENTION_WIDTH,
+  },
+  timeContainer: {
+    display: 'flex',
+    flexDirection: 'row',
   },
   timeStamping: {
     ...FIRA_SANS_REGULAR.MD,

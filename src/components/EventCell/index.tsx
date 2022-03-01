@@ -1,25 +1,28 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { View, Text, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, Alert, TouchableOpacity, Touchable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
-import { Feather } from '@expo/vector-icons';
-import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import CameraAccessModal from '../modals/CameraAccessModal';
-import { WHITE } from '../../styles/colors';
+import { COPPER, WHITE } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
 import NiPrimaryButton from '../form/PrimaryButton';
 import NiSecondaryButton from '../form/SecondaryButton';
 import styles from './styles';
+import { formatIdentity } from '../../core/helpers/utils';
 
 interface StateType {
   civility: string,
   lastName: string,
+  firstname: string,
   startDate: string | null,
   endDate: string | null,
   startDateTimeStamp: boolean,
   endDateTimeStamp: boolean,
+  address: string,
 }
 interface ActionType {
   type: string,
@@ -29,10 +32,12 @@ interface ActionType {
 const initialState = {
   civility: '',
   lastName: '',
+  firstname: '',
   startDate: null,
   endDate: null,
   startDateTimeStamp: false,
   endDateTimeStamp: false,
+  address: '',
 };
 const SET_EVENT_INFOS = 'setEventInfos';
 const SET_TIMESTAMPED_INFOS = 'setTimeStampedInfos';
@@ -44,8 +49,10 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         ...state,
         civility: action.payload.event?.customer?.identity?.title || '',
         lastName: action.payload.event?.customer?.identity?.lastname || '',
+        firstname: action.payload.event?.customer?.identity?.firstname || '',
         startDate: action.payload.event?.startDate || null,
         endDate: action.payload.event?.endDate || null,
+        address: action.payload.event?.customer?.contact?.primaryAddress?.street || '',
       };
     case SET_TIMESTAMPED_INFOS:
       return {
@@ -163,38 +170,21 @@ const EventCell = ({ event }: TimeStampingProps) => {
     <View style={styles.cell}>
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
-      <TouchableOpacity onPress={goToEventEdition}>
-        <Text style={styles.title}>{CIVILITY_OPTIONS[eventInfos.civility]} {eventInfos.lastName.toUpperCase()}</Text>
-        <View style={styles.sectionDelimiter} />
-        <View style={styles.container}>
-          <View>
-            <Text style={styles.timeTitle}>Début</Text>
+      <TouchableOpacity style={styles.infoContainer} onPress={goToEventEdition}>
+        <View>
+          <Text style={styles.title}>{eventInfos.firstname} {eventInfos.lastName}</Text>
+          <View style={styles.timeContainer}>
             {!!eventInfos.startDate &&
-              <Text style={styles.scheduledTime}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
-          </View>
-          {eventInfos.startDateTimeStamp
-            ? renderTimeStamp()
-            : <>
-              {!eventInfos.endDateTimeStamp &&
-                <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => requestPermission(true)} />}
-            </>}
-        </View>
-        <View style={styles.sectionDelimiter} />
-        <View style={styles.container}>
-          <View>
-            <Text style={styles.timeTitle}>Fin</Text>
+              <Text style={styles.scheduledTime}>{CompaniDate(eventInfos?.startDate).format('HH:mm')}</Text>}
             {!!eventInfos.endDate &&
-              <Text style={styles.scheduledTime}>{CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
+              <Text style={styles.scheduledTime}> - {CompaniDate(eventInfos?.endDate).format('HH:mm')}</Text>}
           </View>
-          {eventInfos.endDateTimeStamp
-            ? renderTimeStamp()
-            : <>
-              {!eventInfos.startDateTimeStamp &&
-                <NiSecondaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
-              {!!eventInfos.startDateTimeStamp &&
-                <NiPrimaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
-            </>}
+          <Text>{eventInfos.address.toLocaleLowerCase()}</Text>
         </View>
+        <TouchableOpacity>
+          <MaterialIcons name="qr-code-2" size={ICON.MD} color={COPPER[500]}
+            onPress={() => requestPermission(isEventStarting)}/>
+        </TouchableOpacity>
       </TouchableOpacity>
     </View>
   );
