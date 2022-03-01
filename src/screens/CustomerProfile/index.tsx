@@ -67,12 +67,10 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     try {
       setLoading(true);
       const currentCustomer = await Customers.getById(customerId);
-      if (currentCustomer.identity) {
-        setInitialCustomer({
-          ...currentCustomer,
-          referent: currentCustomer.referent ? formatAuxiliary(currentCustomer.referent) : {},
-        });
-      }
+      setInitialCustomer({
+        ...currentCustomer,
+        referent: currentCustomer.referent ? formatAuxiliary(currentCustomer.referent) : {},
+      });
     } catch (e) {
       console.error(e);
     } finally {
