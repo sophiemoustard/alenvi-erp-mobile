@@ -67,7 +67,12 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     try {
       setLoading(true);
       const currentCustomer = await Customers.getById(customerId);
-      setInitialCustomer({ ...currentCustomer, referent: formatAuxiliary(currentCustomer.referent) });
+      if (currentCustomer.identity) {
+        setInitialCustomer({
+          ...currentCustomer,
+          referent: currentCustomer.referent ? formatAuxiliary(currentCustomer.referent) : {},
+        });
+      }
     } catch (e) {
       console.error(e);
     } finally {
@@ -184,8 +189,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               <Text style={styles.sectionText}>Référents</Text>
               <NiPersonSelect title={'Auxiliaire référent(e)'} placeHolder={'Pas d\'auxiliaire référent(e)'}
                 person={formatAuxiliary(editedCustomer.referent || customer.referent)}
-                personOptions={activeAuxiliaries} style={styles.referent}
-                onSelectPerson={onSelectAuxiliary} />
+                personOptions={activeAuxiliaries} style={styles.referent} onSelectPerson={onSelectAuxiliary} />
               {!!editedCustomer?.referent?.contact?.phone &&
                 <View style={styles.infoItem}>
                   <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
