@@ -8,7 +8,7 @@ import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import CameraAccessModal from '../modals/CameraAccessModal';
 import { COPPER } from '../../styles/colors';
-import { ICON } from '../../styles/metrics';
+import { hitSlop, ICON } from '../../styles/metrics';
 import styles from './styles';
 
 interface StateType {
@@ -154,28 +154,25 @@ const EventCell = ({ event }: TimeStampingProps) => {
     setModalVisible(permission.status !== GRANTED);
   };
 
-  const iconHitSlop = { top: 10, bottom: 10, left: 10, right: 10 };
-
   return (
     <View style={styles.cell}>
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
-      <View style={styles.borderCell}></View>
       <TouchableOpacity style={styles.infoContainer} onPress={goToEventEdition}>
         <View>
-          <Text style={styles.title}>{eventInfos.firstname} {eventInfos.lastName}</Text>
+          <Text style={styles.eventTitle}>{eventInfos.firstname} {eventInfos.lastName}</Text>
           <View style={styles.timeContainer}>
             {!!eventInfos.startDate &&
-              <Text style={styles.eventInfo}>{CompaniDate(eventInfos?.startDate).format('HH:mm')}</Text>}
+              <Text style={styles.eventInfo}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
             {!!eventInfos.endDate &&
-              <Text style={styles.eventInfo}> - {CompaniDate(eventInfos?.endDate).format('HH:mm')}</Text>}
+              <Text style={styles.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
           </View>
           <Text style={styles.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
         </View>
         {!eventInfos.endDateTimeStamp &&
-        <TouchableOpacity hitSlop={iconHitSlop} style={styles.iconContainer}>
-          <MaterialIcons name="qr-code-2" size={ICON.MD} color={COPPER[500]}
-            onPress={() => (eventInfos.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }/>
+        <TouchableOpacity hitSlop={hitSlop} style={styles.iconContainer}
+          onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
+          <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
         </TouchableOpacity>}
       </TouchableOpacity>
     </View>

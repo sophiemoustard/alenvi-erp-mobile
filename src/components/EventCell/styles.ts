@@ -24,13 +24,14 @@ export default StyleSheet.create({
     paddingVertical: PADDING.LG,
     flex: 1,
   },
-  title: {
+  eventTitle: {
     ...FIRA_SANS_BOLD.MD,
     color: COPPER_GREY[800],
   },
   eventInfo: {
     ...FIRA_SANS_REGULAR.MD,
     color: COPPER_GREY[500],
+    marginTop: MARGIN.XS,
   },
   timeContainer: {
     display: 'flex',
