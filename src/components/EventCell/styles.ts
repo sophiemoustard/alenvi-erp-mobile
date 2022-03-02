@@ -3,7 +3,7 @@ import { COPPER_GREY, WHITE, COPPER } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
 
-const BORDER_CELL = 10;
+const LEFT_BORDER_CELL = BORDER_WIDTH * 8;
 
 export default StyleSheet.create({
   cell: {
@@ -11,20 +11,11 @@ export default StyleSheet.create({
     flexDirection: 'row',
     borderRadius: BORDER_RADIUS.MD,
     borderWidth: BORDER_WIDTH,
-    borderColor: COPPER[200],
+    borderLeftWidth: LEFT_BORDER_CELL,
+    borderColor: COPPER[100],
     backgroundColor: WHITE,
     marginHorizontal: MARGIN.MD,
-    paddingRight: PADDING.XL,
-  },
-  borderCell: {
-    display: 'flex',
-    flexDirection: 'column',
-    borderTopLeftRadius: BORDER_RADIUS.MD,
-    borderBottomLeftRadius: BORDER_RADIUS.MD,
-    borderWidth: BORDER_CELL,
-    borderColor: COPPER[100],
-    backgroundColor: COPPER[100],
-    marginRight: MARGIN.MD,
+    paddingHorizontal: PADDING.LG,
   },
   infoContainer: {
     display: 'flex',
