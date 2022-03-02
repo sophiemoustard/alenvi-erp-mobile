@@ -18,7 +18,8 @@ export const COPPER_GREY = {
 };
 
 export const COPPER = {
-  200: '#DAF2EE',
+  100: '#DAF2EE',
+  200: '#AAE3DE',
   400: '#45A5AD',
   500: '#1D7C8F',
   600: '#005774',

@@ -1,18 +1,15 @@
 import React, { useEffect, useReducer, useState } from 'react';
-import { View, Text, Alert, TouchableOpacity, Touchable } from 'react-native';
+import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
-import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import CameraAccessModal from '../modals/CameraAccessModal';
-import { COPPER, WHITE } from '../../styles/colors';
+import { COPPER } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';
-import NiPrimaryButton from '../form/PrimaryButton';
-import NiSecondaryButton from '../form/SecondaryButton';
 import styles from './styles';
-import { formatIdentity } from '../../core/helpers/utils';
 
 interface StateType {
   civility: string,
@@ -64,15 +61,6 @@ const reducer = (state: StateType, action: ActionType): StateType => {
       return state;
   }
 };
-
-const renderTimeStamp = () => (
-  <View style={styles.timeStampingContainer}>
-    <View style={styles.iconContainer}>
-      <Feather name='check' size={ICON.XS} color={WHITE} />
-    </View>
-    <Text style={styles.timeStamping}>Horodaté</Text>
-  </View>
-);
 
 interface TimeStampingProps {
   event: EventType,
@@ -166,25 +154,29 @@ const EventCell = ({ event }: TimeStampingProps) => {
     setModalVisible(permission.status !== GRANTED);
   };
 
+  const iconHitSlop = { top: 10, bottom: 10, left: 10, right: 10 };
+
   return (
     <View style={styles.cell}>
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
+      <View style={styles.borderCell}></View>
       <TouchableOpacity style={styles.infoContainer} onPress={goToEventEdition}>
         <View>
           <Text style={styles.title}>{eventInfos.firstname} {eventInfos.lastName}</Text>
           <View style={styles.timeContainer}>
             {!!eventInfos.startDate &&
-              <Text style={styles.scheduledTime}>{CompaniDate(eventInfos?.startDate).format('HH:mm')}</Text>}
+              <Text style={styles.eventInfo}>{CompaniDate(eventInfos?.startDate).format('HH:mm')}</Text>}
             {!!eventInfos.endDate &&
-              <Text style={styles.scheduledTime}> - {CompaniDate(eventInfos?.endDate).format('HH:mm')}</Text>}
+              <Text style={styles.eventInfo}> - {CompaniDate(eventInfos?.endDate).format('HH:mm')}</Text>}
           </View>
-          <Text>{eventInfos.address.toLocaleLowerCase()}</Text>
+          <Text style={styles.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
         </View>
-        <TouchableOpacity>
+        {!eventInfos.endDateTimeStamp &&
+        <TouchableOpacity hitSlop={iconHitSlop} style={styles.iconContainer}>
           <MaterialIcons name="qr-code-2" size={ICON.MD} color={COPPER[500]}
-            onPress={() => requestPermission(isEventStarting)}/>
-        </TouchableOpacity>
+            onPress={() => (eventInfos.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }/>
+        </TouchableOpacity>}
       </TouchableOpacity>
     </View>
   );

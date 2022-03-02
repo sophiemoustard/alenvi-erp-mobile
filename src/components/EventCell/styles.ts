@@ -1,60 +1,51 @@
 import { StyleSheet } from 'react-native';
-import { GREEN, COPPER_GREY, WHITE, COPPER } from '../../styles/colors';
+import { COPPER_GREY, WHITE, COPPER } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../styles/fonts';
-import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING, BUTTON_INTERVENTION_WIDTH, ICON } from '../../styles/metrics';
+import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
+
+const BORDER_CELL = 10;
 
 export default StyleSheet.create({
-  sectionDelimiter: {
-    borderTopWidth: BORDER_WIDTH,
-    borderColor: COPPER_GREY[200],
-  },
   cell: {
+    display: 'flex',
+    flexDirection: 'row',
     borderRadius: BORDER_RADIUS.MD,
     borderWidth: BORDER_WIDTH,
-    borderLeftWidth: BORDER_WIDTH * 12,
     borderColor: COPPER[200],
     backgroundColor: WHITE,
     marginHorizontal: MARGIN.MD,
-    paddingHorizontal: PADDING.XL,
-    paddingVertical: PADDING.LG,
+    paddingRight: PADDING.XL,
+  },
+  borderCell: {
+    display: 'flex',
+    flexDirection: 'column',
+    borderTopLeftRadius: BORDER_RADIUS.MD,
+    borderBottomLeftRadius: BORDER_RADIUS.MD,
+    borderWidth: BORDER_CELL,
+    borderColor: COPPER[100],
+    backgroundColor: COPPER[100],
+    marginRight: MARGIN.MD,
   },
   infoContainer: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingVertical: PADDING.LG,
+    flex: 1,
   },
   title: {
     ...FIRA_SANS_BOLD.MD,
     color: COPPER_GREY[800],
   },
-  scheduledTime: {
+  eventInfo: {
     ...FIRA_SANS_REGULAR.MD,
-    color: COPPER_GREY[800],
-  },
-  button: {
-    width: BUTTON_INTERVENTION_WIDTH,
+    color: COPPER_GREY[500],
   },
   timeContainer: {
     display: 'flex',
     flexDirection: 'row',
   },
-  timeStamping: {
-    ...FIRA_SANS_REGULAR.MD,
-    color: GREEN[600],
-    marginLeft: MARGIN.SM,
-  },
-  timeStampingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   iconContainer: {
-    width: ICON.XL,
-    height: ICON.XL,
-    backgroundColor: GREEN[600],
-    borderRadius: BORDER_RADIUS.LG,
-    borderWidth: 4 * BORDER_WIDTH,
-    borderColor: GREEN[200],
-    alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
 });
