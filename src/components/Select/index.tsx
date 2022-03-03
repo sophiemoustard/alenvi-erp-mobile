@@ -14,13 +14,14 @@ type OptionType = {
 };
 
 type NiSelectProps = {
+  title: string,
   caption: string,
   options: OptionType[],
   selectedItem: string,
   onItemSelect: (item: string) => void,
 }
 
-const Select = ({ caption, options, selectedItem, onItemSelect }: NiSelectProps) => {
+const Select = ({ title, caption, options, selectedItem, onItemSelect }: NiSelectProps) => {
   const [displaySelect, setDisplaySelect] = useState<boolean>(false);
 
   const onPressCell = () => setDisplaySelect(prevValue => !prevValue);
@@ -61,10 +62,12 @@ const Select = ({ caption, options, selectedItem, onItemSelect }: NiSelectProps)
         </TouchableOpacity>
         {displaySelect && <Shadow />}
       </View>
-      <Modal visible={displaySelect} contentStyle={styles.select}>
+      <Modal visible={displaySelect} contentStyle={styles.modal}>
         <>
-          <FeatherButton name="x" size={ICON.SM} color={COPPER_GREY[400]} onPress={() => setDisplaySelect(false)}
-            style={styles.closeButton} />
+          <View style={styles.header}>
+            <Text style={styles.title}>{title.toUpperCase()}</Text>
+            <FeatherButton name="x" size={ICON.SM} color={COPPER_GREY[400]} onPress={() => setDisplaySelect(false)} />
+          </View>
           <View>
             {options.map(renderItem)}
           </View>

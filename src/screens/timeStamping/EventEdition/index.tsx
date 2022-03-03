@@ -276,7 +276,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
             errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'} />
           <NiSelect selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
-            options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} />
+            options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} title="transport" />
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
             buttonTitle="Ajouter une note" multiline
             onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}

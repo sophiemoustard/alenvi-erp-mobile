@@ -30,15 +30,20 @@ export default StyleSheet.create({
     color: COPPER_GREY[900],
     marginVertical: MARGIN.SM,
   },
-  select: {
-    paddingTop: 0,
-    paddingHorizontal: 0,
-    paddingBottom: PADDING.LG,
+  modal: {
+    paddingHorizontal: PADDING.LG,
+    paddingVertical: PADDING.LG,
   },
-  closeButton: {
-    alignSelf: 'flex-end',
-    marginRight: PADDING.MD,
+  header: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingHorizontal: PADDING.LG,
     marginVertical: PADDING.MD,
+  },
+  title: {
+    ...FIRA_SANS_REGULAR.MD,
+    color: COPPER_GREY[500],
+    alignSelf: 'center',
   },
   item: {
     backgroundColor: WHITE,
@@ -54,6 +59,7 @@ export default StyleSheet.create({
     backgroundColor: COPPER_GREY[100],
     padding: PADDING.LG,
     alignItems: 'center',
+    borderRadius: BORDER_RADIUS.MD,
   },
   selectedItemText: {
     ...FIRA_SANS_MEDIUM.MD,
