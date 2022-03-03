@@ -156,8 +156,6 @@ const EventCell = ({ event }: TimeStampingProps) => {
 
   return (
     <View style={styles.cell}>
-      <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
-        onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
       <TouchableOpacity style={styles.infoContainer} onPress={goToEventEdition}>
         <View>
           <Text style={styles.eventTitle}>{eventInfos.firstname} {eventInfos.lastName}</Text>
@@ -175,6 +173,8 @@ const EventCell = ({ event }: TimeStampingProps) => {
           <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
         </TouchableOpacity>}
       </TouchableOpacity>
+      <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
+        onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
     </View>
   );
 };
