@@ -2,24 +2,24 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
-import { Feather } from '@expo/vector-icons';
-import { CIVILITY_OPTIONS, TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
+import { MaterialIcons } from '@expo/vector-icons';
+import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
-import CameraAccessModal from '../../components/modals/CameraAccessModal';
-import { WHITE } from '../../styles/colors';
-import { ICON } from '../../styles/metrics';
-import NiPrimaryButton from '../form/PrimaryButton';
-import NiSecondaryButton from '../form/SecondaryButton';
+import CameraAccessModal from '../modals/CameraAccessModal';
+import { COPPER } from '../../styles/colors';
+import { hitSlop, ICON } from '../../styles/metrics';
 import styles from './styles';
 
 interface StateType {
   civility: string,
   lastName: string,
+  firstname: string,
   startDate: string | null,
   endDate: string | null,
   startDateTimeStamp: boolean,
   endDateTimeStamp: boolean,
+  address: string,
 }
 interface ActionType {
   type: string,
@@ -29,10 +29,12 @@ interface ActionType {
 const initialState = {
   civility: '',
   lastName: '',
+  firstname: '',
   startDate: null,
   endDate: null,
   startDateTimeStamp: false,
   endDateTimeStamp: false,
+  address: '',
 };
 const SET_EVENT_INFOS = 'setEventInfos';
 const SET_TIMESTAMPED_INFOS = 'setTimeStampedInfos';
@@ -44,8 +46,10 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         ...state,
         civility: action.payload.event?.customer?.identity?.title || '',
         lastName: action.payload.event?.customer?.identity?.lastname || '',
+        firstname: action.payload.event?.customer?.identity?.firstname || '',
         startDate: action.payload.event?.startDate || null,
         endDate: action.payload.event?.endDate || null,
+        address: action.payload.event?.customer?.contact?.primaryAddress?.street || '',
       };
     case SET_TIMESTAMPED_INFOS:
       return {
@@ -58,20 +62,11 @@ const reducer = (state: StateType, action: ActionType): StateType => {
   }
 };
 
-const renderTimeStamp = () => (
-  <View style={styles.timeStampingContainer}>
-    <View style={styles.iconContainer}>
-      <Feather name='check' size={ICON.XS} color={WHITE} />
-    </View>
-    <Text style={styles.timeStamping}>Horodaté</Text>
-  </View>
-);
-
 interface TimeStampingProps {
   event: EventType,
 }
 
-const TimeStampingCell = ({ event }: TimeStampingProps) => {
+const EventCell = ({ event }: TimeStampingProps) => {
   const [eventInfos, eventInfosDispatch] = useReducer(reducer, initialState);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isEventStarting, setIsEventStarting] = useState<boolean>(true);
@@ -161,43 +156,27 @@ const TimeStampingCell = ({ event }: TimeStampingProps) => {
 
   return (
     <View style={styles.cell}>
+      <TouchableOpacity style={styles.infoContainer} onPress={goToEventEdition}>
+        <View>
+          <Text style={styles.eventTitle}>{eventInfos.firstname} {eventInfos.lastName}</Text>
+          <View style={styles.timeContainer}>
+            {!!eventInfos.startDate &&
+              <Text style={styles.eventInfo}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
+            {!!eventInfos.endDate &&
+              <Text style={styles.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
+          </View>
+          <Text style={styles.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
+        </View>
+        {!eventInfos.endDateTimeStamp &&
+        <TouchableOpacity hitSlop={hitSlop} style={styles.iconContainer}
+          onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
+          <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
+        </TouchableOpacity>}
+      </TouchableOpacity>
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
-      <TouchableOpacity onPress={goToEventEdition}>
-        <Text style={styles.title}>{CIVILITY_OPTIONS[eventInfos.civility]} {eventInfos.lastName.toUpperCase()}</Text>
-        <View style={styles.sectionDelimiter} />
-        <View style={styles.container}>
-          <View>
-            <Text style={styles.timeTitle}>Début</Text>
-            {!!eventInfos.startDate &&
-              <Text style={styles.scheduledTime}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
-          </View>
-          {eventInfos.startDateTimeStamp
-            ? renderTimeStamp()
-            : <>
-              {!eventInfos.endDateTimeStamp &&
-                <NiPrimaryButton title='Commencer' style={styles.button} onPress={() => requestPermission(true)} />}
-            </>}
-        </View>
-        <View style={styles.sectionDelimiter} />
-        <View style={styles.container}>
-          <View>
-            <Text style={styles.timeTitle}>Fin</Text>
-            {!!eventInfos.endDate &&
-              <Text style={styles.scheduledTime}>{CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
-          </View>
-          {eventInfos.endDateTimeStamp
-            ? renderTimeStamp()
-            : <>
-              {!eventInfos.startDateTimeStamp &&
-                <NiSecondaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
-              {!!eventInfos.startDateTimeStamp &&
-                <NiPrimaryButton title='Terminer' onPress={() => requestPermission(false)} style={styles.button} />}
-            </>}
-        </View>
-      </TouchableOpacity>
     </View>
   );
 };
 
-export default TimeStampingCell;
+export default EventCell;
