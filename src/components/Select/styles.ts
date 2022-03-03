@@ -30,32 +30,32 @@ export default StyleSheet.create({
     color: COPPER_GREY[900],
     marginVertical: MARGIN.SM,
   },
-  picker: {
+  select: {
     paddingTop: 0,
     paddingHorizontal: 0,
     paddingBottom: PADDING.LG,
   },
-  pickerCloseButton: {
+  closeButton: {
     alignSelf: 'flex-end',
     marginRight: PADDING.MD,
     marginVertical: PADDING.MD,
   },
-  pickerItem: {
+  item: {
     backgroundColor: WHITE,
     paddingLeft: PADDING.LG,
     paddingVertical: PADDING.LG,
   },
-  pickerItemText: {
+  itemText: {
     ...FIRA_SANS_REGULAR.MD,
     color: COPPER_GREY[700],
   },
-  selectedPickerItem: {
+  selectedItem: {
     flexDirection: 'row',
     backgroundColor: COPPER_GREY[100],
     padding: PADDING.LG,
     alignItems: 'center',
   },
-  selectedPickerItemText: {
+  selectedItemText: {
     ...FIRA_SANS_MEDIUM.MD,
     color: COPPER_GREY[700],
     flex: 1,

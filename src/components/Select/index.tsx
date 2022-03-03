@@ -13,36 +13,36 @@ type OptionType = {
   value: string
 };
 
-type NiPickerProps = {
+type NiSelectProps = {
   caption: string,
   options: OptionType[],
   selectedItem: string,
   onItemSelect: (item: string) => void,
 }
 
-const Picker = ({ caption, options, selectedItem, onItemSelect }: NiPickerProps) => {
-  const [displayPicker, setDisplayPicker] = useState<boolean>(false);
+const Select = ({ caption, options, selectedItem, onItemSelect }: NiSelectProps) => {
+  const [displaySelect, setDisplaySelect] = useState<boolean>(false);
 
-  const onPressCell = () => setDisplayPicker(prevValue => !prevValue);
+  const onPressCell = () => setDisplaySelect(prevValue => !prevValue);
 
   const selectItem = (itemValue: string) => {
     onItemSelect(itemValue);
-    setDisplayPicker(false);
+    setDisplaySelect(false);
   };
 
   const renderItem = (option: OptionType, index: number) => {
     if (option.value === selectedItem) {
       return (
-        <View style={styles.selectedPickerItem} key={index}>
-          <Text style={styles.selectedPickerItemText}>{option.label}</Text>
+        <View style={styles.selectedItem} key={index}>
+          <Text style={styles.selectedItemText}>{option.label}</Text>
           <Feather name='check' color={COPPER[500]} size={ICON.XS} />
         </View>
       );
     }
 
     return (
-      <TouchableOpacity onPress={() => selectItem(option.value)} style={styles.pickerItem} key={index}>
-        <Text style={styles.pickerItemText}>{option.label}</Text>
+      <TouchableOpacity onPress={() => selectItem(option.value)} style={styles.item} key={index}>
+        <Text style={styles.itemText}>{option.label}</Text>
       </TouchableOpacity>
     );
   };
@@ -51,20 +51,20 @@ const Picker = ({ caption, options, selectedItem, onItemSelect }: NiPickerProps)
     <>
       <Text style={styles.sectionText}>{caption}</Text>
       <View>
-        <TouchableOpacity style={[styles.optionCell, displayPicker && styles.selectedCell]} onPress={onPressCell}>
+        <TouchableOpacity style={[styles.optionCell, displaySelect && styles.selectedCell]} onPress={onPressCell}>
           <Text style={styles.optionText}>
             {(options.find(item => item.value === selectedItem))?.label || ''}
           </Text>
-          {displayPicker
+          {displaySelect
             ? <FeatherButton name='chevron-up' onPress={onPressCell} />
             : <FeatherButton name='chevron-down' onPress={onPressCell} />}
         </TouchableOpacity>
-        {displayPicker && <Shadow />}
+        {displaySelect && <Shadow />}
       </View>
-      <Modal visible={displayPicker} contentStyle={styles.picker}>
+      <Modal visible={displaySelect} contentStyle={styles.select}>
         <>
-          <FeatherButton name="x" size={ICON.SM} color={COPPER_GREY[400]} onPress={() => setDisplayPicker(false)}
-            style={styles.pickerCloseButton} />
+          <FeatherButton name="x" size={ICON.SM} color={COPPER_GREY[400]} onPress={() => setDisplaySelect(false)}
+            style={styles.closeButton} />
           <View>
             {options.map(renderItem)}
           </View>
@@ -74,4 +74,4 @@ const Picker = ({ caption, options, selectedItem, onItemSelect }: NiPickerProps)
   );
 };
 
-export default Picker;
+export default Select;

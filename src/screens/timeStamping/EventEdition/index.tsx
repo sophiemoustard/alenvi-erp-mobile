@@ -23,7 +23,7 @@ import NiHeader from '../../../components/Header';
 import NiPersonSelect from '../../../components/PersonSelect';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 import ErrorMessage from '../../../components/ErrorMessage';
-import NiPicker from '../../../components/Picker';
+import NiSelect from '../../../components/Select';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
@@ -275,7 +275,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <NiPersonSelect title={'Intervenant'} person={editedEvent.auxiliary} personOptions={activeAuxiliaries}
             onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
             errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'} />
-          <NiPicker selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
+          <NiSelect selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
             options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} />
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
             buttonTitle="Ajouter une note" multiline
