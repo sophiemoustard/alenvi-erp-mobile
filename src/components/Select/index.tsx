@@ -36,7 +36,7 @@ const Select = ({ title, caption, options, selectedItem, onItemSelect }: NiSelec
       return (
         <View style={styles.selectedItem} key={index}>
           <Text style={styles.selectedItemText}>{option.label}</Text>
-          <Feather name='check' color={COPPER[500]} size={ICON.XS} />
+          <Feather name='check' color={COPPER[500]} size={ICON.SM} />
         </View>
       );
     }
@@ -53,9 +53,7 @@ const Select = ({ title, caption, options, selectedItem, onItemSelect }: NiSelec
       <Text style={styles.sectionText}>{caption}</Text>
       <View>
         <TouchableOpacity style={[styles.optionCell, displaySelect && styles.selectedCell]} onPress={onPressCell}>
-          <Text style={styles.optionText}>
-            {(options.find(item => item.value === selectedItem))?.label || ''}
-          </Text>
+          <Text style={styles.optionText}>{(options.find(item => item.value === selectedItem))?.label || ''}</Text>
           {displaySelect
             ? <FeatherButton name='chevron-up' onPress={onPressCell} />
             : <FeatherButton name='chevron-down' onPress={onPressCell} />}
@@ -66,7 +64,7 @@ const Select = ({ title, caption, options, selectedItem, onItemSelect }: NiSelec
         <>
           <View style={styles.header}>
             <Text style={styles.title}>{title.toUpperCase()}</Text>
-            <FeatherButton name="x" size={ICON.SM} color={COPPER_GREY[400]} onPress={() => setDisplaySelect(false)} />
+            <FeatherButton name="x" size={ICON.SM} color={COPPER_GREY[500]} onPress={() => setDisplaySelect(false)} />
           </View>
           <View>
             {options.map(renderItem)}

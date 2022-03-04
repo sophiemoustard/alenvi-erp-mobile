@@ -35,15 +35,15 @@ export default StyleSheet.create({
     paddingVertical: PADDING.LG,
   },
   header: {
-    justifyContent: 'space-between',
-    flexDirection: 'row',
     paddingHorizontal: PADDING.LG,
     marginVertical: PADDING.MD,
+    flexDirection: 'row',
   },
   title: {
     ...FIRA_SANS_REGULAR.MD,
     color: COPPER_GREY[500],
     alignSelf: 'center',
+    flex: 1,
   },
   item: {
     backgroundColor: WHITE,
@@ -63,7 +63,7 @@ export default StyleSheet.create({
   },
   selectedItemText: {
     ...FIRA_SANS_MEDIUM.MD,
-    color: COPPER_GREY[700],
+    color: COPPER_GREY[800],
     flex: 1,
   },
 });
