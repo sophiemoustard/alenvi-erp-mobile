@@ -3,7 +3,7 @@ import { COPPER_GREY, WHITE } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { AVATAR_SIZE, BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
 
-export default ({ isSelectedAuxiliary }: { isSelectedAuxiliary?: boolean }) => StyleSheet.create({
+export default ({ isSelectedPerson }: { isSelectedPerson?: boolean }) => StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -16,15 +16,15 @@ export default ({ isSelectedAuxiliary }: { isSelectedAuxiliary?: boolean }) => S
     flex: 1,
     marginLeft: MARGIN.LG,
   },
-  auxiliaryItem: {
+  personItem: {
     paddingHorizontal: PADDING.LG,
     paddingVertical: PADDING.MD,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: isSelectedAuxiliary ? COPPER_GREY[100] : WHITE,
+    backgroundColor: isSelectedPerson ? COPPER_GREY[100] : WHITE,
   },
-  auxiliaryItemText: {
-    ...(isSelectedAuxiliary ? { ...FIRA_SANS_BOLD.MD } : { ...FIRA_SANS_REGULAR.MD }),
+  personItemText: {
+    ...(isSelectedPerson ? { ...FIRA_SANS_BOLD.MD } : { ...FIRA_SANS_REGULAR.MD }),
     flex: 1,
   },
   avatar: {

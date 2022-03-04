@@ -4,7 +4,7 @@ import { FIRA_SANS_MEDIUM } from '../../styles/fonts';
 import { BORDER_RADIUS, MARGIN, PADDING, AVATAR_SIZE, BORDER_WIDTH } from '../../styles/metrics';
 
 export default StyleSheet.create({
-  auxiliaryCellEditable: {
+  personCellEditable: {
     flexDirection: 'row',
     backgroundColor: WHITE,
     width: '100%',
@@ -17,7 +17,7 @@ export default StyleSheet.create({
     borderRadius: BORDER_RADIUS.MD,
     borderColor: COPPER_GREY[300],
   },
-  auxiliaryCellNotEditable: {
+  personCellNotEditable: {
     flexDirection: 'row',
     width: '100%',
     alignItems: 'center',
@@ -29,12 +29,12 @@ export default StyleSheet.create({
     borderColor: COPPER_GREY[200],
     borderWidth: BORDER_WIDTH,
   },
-  auxiliaryInfos: {
+  personInfos: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
   },
-  auxiliaryText: {
+  personText: {
     color: COPPER_GREY[800],
     textAlign: 'left',
     marginLeft: MARGIN.MD,

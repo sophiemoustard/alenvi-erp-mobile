@@ -7,13 +7,13 @@ import { Context as AuthContext } from '../../../context/AuthContext';
 import { ACTIVE_STATE, INTERVENTION } from '../../../core/data/constants';
 import { formatWordToPlural, ascendingSortArray } from '../../../core/helpers/utils';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
-import TimeStampingCell from '../../../components/TimeStampingCell';
+import EventCell from '../../../components/EventCell';
 import { EventType } from '../../../types/EventType';
 import styles from './styles';
 
 const renderEvent = (event: EventType) => (
   <View key={event._id}>
-    <TimeStampingCell event={event} />
+    <EventCell event={event} />
     <View style={styles.separator} />
   </View>
 );

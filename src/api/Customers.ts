@@ -2,7 +2,9 @@ import axiosLogged from './axios/logged';
 import Environment from '../../environment';
 
 type UpdatePayloadType = {
-  followUp: { environment: string, objectives: string }
+  followUp: { environment: string, objectives: string, misc: string },
+  contact: { accessCodes: string },
+  referent: string,
 };
 
 export default {
