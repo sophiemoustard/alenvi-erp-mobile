@@ -18,7 +18,7 @@ const renderEvent = (event: EventType) => (
   </View>
 );
 
-const TimeStampingProfile = () => {
+const Agenda = () => {
   const [displayedDate, setDisplayedDate] = useState<string>(CompaniDate().toISO());
   const [events, setEvents] = useState<EventType[]>([]);
   const [isAppFocused, setIsAppFocused] = useState<boolean>(true);
@@ -68,7 +68,7 @@ const TimeStampingProfile = () => {
   );
 
   return (
-    <ScrollView style={styles.screen} testID="TimeStampingProfile">
+    <ScrollView style={styles.screen} testID="Agenda">
       <Text style={commonStyle.title}>Horodatage</Text>
       <View style={styles.container}>
         <View>
@@ -84,4 +84,4 @@ const TimeStampingProfile = () => {
   );
 };
 
-export default TimeStampingProfile;
+export default Agenda;
