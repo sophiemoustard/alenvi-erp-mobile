@@ -3,15 +3,15 @@ import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import { MaterialIcons } from '@expo/vector-icons';
-import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
+import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED, INTERVENTION } from '../../core/data/constants';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import CameraAccessModal from '../modals/CameraAccessModal';
-import { COPPER } from '../../styles/colors';
+import { COPPER, WHITE } from '../../styles/colors';
 import { hitSlop, ICON } from '../../styles/metrics';
-import styles from './styles';
+import styles, { eventCellStyleType } from './styles';
 
-interface StateType {
+type EventStateType = {
   civility: string,
   lastName: string,
   firstname: string,
@@ -20,11 +20,14 @@ interface StateType {
   startDateTimeStamp: boolean,
   endDateTimeStamp: boolean,
   address: string,
-}
-interface ActionType {
+  type: string,
+  internalHourName: string,
+};
+
+type EventActionType = {
   type: string,
   payload: { event?: EventType, startDateTimeStamp?: boolean, endDateTimeStamp?: boolean },
-}
+};
 
 const initialState = {
   civility: '',
@@ -35,11 +38,13 @@ const initialState = {
   startDateTimeStamp: false,
   endDateTimeStamp: false,
   address: '',
+  type: '',
+  internalHourName: '',
 };
 const SET_EVENT_INFOS = 'setEventInfos';
 const SET_TIMESTAMPED_INFOS = 'setTimeStampedInfos';
 
-const reducer = (state: StateType, action: ActionType): StateType => {
+const eventReducer = (state: EventStateType, action: EventActionType): EventStateType => {
   switch (action.type) {
     case SET_EVENT_INFOS:
       return {
@@ -49,7 +54,11 @@ const reducer = (state: StateType, action: ActionType): StateType => {
         firstname: action.payload.event?.customer?.identity?.firstname || '',
         startDate: action.payload.event?.startDate || null,
         endDate: action.payload.event?.endDate || null,
-        address: action.payload.event?.customer?.contact?.primaryAddress?.street || '',
+        address: action.payload.event?.customer?.contact?.primaryAddress?.street ||
+          action.payload.event?.address?.street ||
+          '',
+        type: action.payload.event?.type || '',
+        internalHourName: action.payload.event?.internalHour?.name || '',
       };
     case SET_TIMESTAMPED_INFOS:
       return {
@@ -62,15 +71,28 @@ const reducer = (state: StateType, action: ActionType): StateType => {
   }
 };
 
+const SET_INTERVENTION_INFOS = 'set_intervention_infos';
+const SET_INTERNAL_HOUR_INFOS = 'set_internal_hour_infos';
+
+type cellStateType = {
+  title: string,
+  borderColor: string,
+  backgroundColor: string,
+};
+
+type cellActionType = {
+  type: string,
+};
+
 interface TimeStampingProps {
   event: EventType,
 }
 
 const EventCell = ({ event }: TimeStampingProps) => {
-  const [eventInfos, eventInfosDispatch] = useReducer(reducer, initialState);
+  const [eventInfos, eventInfosDispatch] = useReducer(eventReducer, initialState);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isEventStarting, setIsEventStarting] = useState<boolean>(true);
-
+  const [style, setStyle] = useState<eventCellStyleType>(styles({ borderColor: WHITE, backgroundColor: WHITE }));
   const navigation = useNavigation();
 
   useEffect(() => { if (event) eventInfosDispatch({ type: SET_EVENT_INFOS, payload: { event } }); }, [event]);
@@ -89,6 +111,38 @@ const EventCell = ({ event }: TimeStampingProps) => {
       });
     }
   }, [event.histories]);
+
+  const cellReducer = (state: cellStateType, action: cellActionType): cellStateType => {
+    switch (action.type) {
+      case SET_INTERVENTION_INFOS:
+        return {
+          title: `${eventInfos.firstname} ${eventInfos.lastName}`,
+          borderColor: COPPER[100],
+          backgroundColor: WHITE,
+        };
+      case SET_INTERNAL_HOUR_INFOS:
+        return {
+          title: eventInfos.internalHourName,
+          borderColor: COPPER[400],
+          backgroundColor: WHITE,
+        };
+      default:
+        return state;
+    }
+  };
+
+  const initialCellStyle = { title: '', backgroundColor: WHITE, borderColor: WHITE };
+
+  const [cellInfos, cellInfosDispatch] = useReducer(cellReducer, initialCellStyle);
+
+  useEffect(() => {
+    if (eventInfos.type === INTERVENTION) cellInfosDispatch({ type: SET_INTERVENTION_INFOS });
+    else cellInfosDispatch({ type: SET_INTERNAL_HOUR_INFOS });
+  }, [eventInfos]);
+
+  useEffect(() => setStyle(
+    styles({ borderColor: cellInfos.borderColor, backgroundColor: cellInfos.backgroundColor })
+  ), [cellInfos]);
 
   const goToBarCodeScanner = (timeStampStart: boolean) => navigation.navigate(
     'QRCodeScanner',
@@ -155,20 +209,20 @@ const EventCell = ({ event }: TimeStampingProps) => {
   };
 
   return (
-    <View style={styles.cell}>
-      <TouchableOpacity style={styles.infoContainer} onPress={goToEventEdition}>
+    <View style={style.cell}>
+      <TouchableOpacity style={style.infoContainer} onPress={goToEventEdition}>
         <View>
-          <Text style={styles.eventTitle}>{eventInfos.firstname} {eventInfos.lastName}</Text>
-          <View style={styles.timeContainer}>
+          <Text style={style.eventTitle}>{cellInfos.title}</Text>
+          <View style={style.timeContainer}>
             {!!eventInfos.startDate &&
-              <Text style={styles.eventInfo}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
+              <Text style={style.eventInfo}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
             {!!eventInfos.endDate &&
-              <Text style={styles.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
+              <Text style={style.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
           </View>
-          <Text style={styles.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
+          <Text style={style.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
         </View>
-        {!eventInfos.endDateTimeStamp &&
-        <TouchableOpacity hitSlop={hitSlop} style={styles.iconContainer}
+        {!eventInfos.endDateTimeStamp && eventInfos.type === INTERVENTION &&
+        <TouchableOpacity hitSlop={hitSlop} style={style.iconContainer}
           onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
           <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
         </TouchableOpacity>}

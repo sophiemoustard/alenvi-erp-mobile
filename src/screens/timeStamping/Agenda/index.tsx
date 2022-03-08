@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import commonStyle from '../../../styles/common';
 import Events from '../../../api/Events';
 import { Context as AuthContext } from '../../../context/AuthContext';
-import { ACTIVE_STATE, INTERVENTION } from '../../../core/data/constants';
+import { ACTIVE_STATE, INTERNAL_HOUR, INTERVENTION } from '../../../core/data/constants';
 import { formatWordToPlural, ascendingSortArray } from '../../../core/helpers/utils';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import EventCell from '../../../components/EventCell';
@@ -43,25 +43,27 @@ const Agenda = () => {
     useCallback(() => {
       let isActive = true;
 
-      const fetchInterventions = async () => {
+      const fetchEvents = async () => {
         try {
           if (!loggedUser || !loggedUser._id) return;
           const params = {
             auxiliary: loggedUser._id,
             startDate: CompaniDate().startOf('day').toISO(),
             endDate: CompaniDate().endOf('day').toISO(),
-            type: INTERVENTION,
             isCancelled: false,
           };
           const fetchedEvents = await Events.list(params);
 
-          if (isActive) setEvents(ascendingSortArray(fetchedEvents, 'startDate'));
+          const fetchedInterventionsAndInternalHours = fetchedEvents
+            .filter((ev: EventType) => ev.type === INTERVENTION || ev.type === INTERNAL_HOUR);
+
+          if (isActive) setEvents(ascendingSortArray(fetchedInterventionsAndInternalHours, 'startDate'));
         } catch (e) {
           console.error(e);
         }
       };
 
-      if (isAppFocused) fetchInterventions();
+      if (isAppFocused) fetchEvents();
 
       return () => { isActive = false; };
     }, [loggedUser, isAppFocused])
