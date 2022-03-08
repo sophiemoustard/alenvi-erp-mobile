@@ -78,7 +78,7 @@ const Agenda = () => {
           <Text style={styles.time}>{CompaniDate(displayedDate).format('HH:mm')}</Text>
         </View>
         <View style={styles.viewIntervention}>
-          <Text style={styles.textIntervention}>{events.length} {formatWordToPlural(events, 'intervention')}</Text>
+          <Text style={styles.textIntervention}>{events.length} {formatWordToPlural(events, 'évènement')}</Text>
         </View>
       </View>
       {events.map(event => renderEvent(event))}
