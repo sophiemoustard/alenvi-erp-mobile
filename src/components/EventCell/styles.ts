@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, ViewStyle } from 'react-native';
 import { COPPER_GREY } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
@@ -10,27 +10,19 @@ type eventCellType = {
   backgroundColor: string,
 };
 
-export type eventCellStyleType = {
-  cell: object,
-  infoContainer: object,
-  eventTitle: object,
-  eventInfo: object,
-  timeContainer: object,
-  iconContainer: object,
-};
+const cellContainerStyle = ({ borderColor, backgroundColor } : eventCellType): ViewStyle => ({
+  display: 'flex',
+  flexDirection: 'row',
+  borderRadius: BORDER_RADIUS.MD,
+  borderWidth: BORDER_WIDTH,
+  borderLeftWidth: LEFT_BORDER_CELL,
+  borderColor,
+  backgroundColor,
+  marginHorizontal: MARGIN.MD,
+  paddingHorizontal: PADDING.LG,
+});
 
-const eventCellStyle = ({ borderColor, backgroundColor } : eventCellType) => StyleSheet.create({
-  cell: {
-    display: 'flex',
-    flexDirection: 'row',
-    borderRadius: BORDER_RADIUS.MD,
-    borderWidth: BORDER_WIDTH,
-    borderLeftWidth: LEFT_BORDER_CELL,
-    borderColor,
-    backgroundColor,
-    marginHorizontal: MARGIN.MD,
-    paddingHorizontal: PADDING.LG,
-  },
+const styles = StyleSheet.create({
   infoContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -56,4 +48,4 @@ const eventCellStyle = ({ borderColor, backgroundColor } : eventCellType) => Sty
   },
 });
 
-export default eventCellStyle;
+export { styles, cellContainerStyle };

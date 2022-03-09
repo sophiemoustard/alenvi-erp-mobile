@@ -54,10 +54,10 @@ const Agenda = () => {
           };
           const fetchedEvents = await Events.list(params);
 
-          const fetchedInterventionsAndInternalHours = fetchedEvents
+          const filteredEvents = fetchedEvents
             .filter((ev: EventType) => ev.type === INTERVENTION || ev.type === INTERNAL_HOUR);
 
-          if (isActive) setEvents(ascendingSortArray(fetchedInterventionsAndInternalHours, 'startDate'));
+          if (isActive) setEvents(ascendingSortArray(filteredEvents, 'startDate'));
         } catch (e) {
           console.error(e);
         }

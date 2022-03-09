@@ -9,7 +9,7 @@ import { EventType, EventHistoryType } from '../../types/EventType';
 import CameraAccessModal from '../modals/CameraAccessModal';
 import { COPPER, WHITE } from '../../styles/colors';
 import { hitSlop, ICON } from '../../styles/metrics';
-import styles, { eventCellStyleType } from './styles';
+import { styles, cellContainerStyle } from './styles';
 import { eventReducer, initialState, SET_EVENT_INFOS, SET_TIMESTAMPED_INFOS } from './EventReducer';
 
 const SET_INTERVENTION_INFOS = 'set_intervention_infos';
@@ -33,7 +33,6 @@ const EventCell = ({ event }: TimeStampingProps) => {
   const [eventInfos, eventInfosDispatch] = useReducer(eventReducer, initialState);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isEventStarting, setIsEventStarting] = useState<boolean>(true);
-  const [style, setStyle] = useState<eventCellStyleType>(styles({ borderColor: WHITE, backgroundColor: WHITE }));
   const navigation = useNavigation();
 
   useEffect(() => { if (event) eventInfosDispatch({ type: SET_EVENT_INFOS, payload: { event } }); }, [event]);
@@ -80,10 +79,6 @@ const EventCell = ({ event }: TimeStampingProps) => {
     if (eventInfos.type === INTERVENTION) cellInfosDispatch({ type: SET_INTERVENTION_INFOS });
     else cellInfosDispatch({ type: SET_INTERNAL_HOUR_INFOS });
   }, [eventInfos]);
-
-  useEffect(() => setStyle(
-    styles({ borderColor: cellInfos.borderColor, backgroundColor: cellInfos.backgroundColor })
-  ), [cellInfos]);
 
   const goToBarCodeScanner = (timeStampStart: boolean) => navigation.navigate(
     'QRCodeScanner',
@@ -150,20 +145,21 @@ const EventCell = ({ event }: TimeStampingProps) => {
   };
 
   return (
-    <View style={style.cell}>
-      <TouchableOpacity style={style.infoContainer} onPress={goToEventEdition}>
+    <View
+      style={cellContainerStyle({ borderColor: cellInfos.borderColor, backgroundColor: cellInfos.backgroundColor })}>
+      <TouchableOpacity style={styles.infoContainer} onPress={goToEventEdition}>
         <View>
-          <Text style={style.eventTitle}>{cellInfos.title}</Text>
-          <View style={style.timeContainer}>
+          <Text style={styles.eventTitle}>{cellInfos.title}</Text>
+          <View style={styles.timeContainer}>
             {!!eventInfos.startDate &&
-              <Text style={style.eventInfo}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
+              <Text style={styles.eventInfo}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
             {!!eventInfos.endDate &&
-              <Text style={style.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
+              <Text style={styles.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
           </View>
-          <Text style={style.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
+          <Text style={styles.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
         </View>
         {!eventInfos.endDateTimeStamp && eventInfos.type === INTERVENTION &&
-        <TouchableOpacity hitSlop={hitSlop} style={style.iconContainer}
+        <TouchableOpacity hitSlop={hitSlop} style={styles.iconContainer}
           onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
           <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
         </TouchableOpacity>}
