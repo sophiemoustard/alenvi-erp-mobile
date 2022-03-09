@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
 import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED, INTERVENTION } from '../../core/data/constants';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
@@ -125,8 +125,10 @@ const EventCell = ({ event }: TimeStampingProps) => {
           <View style={style.timeContainer}>
             {!!eventInfos.startDate &&
               <Text style={style.eventInfo}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
+            {eventInfos.startDateTimeStamp && <Feather name="check" color={COPPER[500]} size={ICON.SM}/>}
             {!!eventInfos.endDate &&
               <Text style={style.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
+            {eventInfos.endDateTimeStamp && <Feather name="check" color={COPPER[500]} size={ICON.SM} />}
           </View>
           <Text style={style.eventInfo}>{eventInfos.customer.address.toLocaleLowerCase()}</Text>
         </View>
