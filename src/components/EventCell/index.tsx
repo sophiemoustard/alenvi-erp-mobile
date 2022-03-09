@@ -147,7 +147,8 @@ const EventCell = ({ event }: TimeStampingProps) => {
   return (
     <View
       style={cellContainerStyle({ borderColor: cellInfos.borderColor, backgroundColor: cellInfos.backgroundColor })}>
-      <TouchableOpacity style={styles.infoContainer} onPress={goToEventEdition}>
+      <TouchableOpacity style={styles.infoContainer} onPress={goToEventEdition}
+        disabled={eventInfos.type !== INTERVENTION}>
         <View>
           <Text style={styles.eventTitle}>{cellInfos.title}</Text>
           <View style={styles.timeContainer}>
