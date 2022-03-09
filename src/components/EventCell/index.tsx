@@ -7,23 +7,19 @@ import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED, INTERVENTION } from '../../core
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import CameraAccessModal from '../modals/CameraAccessModal';
-import { COPPER, WHITE } from '../../styles/colors';
+import { COPPER } from '../../styles/colors';
 import { hitSlop, ICON } from '../../styles/metrics';
 import { styles, cellContainerStyle } from './styles';
-import { eventReducer, initialState, SET_EVENT_INFOS, SET_TIMESTAMPED_INFOS } from './EventReducer';
-
-const SET_INTERVENTION_INFOS = 'set_intervention_infos';
-const SET_INTERNAL_HOUR_INFOS = 'set_internal_hour_infos';
-
-type cellStateType = {
-  title: string,
-  borderColor: string,
-  backgroundColor: string,
-};
-
-type cellActionType = {
-  type: string,
-};
+import {
+  eventReducer,
+  initialState,
+  SET_EVENT_INFOS,
+  SET_TIMESTAMPED_INFOS,
+  cellReducer,
+  initialCellStyle,
+  SET_INTERNAL_HOUR_INFOS,
+  SET_INTERVENTION_INFOS,
+} from './reducers';
 
 interface TimeStampingProps {
   event: EventType,
@@ -52,32 +48,11 @@ const EventCell = ({ event }: TimeStampingProps) => {
     }
   }, [event.histories]);
 
-  const cellReducer = (state: cellStateType, action: cellActionType): cellStateType => {
-    switch (action.type) {
-      case SET_INTERVENTION_INFOS:
-        return {
-          title: `${eventInfos.firstname} ${eventInfos.lastName}`,
-          borderColor: COPPER[100],
-          backgroundColor: WHITE,
-        };
-      case SET_INTERNAL_HOUR_INFOS:
-        return {
-          title: eventInfos.internalHourName,
-          borderColor: COPPER[400],
-          backgroundColor: WHITE,
-        };
-      default:
-        return state;
-    }
-  };
-
-  const initialCellStyle = { title: '', backgroundColor: WHITE, borderColor: WHITE };
-
   const [cellInfos, cellInfosDispatch] = useReducer(cellReducer, initialCellStyle);
 
   useEffect(() => {
-    if (eventInfos.type === INTERVENTION) cellInfosDispatch({ type: SET_INTERVENTION_INFOS });
-    else cellInfosDispatch({ type: SET_INTERNAL_HOUR_INFOS });
+    if (eventInfos.type === INTERVENTION) cellInfosDispatch({ type: SET_INTERVENTION_INFOS, payload: { eventInfos } });
+    else cellInfosDispatch({ type: SET_INTERNAL_HOUR_INFOS, payload: { eventInfos } });
   }, [eventInfos]);
 
   const goToBarCodeScanner = (timeStampStart: boolean) => navigation.navigate(
