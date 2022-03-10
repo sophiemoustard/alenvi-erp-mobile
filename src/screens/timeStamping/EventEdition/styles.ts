@@ -4,10 +4,12 @@ import { FIRA_SANS_BLACK, FIRA_SANS_REGULAR } from '../../../styles/fonts';
 import { MARGIN, PADDING } from '../../../styles/metrics';
 
 export default StyleSheet.create({
+  screen: {
+    backgroundColor: COPPER_GREY[50],
+  },
   container: {
     flex: 1,
     paddingHorizontal: PADDING.XL,
-    backgroundColor: COPPER_GREY[50],
   },
   billedHeader: {
     ...FIRA_SANS_REGULAR.MD,

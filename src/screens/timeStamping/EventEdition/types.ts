@@ -7,7 +7,11 @@ export interface EventEditionProps {
   navigation: NavigationType,
 }
 
-export type EventEditionStateType = EventType & { start: boolean, histories: EventType['histories'] };
+export type EventEditionStateType = EventType & {
+  start: boolean,
+  histories: EventType['histories'],
+  internalHour: string
+};
 
 export type EventEditionActionType = {
   type: string,
@@ -20,6 +24,7 @@ export type EventEditionActionType = {
     misc?: string,
     kmDuringEvent?: string,
     transportMode?: string,
+    internalHour?: string,
   },
 }
 

@@ -8,12 +8,12 @@ import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-ico
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
-import { formatIdentity } from '../../../core/helpers/utils';
 import { formatAuxiliary } from '../../../core/helpers/auxiliaries';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import {
   EVENT_TRANSPORT_OPTIONS,
   FLOAT_REGEX,
+  INTERVENTION,
   NUMBER,
   TIMESTAMPING_ACTION_TYPE_LIST,
 } from '../../../core/data/constants';
@@ -30,11 +30,17 @@ import styles from './styles';
 import { EventHistoryType, EventType } from '../../../types/EventType';
 import { UserType, FormattedUserType } from '../../../types/UserType';
 import { EditedEventValidType, EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
+import InternalHours from '../../../api/InternalHours';
 
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
 export const SET_TIME = 'setTime';
 export const SET_FIELD = 'setField';
+
+type InternalHourOptionsType = {
+  label: string,
+  value: string,
+};
 
 const formatZipCodeAndCity = (intervention: EventType) => {
   const zipCode = get(intervention, 'customer.contact.primaryAddress.zipCode') || '';
@@ -52,6 +58,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const [initialState, setInitialState] = useState<EventEditionStateType>({
     histories: [],
     ...route.params.event,
+    ...(route.params.event.internalHour && { internalHour: route.params?.event?.internalHour?._id }),
     startDate: CompaniDate(route.params.event.startDate).toISO(),
     endDate: CompaniDate(route.params.event.endDate).toISO(),
     start: false,
@@ -59,6 +66,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       route.params.event.auxiliary?.administrative?.transportInvoice?.transportType ||
       '',
   });
+
+  console.log(initialState);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [exitModal, setExitModal] = useState<boolean>(false);
@@ -73,6 +82,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     dateRange: false,
     kmDuringEvent: false,
   });
+  const [isIntervention, setIsIntervention] = useState<boolean>(false);
+  const [internalHourOptions, setInternalHourOptions] = useState<InternalHourOptionsType[]>([]);
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -125,7 +136,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const onLeave = useCallback(
     () => {
-      const pickedFields = ['startDate', 'endDate', 'auxiliary._id', 'misc', 'transportMode'];
+      const pickedFields = ['startDate', 'endDate', 'auxiliary._id', 'misc', 'transportMode', 'internalHour'];
       if (editedEvent.kmDuringEvent) pickedFields.push('kmDuringEvent');
       return isEqual(pick(editedEvent, pickedFields), pick(initialState, pickedFields))
         ? navigation.goBack()
@@ -151,7 +162,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       setIsValidationAttempted(true);
 
       if (isValid) {
-        const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc', 'transportMode']);
+        const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc', 'transportMode', 'internalHour']);
         const payload = {
           auxiliary: editedEvent.auxiliary._id,
           kmDuringEvent: Number.parseFloat(editedEvent.kmDuringEvent) || 0,
@@ -251,18 +262,37 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     });
   };
 
+  useEffect(() => { if (editedEvent.type === INTERVENTION) setIsIntervention(true); }, [editedEvent.type]);
+
+  const getInternalHours = useCallback(async () => {
+    try {
+      const internalHours = await InternalHours.list();
+      const formattedInternalHours = internalHours.map(ih => ({ label: ih.name, value: ih._id }));
+
+      setInternalHourOptions(formattedInternalHours);
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  useEffect(() => { getInternalHours(); }, [getInternalHours]);
+
+  const selectInternalHourType = (value: string) => {
+    editedEventDispatch({ type: SET_FIELD, payload: { internalHour: value } });
+  };
+
   return (
     <>
       <NiHeader onPressIcon={onLeave} title={headerTitle} loading={loading} onPressButton={onSave} />
       {editedEvent.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
-      <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
+      <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid style={styles.screen}>
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.name}>{editedEvent.title}</Text>
-          <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
+          {isIntervention && <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
             onPress={() => goToCustomerProfile(editedEvent.customer._id)}>
             <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
             <Feather name="chevron-right" color={COPPER[500]}/>
-          </TouchableOpacity>
+          </TouchableOpacity>}
           <View style={styles.addressContainer}>
             <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
             <View>
@@ -272,20 +302,25 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           </View>
           <EventDateTimeEdition event={editedEvent} eventEditionDispatch={editedEventDispatch}
             refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}/>
-          <NiPersonSelect title={'Intervenant'} person={editedEvent.auxiliary} personOptions={activeAuxiliaries}
-            onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
-            errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'} />
-          <NiSelect selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
-            options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} title="transport" />
+          {isIntervention &&
+          <>
+            <NiPersonSelect title={'Intervenant'} person={editedEvent.auxiliary}
+              personOptions={activeAuxiliaries} onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
+              errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'} />
+            <NiSelect selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
+              options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} title="transport" />
+            <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''}
+              disabled={!!editedEvent.isBilled} inputTitle={'Déplacement véhiculé avec bénéficiaire'} type={NUMBER}
+              buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
+              buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} suffix={'km'} />}
+              errorMessage={kmDuringEventErrorMessage || ''} />
+          </>}
+          <NiSelect caption="Type d’heure interne" options={internalHourOptions} onItemSelect={selectInternalHourType}
+            selectedItem={editedEvent.internalHour} title="Heure interne" />
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
             buttonTitle="Ajouter une note" multiline
             onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
             buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />} />
-          <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''} suffix={'km'}
-            disabled={!!editedEvent.isBilled} inputTitle={'Déplacement véhiculé avec bénéficiaire'} type={NUMBER}
-            buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
-            buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} />}
-            errorMessage={kmDuringEventErrorMessage || ''} />
           <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />

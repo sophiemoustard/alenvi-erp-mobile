@@ -25,7 +25,7 @@ export type EventType = {
   kmDuringEvent: string,
   transportMode: string,
   type: EventTypeEnum,
-  internalHour: { name: string },
+  internalHour: { _id: string, name: string },
   address: { street: string },
   title: string,
 };
@@ -35,4 +35,12 @@ export type EventHistoryType = {
   action: string,
   update: { startHour?: Date, endHour?: Date },
   isCancelled: boolean,
+};
+
+export type InternalHoursType = {
+  _id: string,
+  name: string,
+  company: string,
+  createdAt: string,
+  updatedAt: string,
 };
