@@ -1,16 +1,9 @@
 import axiosLogged from './axios/logged';
 import Environment from '../../environment';
-import { EventTypeEnum } from '../types/EventType';
 
 export type timeStampEventPayloadType = { action: string, reason?: string, startDate?: string, endDate?: string };
 type updateEventsPayloadType = { auxiliary: string, startDate: string, endDate: string, kmDuringEvent: number };
-type getEventsQueryType = {
-  auxiliary: string,
-  startDate: string,
-  endDate: string,
-  type: EventTypeEnum,
-  isCancelled: boolean
-};
+type getEventsQueryType = { auxiliary: string, startDate: string, endDate: string, isCancelled: boolean };
 
 export default {
   list: async (params: getEventsQueryType) => {

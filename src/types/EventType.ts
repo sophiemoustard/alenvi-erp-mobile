@@ -24,6 +24,9 @@ export type EventType = {
   misc: string,
   kmDuringEvent: string,
   transportMode: string,
+  type: EventTypeEnum,
+  internalHour: { name: string },
+  address: { street: string },
 };
 
 export type EventHistoryType = {

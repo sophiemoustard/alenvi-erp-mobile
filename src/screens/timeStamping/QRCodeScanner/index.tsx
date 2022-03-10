@@ -106,7 +106,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     }
   };
 
-  const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
+  const goBack = () => navigation.navigate('Home', { screen: 'Agenda' });
 
   const goToManualTimeStamping = () => {
     navigation.navigate('ManualTimeStamping', { ...route.params, timeStampStart });

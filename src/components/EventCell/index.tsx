@@ -3,74 +3,26 @@ import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import { MaterialIcons } from '@expo/vector-icons';
-import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED } from '../../core/data/constants';
+import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED, INTERVENTION } from '../../core/data/constants';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import CameraAccessModal from '../modals/CameraAccessModal';
-import { COPPER } from '../../styles/colors';
+import { COPPER, WHITE } from '../../styles/colors';
 import { hitSlop, ICON } from '../../styles/metrics';
-import styles from './styles';
-
-interface StateType {
-  civility: string,
-  lastName: string,
-  firstname: string,
-  startDate: string | null,
-  endDate: string | null,
-  startDateTimeStamp: boolean,
-  endDateTimeStamp: boolean,
-  address: string,
-}
-interface ActionType {
-  type: string,
-  payload: { event?: EventType, startDateTimeStamp?: boolean, endDateTimeStamp?: boolean },
-}
-
-const initialState = {
-  civility: '',
-  lastName: '',
-  firstname: '',
-  startDate: null,
-  endDate: null,
-  startDateTimeStamp: false,
-  endDateTimeStamp: false,
-  address: '',
-};
-const SET_EVENT_INFOS = 'setEventInfos';
-const SET_TIMESTAMPED_INFOS = 'setTimeStampedInfos';
-
-const reducer = (state: StateType, action: ActionType): StateType => {
-  switch (action.type) {
-    case SET_EVENT_INFOS:
-      return {
-        ...state,
-        civility: action.payload.event?.customer?.identity?.title || '',
-        lastName: action.payload.event?.customer?.identity?.lastname || '',
-        firstname: action.payload.event?.customer?.identity?.firstname || '',
-        startDate: action.payload.event?.startDate || null,
-        endDate: action.payload.event?.endDate || null,
-        address: action.payload.event?.customer?.contact?.primaryAddress?.street || '',
-      };
-    case SET_TIMESTAMPED_INFOS:
-      return {
-        ...state,
-        startDateTimeStamp: action.payload.startDateTimeStamp || false,
-        endDateTimeStamp: action.payload.endDateTimeStamp || false,
-      };
-    default:
-      return state;
-  }
-};
+import styles, { eventCellStyleType } from './styles';
+import { eventReducer, initialState, SET_EVENT_INFOS, SET_TIMESTAMPED_INFOS } from './reducers/events';
+import { cellReducer, initialCellStyle, SET_INTERNAL_HOUR_INFOS, SET_INTERVENTION_INFOS } from './reducers/cells';
 
 interface TimeStampingProps {
   event: EventType,
 }
 
 const EventCell = ({ event }: TimeStampingProps) => {
-  const [eventInfos, eventInfosDispatch] = useReducer(reducer, initialState);
+  const [eventInfos, eventInfosDispatch] = useReducer(eventReducer, initialState);
+  const [cellInfos, cellInfosDispatch] = useReducer(cellReducer, initialCellStyle);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isEventStarting, setIsEventStarting] = useState<boolean>(true);
-
+  const [style, setStyle] = useState<eventCellStyleType>(styles({ borderColor: WHITE, backgroundColor: WHITE }));
   const navigation = useNavigation();
 
   useEffect(() => { if (event) eventInfosDispatch({ type: SET_EVENT_INFOS, payload: { event } }); }, [event]);
@@ -89,6 +41,16 @@ const EventCell = ({ event }: TimeStampingProps) => {
       });
     }
   }, [event.histories]);
+
+  useEffect(() => {
+    const payload = eventInfos;
+    if (eventInfos.type === INTERVENTION) cellInfosDispatch({ type: SET_INTERVENTION_INFOS, payload });
+    else cellInfosDispatch({ type: SET_INTERNAL_HOUR_INFOS, payload });
+  }, [eventInfos]);
+
+  useEffect(() => setStyle(
+    styles({ borderColor: cellInfos.borderColor, backgroundColor: cellInfos.backgroundColor })
+  ), [cellInfos]);
 
   const goToBarCodeScanner = (timeStampStart: boolean) => navigation.navigate(
     'QRCodeScanner',
@@ -155,20 +117,21 @@ const EventCell = ({ event }: TimeStampingProps) => {
   };
 
   return (
-    <View style={styles.cell}>
-      <TouchableOpacity style={styles.infoContainer} onPress={goToEventEdition}>
+    <View style={style.cell}>
+      <TouchableOpacity style={style.infoContainer} onPress={goToEventEdition}
+        disabled={eventInfos.type !== INTERVENTION}>
         <View>
-          <Text style={styles.eventTitle}>{eventInfos.firstname} {eventInfos.lastName}</Text>
-          <View style={styles.timeContainer}>
+          <Text style={style.eventTitle}>{cellInfos.title}</Text>
+          <View style={style.timeContainer}>
             {!!eventInfos.startDate &&
-              <Text style={styles.eventInfo}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
+              <Text style={style.eventInfo}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
             {!!eventInfos.endDate &&
-              <Text style={styles.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
+              <Text style={style.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
           </View>
-          <Text style={styles.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
+          <Text style={style.eventInfo}>{eventInfos.customer.address.toLocaleLowerCase()}</Text>
         </View>
-        {!eventInfos.endDateTimeStamp &&
-        <TouchableOpacity hitSlop={hitSlop} style={styles.iconContainer}
+        {!eventInfos.endDateTimeStamp && eventInfos.type === INTERVENTION &&
+        <TouchableOpacity hitSlop={hitSlop} style={style.iconContainer}
           onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
           <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
         </TouchableOpacity>}

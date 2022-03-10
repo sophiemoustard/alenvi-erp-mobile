@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import commonStyle from '../../../styles/common';
 import Events from '../../../api/Events';
 import { Context as AuthContext } from '../../../context/AuthContext';
-import { ACTIVE_STATE, INTERVENTION } from '../../../core/data/constants';
+import { ACTIVE_STATE, INTERNAL_HOUR, INTERVENTION } from '../../../core/data/constants';
 import { formatWordToPlural, ascendingSortArray } from '../../../core/helpers/utils';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import EventCell from '../../../components/EventCell';
@@ -18,7 +18,7 @@ const renderEvent = (event: EventType) => (
   </View>
 );
 
-const TimeStampingProfile = () => {
+const Agenda = () => {
   const [displayedDate, setDisplayedDate] = useState<string>(CompaniDate().toISO());
   const [events, setEvents] = useState<EventType[]>([]);
   const [isAppFocused, setIsAppFocused] = useState<boolean>(true);
@@ -43,32 +43,34 @@ const TimeStampingProfile = () => {
     useCallback(() => {
       let isActive = true;
 
-      const fetchInterventions = async () => {
+      const fetchEvents = async () => {
         try {
           if (!loggedUser || !loggedUser._id) return;
           const params = {
             auxiliary: loggedUser._id,
             startDate: CompaniDate().startOf('day').toISO(),
             endDate: CompaniDate().endOf('day').toISO(),
-            type: INTERVENTION,
             isCancelled: false,
           };
           const fetchedEvents = await Events.list(params);
 
-          if (isActive) setEvents(ascendingSortArray(fetchedEvents, 'startDate'));
+          const filteredEvents = fetchedEvents
+            .filter((ev: EventType) => [INTERVENTION, INTERNAL_HOUR].includes(ev.type));
+
+          if (isActive) setEvents(ascendingSortArray(filteredEvents, 'startDate'));
         } catch (e) {
           console.error(e);
         }
       };
 
-      if (isAppFocused) fetchInterventions();
+      if (isAppFocused) fetchEvents();
 
       return () => { isActive = false; };
     }, [loggedUser, isAppFocused])
   );
 
   return (
-    <ScrollView style={styles.screen} testID="TimeStampingProfile">
+    <ScrollView style={styles.screen} testID="Agenda">
       <Text style={commonStyle.title}>Horodatage</Text>
       <View style={styles.container}>
         <View>
@@ -76,7 +78,7 @@ const TimeStampingProfile = () => {
           <Text style={styles.time}>{CompaniDate(displayedDate).format('HH:mm')}</Text>
         </View>
         <View style={styles.viewIntervention}>
-          <Text style={styles.textIntervention}>{events.length} {formatWordToPlural(events, 'intervention')}</Text>
+          <Text style={styles.textIntervention}>{events.length} {formatWordToPlural(events, 'évènement')}</Text>
         </View>
       </View>
       {events.map(event => renderEvent(event))}
@@ -84,4 +86,4 @@ const TimeStampingProfile = () => {
   );
 };
 
-export default TimeStampingProfile;
+export default Agenda;

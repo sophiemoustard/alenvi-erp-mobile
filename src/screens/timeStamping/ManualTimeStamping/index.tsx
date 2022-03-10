@@ -51,7 +51,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     setIdentity(route.params.event?.customer?.identity);
   }, [route.params.event]);
 
-  const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
+  const goBack = () => navigation.navigate('Home', { screen: 'Agenda' });
 
   const goToQRCodeScanner = useCallback(() => {
     navigation.navigate('QRCodeScanner', { ...route.params, timeStampStart });
