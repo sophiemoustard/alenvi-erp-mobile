@@ -82,6 +82,7 @@ const EventCell = ({ event }: TimeStampingProps) => {
         ...event,
         startDateTimeStamp: eventInfos.startDateTimeStamp,
         endDateTimeStamp: eventInfos.endDateTimeStamp,
+        title: cellInfos.title,
       },
     }
   );
@@ -117,10 +118,9 @@ const EventCell = ({ event }: TimeStampingProps) => {
   };
 
   return (
-    <View>
-      <TouchableOpacity style={style.cell} onPress={goToEventEdition}
-        disabled={eventInfos.type !== INTERVENTION}>
-        <View style={style.infoContainer}>
+    <View style={style.cell}>
+      <TouchableOpacity style={style.infoContainer} onPress={goToEventEdition}>
+        <View>
           <Text style={style.eventTitle}>{cellInfos.title}</Text>
           <View style={style.timeContainer}>
             {!!eventInfos.startDate &&

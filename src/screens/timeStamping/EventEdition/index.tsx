@@ -257,7 +257,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       {editedEvent.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.name}>{formatIdentity(editedEvent.customer.identity, 'FL')}</Text>
+          <Text style={styles.name}>{editedEvent.title}</Text>
           <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
             onPress={() => goToCustomerProfile(editedEvent.customer._id)}>
             <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>

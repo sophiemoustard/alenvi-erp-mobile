@@ -27,6 +27,7 @@ export type EventType = {
   type: EventTypeEnum,
   internalHour: { name: string },
   address: { street: string },
+  title: string,
 };
 
 export type EventHistoryType = {
