@@ -11,10 +11,11 @@ type SwitchProps = {
   options: [OptionType, OptionType],
   backgroundColor: string,
   unselectedTextColor: string,
+  disabled?: boolean,
   onChange: () => void,
 };
 
-const Switch = ({ value, options, backgroundColor, unselectedTextColor, onChange }: SwitchProps) => {
+const Switch = ({ value, options, backgroundColor, unselectedTextColor, disabled = false, onChange }: SwitchProps) => {
   const switchStyles = styles({ backgroundColor });
   const getAnimatedValue = useCallback((optionValue: boolean, switchValue: boolean) =>
     (optionValue === switchValue ? 1 : 0), []);
@@ -51,7 +52,7 @@ const Switch = ({ value, options, backgroundColor, unselectedTextColor, onChange
   };
 
   return (
-    <TouchableWithoutFeedback onPress={onChange}>
+    <TouchableWithoutFeedback onPress={onChange} disabled={disabled}>
       <View style={switchStyles.container}>
         <Animated.View style={[dynamicStyles.toggle(animationToggleValue), switchStyles.toggle]} onLayout={onLayout} />
         <View style={switchStyles.textContainer}>

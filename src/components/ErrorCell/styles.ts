@@ -6,7 +6,6 @@ import { FIRA_SANS_REGULAR } from '../../styles/fonts';
 export default StyleSheet.create({
   container: {
     backgroundColor: ORANGE[100],
-    marginHorizontal: MARGIN.MD,
   },
   message: {
     ...FIRA_SANS_REGULAR.MD,
