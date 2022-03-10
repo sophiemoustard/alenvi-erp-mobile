@@ -47,8 +47,8 @@ const eventReducer = (state: EventStateType, action: EventActionType): EventStat
           lastname: action.payload.event?.customer?.identity?.lastname || '',
           firstname: action.payload.event?.customer?.identity?.firstname || '',
           address: action.payload.event?.customer?.contact?.primaryAddress?.street ||
-          action.payload.event?.address?.street ||
-          '',
+            action.payload.event?.address?.street ||
+            '',
         },
         startDate: action.payload.event?.startDate || null,
         endDate: action.payload.event?.endDate || null,
