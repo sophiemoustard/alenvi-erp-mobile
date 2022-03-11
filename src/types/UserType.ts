@@ -13,7 +13,7 @@ export type UserType = {
 export type AuxiliaryType = {
   _id: UserType['_id'],
   identity: UserType['identity'],
-  contact? : UserType['contact'],
+  contact?: UserType['contact'],
   picture?: UserType['picture'],
   contracts?: UserType['contracts'],
   administrative?: UserType['administrative'],
@@ -22,10 +22,11 @@ export type AuxiliaryType = {
 export type CustomerType = {
   _id: UserType['_id'],
   identity: UserType['identity'],
-  followUp : { environment: string, objectives: string, misc: string },
+  followUp: { environment: string, objectives: string, misc: string },
   contact: UserType['contact'] & { accessCodes?: string },
+  company: string,
   referentAuxiliary? : UserType,
-  company : string,
+  referentHelper?: UserType,
 }
 
 export type FormattedUserType = UserType & { formattedIdentity: string }
