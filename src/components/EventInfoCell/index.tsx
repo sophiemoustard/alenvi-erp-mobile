@@ -16,7 +16,7 @@ const EventInfoCell = ({ identity, style }: EventInfoCellProps) => {
     <View style={[styles.cell, style]}>
       <View style={styles.customerInfo}>
         <Text style={styles.subtitle}>Bénéficiaire</Text>
-        <Text style={styles.info}>{CIVILITY_OPTIONS[identity.title]} {identity.lastname}</Text>
+        <Text numberOfLines={2} style={styles.info}>{CIVILITY_OPTIONS[identity.title]} {identity.lastname}</Text>
       </View>
       <View style={styles.sectionDelimiter} />
       <View>

@@ -124,7 +124,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       <ScrollView style={styles.container}>
         <EventInfoCell identity={identity} />
         <NiSwitch options={TIME_STAMP_SWITCH_OPTIONS} backgroundColor={COPPER_GREY[100]} onChange={toggleSwitch}
-          value={timeStampStart} unselectedTextColor={COPPER_GREY[500]} />
+          value={timeStampStart} unselectedTextColor={COPPER_GREY[500]} disabled={loading} />
         <View style={styles.reasons}>
           <Text style={styles.question}>Pourquoi horodatez-vous manuellement ?</Text>
           <NiRadioButtonList options={optionList} setOption={setReason} />
