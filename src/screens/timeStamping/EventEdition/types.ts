@@ -2,15 +2,30 @@ import { ModeType } from '../../../types/DateTimeType';
 import { EventType } from '../../../types/EventType';
 import { NavigationType } from '../../../types/NavigationType';
 
-export interface EventEditionProps {
+export type EventEditionProps = {
   route: { params: { event: EventType } },
   navigation: NavigationType,
-}
+};
 
-export type EventEditionStateType = EventType & {
-  start: boolean,
+export type EventEditionStateType = {
+  _id: EventType['_id'],
+  customer: EventType['customer'],
+  startDate: EventType['startDate'],
+  endDate: EventType['endDate'],
+  startDateTimeStamp?: EventType['startDateTimeStamp'],
+  endDateTimeStamp?: EventType['endDateTimeStamp'],
+  isBilled?: EventType['isBilled'],
+  auxiliary: EventType['auxiliary'],
+  company: EventType['company'],
+  misc: EventType['misc'],
+  kmDuringEvent: EventType['kmDuringEvent'],
+  transportMode: EventType['transportMode'],
+  type: EventType['type'],
   histories: EventType['histories'],
-  internalHour: string
+  address: { street: string },
+  title: string,
+  start: boolean,
+  internalHour: string,
 };
 
 export type EventEditionActionType = {
@@ -25,6 +40,7 @@ export type EventEditionActionType = {
     kmDuringEvent?: string,
     transportMode?: string,
     internalHour?: string,
+    title?: string,
   },
 }
 

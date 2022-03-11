@@ -13,6 +13,7 @@ import CompaniDate from '../../../core/helpers/dates/companiDates';
 import {
   EVENT_TRANSPORT_OPTIONS,
   FLOAT_REGEX,
+  INTERNAL_HOUR,
   INTERVENTION,
   NUMBER,
   TIMESTAMPING_ACTION_TYPE_LIST,
@@ -27,7 +28,7 @@ import NiSelect from '../../../components/Select';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
-import { EventHistoryType, EventType } from '../../../types/EventType';
+import { EventHistoryType } from '../../../types/EventType';
 import { UserType, FormattedUserType } from '../../../types/UserType';
 import { EditedEventValidType, EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
 import InternalHours from '../../../api/InternalHours';
@@ -42,33 +43,33 @@ type InternalHourOptionsType = {
   value: string,
 };
 
-const formatZipCodeAndCity = (intervention: EventType) => {
-  const zipCode = get(intervention, 'customer.contact.primaryAddress.zipCode') || '';
-  const city = get(intervention, 'customer.contact.primaryAddress.city') || '';
+const formatZipCodeAndCity = (event: EventEditionStateType) => {
+  const zipCode = get(event, 'customer.contact.primaryAddress.zipCode') || get(event, 'address.zipCode') || '';
+  const city = get(event, 'customer.contact.primaryAddress.city') || get(event, 'address.city') || '';
 
   return `${zipCode} ${city}`;
 };
 
+const formatAddress = (event: EventEditionStateType) => get(event, 'address.street') || '';
+
 const isTimeStampHistory = (eh: EventHistoryType) =>
   TIMESTAMPING_ACTION_TYPE_LIST.includes(eh.action) && !eh.isCancelled;
 
-const isEditable = (ev: EventType) => !ev.startDateTimeStamp && !ev.endDateTimeStamp && !ev.isBilled;
+const isEditable = (ev: EventEditionStateType) => !ev.startDateTimeStamp && !ev.endDateTimeStamp && !ev.isBilled;
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
+  const { event } = route.params;
   const [initialState, setInitialState] = useState<EventEditionStateType>({
     histories: [],
-    ...route.params.event,
-    ...(route.params.event.internalHour && { internalHour: route.params?.event?.internalHour?._id }),
-    startDate: CompaniDate(route.params.event.startDate).toISO(),
-    endDate: CompaniDate(route.params.event.endDate).toISO(),
+    ...event,
+    ...(event.internalHour && { internalHour: event.internalHour?._id }),
+    startDate: CompaniDate(event.startDate).toISO(),
+    endDate: CompaniDate(event.endDate).toISO(),
     start: false,
-    transportMode: route.params.event.transportMode ||
-      route.params.event.auxiliary?.administrative?.transportInvoice?.transportType ||
+    transportMode: event.transportMode ||
+      event.auxiliary?.administrative?.transportInvoice?.transportType ||
       '',
   });
-
-  console.log(initialState);
-
   const [loading, setLoading] = useState<boolean>(false);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedUserType[]>([]);
@@ -278,7 +279,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   useEffect(() => { getInternalHours(); }, [getInternalHours]);
 
   const selectInternalHourType = (value: string) => {
-    editedEventDispatch({ type: SET_FIELD, payload: { internalHour: value } });
+    editedEventDispatch({
+      type: SET_FIELD,
+      payload: { internalHour: value, title: internalHourOptions.find(opt => opt.value === value)?.label },
+    });
   };
 
   return (
@@ -296,7 +300,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           <View style={styles.addressContainer}>
             <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
             <View>
-              <Text style={styles.addressText}>{`${editedEvent?.customer?.contact?.primaryAddress?.street}`}</Text>
+              <Text style={styles.addressText}>{formatAddress(editedEvent)}</Text>
               <Text style={styles.addressText}>{formatZipCodeAndCity(editedEvent)}</Text>
             </View>
           </View>
@@ -315,8 +319,9 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
               buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} suffix={'km'} />}
               errorMessage={kmDuringEventErrorMessage || ''} />
           </>}
-          <NiSelect caption="Type d’heure interne" options={internalHourOptions} onItemSelect={selectInternalHourType}
-            selectedItem={editedEvent.internalHour} title="Heure interne" />
+          {editedEvent.type === INTERNAL_HOUR &&
+            <NiSelect caption="Type d’heure interne" options={internalHourOptions} onItemSelect={selectInternalHourType}
+              selectedItem={editedEvent.internalHour} title="Heure interne" />}
           <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
             buttonTitle="Ajouter une note" multiline
             onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}

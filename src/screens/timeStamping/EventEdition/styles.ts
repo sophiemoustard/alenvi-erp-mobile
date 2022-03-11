@@ -22,7 +22,6 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: MARGIN.XS,
-    marginBottom: MARGIN.XL,
   },
   customerProfileButtonTitle: {
     ...FIRA_SANS_REGULAR.MD,
@@ -37,7 +36,7 @@ export default StyleSheet.create({
   addressContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: MARGIN.XL,
+    marginVertical: MARGIN.XL,
   },
   addressText: {
     marginLeft: MARGIN.SM,

@@ -130,7 +130,7 @@ const EventCell = ({ event }: TimeStampingProps) => {
               <Text style={style.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
             {eventInfos.endDateTimeStamp && <Feather name="check" color={COPPER[500]} size={ICON.SM} />}
           </View>
-          <Text style={style.eventInfo}>{eventInfos.customer.address.toLocaleLowerCase()}</Text>
+          <Text style={style.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
         </View>
         {!eventInfos.endDateTimeStamp && eventInfos.type === INTERVENTION &&
         <TouchableOpacity hitSlop={hitSlop}
