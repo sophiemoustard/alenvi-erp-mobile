@@ -85,7 +85,6 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     dateRange: false,
     kmDuringEvent: false,
   });
-  const [isIntervention, setIsIntervention] = useState<boolean>(false);
   const [internalHourOptions, setInternalHourOptions] = useState<InternalHourOptionsType[]>([]);
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
@@ -265,8 +264,6 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     });
   };
 
-  useEffect(() => { if (editedEvent.type === INTERVENTION) setIsIntervention(true); }, [editedEvent.type]);
-
   const getInternalHours = useCallback(async () => {
     try {
       const internalHours = await InternalHours.list();
@@ -294,11 +291,12 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid style={styles.screen}>
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.name}>{editedEvent.title}</Text>
-          {isIntervention && <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
-            onPress={() => goToCustomerProfile(editedEvent.customer._id)}>
-            <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
-            <Feather name="chevron-right" color={COPPER[500]}/>
-          </TouchableOpacity>}
+          {editedEvent.type === INTERVENTION &&
+            <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
+              onPress={() => goToCustomerProfile(editedEvent.customer._id)}>
+              <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
+              <Feather name="chevron-right" color={COPPER[500]}/>
+            </TouchableOpacity>}
           <View style={styles.addressContainer}>
             <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
             <View>
@@ -308,7 +306,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           </View>
           <EventDateTimeEdition event={editedEvent} eventEditionDispatch={editedEventDispatch}
             refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}/>
-          {isIntervention &&
+          {editedEvent.type === INTERVENTION &&
           <>
             <NiPersonSelect title={'Intervenant'} person={editedEvent.auxiliary}
               personOptions={activeAuxiliaries} onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
