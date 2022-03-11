@@ -180,7 +180,7 @@ const EventDateTimeEdition = ({
           is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
           maximumDate={maximumStartDate ? CompaniDate(maximumStartDate).toDate() : undefined} />}
       </View>
-      <View style={styles.section}>
+      <View>
         <Text style={styles.sectionText}>Fin</Text>
         <EventDateTime isTimeStamped={event.endDateTimeStamp} date={event.endDate} loading={loading}
           disabled={event.isBilled} onPress={(mode: ModeType) => onPressPicker(false, mode)} />

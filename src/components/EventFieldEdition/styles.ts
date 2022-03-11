@@ -14,6 +14,6 @@ export default StyleSheet.create({
     marginHorizontal: MARGIN.SM,
   },
   container: {
-    marginTop: MARGIN.MD,
+    marginTop: MARGIN.LG,
   },
 });

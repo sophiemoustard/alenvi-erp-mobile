@@ -50,7 +50,9 @@ const formatZipCodeAndCity = (event: EventEditionStateType) => {
   return `${zipCode} ${city}`;
 };
 
-const formatAddress = (event: EventEditionStateType) => get(event, 'address.street') || '';
+const formatAddress = (event: EventEditionStateType) => (
+  get(event, 'customer.contact.primaryAddress.street') || get(event, 'address.street') || ''
+);
 
 const isTimeStampHistory = (eh: EventHistoryType) =>
   TIMESTAMPING_ACTION_TYPE_LIST.includes(eh.action) && !eh.isCancelled;
@@ -88,7 +90,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
-      if (route.params.event.endDateTimeStamp) return state.endDate;
+      if (event.endDateTimeStamp) return state.endDate;
 
       const updatedStartDate = CompaniDate(action.payload?.date || state.startDate);
       if (updatedStartDate.isBefore(state.endDate)) return state.endDate;
