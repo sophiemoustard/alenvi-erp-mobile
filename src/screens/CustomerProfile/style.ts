@@ -33,7 +33,7 @@ export default StyleSheet.create({
     borderWidth: BORDER_WIDTH / 2,
     borderColor: COPPER_GREY[200],
   },
-  referent: {
+  referentAuxiliary: {
     paddingBottom: PADDING.MD,
   },
   sectionText: {

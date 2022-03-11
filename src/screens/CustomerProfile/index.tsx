@@ -39,7 +39,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     contact: { phone: '', primaryAddress: { fullAddress: '', street: '', zipCode: '', city: '' }, accessCodes: '' },
     followUp: { environment: '', objectives: '', misc: '' },
     company: '',
-    referent: {
+    referentAuxiliary: {
       _id: '',
       identity: { firstname: '', lastname: '' },
       local: { email: '' },
@@ -69,7 +69,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       const currentCustomer = await Customers.getById(customerId);
       setInitialCustomer({
         ...currentCustomer,
-        referent: currentCustomer.referent ? formatAuxiliary(currentCustomer.referent) : {},
+        referentAuxiliary: currentCustomer.referent ? formatAuxiliary(currentCustomer.referent) : {},
       });
     } catch (e) {
       console.error(e);
@@ -106,7 +106,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       'followUp.objectives',
       'followUp.misc',
       'contact.accessCodes',
-      'referent._id',
+      'referentAuxiliary._id',
     ];
 
     if (isEqual(pick(editedCustomer, pickedFields), pick(initialCustomer, pickedFields))) {
@@ -125,7 +125,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       const payload = {
         followUp: editedCustomer.followUp,
         contact: { accessCodes: editedCustomer.contact.accessCodes || '' },
-        referent: editedCustomer?.referent?._id || '',
+        referent: editedCustomer?.referentAuxiliary?._id || '',
       };
 
       await Customers.updateById(customerId, payload);
@@ -149,7 +149,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   };
 
   const onSelectAuxiliary = (aux: UserType) => {
-    setEditedCustomer({ ...editedCustomer, referent: formatAuxiliary(aux) });
+    setEditedCustomer({ ...editedCustomer, referentAuxiliary: formatAuxiliary(aux) });
   };
 
   return (
@@ -186,12 +186,14 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Référents</Text>
               <NiPersonSelect title={'Auxiliaire référent(e)'} placeHolder={'Pas d\'auxiliaire référent(e)'}
-                person={formatAuxiliary(editedCustomer.referent || customer.referent)}
-                personOptions={activeAuxiliaries} style={styles.referent} onSelectPerson={onSelectAuxiliary} />
-              {!!editedCustomer?.referent?.contact?.phone &&
+                person={formatAuxiliary(editedCustomer.referentAuxiliary || customer.referentAuxiliary)}
+                personOptions={activeAuxiliaries} style={styles.referentAuxiliary} onSelectPerson={onSelectAuxiliary} />
+              {!!editedCustomer?.referentAuxiliary?.contact?.phone &&
                 <View style={styles.infoItem}>
                   <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
-                  <Text style={styles.phoneReferent}>{formatPhone(editedCustomer?.referent?.contact?.phone)}</Text>
+                  <Text style={styles.phoneReferent}>
+                    {formatPhone(editedCustomer?.referentAuxiliary?.contact?.phone)}
+                  </Text>
                 </View>}
             </View>
             <View style={styles.separator} />
