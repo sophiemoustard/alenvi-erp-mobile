@@ -117,10 +117,10 @@ const EventCell = ({ event }: TimeStampingProps) => {
   };
 
   return (
-    <View style={style.cell}>
-      <TouchableOpacity style={style.infoContainer} onPress={goToEventEdition}
+    <View>
+      <TouchableOpacity style={style.cell} onPress={goToEventEdition}
         disabled={eventInfos.type !== INTERVENTION}>
-        <View>
+        <View style={style.infoContainer}>
           <Text style={style.eventTitle}>{cellInfos.title}</Text>
           <View style={style.timeContainer}>
             {!!eventInfos.startDate &&
@@ -133,7 +133,7 @@ const EventCell = ({ event }: TimeStampingProps) => {
           <Text style={style.eventInfo}>{eventInfos.customer.address.toLocaleLowerCase()}</Text>
         </View>
         {!eventInfos.endDateTimeStamp && eventInfos.type === INTERVENTION &&
-        <TouchableOpacity hitSlop={hitSlop} style={style.iconContainer}
+        <TouchableOpacity hitSlop={hitSlop}
           onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
           <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
         </TouchableOpacity>}
