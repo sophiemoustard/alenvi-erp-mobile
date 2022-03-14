@@ -5,7 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { isEqual, pick } from 'lodash';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import Customers from '../../api/Customers';
-import { CustomerType, UserType, FormattedUserType } from '../../types/UserType';
+import { CustomerType, UserType, FormattedUserType, HelperUserType } from '../../types/UserType';
 import { formatIdentity, formatPhone } from '../../core/helpers/utils';
 import { formatAuxiliary } from '../../core/helpers/auxiliaries';
 import NiHeader from '../../components/Header';
@@ -20,7 +20,7 @@ import CompaniDate from '../../core/helpers/dates/companiDates';
 import Users from '../../api/Users';
 import { AUXILIARY, PLANNING_REFERENT } from '../../core/data/constants';
 import Helpers from '../../api/Helpers';
-import { HelperType } from '../../types/HelperType';
+import { formatHelper } from '../../core/helpers/helpers';
 
 type CustomerProfileProp = {
   route: { params: { customerId: string } },
@@ -44,6 +44,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     referentAuxiliary: {
       _id: '',
       identity: { firstname: '', lastname: '' },
+      formattedIdentity: '',
       local: { email: '' },
       contact: { phone: '' },
       company: { name: '' },
@@ -51,24 +52,19 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     referentHelper: {
       _id: '',
       identity: { firstname: '', lastname: '' },
-      local: { email: '' },
       contact: { phone: '' },
-      company: { name: '' },
+      formattedIdentity: '',
+      helperId: '',
     },
   };
   const [initialCustomer, setInitialCustomer] = useState<CustomerType>(customer);
   const [editedCustomer, setEditedCustomer] = useState<CustomerType>(customer);
-  const [helpersOptions, setHelpersOptions] = useState<FormattedUserType[]>([]);
+  const [helpersOptions, setHelpersOptions] = useState<HelperUserType[]>([]);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [customerBirth, setCustomerBirth] = useState<string>('');
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedUserType[]>([]);
-
-  const formatHelpers = (helpers: HelperType[]) => helpers.map(helper => ({
-    ...helper.user,
-    formattedIdentity: formatIdentity(helper.user.identity, 'FL'),
-  }));
 
   const getCustomer = useCallback(async () => {
     try {
@@ -76,14 +72,14 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       const currentCustomer = await Customers.getById(customerId);
 
       const helpers = await Helpers.list({ customer: currentCustomer._id });
-      const formattedHelpers = formatHelpers(helpers);
+      const formattedHelpers = helpers.map(helper => formatHelper(helper));
       setHelpersOptions(formattedHelpers);
 
       const referentHelper = helpers.find(helper => helper.referent);
       const formatedCurrentCustomer = {
         ...currentCustomer,
         referentAuxiliary: currentCustomer.referent ? formatAuxiliary(currentCustomer.referent) : {},
-        referentHelper: referentHelper?.user || '',
+        referentHelper: referentHelper?.user || {},
       };
       setInitialCustomer(formatedCurrentCustomer);
       setEditedCustomer(formatedCurrentCustomer);
@@ -152,6 +148,11 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       };
 
       await Customers.updateById(customerId, payload);
+
+      if (editedCustomer.referentHelper?.helperId) {
+        await Helpers.updateById(editedCustomer.referentHelper.helperId, { referent: true });
+      }
+
       setInitialCustomer(editedCustomer);
     } catch (e) {
       console.error(e);
@@ -175,8 +176,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     setEditedCustomer({ ...editedCustomer, referentAuxiliary: formatAuxiliary(aux) });
   };
 
-  const onSelectHelper = (helper: UserType) => {
-    setEditedCustomer({ ...editedCustomer, referentHelper: formatAuxiliary(helper) });
+  const onSelectHelper = (helper: HelperUserType) => {
+    setEditedCustomer({ ...editedCustomer, referentHelper: helper });
   };
 
   return (
@@ -215,7 +216,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               <NiPersonSelect title={'Auxiliaire référent(e)'} placeHolder={'Pas d\'auxiliaire référent(e)'}
                 person={formatAuxiliary(editedCustomer.referentAuxiliary || customer.referentAuxiliary)}
                 personOptions={activeAuxiliaries} containerStyle={styles.referentAuxiliary}
-                onSelectPerson={onSelectAuxiliary} />
+                onSelectPerson={onSelectAuxiliary} modalPlaceHolder="Chercher un intervenant" />
               {!!editedCustomer?.referentAuxiliary?.contact?.phone &&
                 <View style={styles.infoItem}>
                   <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
@@ -224,8 +225,9 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                   </Text>
                 </View>}
               <NiPersonSelect title={'Aidant(e) référent(e)'} placeHolder={'Pas d\'aidant(e) référent(e)'}
-                person={editedCustomer.referentHelper || customer.referentHelper} withPicture={false}
-                personOptions={helpersOptions} containerStyle={styles.referentHelper} onSelectPerson={onSelectHelper} />
+                person={editedCustomer.referentHelper || customer.referentHelper} displayAvatar={false}
+                personOptions={helpersOptions} containerStyle={styles.referentHelper} onSelectPerson={onSelectHelper}
+                modalPlaceHolder="Chercher un aidant" />
               {!!editedCustomer?.referentHelper?.contact?.phone &&
                 <View style={styles.infoItem}>
                   <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />

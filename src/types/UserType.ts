@@ -25,8 +25,10 @@ export type CustomerType = {
   followUp: { environment: string, objectives: string, misc: string },
   contact: UserType['contact'] & { accessCodes?: string },
   company: string,
-  referentAuxiliary? : UserType,
-  referentHelper?: UserType,
+  referentAuxiliary?: UserType,
+  referentHelper?: HelperUserType,
 }
 
 export type FormattedUserType = UserType & { formattedIdentity: string }
+
+export type HelperUserType = FormattedUserType & { helperId?: string }

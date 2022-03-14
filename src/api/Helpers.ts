@@ -8,4 +8,8 @@ export default {
     const helpers = await axiosLogged.get(`${baseURL}/helpers`, { params });
     return helpers.data.data.helpers;
   },
+  updateById: async (helperId: string, data: { referent: boolean }) => {
+    const baseURL = await Environment.getBaseUrl();
+    await axiosLogged.put(`${baseURL}/helpers/${helperId}`, data);
+  },
 };

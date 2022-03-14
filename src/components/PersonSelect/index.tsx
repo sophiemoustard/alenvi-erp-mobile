@@ -4,17 +4,18 @@ import styles from './styles';
 import { formatIdentity } from '../../core/helpers/utils';
 import FeatherButton from '../FeatherButton';
 import NiPersonEditionModal from '../PersonEditionModal';
-import { UserType, FormattedUserType } from '../../types/UserType';
+import { FormattedUserType } from '../../types/UserType';
 
 type PersonSelectProps = {
-  person: UserType,
+  person: FormattedUserType,
   personOptions: FormattedUserType[],
   title: string,
-  onSelectPerson: (person: UserType) => void,
+  onSelectPerson: (person: FormattedUserType) => void,
   errorMessage?: string,
   isEditable?: boolean,
   placeHolder?: string,
-  withPicture?: boolean,
+  modalPlaceHolder?: string,
+  displayAvatar?: boolean,
   containerStyle?: Object,
   cellStyle?: Object,
 }
@@ -27,8 +28,9 @@ const PersonSelect = ({
   errorMessage = '',
   isEditable = true,
   placeHolder = '',
+  modalPlaceHolder = '',
   containerStyle = {},
-  withPicture = true,
+  displayAvatar = true,
 }: PersonSelectProps) => {
   const [personPicture, setPersonPicture] = useState<ImageSourcePropType>({});
   const [personEditionModal, setPersonEditionModal] = useState<boolean>(false);
@@ -47,12 +49,13 @@ const PersonSelect = ({
     <View style={containerStyle}>
       <Text style={styles.sectionText}>{title}</Text>
       <View style={isEditable ? styles.personCellEditable : styles.personCellNotEditable}>
-        <TouchableOpacity style={withPicture ? styles.personInfos : styles.personInfosWithoutAvatar} onPress={onPress}>
-          {withPicture && <Image source={personPicture} style={styles.avatar} />}
+        <TouchableOpacity style={displayAvatar ? styles.personInfos : styles.personInfosWithoutAvatar}
+          onPress={onPress}>
+          {displayAvatar && <Image source={personPicture} style={styles.avatar} />}
           <Text style={styles.personText}>{formatIdentity(person?.identity, 'FL') || placeHolder}</Text>
           {isEditable && <FeatherButton name='chevron-down' onPress={() => setPersonEditionModal(true)} />}
         </TouchableOpacity>
-        <NiPersonEditionModal visible={personEditionModal} personOptions={personOptions}
+        <NiPersonEditionModal visible={personEditionModal} personOptions={personOptions} placeHolder={modalPlaceHolder}
           onRequestClose={() => setPersonEditionModal(false)} onSelectPerson={onSelectPerson}
           selectedPerson={person} />
       </View>

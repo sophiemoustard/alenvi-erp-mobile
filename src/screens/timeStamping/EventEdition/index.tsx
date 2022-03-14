@@ -315,9 +315,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
             style={styles.date} />
           {editedEvent.type === INTERVENTION &&
           <>
-            <NiPersonSelect title={'Intervenant'} person={editedEvent.auxiliary}
+            <NiPersonSelect title={'Intervenant'} person={formatAuxiliary(editedEvent.auxiliary)}
               personOptions={activeAuxiliaries} onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
-              errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'} />
+              errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'}
+              modalPlaceHolder="Chercher un intervenant" />
             <NiSelect selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
               options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} title="transport" />
             <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''}

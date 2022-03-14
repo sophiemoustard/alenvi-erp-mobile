@@ -33,13 +33,13 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    height: 72,
+    marginVertical: MARGIN.MD,
   },
   personInfosWithoutAvatar: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
-    height: 56,
+    marginVertical: MARGIN.LG,
   },
   personText: {
     color: COPPER_GREY[800],
