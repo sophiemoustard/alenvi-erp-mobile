@@ -21,6 +21,7 @@ interface EventDateTimeEditionProps {
   refreshHistories: () => void,
   loading: boolean,
   dateErrorMessage?: string,
+  style?: object,
 }
 
 interface StateType {
@@ -74,6 +75,7 @@ const EventDateTimeEdition = ({
   refreshHistories,
   loading,
   dateErrorMessage = '',
+  style = {},
 }: EventDateTimeEditionProps) => {
   const [picker, pickerDispatch] = useReducer(reducer, initialState);
   const [maximumStartDate, setMaximumStartDate] = useState<string | undefined>(undefined);
@@ -171,7 +173,7 @@ const EventDateTimeEdition = ({
   };
 
   return (
-    <>
+    <View style={style}>
       <View style={styles.section}>
         <Text style={styles.sectionText}>Début</Text>
         <EventDateTime isTimeStamped={event.startDateTimeStamp} date={event.startDate} loading={loading}
@@ -202,7 +204,7 @@ const EventDateTimeEdition = ({
         <NiInput caption="Motif" value={reason} onChangeText={setReason} validationMessage={errorMessage}
           validationStyle={styles.errorMessage} />
       </ConfirmationModal>
-    </>
+    </View>
   );
 };
 

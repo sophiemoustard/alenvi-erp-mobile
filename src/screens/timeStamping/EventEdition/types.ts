@@ -1,11 +1,7 @@
 import { ModeType } from '../../../types/DateTimeType';
 import { EventType } from '../../../types/EventType';
-import { NavigationType } from '../../../types/NavigationType';
 
-export type EventEditionProps = {
-  route: { params: { event: EventType } },
-  navigation: NavigationType,
-};
+export type EventEditionType = EventType & { title: string };
 
 export type EventEditionStateType = {
   _id: EventType['_id'],

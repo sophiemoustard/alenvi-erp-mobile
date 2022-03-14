@@ -30,8 +30,9 @@ import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType } from '../../../types/EventType';
 import { UserType, FormattedUserType } from '../../../types/UserType';
-import { EditedEventValidType, EventEditionActionType, EventEditionProps, EventEditionStateType } from './types';
+import { EditedEventValidType, EventEditionActionType, EventEditionStateType, EventEditionType } from './types';
 import InternalHours from '../../../api/InternalHours';
+import { NavigationType } from '../../../types/NavigationType';
 
 export const SET_HISTORIES = 'setHistories';
 export const SET_DATES = 'setDates';
@@ -58,6 +59,11 @@ const isTimeStampHistory = (eh: EventHistoryType) =>
   TIMESTAMPING_ACTION_TYPE_LIST.includes(eh.action) && !eh.isCancelled;
 
 const isEditable = (ev: EventEditionStateType) => !ev.startDateTimeStamp && !ev.endDateTimeStamp && !ev.isBilled;
+
+interface EventEditionProps {
+  route: { params: { event: EventEditionType } },
+  navigation: NavigationType,
+}
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
@@ -297,15 +303,16 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
               <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
               <Feather name="chevron-right" color={COPPER[500]}/>
             </TouchableOpacity>}
-          <View style={styles.addressContainer}>
+          {editedEvent.address && <View style={styles.addressContainer}>
             <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
             <View>
               <Text style={styles.addressText}>{formatAddress(editedEvent)}</Text>
               <Text style={styles.addressText}>{formatZipCodeAndCity(editedEvent)}</Text>
             </View>
-          </View>
+          </View>}
           <EventDateTimeEdition event={editedEvent} eventEditionDispatch={editedEventDispatch}
-            refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}/>
+            refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}
+            style={styles.date} />
           {editedEvent.type === INTERVENTION &&
           <>
             <NiPersonSelect title={'Intervenant'} person={editedEvent.auxiliary}

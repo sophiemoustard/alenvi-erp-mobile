@@ -18,6 +18,9 @@ export default StyleSheet.create({
     textAlign: 'center',
     paddingVertical: PADDING.MD,
   },
+  date: {
+    marginTop: MARGIN.XL,
+  },
   customerProfileButton: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -36,7 +39,7 @@ export default StyleSheet.create({
   addressContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: MARGIN.XL,
+    marginTop: MARGIN.XL,
   },
   addressText: {
     marginLeft: MARGIN.SM,
