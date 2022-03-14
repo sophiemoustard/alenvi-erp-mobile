@@ -5,8 +5,8 @@ type EventStateType = {
     civility: string,
     lastname: string,
     firstname: string,
-    address: string,
   },
+  address: string,
   startDate: string | null,
   endDate: string | null,
   startDateTimeStamp: boolean,
@@ -25,8 +25,8 @@ const initialState = {
     civility: '',
     lastname: '',
     firstname: '',
-    address: '',
   },
+  address: '',
   startDate: null,
   endDate: null,
   startDateTimeStamp: false,
@@ -46,10 +46,10 @@ const eventReducer = (state: EventStateType, action: EventActionType): EventStat
           civility: action.payload.event?.customer?.identity?.title || '',
           lastname: action.payload.event?.customer?.identity?.lastname || '',
           firstname: action.payload.event?.customer?.identity?.firstname || '',
-          address: action.payload.event?.customer?.contact?.primaryAddress?.street ||
-            action.payload.event?.address?.street ||
-            '',
         },
+        address: action.payload.event?.customer?.contact?.primaryAddress?.street ||
+          action.payload.event?.address?.street ||
+          '',
         startDate: action.payload.event?.startDate || null,
         endDate: action.payload.event?.endDate || null,
         type: action.payload.event?.type || '',

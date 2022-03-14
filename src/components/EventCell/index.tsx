@@ -82,6 +82,7 @@ const EventCell = ({ event }: TimeStampingProps) => {
         ...event,
         startDateTimeStamp: eventInfos.startDateTimeStamp,
         endDateTimeStamp: eventInfos.endDateTimeStamp,
+        title: cellInfos.title,
       },
     }
   );
@@ -117,10 +118,9 @@ const EventCell = ({ event }: TimeStampingProps) => {
   };
 
   return (
-    <View>
-      <TouchableOpacity style={style.cell} onPress={goToEventEdition}
-        disabled={eventInfos.type !== INTERVENTION}>
-        <View style={style.infoContainer}>
+    <View style={style.cell}>
+      <TouchableOpacity style={style.infoContainer} onPress={goToEventEdition}>
+        <View>
           <Text style={style.eventTitle}>{cellInfos.title}</Text>
           <View style={style.timeContainer}>
             {!!eventInfos.startDate &&
@@ -130,13 +130,13 @@ const EventCell = ({ event }: TimeStampingProps) => {
               <Text style={style.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
             {eventInfos.endDateTimeStamp && <Feather name="check" color={COPPER[500]} size={ICON.SM} />}
           </View>
-          <Text style={style.eventInfo}>{eventInfos.customer.address.toLocaleLowerCase()}</Text>
+          <Text style={style.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
         </View>
         {!eventInfos.endDateTimeStamp && eventInfos.type === INTERVENTION &&
-        <TouchableOpacity hitSlop={hitSlop}
-          onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
-          <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
-        </TouchableOpacity>}
+          <TouchableOpacity hitSlop={hitSlop}
+            onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
+            <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
+          </TouchableOpacity>}
       </TouchableOpacity>
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
