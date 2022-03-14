@@ -20,9 +20,7 @@ export type eventCellStyleType = {
 
 const eventCellStyle = ({ borderColor, backgroundColor }: eventCellType) => StyleSheet.create({
   cell: {
-    flexDirection: 'row',
     flex: 1,
-    justifyContent: 'space-between',
     borderRadius: BORDER_RADIUS.MD,
     borderWidth: BORDER_WIDTH,
     borderLeftWidth: LEFT_BORDER_CELL,
@@ -34,6 +32,9 @@ const eventCellStyle = ({ borderColor, backgroundColor }: eventCellType) => Styl
   },
   infoContainer: {
     flex: 1,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   eventTitle: {
     ...FIRA_SANS_BOLD.MD,

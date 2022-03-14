@@ -133,10 +133,10 @@ const EventCell = ({ event }: TimeStampingProps) => {
           <Text style={style.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
         </View>
         {!eventInfos.endDateTimeStamp && eventInfos.type === INTERVENTION &&
-        <TouchableOpacity hitSlop={hitSlop}
-          onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
-          <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
-        </TouchableOpacity>}
+          <TouchableOpacity hitSlop={hitSlop}
+            onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
+            <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
+          </TouchableOpacity>}
       </TouchableOpacity>
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
