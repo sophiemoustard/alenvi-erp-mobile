@@ -118,9 +118,9 @@ const EventCell = ({ event }: TimeStampingProps) => {
   };
 
   return (
-    <View style={style.cell}>
-      <TouchableOpacity style={style.infoContainer} onPress={goToEventEdition}>
-        <View>
+    <View>
+      <TouchableOpacity style={style.cell} onPress={goToEventEdition}>
+        <View style={style.infoContainer}>
           <Text style={style.eventTitle}>{cellInfos.title}</Text>
           <View style={style.timeContainer}>
             {!!eventInfos.startDate &&
