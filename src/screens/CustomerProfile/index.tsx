@@ -214,7 +214,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               <Text style={styles.sectionText}>Référents</Text>
               <NiPersonSelect title={'Auxiliaire référent(e)'} placeHolder={'Pas d\'auxiliaire référent(e)'}
                 person={formatAuxiliary(editedCustomer.referentAuxiliary || customer.referentAuxiliary)}
-                personOptions={activeAuxiliaries} style={styles.referentAuxiliary} onSelectPerson={onSelectAuxiliary} />
+                personOptions={activeAuxiliaries} containerStyle={styles.referentAuxiliary}
+                onSelectPerson={onSelectAuxiliary} />
               {!!editedCustomer?.referentAuxiliary?.contact?.phone &&
                 <View style={styles.infoItem}>
                   <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
@@ -223,8 +224,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
                   </Text>
                 </View>}
               <NiPersonSelect title={'Aidant(e) référent(e)'} placeHolder={'Pas d\'aidant(e) référent(e)'}
-                person={editedCustomer.referentHelper || customer.referentHelper}
-                personOptions={helpersOptions} style={styles.referentAuxiliary} onSelectPerson={onSelectHelper} />
+                person={editedCustomer.referentHelper || customer.referentHelper} withPicture={false}
+                personOptions={helpersOptions} containerStyle={styles.referentHelper} onSelectPerson={onSelectHelper} />
               {!!editedCustomer?.referentHelper?.contact?.phone &&
                 <View style={styles.infoItem}>
                   <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />

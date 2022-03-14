@@ -14,7 +14,9 @@ type PersonSelectProps = {
   errorMessage?: string,
   isEditable?: boolean,
   placeHolder?: string,
-  style?: Object,
+  withPicture?: boolean,
+  containerStyle?: Object,
+  cellStyle?: Object,
 }
 
 const PersonSelect = ({
@@ -25,7 +27,8 @@ const PersonSelect = ({
   errorMessage = '',
   isEditable = true,
   placeHolder = '',
-  style = {},
+  containerStyle = {},
+  withPicture = true,
 }: PersonSelectProps) => {
   const [personPicture, setPersonPicture] = useState<ImageSourcePropType>({});
   const [personEditionModal, setPersonEditionModal] = useState<boolean>(false);
@@ -41,11 +44,11 @@ const PersonSelect = ({
   );
 
   return (
-    <View style={style}>
+    <View style={containerStyle}>
       <Text style={styles.sectionText}>{title}</Text>
       <View style={isEditable ? styles.personCellEditable : styles.personCellNotEditable}>
-        <TouchableOpacity style={styles.personInfos} onPress={onPress}>
-          <Image source={personPicture} style={styles.avatar} />
+        <TouchableOpacity style={withPicture ? styles.personInfos : styles.personInfosWithoutAvatar} onPress={onPress}>
+          {withPicture && <Image source={personPicture} style={styles.avatar} />}
           <Text style={styles.personText}>{formatIdentity(person?.identity, 'FL') || placeHolder}</Text>
           {isEditable && <FeatherButton name='chevron-down' onPress={() => setPersonEditionModal(true)} />}
         </TouchableOpacity>

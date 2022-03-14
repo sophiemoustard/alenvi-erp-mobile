@@ -28,12 +28,15 @@ export default StyleSheet.create({
     marginTop: MARGIN.MD,
   },
   separator: {
-    marginTop: MARGIN.MD,
     width: '100%',
     borderWidth: BORDER_WIDTH / 2,
     borderColor: COPPER_GREY[200],
   },
   referentAuxiliary: {
+    paddingBottom: PADDING.MD,
+  },
+  referentHelper: {
+    marginTop: MARGIN.MD,
     paddingBottom: PADDING.MD,
   },
   sectionText: {
