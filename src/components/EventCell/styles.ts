@@ -16,13 +16,13 @@ export type eventCellStyleType = {
   eventTitle: object,
   eventInfo: object,
   timeContainer: object,
-  iconContainer: object,
 };
 
-const eventCellStyle = ({ borderColor, backgroundColor } : eventCellType) => StyleSheet.create({
+const eventCellStyle = ({ borderColor, backgroundColor }: eventCellType) => StyleSheet.create({
   cell: {
-    display: 'flex',
     flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
     borderRadius: BORDER_RADIUS.MD,
     borderWidth: BORDER_WIDTH,
     borderLeftWidth: LEFT_BORDER_CELL,
@@ -30,12 +30,9 @@ const eventCellStyle = ({ borderColor, backgroundColor } : eventCellType) => Sty
     backgroundColor,
     marginHorizontal: MARGIN.MD,
     paddingHorizontal: PADDING.LG,
+    paddingVertical: PADDING.LG,
   },
   infoContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: PADDING.LG,
     flex: 1,
   },
   eventTitle: {
@@ -52,9 +49,6 @@ const eventCellStyle = ({ borderColor, backgroundColor } : eventCellType) => Sty
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  iconContainer: {
-    justifyContent: 'flex-start',
   },
 });
 

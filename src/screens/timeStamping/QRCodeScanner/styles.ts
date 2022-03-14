@@ -18,7 +18,7 @@ export default StyleSheet.create({
     position: 'relative',
   },
   limits: {
-    width: IS_LARGE_SCREEN ? 250 : '50%',
+    width: IS_LARGE_SCREEN ? '70%' : '50%',
     aspectRatio: 1,
   },
   error: {
