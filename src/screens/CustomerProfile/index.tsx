@@ -216,25 +216,12 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               <NiPersonSelect title={'Auxiliaire référent(e)'} placeHolder={'Pas d\'auxiliaire référent(e)'}
                 person={formatAuxiliary(editedCustomer.referentAuxiliary || customer.referentAuxiliary)}
                 personOptions={activeAuxiliaries} containerStyle={styles.referentAuxiliary}
-                onSelectPerson={onSelectAuxiliary} modalPlaceHolder="Chercher un intervenant" />
-              {!!editedCustomer?.referentAuxiliary?.contact?.phone &&
-                <View style={styles.infoItem}>
-                  <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
-                  <Text style={styles.phoneReferent}>
-                    {formatPhone(editedCustomer?.referentAuxiliary?.contact?.phone)}
-                  </Text>
-                </View>}
+                onSelectPerson={onSelectAuxiliary} modalPlaceHolder="Chercher un intervenant"
+                phone={editedCustomer?.referentAuxiliary?.contact?.phone} />
               <NiPersonSelect title={'Aidant(e) référent(e)'} placeHolder={'Pas d\'aidant(e) référent(e)'}
                 person={editedCustomer.referentHelper || customer.referentHelper} displayAvatar={false}
                 personOptions={helpersOptions} containerStyle={styles.referentHelper} onSelectPerson={onSelectHelper}
-                modalPlaceHolder="Chercher un aidant" />
-              {!!editedCustomer?.referentHelper?.contact?.phone &&
-                <View style={styles.infoItem}>
-                  <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
-                  <Text style={styles.phoneReferent}>
-                    {formatPhone(editedCustomer?.referentHelper?.contact?.phone)}
-                  </Text>
-                </View>}
+                modalPlaceHolder="Chercher un aidant" phone={editedCustomer?.referentHelper?.contact?.phone} />
             </View>
             <View style={styles.separator} />
             <View style={styles.infosContainer}>

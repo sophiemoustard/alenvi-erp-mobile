@@ -1,4 +1,4 @@
-import { pick } from 'lodash';
+import pick from 'lodash.pick';
 import { HelperType } from '../../types/HelperType';
 import { formatIdentity } from './utils';
 

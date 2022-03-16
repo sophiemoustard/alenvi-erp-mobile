@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { COPPER_GREY, WHITE } from '../../styles/colors';
-import { FIRA_SANS_MEDIUM } from '../../styles/fonts';
+import { COPPER, COPPER_GREY, WHITE } from '../../styles/colors';
+import { FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, MARGIN, PADDING, AVATAR_SIZE, BORDER_WIDTH } from '../../styles/metrics';
 
 export default StyleSheet.create({
@@ -27,19 +27,13 @@ export default StyleSheet.create({
     ...AVATAR_SIZE.MD,
     borderColor: COPPER_GREY[200],
     borderWidth: BORDER_WIDTH,
-    marginLeft: PADDING.MD,
+    marginLeft: PADDING.LG,
   },
   personInfos: {
     flexDirection: 'row',
     alignItems: 'center',
     flex: 1,
     marginVertical: MARGIN.MD,
-  },
-  personInfosWithoutAvatar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-    marginVertical: MARGIN.LG,
   },
   personText: {
     color: COPPER_GREY[800],
@@ -51,5 +45,16 @@ export default StyleSheet.create({
   sectionText: {
     color: COPPER_GREY[700],
     marginBottom: MARGIN.SM,
+  },
+  phoneContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: MARGIN.MD,
+  },
+  phone: {
+    ...FIRA_SANS_REGULAR.MD,
+    color: COPPER[500],
+    marginHorizontal: MARGIN.SM,
   },
 });

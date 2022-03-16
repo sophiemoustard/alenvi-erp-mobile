@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ImageSourcePropType, Image, TouchableOpacity, Alert } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import styles from './styles';
-import { formatIdentity } from '../../core/helpers/utils';
+import { formatIdentity, formatPhone } from '../../core/helpers/utils';
 import FeatherButton from '../FeatherButton';
 import NiPersonEditionModal from '../PersonEditionModal';
 import { FormattedUserType } from '../../types/UserType';
+import { COPPER } from '../../styles/colors';
+import { ICON } from '../../styles/metrics';
 
 type PersonSelectProps = {
   person: FormattedUserType,
@@ -14,10 +17,10 @@ type PersonSelectProps = {
   errorMessage?: string,
   isEditable?: boolean,
   placeHolder?: string,
+  phone?: string,
   modalPlaceHolder?: string,
   displayAvatar?: boolean,
   containerStyle?: Object,
-  cellStyle?: Object,
 }
 
 const PersonSelect = ({
@@ -28,9 +31,10 @@ const PersonSelect = ({
   errorMessage = '',
   isEditable = true,
   placeHolder = '',
+  phone = '',
   modalPlaceHolder = '',
-  containerStyle = {},
   displayAvatar = true,
+  containerStyle = {},
 }: PersonSelectProps) => {
   const [personPicture, setPersonPicture] = useState<ImageSourcePropType>({});
   const [personEditionModal, setPersonEditionModal] = useState<boolean>(false);
@@ -49,8 +53,7 @@ const PersonSelect = ({
     <View style={containerStyle}>
       <Text style={styles.sectionText}>{title}</Text>
       <View style={isEditable ? styles.personCellEditable : styles.personCellNotEditable}>
-        <TouchableOpacity style={displayAvatar ? styles.personInfos : styles.personInfosWithoutAvatar}
-          onPress={onPress}>
+        <TouchableOpacity style={styles.personInfos} onPress={onPress}>
           {displayAvatar && <Image source={personPicture} style={styles.avatar} />}
           <Text style={styles.personText}>{formatIdentity(person?.identity, 'FL') || placeHolder}</Text>
           {isEditable && <FeatherButton name='chevron-down' onPress={() => setPersonEditionModal(true)} />}
@@ -59,6 +62,13 @@ const PersonSelect = ({
           onRequestClose={() => setPersonEditionModal(false)} onSelectPerson={onSelectPerson}
           selectedPerson={person} />
       </View>
+      {!!phone &&
+        <View style={styles.phoneContainer}>
+          <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
+          <Text style={styles.phone}>
+            {formatPhone(phone)}
+          </Text>
+        </View>}
     </View>
   );
 };
