@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useReducer, useState } from 'react';
 import { ScrollView, View, Text, KeyboardAvoidingView, BackHandler } from 'react-native';
 import FeatherButton from '../../components/FeatherButton';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
@@ -11,6 +11,7 @@ import { Context as AuthContext } from '../../context/AuthContext';
 import Users from '../../api/Users';
 import { EMAIL_REGEX, PHONE_REGEX } from '../../core/data/constants';
 import { formatEmailForPayload, formatPhoneForPayload } from '../../core/helpers/utils';
+import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
 import styles from './styles';
 
 type editedUserValidType = { lastName: boolean, phone: boolean, email: boolean, emptyEmail: boolean };
@@ -18,7 +19,7 @@ type editedUserValidType = { lastName: boolean, phone: boolean, email: boolean, 
 const ProfileEdition = () => {
   const { loggedUser, refreshLoggedUser } = useContext(AuthContext);
   const [exitConfirmationModal, setExitConfirmationModal] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [error, dispatchError] = useReducer(errorReducer, initialErrorState);
   const [editedUser, setEditedUser] = useState<any>({
     identity: { firstname: loggedUser?.identity?.firstname, lastname: loggedUser?.identity?.lastname },
     contact: { phone: loggedUser?.contact?.phone },
@@ -33,10 +34,6 @@ const ProfileEdition = () => {
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [nameError, setNameError] = useState<string>('');
-  const [phoneError, setPhoneError] = useState<string>('');
-  const [emailError, setEmailError] = useState<string>('');
-
   const navigation = useNavigation();
 
   const goBack = () => {
@@ -48,7 +45,7 @@ const ProfileEdition = () => {
     try {
       setIsValidationAttempted(true);
       if (isValid && loggedUser?._id) {
-        setErrorMessage('');
+        dispatchError({ type: RESET_ERROR });
         setIsLoading(true);
 
         await Users.updateById(
@@ -66,7 +63,7 @@ const ProfileEdition = () => {
       }
     } catch (e) {
       console.error(e);
-      setErrorMessage('Erreur, si le problème persiste, contactez le support technique.');
+      dispatchError({ type: SET_ERROR, payload: 'Erreur, si le problème persiste, contactez le support technique.' });
     } finally {
       setIsLoading(false);
     }
@@ -107,17 +104,19 @@ const ProfileEdition = () => {
     else setIsValid(true);
   }, [invalid]);
 
-  useEffect(() => {
-    if (invalid.lastName && isValidationAttempted) setNameError('Ce champ est obligatoire.');
-    else setNameError('');
+  const emailValidation = () => {
+    if (invalid.email && isValidationAttempted) return 'Votre e-mail n\'est pas valide';
+    if (invalid.emptyEmail && isValidationAttempted) return 'Ce champ est obligatoire';
 
-    if (invalid.phone && isValidationAttempted) setPhoneError('Votre numéro de téléphone n\'est pas valide.');
-    else setPhoneError('');
+    return '';
+  };
 
-    if (invalid.email && isValidationAttempted) setEmailError('Votre email n\'est pas valide.');
-    else if (invalid.emptyEmail && isValidationAttempted) setEmailError('Ce champ est obligatoire.');
-    else setEmailError('');
-  }, [invalid, isValidationAttempted]);
+  const phoneValidation = () => (invalid.phone && isValidationAttempted
+    ? 'Votre numéro de téléphone n\'est pas valide'
+    : ''
+  );
+
+  const lastnameValidation = () => (invalid.lastName && isValidationAttempted ? 'Ce champ est obligatoire' : '');
 
   return (
     <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.keyboardAvoidingView}
@@ -131,17 +130,17 @@ const ProfileEdition = () => {
         </View>
         <View style={styles.container}>
           <Text style={styles.title}>Modifier mes informations</Text>
-          <NiInput caption='Nom' value={editedUser.identity.lastname} type='lastname' validationMessage={nameError}
-            onChangeText={onChangeIdentity('lastname')} />
+          <NiInput caption='Nom' value={editedUser.identity.lastname} type='lastname'
+            onChangeText={onChangeIdentity('lastname')} validationMessage={lastnameValidation()} />
           <NiInput caption='Prénom' type='firstname' value={editedUser.identity.firstname}
             onChangeText={onChangeIdentity('firstname')} />
-          <NiInput caption='Téléphone' type='phone' value={editedUser.contact.phone} validationMessage={phoneError}
-            onChangeText={onChangePhone} />
-          <NiInput caption='E-mail' type='email' value={editedUser.local.email} validationMessage={emailError}
-            onChangeText={onChangeEmail} />
+          <NiInput caption='Téléphone' type='phone' value={editedUser.contact.phone} onChangeText={onChangePhone}
+            validationMessage={phoneValidation()} />
+          <NiInput caption='E-mail' type='email' value={editedUser.local.email} onChangeText={onChangeEmail}
+            validationMessage={emailValidation()}/>
         </View>
         <NiPrimaryButton title='Valider' onPress={saveData} loading={isLoading} />
-        <NiErrorMessage message={errorMessage} />
+        <NiErrorMessage message={error.message} />
       </ScrollView>
     </KeyboardAvoidingView>
   );
