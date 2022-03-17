@@ -5,7 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { isEqual, pick } from 'lodash';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
 import Customers from '../../api/Customers';
-import { CustomerType, UserType, FormattedUserType } from '../../types/UserType';
+import { CustomerType, UserType, FormattedUserType, HelperUserType } from '../../types/UserType';
 import { formatIdentity, formatPhone } from '../../core/helpers/utils';
 import { formatAuxiliary } from '../../core/helpers/auxiliaries';
 import NiHeader from '../../components/Header';
@@ -19,6 +19,8 @@ import { COPPER, COPPER_GREY } from '../../styles/colors';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import Users from '../../api/Users';
 import { AUXILIARY, PLANNING_REFERENT } from '../../core/data/constants';
+import Helpers from '../../api/Helpers';
+import { formatHelper } from '../../core/helpers/helpers';
 
 type CustomerProfileProp = {
   route: { params: { customerId: string } },
@@ -39,38 +41,48 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     contact: { phone: '', primaryAddress: { fullAddress: '', street: '', zipCode: '', city: '' }, accessCodes: '' },
     followUp: { environment: '', objectives: '', misc: '' },
     company: '',
-    referent: {
+    referentAuxiliary: {
       _id: '',
       identity: { firstname: '', lastname: '' },
+      formattedIdentity: '',
       local: { email: '' },
       contact: { phone: '' },
       company: { name: '' },
     },
+    referentHelper: {
+      _id: '',
+      identity: { firstname: '', lastname: '' },
+      contact: { phone: '' },
+      formattedIdentity: '',
+      helperId: '',
+    },
   };
   const [initialCustomer, setInitialCustomer] = useState<CustomerType>(customer);
   const [editedCustomer, setEditedCustomer] = useState<CustomerType>(customer);
+  const [helpersOptions, setHelpersOptions] = useState<HelperUserType[]>([]);
   const [exitModal, setExitModal] = useState<boolean>(false);
   const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [customerBirth, setCustomerBirth] = useState<string>('');
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedUserType[]>([]);
 
-  useEffect(() => {
-    const birthDate = initialCustomer?.identity?.birthDate
-      ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')}`
-        + ` (${CompaniDate().diff(initialCustomer?.identity?.birthDate, 'years').years} ans)`
-      : 'non renseigné';
-    setCustomerBirth(birthDate);
-  }, [initialCustomer?.identity?.birthDate]);
-
   const getCustomer = useCallback(async () => {
     try {
       setLoading(true);
       const currentCustomer = await Customers.getById(customerId);
-      setInitialCustomer({
+
+      const helpers = await Helpers.list({ customer: currentCustomer._id });
+      const formattedHelpers = helpers.map(helper => formatHelper(helper));
+      setHelpersOptions(formattedHelpers);
+
+      const referentHelper = helpers.find(helper => helper.referent);
+      const formatedCurrentCustomer = {
         ...currentCustomer,
-        referent: currentCustomer.referent ? formatAuxiliary(currentCustomer.referent) : {},
-      });
+        referentAuxiliary: currentCustomer.referent ? formatAuxiliary(currentCustomer.referent) : {},
+        referentHelper: referentHelper?.user || {},
+      };
+      setInitialCustomer(formatedCurrentCustomer);
+      setEditedCustomer(formatedCurrentCustomer);
     } catch (e) {
       console.error(e);
     } finally {
@@ -80,7 +92,13 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
 
   useEffect(() => { getCustomer(); }, [getCustomer]);
 
-  useEffect(() => { setEditedCustomer(initialCustomer); }, [initialCustomer]);
+  useEffect(() => {
+    const birthDate = initialCustomer?.identity?.birthDate
+      ? `${CompaniDate(initialCustomer?.identity?.birthDate).format('dd LLLL yyyy')}`
+        + ` (${CompaniDate().diff(initialCustomer?.identity?.birthDate, 'years').years} ans)`
+      : 'non renseigné';
+    setCustomerBirth(birthDate);
+  }, [initialCustomer?.identity?.birthDate]);
 
   const getActiveAuxiliaries = useCallback(async () => {
     try {
@@ -106,7 +124,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       'followUp.objectives',
       'followUp.misc',
       'contact.accessCodes',
-      'referent._id',
+      'referentAuxiliary._id',
+      'referentHelper._id',
     ];
 
     if (isEqual(pick(editedCustomer, pickedFields), pick(initialCustomer, pickedFields))) {
@@ -125,10 +144,15 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       const payload = {
         followUp: editedCustomer.followUp,
         contact: { accessCodes: editedCustomer.contact.accessCodes || '' },
-        referent: editedCustomer?.referent?._id || '',
+        referent: editedCustomer?.referentAuxiliary?._id || '',
       };
 
       await Customers.updateById(customerId, payload);
+
+      if (editedCustomer.referentHelper?.helperId) {
+        await Helpers.updateById(editedCustomer.referentHelper.helperId, { referent: true });
+      }
+
       setInitialCustomer(editedCustomer);
     } catch (e) {
       console.error(e);
@@ -149,7 +173,11 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   };
 
   const onSelectAuxiliary = (aux: UserType) => {
-    setEditedCustomer({ ...editedCustomer, referent: formatAuxiliary(aux) });
+    setEditedCustomer({ ...editedCustomer, referentAuxiliary: formatAuxiliary(aux) });
+  };
+
+  const onSelectHelper = (helper: HelperUserType) => {
+    setEditedCustomer({ ...editedCustomer, referentHelper: helper });
   };
 
   return (
@@ -186,13 +214,14 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             <View style={styles.infosContainer}>
               <Text style={styles.sectionText}>Référents</Text>
               <NiPersonSelect title={'Auxiliaire référent(e)'} placeHolder={'Pas d\'auxiliaire référent(e)'}
-                person={formatAuxiliary(editedCustomer.referent || customer.referent)}
-                personOptions={activeAuxiliaries} style={styles.referent} onSelectPerson={onSelectAuxiliary} />
-              {!!editedCustomer?.referent?.contact?.phone &&
-                <View style={styles.infoItem}>
-                  <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
-                  <Text style={styles.phoneReferent}>{formatPhone(editedCustomer?.referent?.contact?.phone)}</Text>
-                </View>}
+                person={formatAuxiliary(editedCustomer.referentAuxiliary || customer.referentAuxiliary)}
+                personOptions={activeAuxiliaries} containerStyle={styles.referentAuxiliary}
+                onSelectPerson={onSelectAuxiliary} modalPlaceHolder="Chercher un intervenant"
+                phone={editedCustomer?.referentAuxiliary?.contact?.phone} />
+              <NiPersonSelect title={'Aidant(e) référent(e)'} placeHolder={'Pas d\'aidant(e) référent(e)'}
+                person={editedCustomer.referentHelper || customer.referentHelper} displayAvatar={false}
+                personOptions={helpersOptions} containerStyle={styles.referentHelper} onSelectPerson={onSelectHelper}
+                modalPlaceHolder="Chercher un aidant" phone={editedCustomer?.referentHelper?.contact?.phone} />
             </View>
             <View style={styles.separator} />
             <View style={styles.infosContainer}>

@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ImageSourcePropType, Image, TouchableOpacity, Alert } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 import styles from './styles';
-import { formatIdentity } from '../../core/helpers/utils';
+import { formatIdentity, formatPhone } from '../../core/helpers/utils';
 import FeatherButton from '../FeatherButton';
 import NiPersonEditionModal from '../PersonEditionModal';
-import { UserType, FormattedUserType } from '../../types/UserType';
+import { FormattedUserType } from '../../types/UserType';
+import { COPPER } from '../../styles/colors';
+import { ICON } from '../../styles/metrics';
 
 type PersonSelectProps = {
-  person: UserType,
+  person: FormattedUserType,
   personOptions: FormattedUserType[],
   title: string,
-  onSelectPerson: (person: UserType) => void,
+  onSelectPerson: (person: FormattedUserType) => void,
   errorMessage?: string,
   isEditable?: boolean,
   placeHolder?: string,
-  style?: Object,
+  phone?: string,
+  modalPlaceHolder?: string,
+  displayAvatar?: boolean,
+  containerStyle?: Object,
 }
 
 const PersonSelect = ({
@@ -25,7 +31,10 @@ const PersonSelect = ({
   errorMessage = '',
   isEditable = true,
   placeHolder = '',
-  style = {},
+  phone = '',
+  modalPlaceHolder = '',
+  displayAvatar = true,
+  containerStyle = {},
 }: PersonSelectProps) => {
   const [personPicture, setPersonPicture] = useState<ImageSourcePropType>({});
   const [personEditionModal, setPersonEditionModal] = useState<boolean>(false);
@@ -41,18 +50,25 @@ const PersonSelect = ({
   );
 
   return (
-    <View style={style}>
+    <View style={containerStyle}>
       <Text style={styles.sectionText}>{title}</Text>
       <View style={isEditable ? styles.personCellEditable : styles.personCellNotEditable}>
         <TouchableOpacity style={styles.personInfos} onPress={onPress}>
-          <Image source={personPicture} style={styles.avatar} />
+          {displayAvatar && <Image source={personPicture} style={styles.avatar} />}
           <Text style={styles.personText}>{formatIdentity(person?.identity, 'FL') || placeHolder}</Text>
           {isEditable && <FeatherButton name='chevron-down' onPress={() => setPersonEditionModal(true)} />}
         </TouchableOpacity>
-        <NiPersonEditionModal visible={personEditionModal} personOptions={personOptions}
+        <NiPersonEditionModal visible={personEditionModal} personOptions={personOptions} placeHolder={modalPlaceHolder}
           onRequestClose={() => setPersonEditionModal(false)} onSelectPerson={onSelectPerson}
           selectedPerson={person} />
       </View>
+      {!!phone &&
+        <View style={styles.phoneContainer}>
+          <MaterialIcons name="phone" size={ICON.SM} color={COPPER[500]} />
+          <Text style={styles.phone}>
+            {formatPhone(phone)}
+          </Text>
+        </View>}
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import { pick } from 'lodash';
+import pick from 'lodash.pick';
 import { UserType, FormattedUserType } from '../../types/UserType';
 import { formatIdentity } from './utils';
 
