@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import { ScrollView, Text, ActivityIndicator, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { isEqual, pick } from 'lodash';
@@ -12,7 +12,7 @@ import NiHeader from '../../components/Header';
 import NiInput from '../../components/form/Input';
 import NiPersonSelect from '../../components/PersonSelect';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
-import ErrorMessage from '../../components/ErrorMessage';
+import NiErrorMessage from '../../components/ErrorMessage';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../styles/metrics';
 import styles from './style';
 import { COPPER, COPPER_GREY } from '../../styles/colors';
@@ -21,6 +21,7 @@ import Users from '../../api/Users';
 import { AUXILIARY, PLANNING_REFERENT } from '../../core/data/constants';
 import Helpers from '../../api/Helpers';
 import { formatHelper } from '../../core/helpers/helpers';
+import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
 
 type CustomerProfileProp = {
   route: { params: { customerId: string } },
@@ -61,7 +62,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const [editedCustomer, setEditedCustomer] = useState<CustomerType>(customer);
   const [helpersOptions, setHelpersOptions] = useState<HelperUserType[]>([]);
   const [exitModal, setExitModal] = useState<boolean>(false);
-  const [apiErrorMessage, setApiErrorMessage] = useState<string>('');
+  const [error, dispatchError] = useReducer(errorReducer, initialErrorState);
   const [loading, setLoading] = useState<boolean>(true);
   const [customerBirth, setCustomerBirth] = useState<string>('');
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedUserType[]>([]);
@@ -156,13 +157,16 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       setInitialCustomer(editedCustomer);
     } catch (e) {
       console.error(e);
-      setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
+      dispatchError({
+        type: SET_ERROR,
+        payload: 'Une erreur s\'est produite, si le problème persiste, contactez le support technique.',
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => setApiErrorMessage(''), [setApiErrorMessage, editedCustomer]);
+  useEffect(() => dispatchError({ type: RESET_ERROR }), [editedCustomer]);
 
   const onChangeFollowUpText = (key: string) => (text: string) => {
     setEditedCustomer({ ...editedCustomer, followUp: { ...editedCustomer.followUp, [key]: text } });
@@ -236,7 +240,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
               visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
               cancelText="Poursuivre les modifications" confirmText="Supprimer" />
-            <ErrorMessage message={apiErrorMessage || ''} />
+            {error.value && <NiErrorMessage message={error.message} />}
           </ScrollView>}
       </KeyboardAwareScrollView>
     </>

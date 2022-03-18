@@ -13,6 +13,7 @@ import { EventEditionActionType, EventEditionStateType } from '../../screens/tim
 import { SET_DATES, SET_FIELD, SET_TIME } from '../../screens/timeStamping/EventEdition';
 import { EventHistoryType } from '../../types/EventType';
 import { ModeType } from '../../types/DateTimeType';
+import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
 import styles from './styles';
 
 interface EventDateTimeEditionProps {
@@ -85,14 +86,14 @@ const EventDateTimeEdition = ({
   const [reason, setReason] = useState<string>('');
   const [cancelledDate, setCancelledDate] = useState<CANCELLED_DATE_TYPE>(null);
   const [confirmationLoading, setConfirmationLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [error, dispatchError] = useReducer(errorReducer, initialErrorState);
 
   const onPressPicker = async (start: boolean, mode: ModeType) => {
     if (loading) return;
 
     if ((start && event.startDateTimeStamp) || (!start && event.endDateTimeStamp)) {
       setConfirmationModal(true);
-      setErrorMessage('');
+      dispatchError({ type: RESET_ERROR });
       setReason('');
       setCancelledDate(start ? START_DATE : END_DATE);
 
@@ -143,16 +144,21 @@ const EventDateTimeEdition = ({
 
   const cancelTimeStamp = async () => {
     try {
-      setErrorMessage('');
+      dispatchError({ type: RESET_ERROR });
       setConfirmationLoading(true);
 
-      if (!reason) return setErrorMessage('Veuillez remplir un motif.');
+      if (!reason) return dispatchError({ type: SET_ERROR, payload: 'Veuillez remplir un motif' });
 
       const eventHistory = event.histories && event.histories
         .filter((eh: EventHistoryType) => TIMESTAMPING_ACTION_TYPE_LIST.includes(eh.action) && !eh.isCancelled)
         .find((eh: EventHistoryType) => (cancelledDate === START_DATE ? !!eh.update.startHour : !!eh.update.endHour));
 
-      if (!eventHistory) return setErrorMessage('Une erreur s\'est produite, veuillez réessayer ultérieurement.');
+      if (!eventHistory) {
+        return dispatchError({
+          type: SET_ERROR,
+          payload: 'Une erreur s\'est produite, veuillez réessayer ultérieurement.',
+        });
+      }
 
       await EventHistories.updateById(eventHistory._id, { isCancelled: true, timeStampCancellationReason: reason });
 
@@ -161,7 +167,10 @@ const EventDateTimeEdition = ({
       return refreshHistories();
     } catch (e) {
       console.error(e);
-      return setErrorMessage('Une erreur s\'est produite, veuillez réessayer ultérieurement.');
+      return dispatchError({
+        type: SET_ERROR,
+        payload: 'Une erreur s\'est produite, veuillez réessayer ultérieurement.',
+      });
     } finally {
       setConfirmationLoading(false);
     }
@@ -201,7 +210,7 @@ const EventDateTimeEdition = ({
         confirmText="Confirmer" contentText="Veuillez préciser pourquoi vous annulez l'horodatage."
         onPressConfirmButton={cancelTimeStamp} onRequestClose={handleCancelButton} loading={confirmationLoading}
         onPressCancelButton={handleCancelButton}>
-        <NiInput caption="Motif" value={reason} onChangeText={setReason} validationMessage={errorMessage}
+        <NiInput caption="Motif" value={reason} onChangeText={setReason} validationMessage={error.message}
           validationStyle={styles.errorMessage} />
       </ConfirmationModal>
     </View>
