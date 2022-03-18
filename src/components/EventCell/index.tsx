@@ -125,10 +125,10 @@ const EventCell = ({ event }: TimeStampingProps) => {
           <View style={style.timeContainer}>
             {!!eventInfos.startDate &&
               <Text style={style.eventInfo}>{CompaniDate(eventInfos.startDate).format('HH:mm')}</Text>}
-            {eventInfos.startDateTimeStamp && <Feather name="check" color={COPPER[500]} size={ICON.SM}/>}
+            {eventInfos.startDateTimeStamp && <Feather name="check" color={COPPER[500]} size={ICON.XS}/>}
             {!!eventInfos.endDate &&
               <Text style={style.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
-            {eventInfos.endDateTimeStamp && <Feather name="check" color={COPPER[500]} size={ICON.SM} />}
+            {eventInfos.endDateTimeStamp && <Feather name="check" color={COPPER[500]} size={ICON.XS} />}
           </View>
           <Text style={style.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
         </View>
