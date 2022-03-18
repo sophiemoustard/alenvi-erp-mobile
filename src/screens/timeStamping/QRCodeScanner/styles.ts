@@ -1,7 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { COPPER_GREY, WHITE } from '../../../styles/colors';
 import { FIRA_SANS_REGULAR } from '../../../styles/fonts';
-import { MARGIN, PADDING } from '../../../styles/metrics';
+import { MARGIN, PADDING, IS_LARGE_SCREEN } from '../../../styles/metrics';
 
 export default StyleSheet.create({
   container: {
@@ -15,10 +15,15 @@ export default StyleSheet.create({
   },
   limitsContainer: {
     alignItems: 'center',
+    position: 'relative',
   },
   limits: {
-    width: 250,
-    height: 250,
+    width: IS_LARGE_SCREEN ? '70%' : '50%',
+    aspectRatio: 1,
+  },
+  error: {
+    position: 'absolute',
+    bottom: 0,
   },
   manualTimeStampingButton: {
     ...FIRA_SANS_REGULAR.SM,

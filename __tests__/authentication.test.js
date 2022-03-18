@@ -88,7 +88,7 @@ describe('authentication', () => {
     await act(async () => fireEvent.changeText(passwordInput, '1234567'));
     await act(async () => fireEvent.press(sendButton));
 
-    const page = await element.getByTestId('TimeStampingProfile');
+    const page = await element.getByTestId('Agenda');
     expect(page).toBeTruthy();
   });
 

@@ -26,6 +26,7 @@ export const TIME = 'time';
 
 // PLANNING
 export const INTERVENTION: EventTypeEnum = 'intervention';
+export const INTERNAL_HOUR: EventTypeEnum = 'internal_hour';
 
 // CIVILITY
 export const MISTER : string = 'mr';

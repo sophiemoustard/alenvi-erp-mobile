@@ -6,20 +6,22 @@ import styles from './styles';
 import { ICON } from '../../styles/metrics';
 import { COPPER, COPPER_GREY } from '../../styles/colors';
 import FeatherButton from '../FeatherButton';
-import { UserType, FormattedUserType } from '../../types/UserType';
+import { FormattedUserType } from '../../types/UserType';
 
 type PersonEditionModalProps = {
-  selectedPerson: UserType,
+  selectedPerson: FormattedUserType,
   personOptions: FormattedUserType[],
   visible: boolean,
+  placeHolder: string,
   onRequestClose: () => void,
-  onSelectPerson: (person: UserType) => void,
+  onSelectPerson: (person: FormattedUserType) => void,
 }
 
 const PersonEditionModal = ({
   selectedPerson,
   visible,
   personOptions,
+  placeHolder,
   onSelectPerson,
   onRequestClose,
 }: PersonEditionModalProps) => {
@@ -33,7 +35,7 @@ const PersonEditionModal = ({
     setDisplayedPersons(filteredPersons);
   }, [searchText, personOptions]);
 
-  const onPress = (person: UserType) => {
+  const onPress = (person: FormattedUserType) => {
     onSelectPerson(person);
     onPressCloseButton();
   };
@@ -46,7 +48,7 @@ const PersonEditionModal = ({
   const renderHeader = () => (
     <View style={style.header}>
       <Feather name="search" size={24} color={COPPER_GREY[400]} />
-      <TextInput placeholder="Chercher un intervenant" value={searchText} onChangeText={setSearchText}
+      <TextInput placeholder={placeHolder} value={searchText} onChangeText={setSearchText}
         style={style.searchBar} placeholderTextColor={COPPER_GREY[300]} />
       <FeatherButton name="x" size={24} color={COPPER_GREY[400]} onPress={onPressCloseButton} />
     </View>

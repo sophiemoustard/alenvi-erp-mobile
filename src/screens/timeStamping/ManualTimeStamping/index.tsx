@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useReducer } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, Alert, BackHandler } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -16,6 +16,7 @@ import styles from './styles';
 import Events, { timeStampEventPayloadType } from '../../../api/Events';
 import EventInfoCell from '../../../components/EventInfoCell';
 import { COPPER_GREY } from '../../../styles/colors';
+import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../../reducers/error';
 
 interface ManualTimeStampingProps {
   route: {
@@ -40,7 +41,7 @@ const optionList = [
 const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const [identity, setIdentity] = useState({ title: '', lastname: '' });
   const [reason, setReason] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [error, dispatchError] = useReducer(errorReducer, initialErrorState);
   const [loading, setLoading] = useState<boolean>(false);
   const [type, setType] = useState<errorType>(ERROR);
   const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.timeStampStart);
@@ -51,7 +52,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
     setIdentity(route.params.event?.customer?.identity);
   }, [route.params.event]);
 
-  const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
+  const goBack = () => navigation.navigate('Home', { screen: 'Agenda' });
 
   const goToQRCodeScanner = useCallback(() => {
     navigation.navigate('QRCodeScanner', { ...route.params, timeStampStart });
@@ -90,10 +91,10 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
   const timeStampEvent = async () => {
     try {
       setLoading(true);
-      setErrorMessage('');
+      dispatchError({ type: RESET_ERROR });
       if (!reason) {
         setType(WARNING);
-        setErrorMessage('Merci de selectionner une raison pour l\'horodatage manuel.');
+        dispatchError({ type: SET_ERROR, payload: 'Merci de selectionner une raison pour l\'horodatage manuel.' });
         return;
       }
       setType(ERROR);
@@ -105,9 +106,12 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       goBack();
     } catch (e) {
       console.error(e);
-      if ([409, 422].includes(e.response.status)) setErrorMessage(e.response.data.message);
-      else if ([404, 403].includes(e.response.status)) setErrorMessage('Vous ne pouvez pas horodater cet évènement.');
-      else setErrorMessage('Erreur, si le problème persiste, contactez le support technique.');
+      if ([409, 422].includes(e.response.status)) dispatchError({ type: SET_ERROR, payload: e.response.data.message });
+      else if ([404, 403].includes(e.response.status)) {
+        dispatchError({ type: SET_ERROR, payload: 'Vous ne pouvez pas horodater cet évènement.' });
+      } else {
+        dispatchError({ type: SET_ERROR, payload: 'Erreur, si le problème persiste, contactez le support technique.' });
+      }
     } finally {
       setLoading(false);
     }
@@ -124,12 +128,12 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       <ScrollView style={styles.container}>
         <EventInfoCell identity={identity} />
         <NiSwitch options={TIME_STAMP_SWITCH_OPTIONS} backgroundColor={COPPER_GREY[100]} onChange={toggleSwitch}
-          value={timeStampStart} unselectedTextColor={COPPER_GREY[500]} />
+          value={timeStampStart} unselectedTextColor={COPPER_GREY[500]} disabled={loading} />
         <View style={styles.reasons}>
           <Text style={styles.question}>Pourquoi horodatez-vous manuellement ?</Text>
           <NiRadioButtonList options={optionList} setOption={setReason} />
         </View>
-        {!!errorMessage && <NiErrorMessage message={errorMessage} type={type} />}
+        {error.value && <NiErrorMessage message={error.message} type={type} />}
       </ScrollView>
       <NiPrimaryButton title='Valider et horodater' onPress={timeStampEvent} loading={loading} />
       <TouchableOpacity onPress={requestPermission} hitSlop={hitSlop} >

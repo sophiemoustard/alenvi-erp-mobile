@@ -106,7 +106,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
     }
   };
 
-  const goBack = () => navigation.navigate('Home', { screen: 'TimeStampingProfile' });
+  const goBack = () => navigation.navigate('Home', { screen: 'Agenda' });
 
   const goToManualTimeStamping = () => {
     navigation.navigate('ManualTimeStamping', { ...route.params, timeStampStart });
@@ -140,18 +140,19 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
         <FeatherButton name='x-circle' onPress={goBack} size={ICON.LG} color={WHITE} />
         <EventInfoCell identity={route.params.event.customer.identity} style={styles.cell} />
         <NiSwitch options={TIME_STAMP_SWITCH_OPTIONS} onChange={toggleSwitch} unselectedTextColor={WHITE}
-          value={timeStampStart} backgroundColor={TRANSPARENT_COPPER} />
+          value={timeStampStart} backgroundColor={TRANSPARENT_COPPER} disabled={state.loading} />
         <View style={styles.limitsContainer}>
           <Image source={{ uri: 'https://storage.googleapis.com/compani-main/qr-code-limiter.png' }}
             style={styles.limits} />
+          {!!state.errorMessage && <NiErrorCell style={styles.error} message={state.errorMessage} />}
         </View>
       </View>
       <View>
-        {state.loading && <ActivityIndicator color={WHITE} size="small" />}
-        {!!state.errorMessage && <NiErrorCell message={state.errorMessage} />}
-        <TouchableOpacity onPress={goToManualTimeStamping} hitSlop={hitSlop}>
-          <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
-        </TouchableOpacity>
+        {state.loading
+          ? <ActivityIndicator color={WHITE} size="small" />
+          : <TouchableOpacity onPress={goToManualTimeStamping} hitSlop={hitSlop}>
+            <Text style={styles.manualTimeStampingButton}>Je ne peux pas scanner le QR code</Text>
+          </TouchableOpacity>}
       </View>
     </>
   );
