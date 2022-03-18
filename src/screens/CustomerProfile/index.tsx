@@ -12,7 +12,7 @@ import NiHeader from '../../components/Header';
 import NiInput from '../../components/form/Input';
 import NiPersonSelect from '../../components/PersonSelect';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
-import ErrorMessage from '../../components/ErrorMessage';
+import NiErrorMessage from '../../components/ErrorMessage';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../styles/metrics';
 import styles from './style';
 import { COPPER, COPPER_GREY } from '../../styles/colors';
@@ -240,7 +240,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
             <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
               visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
               cancelText="Poursuivre les modifications" confirmText="Supprimer" />
-            <ErrorMessage message={error.message} />
+            {error.value && <NiErrorMessage message={error.message} />}
           </ScrollView>}
       </KeyboardAwareScrollView>
     </>

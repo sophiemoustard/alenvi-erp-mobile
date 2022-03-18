@@ -140,7 +140,7 @@ const ProfileEdition = () => {
             validationMessage={emailValidation()}/>
         </View>
         <NiPrimaryButton title='Valider' onPress={saveData} loading={isLoading} />
-        <NiErrorMessage message={error.message} />
+        {error.value && <NiErrorMessage message={error.message} />}
       </ScrollView>
     </KeyboardAvoidingView>
   );

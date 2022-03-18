@@ -44,7 +44,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
         <Text testID='authentication' style={styles.title}>Identifiez-vous pour accéder aux informations</Text>
         <NiInput caption='Email' type={EMAIL} onChangeText={setEmail} value={email} darkMode />
         <NiInput caption='Mot de Passe' type={PASSWORD} onChangeText={setPassword} value={password} darkMode />
-        <NiErrorMessage message={error.message} />
+        {error.value && <NiErrorMessage message={error.message} />}
         <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={hitSlop}>
           <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>
         </TouchableOpacity>

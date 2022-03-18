@@ -100,7 +100,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
       setType(ERROR);
       const payload: timeStampEventPayloadType = { action: MANUAL_TIME_STAMPING, reason };
       if (timeStampStart) payload.startDate = CompaniDate().toISO();
-      else payload.endDate = '';
+      else payload.endDate = CompaniDate().toISO();
 
       await Events.timeStampEvent(route.params?.event?._id, payload);
       goBack();
@@ -133,7 +133,7 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
           <Text style={styles.question}>Pourquoi horodatez-vous manuellement ?</Text>
           <NiRadioButtonList options={optionList} setOption={setReason} />
         </View>
-        {!!error.message && <NiErrorMessage message={error.message} type={type} />}
+        {error.value && <NiErrorMessage message={error.message} type={type} />}
       </ScrollView>
       <NiPrimaryButton title='Valider et horodater' onPress={timeStampEvent} loading={loading} />
       <TouchableOpacity onPress={requestPermission} hitSlop={hitSlop} >
