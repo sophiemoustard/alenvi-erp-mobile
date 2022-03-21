@@ -130,7 +130,7 @@ const EventCell = ({ event }: TimeStampingProps) => {
             {!!eventInfos.endDate &&
               <Text style={style.eventInfo}> - {CompaniDate(eventInfos.endDate).format('HH:mm')}</Text>}
             {eventInfos.endDateTimeStamp &&
-              <MaterialCommunityIcons name="check-bold" color={COPPER[500]}size={ICON.XXS} />}
+              <MaterialCommunityIcons name="check-bold" color={COPPER[500]} size={ICON.XXS} />}
           </View>
           <Text style={style.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
         </View>

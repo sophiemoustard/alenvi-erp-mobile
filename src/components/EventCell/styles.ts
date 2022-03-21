@@ -42,10 +42,10 @@ const eventCellStyle = ({ borderColor, backgroundColor }: eventCellType) => Styl
   eventInfo: {
     ...FIRA_SANS_REGULAR.MD,
     color: COPPER_GREY[500],
-    marginTop: MARGIN.XS,
     marginRight: MARGIN.XS,
   },
   timeContainer: {
+    marginTop: MARGIN.XS,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
