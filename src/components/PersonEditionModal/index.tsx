@@ -71,7 +71,7 @@ const PersonEditionModal = ({
   };
 
   const sortOptions = (persons: FormattedUserType[]) => (
-    persons.sort((a, b) => (a.identity.firstname).localeCompare(b.identity.firstname))
+    persons.sort((a, b) => (a.formattedIdentity).localeCompare(b.formattedIdentity))
   );
 
   return (

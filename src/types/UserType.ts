@@ -1,6 +1,6 @@
 export type UserType = {
   _id: string,
-  identity: { firstname: string, lastname: string, birthDate?: string },
+  identity: { firstname?: string, lastname: string, birthDate?: string },
   local?: { email?: string },
   picture?: { link: string },
   company?: { name: string },
@@ -12,7 +12,7 @@ export type UserType = {
 
 export type AuxiliaryType = {
   _id: UserType['_id'],
-  identity: UserType['identity'],
+  identity: UserType['identity'] & { firstname: string },
   contact?: UserType['contact'],
   picture?: UserType['picture'],
   contracts?: UserType['contracts'],
