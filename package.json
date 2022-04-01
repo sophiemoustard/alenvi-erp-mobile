@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^12.0.0",
-    "@formatjs/intl-datetimeformat": "^4.3.0",
+    "@formatjs/intl-datetimeformat": "^5.0.1",
     "@formatjs/intl-getcanonicallocales": "^1.8.0",
     "@formatjs/intl-locale": "^2.4.41",
     "@formatjs/intl-numberformat": "^7.3.0",
