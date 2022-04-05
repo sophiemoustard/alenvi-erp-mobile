@@ -50,7 +50,7 @@
     "lodash.isequal": "^4.5.0",
     "lodash.pick": "^4.4.0",
     "luxon": "^2.3.1",
-    "qs": "^6.10.1",
+    "qs": "^6.10.3",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
