@@ -59,6 +59,19 @@ export const EVENT_TRANSPORT_OPTIONS = [
   { label: 'Véhicule d\'entreprise', value: COMPANY_TRANSPORT },
 ];
 
+// CANCELLATION OPTIONS
+export const INVOICED_AND_PAID = 'invoiced_and_paid';
+export const INVOICED_AND_NOT_PAID = 'invoiced_and_not_paid';
+export const NOT_INVOICED_AND_NOT_PAID = 'not_invoiced_and_not_paid';
+
+// CANCELLATION REASONS
+export const CUSTOMER_INITIATIVE = 'customer_initiative';
+export const AUXILIARY_INITIATIVE = 'auxiliary_initiative';
+export const CANCELLATION_REASONS = [
+  { label: 'Initiative du/de la client(e)', value: CUSTOMER_INITIATIVE },
+  { label: 'Initiative de l\'intervenant(e)', value: AUXILIARY_INITIATIVE },
+];
+
 // ERROR
 export const ERROR = 'error';
 export const WARNING = 'warning';

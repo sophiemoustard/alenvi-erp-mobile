@@ -11,6 +11,8 @@ export type EventEditionStateType = {
   startDateTimeStamp?: EventType['startDateTimeStamp'],
   endDateTimeStamp?: EventType['endDateTimeStamp'],
   isBilled?: EventType['isBilled'],
+  isCancelled?: EventType['isCancelled'],
+  cancel?: EventType['cancel'],
   auxiliary: EventType['auxiliary'],
   company: EventType['company'],
   misc: EventType['misc'],
