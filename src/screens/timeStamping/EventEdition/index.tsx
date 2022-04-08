@@ -179,8 +179,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
         await Events.updateById(editedEvent._id, payload);
         setInitialState(editedEvent);
+        navigation.goBack();
       }
-      navigation.goBack();
     } catch (e) {
       console.error(e);
       if (e.response.status === 409) setApiErrorMessage(e.response.data.message);
