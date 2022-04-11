@@ -5,18 +5,19 @@ import { BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
 
 export default StyleSheet.create({
   container: {
-    padding: PADDING.XL,
+    paddingHorizontal: PADDING.XL,
+    paddingTop: PADDING.XL,
   },
   separator: {
     width: '100%',
     borderWidth: BORDER_WIDTH / 2,
     borderColor: COPPER_GREY[200],
-    marginBottom: MARGIN.MD,
+    marginVertical: MARGIN.MD,
   },
   section: {
     ...FIRA_SANS_MEDIUM.MD,
     color: COPPER_GREY[900],
-    marginBottom: MARGIN.LG,
+    marginBottom: MARGIN.MD,
   },
   subsection: {
     ...FIRA_SANS_REGULAR.SM,

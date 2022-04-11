@@ -33,7 +33,7 @@ const CancelledEventInfos = ({ event } : CancelledEventInfosProps) => {
     } else if (event?.cancel?.condition === INVOICED_AND_NOT_PAID) setInvoicedIcon('check');
   }, [event?.cancel?.condition]);
 
-  const cancelCancellation = async () => {
+  const restoreEvent = async () => {
     try {
       setConfirmationLoading(true);
 
@@ -78,7 +78,7 @@ const CancelledEventInfos = ({ event } : CancelledEventInfosProps) => {
           {!!error && <NiError message={error.message} />}
           <ConfirmationModal visible={confirmationModal} title="Confirmation" cancelText="Annuler" exitButton
             confirmText="Rétablir l'intervention" contentText="Êtes vous sûr(e) de vouloir rétablir l'intervention ?"
-            onPressConfirmButton={cancelCancellation} onRequestClose={() => setConfirmationModal(false)}
+            onPressConfirmButton={restoreEvent} onRequestClose={() => setConfirmationModal(false)}
             loading={confirmationLoading} onPressCancelButton={() => setConfirmationModal(false)} />
         </View>
       </>}

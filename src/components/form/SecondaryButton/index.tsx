@@ -8,6 +8,7 @@ interface SecondaryButtonProps {
   title: string,
   onPress?: () => void,
   style?: Object,
+  textStyle?: Object,
   loading?: boolean,
   disabled?: boolean,
 }
