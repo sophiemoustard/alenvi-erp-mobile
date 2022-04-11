@@ -306,7 +306,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       } else {
         payload = { text: 'Intervention facturée', bgColor: COPPER[400], textColor: WHITE };
       }
-    } else if (editedEvent.isCancelled && !editedEvent.isBilled) {
+    } else if (editedEvent.isCancelled) {
       payload = { text: 'Intervention annulée', bgColor: COPPER_GREY[200], textColor: COPPER_GREY[700] };
     }
 
