@@ -25,7 +25,7 @@ import NiPersonSelect from '../../../components/PersonSelect';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NiSelect from '../../../components/Select';
-import CancelledEventEditionInfos from '../../../components/CancelledEventEditionInfos';
+import CancelledEventInfos from '../../../components/CancelledEventInfos';
 import { COPPER, COPPER_GREY, WHITE } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
@@ -321,46 +321,48 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
           {subtitle.text}
         </Text>}
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid style={styles.screen}>
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.name}>{editedEvent.title}</Text>
-          {editedEvent.type === INTERVENTION &&
-            <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
-              onPress={() => goToCustomerProfile(editedEvent.customer._id)}>
-              <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
-              <Feather name="chevron-right" color={COPPER[500]}/>
-            </TouchableOpacity>}
-          {editedEvent.address && <View style={styles.addressContainer}>
-            <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
-            <View>
-              <Text style={styles.addressText}>{formatAddress(editedEvent)}</Text>
-              <Text style={styles.addressText}>{formatZipCodeAndCity(editedEvent)}</Text>
-            </View>
-          </View>}
-          <EventDateTimeEdition event={editedEvent} eventEditionDispatch={editedEventDispatch}
-            refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}
-            style={styles.date} />
-          {editedEvent.type === INTERVENTION &&
-          <>
-            <NiPersonSelect title={'Intervenant'} person={formatAuxiliary(editedEvent.auxiliary)}
-              personOptions={activeAuxiliaries} onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
-              errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'}
-              modalPlaceHolder="Chercher un intervenant" />
-            <NiSelect selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
-              options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} title="transport" />
-            <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''}
-              disabled={!!editedEvent.isBilled} inputTitle={'Déplacement véhiculé avec bénéficiaire'} type={NUMBER}
-              buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
-              buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} suffix={'km'} />}
-              errorMessage={kmDuringEventErrorMessage || ''} />
-          </>}
-          {editedEvent.type === INTERNAL_HOUR &&
-            <NiSelect caption="Type d’heure interne" options={internalHourOptions} onItemSelect={selectInternalHourType}
-              selectedItem={editedEvent.internalHour} title="Heure interne" />}
-          <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
-            buttonTitle="Ajouter une note" multiline
-            onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
-            buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />} />
-          {editedEvent.isCancelled && <CancelledEventEditionInfos cancel={editedEvent.cancel} />}
+        <ScrollView>
+          <View style={styles.container}>
+            <Text style={styles.name}>{editedEvent.title}</Text>
+            {editedEvent.type === INTERVENTION &&
+              <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
+                onPress={() => goToCustomerProfile(editedEvent.customer._id)}>
+                <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
+                <Feather name="chevron-right" color={COPPER[500]}/>
+              </TouchableOpacity>}
+            {editedEvent.address && <View style={styles.addressContainer}>
+              <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
+              <View>
+                <Text style={styles.addressText}>{formatAddress(editedEvent)}</Text>
+                <Text style={styles.addressText}>{formatZipCodeAndCity(editedEvent)}</Text>
+              </View>
+            </View>}
+            <EventDateTimeEdition event={editedEvent} eventEditionDispatch={editedEventDispatch}
+              refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}
+              style={styles.date} />
+            {editedEvent.type === INTERVENTION &&
+            <>
+              <NiPersonSelect title={'Intervenant'} person={formatAuxiliary(editedEvent.auxiliary)}
+                personOptions={activeAuxiliaries} onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
+                errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'}
+                modalPlaceHolder="Chercher un intervenant" />
+              <NiSelect selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
+                options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} title="transport" />
+              <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''}
+                disabled={!!editedEvent.isBilled} inputTitle={'Déplacement véhiculé avec bénéficiaire'} type={NUMBER}
+                buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
+                buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} suffix={'km'} />}
+                errorMessage={kmDuringEventErrorMessage || ''} />
+            </>}
+            {editedEvent.type === INTERNAL_HOUR &&
+              <NiSelect caption="Type d’heure interne" options={internalHourOptions}
+                onItemSelect={selectInternalHourType} selectedItem={editedEvent.internalHour} title="Heure interne" />}
+            <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
+              buttonTitle="Ajouter une note" multiline
+              onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
+              buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />} />
+          </View>
+          {editedEvent.isCancelled && <CancelledEventInfos event={editedEvent} />}
           <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />
