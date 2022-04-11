@@ -16,8 +16,8 @@ export type eventCellStyleType = {
   eventTitle: object,
   eventInfo: object,
   timeContainer: object,
-  text: object,
-  textContainer: Object,
+  cancelledEvent: object,
+  cancelledEventContainer: Object,
 };
 
 const eventCellStyle = ({ borderColor, backgroundColor }: eventCellType) => StyleSheet.create({
@@ -52,14 +52,14 @@ const eventCellStyle = ({ borderColor, backgroundColor }: eventCellType) => Styl
     flexDirection: 'row',
     alignItems: 'center',
   },
-  textContainer: {
+  cancelledEventContainer: {
     backgroundColor: COPPER_GREY[200],
     borderRadius: BORDER_RADIUS.LG,
     paddingHorizontal: PADDING.MD,
     paddingVertical: PADDING.SM,
     height: '40%',
   },
-  text: {
+  cancelledEvent: {
     ...FIRA_SANS_REGULAR.SM,
     color: COPPER[800],
   },

@@ -139,8 +139,8 @@ const EventCell = ({ event }: TimeStampingProps) => {
             onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
             <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
           </TouchableOpacity>}
-        {eventInfos.isCancelled && <View style={style.textContainer}>
-          <Text style={style.text}>annulé</Text>
+        {eventInfos.isCancelled && <View style={style.cancelledEventContainer}>
+          <Text style={style.cancelledEvent}>annulé</Text>
         </View>}
       </TouchableOpacity>
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
