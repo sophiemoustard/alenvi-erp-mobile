@@ -45,7 +45,7 @@ type InternalHourOptionsType = {
   value: string,
 };
 
-type subtitleType = {
+type subHeaderType = {
   text: string,
   bgColor: string,
   textColor: string,
@@ -99,7 +99,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     kmDuringEvent: false,
   });
   const [internalHourOptions, setInternalHourOptions] = useState<InternalHourOptionsType[]>([]);
-  const [subtitle, setSubtitle] = useState<subtitleType>({ text: '', bgColor: WHITE, textColor: WHITE });
+  const [subHeader, setSubHeader] = useState<subHeaderType>({ text: '', bgColor: '', textColor: '' });
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -301,24 +301,25 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
   useEffect(() => {
     let payload;
     if (editedEvent.isBilled) {
+      payload = { bgColor: COPPER[400], textColor: WHITE };
       if (editedEvent.isCancelled) {
-        payload = { text: 'Intervention annulée et facturée', bgColor: COPPER[400], textColor: WHITE };
+        payload = { ...payload, text: 'Intervention annulée et facturée' };
       } else {
-        payload = { text: 'Intervention facturée', bgColor: COPPER[400], textColor: WHITE };
+        payload = { ...payload, text: 'Intervention facturée' };
       }
     } else if (editedEvent.isCancelled) {
       payload = { text: 'Intervention annulée', bgColor: COPPER_GREY[200], textColor: COPPER_GREY[700] };
     }
 
-    if (payload) setSubtitle(payload);
+    if (payload) setSubHeader(payload);
   }, [editedEvent.isBilled, editedEvent.isCancelled]);
 
   return (
     <>
       <NiHeader onPressIcon={onLeave} title={headerTitle} loading={loading} onPressButton={onSave} />
       {(editedEvent.isBilled || editedEvent.isCancelled) &&
-        <Text style={[styles.billedHeader, { backgroundColor: subtitle.bgColor, color: subtitle.textColor }]}>
-          {subtitle.text}
+        <Text style={[styles.billedHeader, { backgroundColor: subHeader.bgColor, color: subHeader.textColor }]}>
+          {subHeader.text}
         </Text>}
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid style={styles.screen}>
         <ScrollView>

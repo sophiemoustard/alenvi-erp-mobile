@@ -33,7 +33,7 @@ const CancelledEventInfos = ({ event } : CancelledEventInfosProps) => {
     } else if (event?.cancel?.condition === INVOICED_AND_NOT_PAID) setInvoicedIcon('check');
   }, [event?.cancel?.condition]);
 
-  const restoreEvent = async () => {
+  const uncancelEvent = async () => {
     try {
       setConfirmationLoading(true);
 
@@ -62,12 +62,12 @@ const CancelledEventInfos = ({ event } : CancelledEventInfosProps) => {
         <View style={styles.details}>
           <Text style={styles.infos}>Facturé au client</Text>
           <View style={styles.dashedLine}/>
-          <MaterialCommunityIcons name={invoicedIcon} color={COPPER_GREY[900]} size={ICON.XS}/>
+          <MaterialCommunityIcons name={invoicedIcon} color={COPPER_GREY[900]} size={ICON.MD} />
         </View>
         <View style={styles.details}>
           <Text style={styles.infos}>Payé à l&apos;auxiliaire</Text>
           <View style={styles.dashedLine}/>
-          <MaterialCommunityIcons name={paidIcon} color={COPPER_GREY[900]} size={ICON.XS}/>
+          <MaterialCommunityIcons name={paidIcon} color={COPPER_GREY[900]} size={ICON.MD} />
         </View>
       </View>
       {!event.isBilled && <>
@@ -78,7 +78,7 @@ const CancelledEventInfos = ({ event } : CancelledEventInfosProps) => {
           {!!error && <NiError message={error.message} />}
           <ConfirmationModal visible={confirmationModal} title="Confirmation" cancelText="Annuler" exitButton
             confirmText="Rétablir l'intervention" contentText="Êtes vous sûr(e) de vouloir rétablir l'intervention ?"
-            onPressConfirmButton={restoreEvent} onRequestClose={() => setConfirmationModal(false)}
+            onPressConfirmButton={uncancelEvent} onRequestClose={() => setConfirmationModal(false)}
             loading={confirmationLoading} onPressCancelButton={() => setConfirmationModal(false)} />
         </View>
       </>}
