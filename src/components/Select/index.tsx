@@ -19,9 +19,10 @@ type NiSelectProps = {
   options: OptionType[],
   selectedItem: string,
   onItemSelect: (item: string) => void,
+  disabled?: boolean,
 }
 
-const Select = ({ title, caption, options, selectedItem, onItemSelect }: NiSelectProps) => {
+const Select = ({ title, caption, options, selectedItem, onItemSelect, disabled = false }: NiSelectProps) => {
   const [displaySelect, setDisplaySelect] = useState<boolean>(false);
 
   const onPressCell = () => setDisplaySelect(prevValue => !prevValue);
@@ -52,7 +53,8 @@ const Select = ({ title, caption, options, selectedItem, onItemSelect }: NiSelec
     <>
       <Text style={styles.sectionText}>{caption}</Text>
       <View>
-        <TouchableOpacity style={[styles.optionCell, displaySelect && styles.selectedCell]} onPress={onPressCell}>
+        <TouchableOpacity style={[styles.optionCell, displaySelect && styles.selectedCell]} onPress={onPressCell}
+          disabled={disabled}>
           <Text style={styles.optionText}>{(options.find(item => item.value === selectedItem))?.label || ''}</Text>
           {displaySelect
             ? <FeatherButton name='chevron-up' onPress={onPressCell} />

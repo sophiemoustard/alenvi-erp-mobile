@@ -316,7 +316,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
   return (
     <>
-      <NiHeader onPressIcon={onLeave} title={headerTitle} loading={loading} onPressButton={onSave} />
+      <NiHeader onPressIcon={onLeave} title={headerTitle} loading={loading} onPressButton={onSave}
+        disabled={editedEvent.isBilled} />
       {(editedEvent.isBilled || editedEvent.isCancelled) &&
         <Text style={[styles.billedHeader, { backgroundColor: subHeader.bgColor, color: subHeader.textColor }]}>
           {subHeader.text}
@@ -348,7 +349,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
                 errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'}
                 modalPlaceHolder="Chercher un intervenant" />
               <NiSelect selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
-                options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} title="transport" />
+                options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} title="transport"
+                disabled={editedEvent.isBilled} />
               <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''}
                 disabled={!!editedEvent.isBilled} inputTitle={'Déplacement véhiculé avec bénéficiaire'} type={NUMBER}
                 buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
