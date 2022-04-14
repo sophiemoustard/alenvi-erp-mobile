@@ -99,7 +99,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     kmDuringEvent: false,
   });
   const [internalHourOptions, setInternalHourOptions] = useState<InternalHourOptionsType[]>([]);
-  const [subHeader, setSubHeader] = useState<subHeaderType>({ text: '', bgColor: '', textColor: '' });
+  const [subHeader, setSubHeader] = useState<subHeaderType>({ text: '', bgColor: WHITE, textColor: WHITE });
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {

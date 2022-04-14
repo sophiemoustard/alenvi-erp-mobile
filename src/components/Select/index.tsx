@@ -57,8 +57,8 @@ const Select = ({ title, caption, options, selectedItem, onItemSelect, disabled 
           disabled={disabled}>
           <Text style={styles.optionText}>{(options.find(item => item.value === selectedItem))?.label || ''}</Text>
           {displaySelect
-            ? <FeatherButton name='chevron-up' onPress={onPressCell} />
-            : <FeatherButton name='chevron-down' onPress={onPressCell} />}
+            ? <FeatherButton name='chevron-up' onPress={onPressCell} disabled={disabled} />
+            : <FeatherButton name='chevron-down' onPress={onPressCell} disabled={disabled} />}
         </TouchableOpacity>
         {displaySelect && <Shadow />}
       </View>

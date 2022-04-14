@@ -30,8 +30,9 @@ const CancelledEventInfos = ({ event } : CancelledEventInfosProps) => {
     if (event?.cancel?.condition === INVOICED_AND_PAID) {
       setInvoicedIcon('check');
       setPaidIcon('check');
-    } else if (event?.cancel?.condition === INVOICED_AND_NOT_PAID) setInvoicedIcon('check');
-    else {
+    } else if (event?.cancel?.condition === INVOICED_AND_NOT_PAID) {
+      setInvoicedIcon('check');
+    } else {
       setInvoicedIcon('close');
       setPaidIcon('close');
     }
