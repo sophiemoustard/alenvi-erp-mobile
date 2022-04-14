@@ -11,7 +11,7 @@ export default StyleSheet.create({
     backgroundColor: COPPER_GREY[50],
   },
   sectionDelimiter: {
-    borderWidth: BORDER_WIDTH,
+    borderWidth: BORDER_WIDTH / 2,
     borderColor: COPPER_GREY[200],
     marginVertical: MARGIN.XL,
   },

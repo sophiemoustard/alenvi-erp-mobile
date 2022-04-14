@@ -50,7 +50,6 @@ const Agenda = () => {
             auxiliary: loggedUser._id,
             startDate: CompaniDate().startOf('day').toISO(),
             endDate: CompaniDate().endOf('day').toISO(),
-            isCancelled: false,
           };
           const fetchedEvents = await Events.list(params);
 

@@ -118,7 +118,7 @@ const EventCell = ({ event }: TimeStampingProps) => {
   };
 
   return (
-    <View>
+    <>
       <TouchableOpacity style={style.cell} onPress={goToEventEdition}>
         <View style={style.infoContainer}>
           <Text style={style.eventTitle}>{cellInfos.title}</Text>
@@ -132,17 +132,20 @@ const EventCell = ({ event }: TimeStampingProps) => {
             {eventInfos.endDateTimeStamp &&
               <MaterialCommunityIcons name="check-bold" color={COPPER[500]} size={ICON.XXS} />}
           </View>
-          <Text style={style.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>
+          {!!eventInfos.address && <Text style={style.eventInfo}>{eventInfos.address.toLocaleLowerCase()}</Text>}
         </View>
-        {!eventInfos.endDateTimeStamp && eventInfos.type === INTERVENTION &&
+        {!eventInfos.endDateTimeStamp && eventInfos.type === INTERVENTION && !eventInfos.isCancelled &&
           <TouchableOpacity hitSlop={hitSlop}
             onPress={() => (eventInfos?.startDateTimeStamp ? requestPermission(false) : requestPermission(true)) }>
             <MaterialIcons name="qr-code-2" size={ICON.LG} color={COPPER[500]} />
           </TouchableOpacity>}
+        {eventInfos.isCancelled && <View style={style.cancelledEventContainer}>
+          <Text style={style.cancelledEvent}>annulé</Text>
+        </View>}
       </TouchableOpacity>
       <CameraAccessModal visible={modalVisible} onRequestClose={() => setModalVisible(false)}
         onPressAskAgain={askPermissionAgain} goToManualTimeStamping={goToManualTimeStamping} />
-    </View>
+    </>
   );
 };
 
