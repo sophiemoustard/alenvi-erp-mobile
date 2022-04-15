@@ -178,7 +178,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       setIsValidationAttempted(true);
 
       if (isValid) {
-        const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc', 'transportMode', 'internalHour']);
+        const pickedFields = pick(
+          editedEvent,
+          ['startDate', 'endDate', 'misc', 'transportMode', 'internalHour', 'isCancelled']
+        );
         const payload = {
           auxiliary: editedEvent.auxiliary._id,
           kmDuringEvent: Number.parseFloat(editedEvent.kmDuringEvent) || 0,
