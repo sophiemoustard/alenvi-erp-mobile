@@ -25,7 +25,8 @@ import NiPersonSelect from '../../../components/PersonSelect';
 import EventFieldEdition from '../../../components/EventFieldEdition';
 import ErrorMessage from '../../../components/ErrorMessage';
 import NiSelect from '../../../components/Select';
-import { COPPER, COPPER_GREY } from '../../../styles/colors';
+import CancelledEventInfos from '../../../components/CancelledEventInfos';
+import { COPPER, COPPER_GREY, WHITE } from '../../../styles/colors';
 import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType } from '../../../types/EventType';
@@ -43,6 +44,12 @@ type InternalHourOptionsType = {
   label: string,
   value: string,
 };
+
+type subHeaderType = {
+  text: string,
+  bgColor: string,
+  textColor: string,
+}
 
 const formatZipCodeAndCity = (event: EventEditionStateType) => {
   const zipCode = get(event, 'customer.contact.primaryAddress.zipCode') || get(event, 'address.zipCode') || '';
@@ -92,6 +99,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     kmDuringEvent: false,
   });
   const [internalHourOptions, setInternalHourOptions] = useState<InternalHourOptionsType[]>([]);
+  const [subHeader, setSubHeader] = useState<subHeaderType>({ text: '', bgColor: WHITE, textColor: WHITE });
 
   const reducer = (state: EventEditionStateType, action: EventEditionActionType): EventEditionStateType => {
     const changeEndHourOnStartHourChange = () => {
@@ -170,7 +178,10 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
       setIsValidationAttempted(true);
 
       if (isValid) {
-        const pickedFields = pick(editedEvent, ['startDate', 'endDate', 'misc', 'transportMode', 'internalHour']);
+        const pickedFields = pick(
+          editedEvent,
+          ['startDate', 'endDate', 'misc', 'transportMode', 'internalHour', 'isCancelled']
+        );
         const payload = {
           auxiliary: editedEvent.auxiliary._id,
           kmDuringEvent: Number.parseFloat(editedEvent.kmDuringEvent) || 0,
@@ -179,8 +190,8 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
 
         await Events.updateById(editedEvent._id, payload);
         setInitialState(editedEvent);
+        navigation.goBack();
       }
-      navigation.goBack();
     } catch (e) {
       console.error(e);
       if (e.response.status === 409) setApiErrorMessage(e.response.data.message);
@@ -290,50 +301,74 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
     });
   };
 
+  useEffect(() => {
+    let payload;
+    if (editedEvent.isBilled) {
+      payload = { bgColor: COPPER[400], textColor: WHITE };
+      if (editedEvent.isCancelled) {
+        payload = { ...payload, text: 'Intervention annulée et facturée' };
+      } else {
+        payload = { ...payload, text: 'Intervention facturée' };
+      }
+    } else if (editedEvent.isCancelled) {
+      payload = { text: 'Intervention annulée', bgColor: COPPER_GREY[200], textColor: COPPER_GREY[700] };
+    }
+
+    if (payload) setSubHeader(payload);
+  }, [editedEvent.isBilled, editedEvent.isCancelled]);
+
   return (
     <>
-      <NiHeader onPressIcon={onLeave} title={headerTitle} loading={loading} onPressButton={onSave} />
-      {editedEvent.isBilled && <Text style={styles.billedHeader}>Intervention facturée</Text> }
+      <NiHeader onPressIcon={onLeave} title={headerTitle} loading={loading} onPressButton={onSave}
+        disabled={editedEvent.isBilled} />
+      {(editedEvent.isBilled || editedEvent.isCancelled) &&
+        <Text style={[styles.billedHeader, { backgroundColor: subHeader.bgColor, color: subHeader.textColor }]}>
+          {subHeader.text}
+        </Text>}
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid style={styles.screen}>
-        <ScrollView contentContainerStyle={styles.container}>
-          <Text style={styles.name}>{editedEvent.title}</Text>
-          {editedEvent.type === INTERVENTION &&
-            <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
-              onPress={() => goToCustomerProfile(editedEvent.customer._id)}>
-              <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
-              <Feather name="chevron-right" color={COPPER[500]}/>
-            </TouchableOpacity>}
-          {editedEvent.address && <View style={styles.addressContainer}>
-            <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
-            <View>
-              <Text style={styles.addressText}>{formatAddress(editedEvent)}</Text>
-              <Text style={styles.addressText}>{formatZipCodeAndCity(editedEvent)}</Text>
-            </View>
-          </View>}
-          <EventDateTimeEdition event={editedEvent} eventEditionDispatch={editedEventDispatch}
-            refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}
-            style={styles.date} />
-          {editedEvent.type === INTERVENTION &&
-          <>
-            <NiPersonSelect title={'Intervenant'} person={formatAuxiliary(editedEvent.auxiliary)}
-              personOptions={activeAuxiliaries} onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
-              errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'}
-              modalPlaceHolder="Chercher un intervenant" />
-            <NiSelect selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
-              options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} title="transport" />
-            <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''}
-              disabled={!!editedEvent.isBilled} inputTitle={'Déplacement véhiculé avec bénéficiaire'} type={NUMBER}
-              buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
-              buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} suffix={'km'} />}
-              errorMessage={kmDuringEventErrorMessage || ''} />
-          </>}
-          {editedEvent.type === INTERNAL_HOUR &&
-            <NiSelect caption="Type d’heure interne" options={internalHourOptions} onItemSelect={selectInternalHourType}
-              selectedItem={editedEvent.internalHour} title="Heure interne" />}
-          <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
-            buttonTitle="Ajouter une note" multiline
-            onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
-            buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />} />
+        <ScrollView>
+          <View style={styles.container}>
+            <Text style={styles.name}>{editedEvent.title}</Text>
+            {editedEvent.type === INTERVENTION &&
+              <TouchableOpacity style={styles.customerProfileButton} disabled={loading}
+                onPress={() => goToCustomerProfile(editedEvent.customer._id)}>
+                <Text style={styles.customerProfileButtonTitle}>Fiche bénéficiaire</Text>
+                <Feather name="chevron-right" color={COPPER[500]}/>
+              </TouchableOpacity>}
+            {editedEvent.address && <View style={styles.addressContainer}>
+              <Feather name="map-pin" size={ICON.SM} color={COPPER_GREY[500]} />
+              <View>
+                <Text style={styles.addressText}>{formatAddress(editedEvent)}</Text>
+                <Text style={styles.addressText}>{formatZipCodeAndCity(editedEvent)}</Text>
+              </View>
+            </View>}
+            <EventDateTimeEdition event={editedEvent} eventEditionDispatch={editedEventDispatch}
+              refreshHistories={refreshHistories} loading={loading} dateErrorMessage={dateErrorMessage || ''}
+              style={styles.date} />
+            {editedEvent.type === INTERVENTION &&
+            <>
+              <NiPersonSelect title={'Intervenant'} person={formatAuxiliary(editedEvent.auxiliary)}
+                personOptions={activeAuxiliaries} onSelectPerson={onSelectPerson} isEditable={isAuxiliaryEditable}
+                errorMessage={'Vous ne pouvez pas modifier l\'intervenant d\'une intervention horodatée ou facturée.'}
+                modalPlaceHolder="Chercher un intervenant" />
+              <NiSelect selectedItem={editedEvent.transportMode} caption="Transport pour aller à l&apos;intervention"
+                options={EVENT_TRANSPORT_OPTIONS} onItemSelect={selectTransportMode} title="transport"
+                disabled={editedEvent.isBilled} />
+              <EventFieldEdition text={editedEvent.kmDuringEvent ? editedEvent.kmDuringEvent.toString() : ''}
+                disabled={!!editedEvent.isBilled} inputTitle={'Déplacement véhiculé avec bénéficiaire'} type={NUMBER}
+                buttonTitle="Ajouter un déplacement véhiculé avec bénéficiaire" onChangeText={onChangeKmDuringEvent}
+                buttonIcon={<MaterialCommunityIcons name='truck-outline' size={24} color={COPPER[600]} suffix={'km'} />}
+                errorMessage={kmDuringEventErrorMessage || ''} />
+            </>}
+            {editedEvent.type === INTERNAL_HOUR &&
+              <NiSelect caption="Type d’heure interne" options={internalHourOptions}
+                onItemSelect={selectInternalHourType} selectedItem={editedEvent.internalHour} title="Heure interne" />}
+            <EventFieldEdition text={editedEvent.misc} inputTitle="Note" disabled={!!editedEvent.isBilled}
+              buttonTitle="Ajouter une note" multiline
+              onChangeText={(value: string) => editedEventDispatch({ type: SET_FIELD, payload: { misc: value || '' } })}
+              buttonIcon={<MaterialIcons name={'playlist-add'} size={24} color={COPPER[600]} />} />
+          </View>
+          {editedEvent.isCancelled && <CancelledEventInfos event={editedEvent} />}
           <ConfirmationModal onPressConfirmButton={onConfirmExit} onPressCancelButton={() => setExitModal(false)}
             visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées à cet événement ?"
             cancelText="Poursuivre les modifications" confirmText="Supprimer" />

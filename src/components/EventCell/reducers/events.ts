@@ -13,6 +13,7 @@ type EventStateType = {
   endDateTimeStamp: boolean,
   type: string,
   internalHourName: string,
+  isCancelled: boolean,
 };
 
 type EventActionType = {
@@ -33,6 +34,7 @@ const initialState = {
   endDateTimeStamp: false,
   type: '',
   internalHourName: '',
+  isCancelled: false,
 };
 const SET_EVENT_INFOS = 'setEventInfos';
 const SET_TIMESTAMPED_INFOS = 'setTimeStampedInfos';
@@ -54,6 +56,7 @@ const eventReducer = (state: EventStateType, action: EventActionType): EventStat
         endDate: action.payload.event?.endDate || null,
         type: action.payload.event?.type || '',
         internalHourName: action.payload.event?.internalHour?.name || '',
+        isCancelled: action.payload.event?.isCancelled || false,
       };
     case SET_TIMESTAMPED_INFOS:
       return {

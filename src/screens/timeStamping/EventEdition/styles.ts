@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COPPER, COPPER_GREY, WHITE } from '../../../styles/colors';
+import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { FIRA_SANS_BLACK, FIRA_SANS_REGULAR } from '../../../styles/fonts';
 import { MARGIN, PADDING } from '../../../styles/metrics';
 
@@ -13,8 +13,6 @@ export default StyleSheet.create({
   },
   billedHeader: {
     ...FIRA_SANS_REGULAR.MD,
-    backgroundColor: COPPER[400],
-    color: WHITE,
     textAlign: 'center',
     paddingVertical: PADDING.MD,
   },

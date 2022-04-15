@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { COPPER_GREY } from '../../styles/colors';
+import { COPPER, COPPER_GREY } from '../../styles/colors';
 import { FIRA_SANS_BOLD, FIRA_SANS_REGULAR } from '../../styles/fonts';
 import { BORDER_RADIUS, BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
 
@@ -16,6 +16,8 @@ export type eventCellStyleType = {
   eventTitle: object,
   eventInfo: object,
   timeContainer: object,
+  cancelledEvent: object,
+  cancelledEventContainer: Object,
 };
 
 const eventCellStyle = ({ borderColor, backgroundColor }: eventCellType) => StyleSheet.create({
@@ -49,6 +51,17 @@ const eventCellStyle = ({ borderColor, backgroundColor }: eventCellType) => Styl
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  cancelledEventContainer: {
+    backgroundColor: COPPER_GREY[200],
+    borderRadius: BORDER_RADIUS.LG,
+    paddingHorizontal: PADDING.MD,
+    paddingVertical: PADDING.SM,
+    height: '40%',
+  },
+  cancelledEvent: {
+    ...FIRA_SANS_REGULAR.SM,
+    color: COPPER[800],
   },
 });
 

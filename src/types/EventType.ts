@@ -19,6 +19,8 @@ export type EventType = {
   startDateTimeStamp?: boolean,
   endDateTimeStamp?: boolean,
   isBilled?: boolean,
+  isCancelled?: boolean,
+  cancel?: { condition: string, reason: string },
   auxiliary: UserType,
   company: string,
   misc: string,
