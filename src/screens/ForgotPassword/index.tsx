@@ -7,7 +7,7 @@ import NiInput from '../../components/form/Input';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
 import ForgotPasswordModal from '../../components/modals/ForgotPasswordModal';
 import { EMAIL, EMAIL_REGEX } from '../../core/data/constants';
-import { formatEmailForPayload } from '../../core/helpers/utils';
+import { formatEmail } from '../../core/helpers/utils';
 import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
 import { NavigationType } from '../../types/NavigationType';
 import styles from './styles';
@@ -78,9 +78,8 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
         <View style={styles.body}>
           <View style={styles.content}>
             <Text style={styles.title}>Quel est votre e-mail ?</Text>
-            <NiInput style={styles.input} caption='Email' type={EMAIL}
-              onChangeText={value => setEmail(formatEmailForPayload(value))} value={email}
-              validationMessage={error.message} disabled={isLoading} />
+            <NiInput style={styles.input} caption='Email' type={EMAIL} value={email} disabled={isLoading}
+              onChangeText={value => setEmail(formatEmail(value))} validationMessage={error.message} />
           </View>
           <NiPrimaryButton title='Valider' onPress={validateEmail} loading={isLoading} />
         </View>

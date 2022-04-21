@@ -7,7 +7,7 @@ import NiInput from '../../components/form/Input';
 import NiErrorMessage from '../../components/ErrorMessage';
 import styles from './styles';
 import { PASSWORD, EMAIL } from '../../core/data/constants';
-import { formatEmailForPayload } from '../../core/helpers/utils';
+import { formatEmail } from '../../core/helpers/utils';
 import { NavigationType } from '../../types/NavigationType';
 import { hitSlop, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
 import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
@@ -43,7 +43,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
     >
       <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.container}>
         <Text testID='authentication' style={styles.title}>Identifiez-vous pour accéder aux informations</Text>
-        <NiInput caption='Email' type={EMAIL} onChangeText={value => setEmail(formatEmailForPayload(value))}
+        <NiInput caption='Email' type={EMAIL} onChangeText={value => setEmail(formatEmail(value))}
           value={email} darkMode />
         <NiInput caption='Mot de Passe' type={PASSWORD} onChangeText={setPassword} value={password} darkMode />
         {error.value && <NiErrorMessage message={error.message} />}
