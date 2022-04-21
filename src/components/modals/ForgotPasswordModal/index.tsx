@@ -5,7 +5,6 @@ import Authentication from '../../../api/Authentication';
 import NiPrimaryButton from '../../form/PrimaryButton';
 import FeatherButton from '../../FeatherButton';
 import { EMAIL, PHONE, MOBILE } from '../../../core/data/constants';
-import { formatEmailForPayload } from '../../../core/helpers/utils';
 import { ICON, IS_LARGE_SCREEN } from '../../../styles/metrics';
 import styles from './styles';
 import NiErrorMessage from '../../ErrorMessage';
@@ -107,7 +106,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
     try {
       setIsLoading(true);
       setChosenMethod(EMAIL);
-      await Authentication.forgotPassword({ email: formatEmailForPayload(email), origin: MOBILE, type: EMAIL });
+      await Authentication.forgotPassword({ email, origin: MOBILE, type: EMAIL });
       setRecipient(email);
     } catch (e) {
       dispatchError({ type: SET_ERROR, payload: 'Oups, erreur lors de la transmission de l\'email.' });
@@ -120,9 +119,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
     try {
       setIsLoading(true);
       setChosenMethod(PHONE);
-      const { phone } = await Authentication.forgotPassword(
-        { email: formatEmailForPayload(email), origin: MOBILE, type: PHONE }
-      );
+      const { phone } = await Authentication.forgotPassword({ email, origin: MOBILE, type: PHONE });
       setRecipient(phone || '');
     } catch (e) {
       dispatchError({ type: SET_ERROR, payload: 'Oups, erreur lors de la transmission du numéro de téléphone.' });

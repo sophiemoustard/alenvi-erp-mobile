@@ -26,7 +26,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
     if (email === '' || password === '') return;
     dispatchError({ type: RESET_ERROR });
     try {
-      await signIn({ email: formatEmailForPayload(email), password });
+      await signIn({ email, password });
     } catch (e) {
       if (e.response?.status === 401) {
         dispatchError({ type: SET_ERROR, payload: 'L\'e-mail et/ou le mot de passe est incorrect.' });
@@ -43,7 +43,8 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
     >
       <KeyboardAvoidingView behavior={KEYBOARD_AVOIDING_VIEW_BEHAVIOR} style={styles.container}>
         <Text testID='authentication' style={styles.title}>Identifiez-vous pour accéder aux informations</Text>
-        <NiInput caption='Email' type={EMAIL} onChangeText={setEmail} value={email} darkMode />
+        <NiInput caption='Email' type={EMAIL} onChangeText={value => setEmail(formatEmailForPayload(value))}
+          value={email} darkMode />
         <NiInput caption='Mot de Passe' type={PASSWORD} onChangeText={setPassword} value={password} darkMode />
         {error.value && <NiErrorMessage message={error.message} />}
         <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={hitSlop}>

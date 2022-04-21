@@ -54,7 +54,7 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
     try {
       if (!invalidEmail) {
         setIsLoading(true);
-        const exists = await Users.exists({ email: formatEmailForPayload(email) });
+        const exists = await Users.exists({ email });
         if (!exists) dispatchError({ type: SET_ERROR, payload: 'Oups ! Cet e-mail n\'est pas reconnu.' });
         else setForgotPasswordModal(true);
       }
@@ -78,7 +78,8 @@ const ForgotPassword = ({ navigation }: EmailFormProps) => {
         <View style={styles.body}>
           <View style={styles.content}>
             <Text style={styles.title}>Quel est votre e-mail ?</Text>
-            <NiInput style={styles.input} caption='Email' type={EMAIL} onChangeText={setEmail} value={email}
+            <NiInput style={styles.input} caption='Email' type={EMAIL}
+              onChangeText={value => setEmail(formatEmailForPayload(value))} value={email}
               validationMessage={error.message} disabled={isLoading} />
           </View>
           <NiPrimaryButton title='Valider' onPress={validateEmail} loading={isLoading} />
