@@ -10,7 +10,7 @@ import { ICON, IS_LARGE_SCREEN, KEYBOARD_AVOIDING_VIEW_BEHAVIOR, MARGIN } from '
 import { Context as AuthContext } from '../../context/AuthContext';
 import Users from '../../api/Users';
 import { EMAIL_REGEX, PHONE_REGEX } from '../../core/data/constants';
-import { formatEmailForPayload, formatPhoneForPayload } from '../../core/helpers/utils';
+import { formatEmail, formatPhoneForPayload } from '../../core/helpers/utils';
 import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
 import styles from './styles';
 
@@ -53,7 +53,7 @@ const ProfileEdition = () => {
           {
             ...editedUser,
             contact: { phone: formatPhoneForPayload(editedUser.contact.phone) },
-            local: { email: formatEmailForPayload(editedUser.local.email) },
+            local: { email: editedUser.local.email },
           }
         );
 
@@ -75,7 +75,7 @@ const ProfileEdition = () => {
 
   const onChangePhone = (text: string) => setEditedUser({ ...editedUser, contact: { phone: text } });
 
-  const onChangeEmail = (text: string) => setEditedUser({ ...editedUser, local: { email: text } });
+  const onChangeEmail = (text: string) => setEditedUser({ ...editedUser, local: { email: formatEmail(text) } });
 
   const onPressExitModal = () => {
     setExitConfirmationModal(true);

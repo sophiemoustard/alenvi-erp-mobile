@@ -12,7 +12,7 @@ export const formatPhoneForPayload = (phoneNumber: Number) => (phoneNumber
     .trim()
   : '');
 
-export const formatEmailForPayload = (email: string) => email.trim();
+export const formatEmail = (email: string) => email.trim();
 
 export const capitalizeFirstLetter = (s: string) => `${s.charAt(0).toUpperCase()}${s.substring(1)}`;
 
