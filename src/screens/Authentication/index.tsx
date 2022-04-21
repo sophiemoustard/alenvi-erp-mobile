@@ -7,6 +7,7 @@ import NiInput from '../../components/form/Input';
 import NiErrorMessage from '../../components/ErrorMessage';
 import styles from './styles';
 import { PASSWORD, EMAIL } from '../../core/data/constants';
+import { formatEmailForPayload } from '../../core/helpers/utils';
 import { NavigationType } from '../../types/NavigationType';
 import { hitSlop, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
 import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
@@ -25,7 +26,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
     if (email === '' || password === '') return;
     dispatchError({ type: RESET_ERROR });
     try {
-      await signIn({ email, password });
+      await signIn({ email: formatEmailForPayload(email), password });
     } catch (e) {
       if (e.response?.status === 401) {
         dispatchError({ type: SET_ERROR, payload: 'L\'e-mail et/ou le mot de passe est incorrect.' });
