@@ -3,7 +3,7 @@ import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED, INTERVENTION } from '../../core/data/constants';
+import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED, INTERVENTION, UNAVAILABILITY } from '../../core/data/constants';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import CameraAccessModal from '../modals/CameraAccessModal';
