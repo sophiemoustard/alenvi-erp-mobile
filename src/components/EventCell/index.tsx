@@ -3,7 +3,7 @@ import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED, INTERVENTION } from '../../core/data/constants';
+import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED, INTERVENTION, UNAVAILABILITY } from '../../core/data/constants';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventType, EventHistoryType } from '../../types/EventType';
 import CameraAccessModal from '../modals/CameraAccessModal';
@@ -11,7 +11,13 @@ import { COPPER, WHITE } from '../../styles/colors';
 import { hitSlop, ICON } from '../../styles/metrics';
 import styles, { eventCellStyleType } from './styles';
 import { eventReducer, initialState, SET_EVENT_INFOS, SET_TIMESTAMPED_INFOS } from './reducers/events';
-import { cellReducer, initialCellStyle, SET_INTERNAL_HOUR_INFOS, SET_INTERVENTION_INFOS } from './reducers/cells';
+import {
+  cellReducer,
+  initialCellStyle,
+  SET_INTERNAL_HOUR_INFOS,
+  SET_INTERVENTION_INFOS,
+  SET_UNAVAILABILITY_INFOS,
+} from './reducers/cells';
 
 interface TimeStampingProps {
   event: EventType,
@@ -45,6 +51,7 @@ const EventCell = ({ event }: TimeStampingProps) => {
   useEffect(() => {
     const payload = eventInfos;
     if (eventInfos.type === INTERVENTION) cellInfosDispatch({ type: SET_INTERVENTION_INFOS, payload });
+    else if (eventInfos.type === UNAVAILABILITY) cellInfosDispatch({ type: SET_UNAVAILABILITY_INFOS, payload });
     else cellInfosDispatch({ type: SET_INTERNAL_HOUR_INFOS, payload });
   }, [eventInfos]);
 

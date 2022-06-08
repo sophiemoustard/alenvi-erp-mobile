@@ -4,7 +4,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import commonStyle from '../../../styles/common';
 import Events from '../../../api/Events';
 import { Context as AuthContext } from '../../../context/AuthContext';
-import { ACTIVE_STATE, INTERNAL_HOUR, INTERVENTION } from '../../../core/data/constants';
+import { ACTIVE_STATE, INTERNAL_HOUR, INTERVENTION, UNAVAILABILITY } from '../../../core/data/constants';
 import { formatWordToPlural, ascendingSortArray } from '../../../core/helpers/utils';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import EventCell from '../../../components/EventCell';
@@ -54,7 +54,7 @@ const Agenda = () => {
           const fetchedEvents = await Events.list(params);
 
           const filteredEvents = fetchedEvents
-            .filter((ev: EventType) => [INTERVENTION, INTERNAL_HOUR].includes(ev.type));
+            .filter((ev: EventType) => [INTERVENTION, INTERNAL_HOUR, UNAVAILABILITY].includes(ev.type));
 
           if (isActive) setEvents(ascendingSortArray(filteredEvents, 'startDate'));
         } catch (e) {
