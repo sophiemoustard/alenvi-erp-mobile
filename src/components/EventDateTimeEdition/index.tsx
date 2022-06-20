@@ -14,6 +14,7 @@ import { SET_DATES, SET_FIELD, SET_TIME } from '../../screens/timeStamping/Event
 import { EventHistoryType } from '../../types/EventType';
 import { ModeType } from '../../types/DateTimeType';
 import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
+import { COPPER_GREY } from '../../styles/colors';
 import styles from './styles';
 
 interface EventDateTimeEditionProps {
@@ -189,7 +190,8 @@ const EventDateTimeEdition = ({
           disabled={event.isBilled} onPress={(mode: ModeType) => onPressPicker(true, mode)} />
         {picker.displayStartPicker && <DateTimePicker value={CompaniDate(event.startDate).toDate()} mode={picker.mode}
           is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
-          maximumDate={maximumStartDate ? CompaniDate(maximumStartDate).toDate() : undefined} />}
+          maximumDate={maximumStartDate ? CompaniDate(maximumStartDate).toDate() : undefined}
+          textColor={COPPER_GREY[700]} />}
       </View>
       <View>
         <Text style={styles.sectionText}>Fin</Text>
@@ -197,7 +199,8 @@ const EventDateTimeEdition = ({
           disabled={event.isBilled} onPress={(mode: ModeType) => onPressPicker(false, mode)} />
         {picker.displayEndPicker && <DateTimePicker value={CompaniDate(event.endDate).toDate()} mode={picker.mode}
           is24Hour locale="fr-FR" display={isIOS ? 'spinner' : 'default'} onChange={onChangePicker}
-          minimumDate={minimumEndDate ? CompaniDate(minimumEndDate).toDate() : undefined} />}
+          minimumDate={minimumEndDate ? CompaniDate(minimumEndDate).toDate() : undefined}
+          textColor={COPPER_GREY[700]} />}
         <NiErrorMessage message={dateErrorMessage} type={WARNING} />
       </View>
       <ConfirmationModal visible={confirmationModal} title="Cet évènement a déjà été horodaté" exitButton
