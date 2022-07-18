@@ -13,7 +13,8 @@ import NiInput from '../../components/form/Input';
 import NiPersonSelect from '../../components/PersonSelect';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
 import NiErrorMessage from '../../components/ErrorMessage';
-import { ICON, KEYBOARD_PADDING_TOP } from '../../styles/metrics';
+import ToastMessage from '../../components/ToastMessage';
+import { ICON, KEYBOARD_PADDING_TOP, SCREEN_HEIGHT } from '../../styles/metrics';
 import styles from './style';
 import { COPPER, COPPER_GREY } from '../../styles/colors';
 import CompaniDate from '../../core/helpers/dates/companiDates';
@@ -66,6 +67,8 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [customerBirth, setCustomerBirth] = useState<string>('');
   const [activeAuxiliaries, setActiveAuxiliaries] = useState<FormattedUserType[]>([]);
+  const [triggerToastMessage, setTriggerToastMessage] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
   const getCustomer = useCallback(async () => {
     try {
@@ -155,8 +158,11 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       }
 
       setInitialCustomer(editedCustomer);
+      setSuccess(true);
+      setTriggerToastMessage(true);
     } catch (e) {
       console.error(e);
+      setSuccess(false);
       dispatchError({
         type: SET_ERROR,
         payload: 'Une erreur s\'est produite, si le problème persiste, contactez le support technique.',
@@ -166,7 +172,10 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     }
   };
 
-  useEffect(() => dispatchError({ type: RESET_ERROR }), [editedCustomer]);
+  useEffect(() => {
+    dispatchError({ type: RESET_ERROR });
+    setTriggerToastMessage(false);
+  }, [editedCustomer, setTriggerToastMessage]);
 
   const onChangeFollowUpText = (key: string) => (text: string) => {
     setEditedCustomer({ ...editedCustomer, followUp: { ...editedCustomer.followUp, [key]: text } });
@@ -241,6 +250,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
               visible={exitModal} contentText="Voulez-vous supprimer les modifications apportées ?"
               cancelText="Poursuivre les modifications" confirmText="Supprimer" />
             {error.value && <NiErrorMessage message={error.message} />}
+            {triggerToastMessage && <ToastMessage onFinish={() => setTriggerToastMessage(false)} success={success} />}
           </ScrollView>}
       </KeyboardAwareScrollView>
     </>
