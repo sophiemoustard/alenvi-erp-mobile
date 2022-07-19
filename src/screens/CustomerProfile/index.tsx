@@ -14,7 +14,7 @@ import NiPersonSelect from '../../components/PersonSelect';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
 import NiErrorMessage from '../../components/ErrorMessage';
 import ToastMessage from '../../components/ToastMessage';
-import { ICON, KEYBOARD_PADDING_TOP, SCREEN_HEIGHT } from '../../styles/metrics';
+import { ICON, KEYBOARD_PADDING_TOP } from '../../styles/metrics';
 import styles from './style';
 import { COPPER, COPPER_GREY } from '../../styles/colors';
 import CompaniDate from '../../core/helpers/dates/companiDates';
@@ -200,7 +200,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         {loading && <ActivityIndicator style={styles.loader} size="small" color={COPPER[500]} />}
         {!loading &&
-          <ScrollView>
+          <ScrollView style={styles.scroll}>
             <View style={styles.screen}>
               <Text style={styles.identity}>{formatIdentity(initialCustomer?.identity, 'FL')}</Text>
             </View>
