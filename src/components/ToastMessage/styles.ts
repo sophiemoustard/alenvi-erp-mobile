@@ -8,7 +8,7 @@ type ToastMessageStyleProps = {
 };
 
 const TOAST_MESSAGE_HEIGHT = 56;
-const iosOffset = Platform.OS === 'ios' ? 20 : 0;
+const iosOffset = Platform.OS === 'ios' ? MARGIN.MD : 0;
 const TOAST_OFFSET = TOAST_MESSAGE_HEIGHT + MARGIN.MD + iosOffset;
 const TOAST_POSITION = SCREEN_HEIGHT - TOAST_OFFSET;
 
@@ -22,10 +22,11 @@ const styles = ({ backgroundColor } : ToastMessageStyleProps) => StyleSheet.crea
   content: {
     backgroundColor,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     borderRadius: BORDER_RADIUS.MD,
     height: TOAST_MESSAGE_HEIGHT,
+    paddingHorizontal: PADDING.LG,
   },
   text: {
     ...FIRA_SANS_MEDIUM.SM,
