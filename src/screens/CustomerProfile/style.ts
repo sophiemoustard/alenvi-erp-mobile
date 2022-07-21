@@ -4,9 +4,6 @@ import { FIRA_SANS_BLACK, FIRA_SANS_MEDIUM, FIRA_SANS_REGULAR } from '../../styl
 import { BORDER_WIDTH, MARGIN, PADDING } from '../../styles/metrics';
 
 export default StyleSheet.create({
-  scroll: {
-    position: 'relative',
-  },
   screen: {
     flex: 1,
     paddingTop: PADDING.XL,

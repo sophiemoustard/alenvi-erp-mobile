@@ -201,7 +201,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
       <KeyboardAwareScrollView extraScrollHeight={KEYBOARD_PADDING_TOP} enableOnAndroid>
         {loading && <ActivityIndicator style={styles.loader} size="small" color={COPPER[500]} />}
         {!loading &&
-          <ScrollView style={styles.scroll}>
+          <ScrollView>
             <View style={styles.screen}>
               <Text style={styles.identity}>{formatIdentity(initialCustomer?.identity, 'FL')}</Text>
             </View>
