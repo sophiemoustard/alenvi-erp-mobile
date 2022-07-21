@@ -33,11 +33,14 @@ const ToastMessage = ({ onFinish, success }: ToastMessageProps) => {
   return (
     <Animated.View style={[style.container, { transform: [{ translateY: translation }] }]}>
       <View style={style.content}>
-        {success && <Feather name={'check-circle'} size={24} color={WHITE} />}
-        {!success && <AntDesign name={'closecircleo'} size={24} color={WHITE} />}
-        <Text style={style.text}>
-          {success ? 'Modification enregistrée' : 'L\'évènement n\'a pas pu etre modifié'}
-        </Text>
+        {success && <>
+          <Feather name={'check-circle'} size={24} color={WHITE} />
+          <Text style={style.text}>{'Modification enregistrée'}</Text>
+        </>}
+        {!success && <>
+          <AntDesign name={'closecircleo'} size={24} color={WHITE} />
+          <Text style={style.text}>{'L\'évènement n\'a pas pu être modifié'}</Text>
+        </>}
       </View>
     </Animated.View>
   );

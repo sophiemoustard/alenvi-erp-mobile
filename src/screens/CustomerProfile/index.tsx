@@ -163,6 +163,7 @@ const CustomerProfile = ({ route }: CustomerProfileProp) => {
     } catch (e) {
       console.error(e);
       setSuccess(false);
+      setTriggerToastMessage(true);
       dispatchError({
         type: SET_ERROR,
         payload: 'Une erreur s\'est produite, si le problème persiste, contactez le support technique.',
