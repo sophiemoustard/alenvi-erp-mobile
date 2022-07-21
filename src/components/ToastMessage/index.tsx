@@ -39,7 +39,7 @@ const ToastMessage = ({ onFinish, success }: ToastMessageProps) => {
         </>}
         {!success && <>
           <AntDesign name={'closecircleo'} size={24} color={WHITE} />
-          <Text style={style.text}>{'L\'évènement n\'a pas pu être modifié'}</Text>
+          <Text style={style.text}>{'Erreur lors de la modification'}</Text>
         </>}
       </View>
     </Animated.View>
