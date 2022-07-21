@@ -35,11 +35,11 @@ const ToastMessage = ({ onFinish, success }: ToastMessageProps) => {
       <View style={style.content}>
         {success && <>
           <Feather name={'check-circle'} size={24} color={WHITE} />
-          <Text style={style.text}>{'Modification enregistrée'}</Text>
+          <Text style={style.text}>Modification enregistrée</Text>
         </>}
         {!success && <>
           <AntDesign name={'closecircleo'} size={24} color={WHITE} />
-          <Text style={style.text}>{'Erreur lors de la modification'}</Text>
+          <Text style={style.text}>Erreur lors de la modification</Text>
         </>}
       </View>
     </Animated.View>
