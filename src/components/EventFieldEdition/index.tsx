@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import NiInput from '../../components/form/Input';
 import styles from './styles';

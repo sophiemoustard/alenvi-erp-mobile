@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, ActivityIndicator, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { isEqual, pick } from 'lodash';

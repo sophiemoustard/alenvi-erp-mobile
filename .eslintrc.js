@@ -55,6 +55,8 @@ module.exports = {
     'prefer-destructuring': ['error', { VariableDeclarator: { object: true, array: false } }],
     'function-paren-newline': 0,
     'no-continue': 0,
+    'react/jsx-uses-react': 'off',
+    'react/react-in-jsx-scope': 'off',
   },
   globals: {
     __DEV__: true,

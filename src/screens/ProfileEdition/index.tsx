@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/core';
-import React, { useContext, useEffect, useReducer, useState } from 'react';
+import { useContext, useEffect, useReducer, useState } from 'react';
 import { ScrollView, View, Text, KeyboardAvoidingView, BackHandler } from 'react-native';
 import FeatherButton from '../../components/FeatherButton';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';

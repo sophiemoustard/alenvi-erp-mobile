@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import isEqual from 'lodash.isequal';
 import createAuthContext, { StateType, ActionType } from './createAuthContext';
 import Authentication from '../api/Authentication';

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Text, View, Animated } from 'react-native';
 import { Feather, AntDesign } from '@expo/vector-icons';
 import { WHITE, GREEN, ORANGE } from '../../styles/colors';

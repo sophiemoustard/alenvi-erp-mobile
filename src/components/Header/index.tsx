@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text } from 'react-native';
 import { COPPER } from '../../styles/colors';
 import { ICON } from '../../styles/metrics';

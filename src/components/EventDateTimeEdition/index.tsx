@@ -1,4 +1,4 @@
-import React, { useReducer, useState, useEffect } from 'react';
+import { useReducer, useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import EventHistories from '../../api/EventHistories';

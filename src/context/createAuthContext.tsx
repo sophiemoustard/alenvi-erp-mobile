@@ -1,4 +1,5 @@
-import React, { useReducer, createContext } from 'react';
+import { useReducer, createContext } from 'react';
+import * as React from 'react';
 import { UserType } from '../types/UserType';
 
 export type boundFunctionsType = (payload?: any) => Promise<void>;
