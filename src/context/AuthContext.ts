@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { Dispatch } from 'react';
 import isEqual from 'lodash.isequal';
 import createAuthContext, { StateType, ActionType } from './createAuthContext';
 import Authentication from '../api/Authentication';
@@ -21,7 +21,7 @@ const authReducer = (state: StateType, action: ActionType) => {
   }
 };
 
-const signIn = (dispatch: React.Dispatch<ActionType>) => async (payload: { email: string, password: string }) => {
+const signIn = (dispatch: Dispatch<ActionType>) => async (payload: { email: string, password: string }) => {
   const { token, tokenExpireDate, refreshToken, user } = await Authentication.authenticate(payload);
 
   await asyncStorage.setCompaniToken(token, tokenExpireDate);
@@ -31,14 +31,14 @@ const signIn = (dispatch: React.Dispatch<ActionType>) => async (payload: { email
   dispatch({ type: 'signIn', payload: token });
 };
 
-const refreshLoggedUser = (dispatch: React.Dispatch<ActionType>) => async () => {
+const refreshLoggedUser = (dispatch: Dispatch<ActionType>) => async () => {
   const userId = await asyncStorage.getUserId();
   const loggedUser = await Users.getById(userId);
 
   dispatch({ type: 'loggedUser', payload: loggedUser });
 };
 
-const signOut = (dispatch: React.Dispatch<ActionType>) => async () => {
+const signOut = (dispatch: Dispatch<ActionType>) => async () => {
   await Authentication.logOut();
   await asyncStorage.removeCompaniToken();
   await asyncStorage.removeRefreshToken();
@@ -47,7 +47,7 @@ const signOut = (dispatch: React.Dispatch<ActionType>) => async () => {
   dispatch({ type: 'signOut' });
 };
 
-const refreshCompaniToken = (dispatch: React.Dispatch<ActionType>) => async (refreshToken: string | null) => {
+const refreshCompaniToken = (dispatch: Dispatch<ActionType>) => async (refreshToken: string | null) => {
   try {
     const { token, tokenExpireDate } = await Authentication.refreshToken({ refreshToken });
     await asyncStorage.setCompaniToken(token, tokenExpireDate);
@@ -57,7 +57,7 @@ const refreshCompaniToken = (dispatch: React.Dispatch<ActionType>) => async (ref
   }
 };
 
-const tryLocalSignIn = (dispatch: React.Dispatch<ActionType>) => async () => {
+const tryLocalSignIn = (dispatch: Dispatch<ActionType>) => async () => {
   try {
     const { companiToken, companiTokenExpireDate } = await asyncStorage.getCompaniToken();
 
