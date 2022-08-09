@@ -1,4 +1,3 @@
-import React from 'react';
 import MockAdapter from 'axios-mock-adapter';
 import sinon from 'sinon';
 import { render, cleanup, fireEvent, act, waitFor } from '@testing-library/react-native';

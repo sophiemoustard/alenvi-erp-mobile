@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Text, View, Image, ImageSourcePropType, ScrollView } from 'react-native';
 import NiSecondaryButton from '../../components/form/SecondaryButton';

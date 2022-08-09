@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useReducer } from 'react';
+import { useEffect, useState, useCallback, useReducer } from 'react';
 import { KeyboardAvoidingView, View, Text, BackHandler } from 'react-native';
 import Users from '../../api/Users';
 import NiPrimaryButton from '../../components/form/PrimaryButton';

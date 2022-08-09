@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useReducer } from 'react';
+import { createRef, useState, useEffect, useCallback, useReducer } from 'react';
 import { Text, View, ScrollView, TextInput, Keyboard } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import Authentication from '../../../api/Authentication';
@@ -22,10 +22,10 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
   const [error, dispatchError] = useReducer(errorReducer, initialErrorState);
   const [recipient, setRecipient] = useState<string>('');
   const inputRefs: Array<any> = [
-    React.createRef(),
-    React.createRef(),
-    React.createRef(),
-    React.createRef(),
+    createRef(),
+    createRef(),
+    createRef(),
+    createRef(),
   ];
   const [code, setCode] = useState<Array<string>>(['', '', '', '']);
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);

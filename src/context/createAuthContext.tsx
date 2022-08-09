@@ -1,4 +1,4 @@
-import React, { useReducer, createContext } from 'react';
+import { useReducer, createContext, Dispatch, Context as ReactContext, ReactNode } from 'react';
 import { UserType } from '../types/UserType';
 
 export type boundFunctionsType = (payload?: any) => Promise<void>;
@@ -19,11 +19,11 @@ export interface ActionType {
   payload?: any,
 }
 
-export type functionType = Record<string, (dispatch: React.Dispatch<ActionType>) => boundFunctionsType>;
+export type functionType = Record<string, (dispatch: Dispatch<ActionType>) => boundFunctionsType>;
 
 interface createAuthContextType {
-  Context: React.Context<StateType>,
-  Provider: (children: {children: React.ReactNode}) => JSX.Element
+  Context: ReactContext<StateType>,
+  Provider: (children: {children: ReactNode}) => JSX.Element
 }
 
 export default (
@@ -31,7 +31,7 @@ export default (
   functions: functionType,
   defaultValue: StateType
 ): createAuthContextType => {
-  const Provider = ({ children }: {children: React.ReactNode}) => {
+  const Provider = ({ children }: {children: ReactNode}) => {
     const [state, dispatch] = useReducer(reducer, defaultValue);
 
     const boundFunctions: any = {};

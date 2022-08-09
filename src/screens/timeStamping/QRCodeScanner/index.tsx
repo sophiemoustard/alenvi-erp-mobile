@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useRef, useEffect } from 'react';
+import { useState, useReducer, useRef, useEffect } from 'react';
 import { View, TouchableOpacity, Text, ActivityIndicator, Image, Dimensions } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { Camera } from 'expo-camera';
