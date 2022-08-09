@@ -57,6 +57,7 @@ module.exports = {
     'no-continue': 0,
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/consistent-generic-constructors': ['error', 'constructor'],
   },
   globals: {
     __DEV__: true,
