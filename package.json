@@ -44,7 +44,6 @@
     "expo-device": "~4.1.0",
     "expo-firebase-analytics": "~6.0.0",
     "expo-font": "~10.0.3",
-    "expo-modules-core": "~0.6.4",
     "expo-status-bar": "~1.2.0",
     "expo-updates": "~0.11.7",
     "lodash.get": "^4.4.2",
