@@ -1,4 +1,3 @@
-import React from 'react';
 import PasswordForm from '../../components/PasswordForm';
 import { NavigationType } from '../../types/NavigationType';
 import Authentication from '../../api/Authentication';

@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react';
+import { useContext, useCallback } from 'react';
 import Authentication from '../../api/Authentication';
 import PasswordForm from '../../components/PasswordForm';
 import { Context as AuthContext } from '../../context/AuthContext';

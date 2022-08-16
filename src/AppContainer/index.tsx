@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext, useCallback } from 'react';
+import { useEffect, useState, useRef, useContext, useCallback } from 'react';
 import { AppState } from 'react-native';
 import { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import axiosNotLogged from '../api/axios/notLogged';

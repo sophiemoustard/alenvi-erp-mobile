@@ -1,7 +1,7 @@
 import pick from 'lodash/pick';
 import get from 'lodash.get';
 import isEqual from 'lodash.isequal';
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, Text, TouchableOpacity, FlatList, TextInput, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import NiBottomModal from '../BottomModal';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useReducer } from 'react';
+import { useEffect, useState, useRef, useReducer } from 'react';
 import { Text, ScrollView, View, Keyboard, KeyboardAvoidingView, BackHandler } from 'react-native';
 import FeatherButton from '../FeatherButton';
 import NiErrorMessage from '../ErrorMessage';

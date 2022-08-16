@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, StatusBar } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import * as Sentry from 'sentry-expo';

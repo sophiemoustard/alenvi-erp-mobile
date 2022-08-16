@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { View, Text, TextInput, KeyboardTypeOptions } from 'react-native';
 import styles, { InputStyleType } from './styles';
 import NiFeatherButton from '../../FeatherButton';

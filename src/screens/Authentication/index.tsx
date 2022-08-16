@@ -1,4 +1,4 @@
-import React, { useContext, useReducer, useState } from 'react';
+import { useContext, useReducer, useState } from 'react';
 import { ImageBackground, Text, KeyboardAvoidingView, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { Context as AuthContext } from '../../context/AuthContext';
 import NiPrimaryButton from '../../components/form/PrimaryButton';

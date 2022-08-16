@@ -11,6 +11,7 @@ module.exports = {
     ecmaFeatures: { jsx: true },
     ecmaVersion: 11,
     sourceType: 'module',
+    project: ['./tsconfig.json'],
   },
   settings: {
     react: {
@@ -55,6 +56,10 @@ module.exports = {
     'prefer-destructuring': ['error', { VariableDeclarator: { object: true, array: false } }],
     'function-paren-newline': 0,
     'no-continue': 0,
+    'react/jsx-uses-react': 'off',
+    'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/consistent-generic-constructors': ['error', 'constructor'],
+    '@typescript-eslint/no-base-to-string': 2,
   },
   globals: {
     __DEV__: true,

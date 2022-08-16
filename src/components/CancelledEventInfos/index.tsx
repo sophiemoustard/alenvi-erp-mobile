@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
-import React, { useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { Text, View } from 'react-native';
 import Events from '../../api/Events';
 import { CANCELLATION_REASONS, INVOICED_AND_NOT_PAID, INVOICED_AND_PAID } from '../../core/data/constants';

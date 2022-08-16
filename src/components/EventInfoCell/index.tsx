@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { View, Text } from 'react-native';
 import { CIVILITY_OPTIONS } from '../../core/data/constants';
 import CompaniDate from '../../core/helpers/dates/companiDates';
