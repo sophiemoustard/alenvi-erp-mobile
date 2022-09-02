@@ -1,9 +1,3 @@
-export const WHITE = 'white';
-export const MODAL_BACKDROP_GREY = '#00000099';
-export const TRANSPARENT_COPPER = 'rgba(71, 96, 105, 0.2)';
-export const SHADOW_COPPER = 'rgb(206, 225, 229)';
-export const RED = '#FF0000';
-
 export const COPPER_GREY = {
   50: '#F9FBFB',
   100: '#F3F6F7',
@@ -33,7 +27,7 @@ export const ORANGE = {
   200: '#FEE7C8',
   300: '#FBC88D',
   400: '#F6A555',
-  500: '#F6A555',
+  500: '#ED8936',
   600: '#DD6B20',
   700: '#C05621',
   800: '#9C4221',
@@ -52,3 +46,9 @@ export const GREEN = {
   800: '#276749',
   900: '#22543D',
 };
+
+export const WHITE = 'white';
+export const MODAL_BACKDROP_GREY = '#00000099';
+export const TRANSPARENT_COPPER = 'rgba(71, 96, 105, 0.2)';
+export const RED = '#FF0000';
+export const SHADOW_COPPER = COPPER_GREY[300];
