@@ -24,6 +24,7 @@ jobs:
       - run: touch env/env.local.ts
       - run: touch env/env.dev.ts
       - run: touch env/env.prod.ts
+      - run: touch env/env.staging.ts
 
       # Run tests
       - run: npm run test
