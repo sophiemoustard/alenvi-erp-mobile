@@ -5,6 +5,8 @@ import localEnv from './env/env.local';
 // @ts-ignore
 import devEnv from './env/env.dev';
 // @ts-ignore
+import stagingEnv from './env/env.staging';
+// @ts-ignore
 import prodEnv from './env/env.prod';
 import asyncStorage from './src/core/helpers/asyncStorage';
 
@@ -20,6 +22,7 @@ const getEnvVars = (): EnvVarsType => {
   const env = Constants.manifest?.releaseChannel || '';
   if (__DEV__) return localEnv;
   if (/dev/.test(env)) return devEnv;
+  if (/staging/.test(env)) return stagingEnv;
   if (/prod/.test(env)) return prodEnv;
   return localEnv;
 };
