@@ -6,6 +6,11 @@ export const ERP = 'erp';
 export const IOS = 'ios';
 export const isIOS = Platform.OS === IOS;
 
+export const LOCAL = 'local';
+export const DEVELOPMENT = 'development';
+export const STAGING = 'staging';
+export const PRODUCTION = 'production';
+
 // STATE
 export const ACTIVE_STATE = 'active';
 

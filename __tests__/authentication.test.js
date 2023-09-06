@@ -14,27 +14,23 @@ describe('authentication', () => {
   const baseURL = 'test';
   let loggedAxiosMock;
   let notLoggedAxiosMock;
-  let getEnvVars;
   let getBaseUrl;
 
   beforeEach(() => {
     loggedAxiosMock = new MockAdapter(loggedAxios);
     notLoggedAxiosMock = new MockAdapter(notLoggedAxios);
-    getEnvVars = sinon.stub(Environment, 'getEnvVars');
     getBaseUrl = sinon.stub(Environment, 'getBaseUrl');
   });
 
   afterEach(() => {
     loggedAxiosMock.restore();
     notLoggedAxiosMock.restore();
-    getEnvVars.restore();
     getBaseUrl.restore();
     cleanup();
     mockAsyncStorage.clear();
   });
 
   test('should connect user if right credentials', async () => {
-    getEnvVars.returns({ baseURL: 'test' });
     getBaseUrl.returns('test');
 
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
@@ -92,7 +88,6 @@ describe('authentication', () => {
   });
 
   test('should not connect user if wrong credentials', async () => {
-    getEnvVars.returns({ baseURL: 'test' });
     getBaseUrl.returns('test');
 
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
