@@ -92,7 +92,7 @@ export default {
         foregroundImage: './assets/images/android_icon.png',
         backgroundColor: '#FFFFFF',
       },
-      versionCode: 22,
+      versionCode: 30,
     },
   },
 };

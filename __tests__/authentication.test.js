@@ -7,7 +7,6 @@ import loggedAxios from '../src/api/axios/logged';
 import { Provider as AuthProvider } from '../src/context/AuthContext';
 import AppContainer from '../src/AppContainer';
 import Environment from '../environment';
-import { INTERVENTION } from '../src/core/data/constants';
 import CompaniDate from '../src/core/helpers/dates/companiDates';
 
 describe('authentication', () => {
@@ -57,10 +56,7 @@ describe('authentication', () => {
 
     loggedAxiosMock.onGet(`${baseURL}/users/userId`)
       .reply(200, { data: { user: { _id: 'userId' } } })
-      .onGet(
-        `${baseURL}/events`,
-        { params: { auxiliary: 'userId', startDate, endDate, type: INTERVENTION, isCancelled: false } }
-      )
+      .onGet(`${baseURL}/events`, { params: { auxiliary: 'userId', startDate, endDate } })
       .reply(200, { data: { events: [{ _id: 'eventId', startDate: eventStartDate, endDate: eventEndDate }] } });
 
     const element = render(
