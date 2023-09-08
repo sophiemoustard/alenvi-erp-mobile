@@ -6,9 +6,9 @@
     "ios": "npx expo start --ios",
     "web": "npx expo start --web",
     "eject": "expo eject",
-    "ts-lint": "tsc --noEmit && eslint environment.ts App/index.tsx ./src --ext .js,.jsx,.ts,.tsx -c .eslintrc.js",
+    "ts-lint": "tsc --noEmit && eslint environment.ts src/App/index.tsx ./src --ext .js,.jsx,.ts,.tsx -c .eslintrc.js",
     "eas-build-pre-install": "echo $ANDROID_GOOGLE_SERVICES_BASE64 | base64 --decode > ./google-services.json",
-    "test": "jest"
+    "test": "node_modules/jest/bin/jest.js"
   },
   "jest": {
     "preset": "jest-expo",
