@@ -17,6 +17,10 @@ import {
   INTERVENTION,
   NUMBER,
   TIMESTAMPING_ACTION_TYPE_LIST,
+  SET_HISTORIES,
+  SET_DATES,
+  SET_TIME,
+  SET_FIELD,
 } from '../../../core/data/constants';
 import ConfirmationModal from '../../../components/modals/ConfirmationModal';
 import EventDateTimeEdition from '../../../components/EventDateTimeEdition';
@@ -34,11 +38,6 @@ import { UserType, FormattedUserType } from '../../../types/UserType';
 import { EditedEventValidType, EventEditionActionType, EventEditionStateType, EventEditionType } from './types';
 import InternalHours from '../../../api/InternalHours';
 import { NavigationType } from '../../../types/NavigationType';
-
-export const SET_HISTORIES = 'setHistories';
-export const SET_DATES = 'setDates';
-export const SET_TIME = 'setTime';
-export const SET_FIELD = 'setField';
 
 type InternalHourOptionsType = {
   label: string,
