@@ -1,13 +1,15 @@
 import { useContext, useCallback } from 'react';
+import { CompositeScreenProps } from '@react-navigation/native';
+import { StackScreenProps } from '@react-navigation/stack';
 import Authentication from '../../api/Authentication';
 import PasswordForm from '../../components/PasswordForm';
 import { Context as AuthContext } from '../../context/AuthContext';
-import { NavigationType } from '../../types/NavigationType';
+import { RootBottomTabParamList, RootStackParamList } from '../../types/NavigationType';
 
-interface PasswordResetProps {
-  route: { params: { userId: string, token: string, email?: string } },
-  navigation: NavigationType,
-}
+interface PasswordResetProps extends CompositeScreenProps<
+StackScreenProps<RootStackParamList, 'PasswordReset'>,
+StackScreenProps<RootBottomTabParamList>
+> {}
 
 const PasswordReset = ({ route, navigation }: PasswordResetProps) => {
   const { signIn } = useContext(AuthContext);

@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useState } from 'react';
 import { View, Text, Alert, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { Camera } from 'expo-camera';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { TIMESTAMPING_ACTION_TYPE_LIST, GRANTED, INTERVENTION, UNAVAILABILITY } from '../../core/data/constants';
@@ -29,7 +30,7 @@ const EventCell = ({ event }: TimeStampingProps) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [isEventStarting, setIsEventStarting] = useState<boolean>(true);
   const [style, setStyle] = useState<eventCellStyleType>(styles({ borderColor: WHITE, backgroundColor: WHITE }));
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
 
   useEffect(() => { if (event) eventInfosDispatch({ type: SET_EVENT_INFOS, payload: { event } }); }, [event]);
 

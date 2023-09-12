@@ -1,5 +1,6 @@
 import { useContext, useReducer, useState } from 'react';
 import { ImageBackground, Text, KeyboardAvoidingView, useWindowDimensions, TouchableOpacity } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
 import { Context as AuthContext } from '../../context/AuthContext';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
 import NiSecondaryButton from '../../components/form/SecondaryButton';
@@ -8,13 +9,11 @@ import NiErrorMessage from '../../components/ErrorMessage';
 import styles from './styles';
 import { PASSWORD, EMAIL } from '../../core/data/constants';
 import { formatEmail } from '../../core/helpers/utils';
-import { NavigationType } from '../../types/NavigationType';
+import { RootStackParamList } from '../../types/NavigationType';
 import { hitSlop, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
 import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
 
-interface AuthenticationProps {
-  navigation: NavigationType,
-}
+interface AuthenticationProps extends StackScreenProps<RootStackParamList> {}
 
 const Authentication = ({ navigation }: AuthenticationProps) => {
   const { signIn } = useContext(AuthContext);
@@ -27,7 +26,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
     dispatchError({ type: RESET_ERROR });
     try {
       await signIn({ email, password });
-    } catch (e) {
+    } catch (e: any) {
       if (e.response?.status === 401) {
         dispatchError({ type: SET_ERROR, payload: 'L\'e-mail et/ou le mot de passe est incorrect.' });
       } else dispatchError({ type: SET_ERROR, payload: 'Impossible de se connecter.' });

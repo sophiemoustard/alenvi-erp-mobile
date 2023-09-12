@@ -5,6 +5,8 @@ import { useCallback, useEffect, useReducer, useState } from 'react';
 import { View, ScrollView, Text, BackHandler, TouchableOpacity } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { StackScreenProps } from '@react-navigation/stack';
+import { CompositeScreenProps } from '@react-navigation/native';
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
@@ -35,9 +37,9 @@ import { ICON, KEYBOARD_PADDING_TOP } from '../../../styles/metrics';
 import styles from './styles';
 import { EventHistoryType } from '../../../types/EventType';
 import { UserType, FormattedUserType } from '../../../types/UserType';
-import { EditedEventValidType, EventEditionActionType, EventEditionStateType, EventEditionType } from './types';
+import { EditedEventValidType, EventEditionActionType, EventEditionStateType } from './types';
 import InternalHours from '../../../api/InternalHours';
-import { NavigationType } from '../../../types/NavigationType';
+import { RootBottomTabParamList, RootStackParamList } from '../../../types/NavigationType';
 
 type InternalHourOptionsType = {
   label: string,
@@ -66,10 +68,10 @@ const isTimeStampHistory = (eh: EventHistoryType) =>
 
 const isEditable = (ev: EventEditionStateType) => !ev.startDateTimeStamp && !ev.endDateTimeStamp && !ev.isBilled;
 
-interface EventEditionProps {
-  route: { params: { event: EventEditionType } },
-  navigation: NavigationType,
-}
+interface EventEditionProps extends CompositeScreenProps<
+StackScreenProps<RootStackParamList, 'EventEdition'>,
+StackScreenProps<RootBottomTabParamList>
+> {}
 
 const EventEdition = ({ route, navigation }: EventEditionProps) => {
   const { event } = route.params;
@@ -191,7 +193,7 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         setInitialState(editedEvent);
         navigation.goBack();
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
       if (e.response.status === 409) setApiErrorMessage(e.response.data.message);
       else if (e.response.status === 422) setApiErrorMessage('Cette modification n\'est pas autorisée.');

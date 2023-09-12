@@ -56,9 +56,9 @@ const AppContainer = () => {
     initializeAxiosNotLogged();
     setAxiosInitialized(true);
     shouldUpdate(ACTIVE_STATE);
-    AppState.addEventListener('change', shouldUpdate);
+    const { remove } = AppState.addEventListener('change', shouldUpdate);
 
-    return () => { AppState.removeEventListener('change', shouldUpdate); };
+    return () => { remove(); };
   }, [initializeAxiosNotLogged]);
 
   const handleUnauthorizedRequest = useCallback(async (error: AxiosError) => {
