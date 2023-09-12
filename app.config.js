@@ -92,5 +92,9 @@ export default {
       },
       versionCode: 30,
     },
+    plugins: [
+      ['expo-build-properties', { ios: { useFrameworks: 'static' } }],
+      'sentry-expo',
+    ],
   },
 };
