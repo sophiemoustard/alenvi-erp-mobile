@@ -19,14 +19,13 @@ const PRODUCTION = 'production';
 
 const getVariables = () => {
   switch (process.env.PROFILE) {
-    case LOCAL:
-      return { appName: 'Compani Outils - local', bundleIdentifier: 'com.compani.erp.local' };
     case DEVELOPMENT:
       return { appName: 'Compani Outils - Dev', bundleIdentifier: 'com.compani.erp.dev' };
     case PRODUCTION:
       return { appName: 'Compani Outils', bundleIdentifier: 'com.compani.erp' };
+    case LOCAL:
     default:
-      return 'Compani Outils';
+      return { appName: 'Compani Outils - local', bundleIdentifier: 'com.compani.erp.local' };
   }
 };
 
