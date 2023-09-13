@@ -10,7 +10,7 @@ import styles from './styles';
 
 const Profile = () => {
   const { signOut, loggedUser } = useContext(AuthContext);
-  const [source, setSource] = useState<ImageSourcePropType>({});
+  const [source, setSource] = useState<ImageSourcePropType>(require('../../../assets/images/default_avatar.png'));
   const navigation = useNavigation<StackNavigationProp<any>>();
 
   const goToPasswordReset = () => (
@@ -21,7 +21,6 @@ const Profile = () => {
 
   useEffect(() => {
     if (loggedUser?.picture?.link) setSource({ uri: loggedUser.picture.link });
-    else setSource(require('../../../assets/images/default_avatar.png'));
   }, [loggedUser?.picture?.link]);
 
   return (

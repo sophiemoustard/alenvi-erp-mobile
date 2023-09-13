@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useContext, useCallback } from 'react';
 import { AppState } from 'react-native';
 import { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import axiosNotLogged from '../api/axios/notLogged';
 import axiosLogged from '../api/axios/logged';
 import Version from '../api/Versions';
@@ -11,7 +12,11 @@ import UpdateAppModal from '../components/modals/UpdateAppModal';
 import MaintenanceModal from '../components/modals/MaintenanceModal';
 import AppNavigation from '../navigation/AppNavigation';
 
-const AppContainer = () => {
+type AppContainerProps = {
+  onLayout: () => void,
+}
+
+const AppContainer = ({ onLayout }: AppContainerProps) => {
   const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
   const [maintenanceModaleVisible, setMaintenanceModalVisible] = useState<boolean>(false);
   const [axiosInitialized, setAxiosInitialized] = useState<boolean>(false);
@@ -130,11 +135,14 @@ const AppContainer = () => {
 
   if (!axiosInitialized) return null;
 
+  if (maintenanceModaleVisible) return <MaintenanceModal />;
+  if (updateAppVisible) return <UpdateAppModal />;
+
   return (
     <>
-      <MaintenanceModal visible={maintenanceModaleVisible} />
-      <UpdateAppModal visible={updateAppVisible} />
-      <AppNavigation />
+      <SafeAreaProvider onLayout={onLayout}>
+        <AppNavigation />
+      </SafeAreaProvider>
     </>
   );
 };
