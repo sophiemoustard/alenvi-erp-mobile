@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Context as AuthContext } from '../../context/AuthContext';
@@ -12,33 +12,15 @@ import ManualTimeStamping from '../../screens/timeStamping/ManualTimeStamping';
 import QRCodeScanner from '../../screens/timeStamping/QRCodeScanner';
 import EventEdition from '../../screens/timeStamping/EventEdition';
 import CustomerProfile from '../../screens/CustomerProfile';
-import Analytics from '../../core/helpers/analytics';
 import Home from '../Home';
 
 const MainStack = createStackNavigator();
 
 const AppNavigation = () => {
   const { companiToken, appIsReady, tryLocalSignIn } = useContext(AuthContext);
-  const routeNameRef = useRef<string>();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { tryLocalSignIn(); }, []);
-
-  const handleOnReadyNavigation = () => {
-    const currentRouteName = navigationRef.current?.getCurrentRoute()?.name || '';
-    routeNameRef.current = currentRouteName;
-    Analytics.logScreenView(currentRouteName);
-  };
-
-  const handleNavigationStateChange = () => {
-    const prevRouteName = routeNameRef.current;
-    const currentRouteName = navigationRef.current?.getCurrentRoute()?.name || '';
-
-    if (prevRouteName !== currentRouteName) {
-      Analytics.logScreenView(currentRouteName);
-      routeNameRef.current = currentRouteName;
-    }
-  };
 
   const authScreens = { Authentication, ForgotPassword, PasswordReset };
   const userScreens = {
@@ -54,8 +36,7 @@ const AppNavigation = () => {
   if (!appIsReady) return null;
 
   return (
-    <NavigationContainer ref={navigationRef} onReady={handleOnReadyNavigation}
-      onStateChange={handleNavigationStateChange}>
+    <NavigationContainer ref={navigationRef}>
       <MainStack.Navigator screenOptions={{ headerShown: false }}>
         {Object.entries(companiToken ? userScreens : authScreens)
           .map(([name, component]) => <MainStack.Screen key={name} name={name} component={component} />)}

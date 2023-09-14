@@ -7,34 +7,29 @@ import loggedAxios from '../src/api/axios/logged';
 import { Provider as AuthProvider } from '../src/context/AuthContext';
 import AppContainer from '../src/AppContainer';
 import Environment from '../environment';
-import { INTERVENTION } from '../src/core/data/constants';
 import CompaniDate from '../src/core/helpers/dates/companiDates';
 
 describe('authentication', () => {
   const baseURL = 'test';
   let loggedAxiosMock;
   let notLoggedAxiosMock;
-  let getEnvVars;
   let getBaseUrl;
 
   beforeEach(() => {
     loggedAxiosMock = new MockAdapter(loggedAxios);
     notLoggedAxiosMock = new MockAdapter(notLoggedAxios);
-    getEnvVars = sinon.stub(Environment, 'getEnvVars');
     getBaseUrl = sinon.stub(Environment, 'getBaseUrl');
   });
 
   afterEach(() => {
     loggedAxiosMock.restore();
     notLoggedAxiosMock.restore();
-    getEnvVars.restore();
     getBaseUrl.restore();
     cleanup();
     mockAsyncStorage.clear();
   });
 
   test('should connect user if right credentials', async () => {
-    getEnvVars.returns({ baseURL: 'test' });
     getBaseUrl.returns('test');
 
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })
@@ -61,10 +56,7 @@ describe('authentication', () => {
 
     loggedAxiosMock.onGet(`${baseURL}/users/userId`)
       .reply(200, { data: { user: { _id: 'userId' } } })
-      .onGet(
-        `${baseURL}/events`,
-        { params: { auxiliary: 'userId', startDate, endDate, type: INTERVENTION, isCancelled: false } }
-      )
+      .onGet(`${baseURL}/events`, { params: { auxiliary: 'userId', startDate, endDate } })
       .reply(200, { data: { events: [{ _id: 'eventId', startDate: eventStartDate, endDate: eventEndDate }] } });
 
     const element = render(
@@ -92,7 +84,6 @@ describe('authentication', () => {
   });
 
   test('should not connect user if wrong credentials', async () => {
-    getEnvVars.returns({ baseURL: 'test' });
     getBaseUrl.returns('test');
 
     notLoggedAxiosMock.onGet(`${baseURL}/version/should-update`, { params: { mobileVersion: '1.0.0', appName: 'erp' } })

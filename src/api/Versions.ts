@@ -5,7 +5,7 @@ import { ERP } from '../core/data/constants';
 
 export default {
   shouldUpdate: async () => {
-    const { baseURL } = Environment.getEnvVars();
+    const baseURL = await Environment.getBaseUrl();
     const params = { mobileVersion: Constants.manifest?.version, appName: ERP };
 
     const response = await axiosNotLogged.get(`${baseURL}/version/should-update`, { params });

@@ -1,25 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { View, StatusBar } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import * as Sentry from 'sentry-expo';
-import { Provider as AuthProvider } from '../src/context/AuthContext';
-import { initializeAssets } from '../src/core/helpers/assets';
-import { WHITE } from '../src/styles/colors';
+import { Provider as AuthProvider } from '../context/AuthContext';
+import { initializeAssets } from '../core/helpers/assets';
+import { WHITE } from '../styles/colors';
 import styles from './styles';
-import AppContainer from '../src/AppContainer';
-import Environment from '../environment';
-import Analytics from '../src/core/helpers/analytics';
+import AppContainer from '../AppContainer';
+import Environment from '../../environment';
 
-const { sentryKey } = Environment.getEnvVars();
-Sentry.init({ dsn: sentryKey, debug: false });
+Sentry.init({ dsn: Environment.getSentryKey(), debug: false });
 
 const App = () => {
   const [isAppReady, setIsAppReady] = useState<boolean>(false);
-
-  useEffect(() => {
-    async function startAnalytics() { await Analytics.logSessionStart(); }
-    startAnalytics();
-  }, []);
 
   if (!isAppReady) {
     return <AppLoading startAsync={initializeAssets} onFinish={() => setIsAppReady(true)} onError={console.error} />;

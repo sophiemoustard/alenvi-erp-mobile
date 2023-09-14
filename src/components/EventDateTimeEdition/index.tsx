@@ -2,7 +2,16 @@ import { useReducer, useState, useEffect } from 'react';
 import { View, Text } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import EventHistories from '../../api/EventHistories';
-import { DATE, isIOS, TIME, TIMESTAMPING_ACTION_TYPE_LIST, WARNING } from '../../core/data/constants';
+import {
+  DATE,
+  isIOS,
+  TIME,
+  TIMESTAMPING_ACTION_TYPE_LIST,
+  WARNING,
+  SET_DATES,
+  SET_TIME,
+  SET_FIELD,
+} from '../../core/data/constants';
 import EventDateTime from '../EventDateTime';
 import WarningBanner from '../WarningBanner';
 import NiInput from '../form/Input';
@@ -10,7 +19,6 @@ import NiErrorMessage from '../ErrorMessage';
 import ConfirmationModal from '../modals/ConfirmationModal';
 import CompaniDate from '../../core/helpers/dates/companiDates';
 import { EventEditionActionType, EventEditionStateType } from '../../screens/timeStamping/EventEdition/types';
-import { SET_DATES, SET_FIELD, SET_TIME } from '../../screens/timeStamping/EventEdition';
 import { EventHistoryType } from '../../types/EventType';
 import { ModeType } from '../../types/DateTimeType';
 import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';

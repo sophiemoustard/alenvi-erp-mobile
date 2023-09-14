@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { isIOS } from '../src/core/data/constants';
-import { WHITE } from '../src/styles/colors';
+import { isIOS } from '../core/data/constants';
+import { WHITE } from '../styles/colors';
 
 const styles = (StatusBarHeight: number = 20) => {
   const STATUS_BAR_HEIGHT = isIOS ? 20 : StatusBarHeight;

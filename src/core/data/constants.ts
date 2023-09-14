@@ -6,6 +6,11 @@ export const ERP = 'erp';
 export const IOS = 'ios';
 export const isIOS = Platform.OS === IOS;
 
+export const LOCAL = 'local';
+export const DEVELOPMENT = 'development';
+export const STAGING = 'staging';
+export const PRODUCTION = 'production';
+
 // STATE
 export const ACTIVE_STATE = 'active';
 
@@ -89,3 +94,9 @@ export const TIME_STAMP_SWITCH_OPTIONS: [OptionType, OptionType] = [
 // ROLE
 export const AUXILIARY = 'auxiliary';
 export const PLANNING_REFERENT = 'planning_referent';
+
+// EVENT EDITION ACTION TYPE
+export const SET_HISTORIES = 'setHistories';
+export const SET_DATES = 'setDates';
+export const SET_TIME = 'setTime';
+export const SET_FIELD = 'setField';
