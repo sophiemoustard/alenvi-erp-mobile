@@ -78,14 +78,13 @@ export default {
       requireFullScreen: true,
       icon: './assets/images/ios_icon.png',
       infoPlist: {
-        NSCameraUsageDescription: 'Autorisez l\'accès à votre caméra pour pouvoir prendre une photo et la charger comme photo de profil dans Compani et scanner le QR code.',
-        NSPhotoLibraryUsageDescription: 'Autorisez l\'accès à votre librairie pour pouvoir choisir une photo et la charger comme photo de profil dans Compani.',
+        NSCameraUsageDescription: 'Autorisez l\'accès à votre caméra pour pouvoir scanner le QR code.',
       },
     },
     android: {
       package: variables.bundleIdentifier,
       googleServicesFile: './google-services.json',
-      permissions: ['CAMERA', 'READ_EXTERNAL_STORAGE', 'WRITE_EXTERNAL_STORAGE'],
+      permissions: ['CAMERA'],
       icon: './assets/images/android_icon_old.png',
       adaptiveIcon: {
         foregroundImage: './assets/images/android_icon.png',
