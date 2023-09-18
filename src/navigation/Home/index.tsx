@@ -39,8 +39,7 @@ const Home = () => {
         tabBarShowLabel: false,
         headerShown: false,
       }}>
-      <Tab.Screen name='Agenda' component={Agenda}
-        options={{ tabBarIcon: agendaIcon }} />
+      <Tab.Screen name='Agenda' component={Agenda} options={{ tabBarIcon: agendaIcon }} />
       <Tab.Screen name='Profile' component={Profile} options={{ tabBarIcon: profileIcon }} />
     </Tab.Navigator>
   );

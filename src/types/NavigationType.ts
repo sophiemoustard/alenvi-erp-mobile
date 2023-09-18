@@ -10,7 +10,7 @@ export type RootStackParamList = {
   PasswordReset: { userId: string, email: string, token: string }
   ProfileEdition: undefined;
   PasswordEdition: { userId: string };
-  EventEdition: {event: EventEditionType};
+  EventEdition: { event: EventEditionType };
   ForgotPassword: undefined;
 }
 

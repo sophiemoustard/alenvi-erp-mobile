@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useContext, useCallback } from 'react';
-import { AppState } from 'react-native';
+import { StatusBar, AppState, View } from 'react-native';
 import { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import axiosNotLogged from '../api/axios/notLogged';
@@ -11,6 +11,8 @@ import asyncStorage from '../core/helpers/asyncStorage';
 import UpdateAppModal from '../components/modals/UpdateAppModal';
 import MaintenanceModal from '../components/modals/MaintenanceModal';
 import AppNavigation from '../navigation/AppNavigation';
+import { WHITE } from '../styles/colors';
+import styles from './styles';
 
 type AppContainerProps = {
   onLayout: () => void,
@@ -140,6 +142,9 @@ const AppContainer = ({ onLayout }: AppContainerProps) => {
 
   return (
     <>
+      <View style={styles().statusBar}>
+        <StatusBar translucent barStyle="dark-content" backgroundColor={WHITE} />
+      </View>
       <SafeAreaProvider onLayout={onLayout}>
         <AppNavigation />
       </SafeAreaProvider>
