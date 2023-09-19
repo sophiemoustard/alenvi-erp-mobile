@@ -1,6 +1,7 @@
 import { useContext, useReducer, useState } from 'react';
 import { ImageBackground, Text, KeyboardAvoidingView, useWindowDimensions, TouchableOpacity } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
+import { AxiosError } from 'axios';
 import { Context as AuthContext } from '../../context/AuthContext';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
 import NiSecondaryButton from '../../components/form/SecondaryButton';
@@ -26,10 +27,12 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
     dispatchError({ type: RESET_ERROR });
     try {
       await signIn({ email, password });
-    } catch (e: any) {
-      if (e.response?.status === 401) {
-        dispatchError({ type: SET_ERROR, payload: 'L\'e-mail et/ou le mot de passe est incorrect.' });
-      } else dispatchError({ type: SET_ERROR, payload: 'Impossible de se connecter.' });
+    } catch (e: unknown) {
+      if (e instanceof AxiosError) {
+        if (e.response?.status === 401) {
+          dispatchError({ type: SET_ERROR, payload: 'L\'e-mail et/ou le mot de passe est incorrect.' });
+        } else dispatchError({ type: SET_ERROR, payload: 'Impossible de se connecter.' });
+      }
     }
   };
 

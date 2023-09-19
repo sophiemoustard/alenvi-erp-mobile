@@ -3,6 +3,7 @@ import { View, TouchableOpacity, Text, ActivityIndicator, Image, Dimensions } fr
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Camera } from 'expo-camera';
+import { AxiosError } from 'axios';
 import styles from './styles';
 import { TRANSPARENT_COPPER, WHITE } from '../../../styles/colors';
 import { hitSlop, ICON } from '../../../styles/metrics';
@@ -97,12 +98,15 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       );
 
       goBack();
-    } catch (e: any) {
-      if ([409, 422].includes(e.response.status)) dispatch({ type: BAD_REQUEST, payload: e.response.data.message });
-      else if ([404, 403].includes(e.response.status)) {
-        dispatch({ type: BAD_REQUEST, payload: 'Vous ne pouvez pas horodater cet évènement.' });
-      } else {
-        dispatch({ type: BAD_REQUEST, payload: 'Erreur, si le problème persiste, contactez le support technique.' });
+    } catch (e: unknown) {
+      if (e instanceof AxiosError) {
+        if (e.response && [409, 422].includes(e.response.status)) {
+          dispatch({ type: BAD_REQUEST, payload: e.response.data.message });
+        } else if (e.response && [404, 403].includes(e.response.status)) {
+          dispatch({ type: BAD_REQUEST, payload: 'Vous ne pouvez pas horodater cet évènement.' });
+        } else {
+          dispatch({ type: BAD_REQUEST, payload: 'Erreur, si le problème persiste, contactez le support technique.' });
+        }
       }
     }
   };

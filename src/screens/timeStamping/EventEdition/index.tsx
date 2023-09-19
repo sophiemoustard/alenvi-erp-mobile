@@ -7,6 +7,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Feather, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { StackScreenProps } from '@react-navigation/stack';
 import { CompositeScreenProps } from '@react-navigation/native';
+import { AxiosError } from 'axios';
 import EventHistories from '../../../api/EventHistories';
 import Events from '../../../api/Events';
 import Users from '../../../api/Users';
@@ -193,11 +194,13 @@ const EventEdition = ({ route, navigation }: EventEditionProps) => {
         setInitialState(editedEvent);
         navigation.goBack();
       }
-    } catch (e: any) {
+    } catch (e: unknown) {
       console.error(e);
-      if (e.response.status === 409) setApiErrorMessage(e.response.data.message);
-      else if (e.response.status === 422) setApiErrorMessage('Cette modification n\'est pas autorisée.');
-      else setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
+      if (e instanceof AxiosError) {
+        if (e.response?.status === 409) setApiErrorMessage(e.response.data.message);
+        else if (e.response?.status === 422) setApiErrorMessage('Cette modification n\'est pas autorisée.');
+        else setApiErrorMessage('Une erreur s\'est produite, si le problème persiste, contactez le support technique.');
+      }
     } finally {
       setLoading(false);
     }
