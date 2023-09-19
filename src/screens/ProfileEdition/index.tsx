@@ -96,7 +96,7 @@ const ProfileEdition = () => {
     BackHandler.addEventListener('hardwareBackPress', onPressExitModal);
 
     return () => { BackHandler.removeEventListener('hardwareBackPress', onPressExitModal); };
-  }, []);
+  });
 
   useEffect(() => {
     setInvalid({

@@ -41,7 +41,7 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
       BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress);
       hideListener.remove();
     };
-  }, []);
+  });
 
   useEffect(() => {
     setIsValidPassword(password.length >= 6);
