@@ -1,7 +1,9 @@
 import { useState, useReducer, useRef, useEffect } from 'react';
 import { View, TouchableOpacity, Text, ActivityIndicator, Image, Dimensions } from 'react-native';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { Camera } from 'expo-camera';
+import { AxiosError } from 'axios';
 import styles from './styles';
 import { TRANSPARENT_COPPER, WHITE } from '../../../styles/colors';
 import { hitSlop, ICON } from '../../../styles/metrics';
@@ -73,7 +75,7 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
   const [ratio, setRatio] = useState<string | undefined>();
   const [timeStampStart, setTimeStampStart] = useState<boolean>(route.params.timeStampStart);
   const isFocused = useIsFocused();
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
 
   useEffect(() => { setTimeStampStart(route.params.timeStampStart); }, [route.params.timeStampStart, isFocused]);
 
@@ -96,12 +98,15 @@ const QRCodeScanner = ({ route }: QRCodeScannerProps) => {
       );
 
       goBack();
-    } catch (e) {
-      if ([409, 422].includes(e.response.status)) dispatch({ type: BAD_REQUEST, payload: e.response.data.message });
-      else if ([404, 403].includes(e.response.status)) {
-        dispatch({ type: BAD_REQUEST, payload: 'Vous ne pouvez pas horodater cet évènement.' });
-      } else {
-        dispatch({ type: BAD_REQUEST, payload: 'Erreur, si le problème persiste, contactez le support technique.' });
+    } catch (e: unknown) {
+      if (e instanceof AxiosError) {
+        if (e.response && [409, 422].includes(e.response.status)) {
+          dispatch({ type: BAD_REQUEST, payload: e.response.data.message });
+        } else if (e.response && [404, 403].includes(e.response.status)) {
+          dispatch({ type: BAD_REQUEST, payload: 'Vous ne pouvez pas horodater cet évènement.' });
+        } else {
+          dispatch({ type: BAD_REQUEST, payload: 'Erreur, si le problème persiste, contactez le support technique.' });
+        }
       }
     }
   };

@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, useReducer } from 'react';
 import { KeyboardAvoidingView, View, Text, BackHandler } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
 import Users from '../../api/Users';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
 import FeatherButton from '../../components/FeatherButton';
@@ -9,13 +10,11 @@ import ForgotPasswordModal from '../../components/modals/ForgotPasswordModal';
 import { EMAIL, EMAIL_REGEX } from '../../core/data/constants';
 import { formatEmail } from '../../core/helpers/utils';
 import { ICON, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
-import { NavigationType } from '../../types/NavigationType';
+import { RootStackParamList } from '../../types/NavigationType';
 import styles from './styles';
 import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
 
-interface EmailFormProps {
-  navigation: NavigationType,
-}
+interface EmailFormProps extends StackScreenProps<RootStackParamList> {}
 
 const ForgotPassword = ({ navigation }: EmailFormProps) => {
   const [email, setEmail] = useState<string>('');

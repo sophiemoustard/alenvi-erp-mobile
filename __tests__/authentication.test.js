@@ -71,7 +71,7 @@ describe('authentication', () => {
 
     await waitFor(() => {
       emailInput = element.getByTestId('Email');
-      passwordInput = element.getByTestId('Mot de Passe');
+      passwordInput = element.getByTestId('Mot de passe');
       sendButton = element.getByTestId('Se connecter');
     });
 
@@ -105,7 +105,7 @@ describe('authentication', () => {
 
     await waitFor(() => {
       emailInput = element.getByTestId('Email');
-      passwordInput = element.getByTestId('Mot de Passe');
+      passwordInput = element.getByTestId('Mot de passe');
       sendButton = element.getByTestId('Se connecter');
     });
 

@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useReducer } from 'react';
 import { Text, View, ScrollView, TouchableOpacity, Alert, BackHandler } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { Camera } from 'expo-camera';
+import { AxiosError } from 'axios';
 import { ERROR, MANUAL_TIME_STAMPING, WARNING, GRANTED, TIME_STAMP_SWITCH_OPTIONS } from '../../../core/data/constants';
 import CompaniDate from '../../../core/helpers/dates/companiDates';
 import NiRadioButtonList from '../../../components/RadioButtonList';
@@ -104,13 +105,19 @@ const ManualTimeStamping = ({ route }: ManualTimeStampingProps) => {
 
       await Events.timeStampEvent(route.params?.event?._id, payload);
       goBack();
-    } catch (e) {
+    } catch (e: unknown) {
       console.error(e);
-      if ([409, 422].includes(e.response.status)) dispatchError({ type: SET_ERROR, payload: e.response.data.message });
-      else if ([404, 403].includes(e.response.status)) {
-        dispatchError({ type: SET_ERROR, payload: 'Vous ne pouvez pas horodater cet évènement.' });
-      } else {
-        dispatchError({ type: SET_ERROR, payload: 'Erreur, si le problème persiste, contactez le support technique.' });
+      if (e instanceof AxiosError) {
+        if (e.response && [409, 422].includes(e.response.status)) {
+          dispatchError({ type: SET_ERROR, payload: e.response.data.message });
+        } else if (e.response && [404, 403].includes(e.response.status)) {
+          dispatchError({ type: SET_ERROR, payload: 'Vous ne pouvez pas horodater cet évènement.' });
+        } else {
+          dispatchError({
+            type: SET_ERROR,
+            payload: 'Erreur, si le problème persiste, contactez le support technique.',
+          });
+        }
       }
     } finally {
       setLoading(false);

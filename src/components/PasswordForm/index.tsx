@@ -34,12 +34,12 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
 
   useEffect(() => {
     const keyboardDidHide = () => Keyboard.dismiss();
-    Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+    const hideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide);
     BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
 
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress);
-      Keyboard.removeListener('keyboardDidHide', keyboardDidHide);
+      hideListener.remove();
     };
   }, []);
 

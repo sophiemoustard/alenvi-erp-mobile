@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import { useEffect, useReducer, useState } from 'react';
 import { Text, View } from 'react-native';
 import Events from '../../api/Events';

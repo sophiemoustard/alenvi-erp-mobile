@@ -1,5 +1,7 @@
 import { useContext, useReducer, useState } from 'react';
 import { ImageBackground, Text, KeyboardAvoidingView, useWindowDimensions, TouchableOpacity } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
+import { AxiosError } from 'axios';
 import { Context as AuthContext } from '../../context/AuthContext';
 import NiPrimaryButton from '../../components/form/PrimaryButton';
 import NiSecondaryButton from '../../components/form/SecondaryButton';
@@ -8,13 +10,11 @@ import NiErrorMessage from '../../components/ErrorMessage';
 import styles from './styles';
 import { PASSWORD, EMAIL } from '../../core/data/constants';
 import { formatEmail } from '../../core/helpers/utils';
-import { NavigationType } from '../../types/NavigationType';
+import { RootStackParamList } from '../../types/NavigationType';
 import { hitSlop, KEYBOARD_AVOIDING_VIEW_BEHAVIOR } from '../../styles/metrics';
 import { errorReducer, initialErrorState, RESET_ERROR, SET_ERROR } from '../../reducers/error';
 
-interface AuthenticationProps {
-  navigation: NavigationType,
-}
+interface AuthenticationProps extends StackScreenProps<RootStackParamList> {}
 
 const Authentication = ({ navigation }: AuthenticationProps) => {
   const { signIn } = useContext(AuthContext);
@@ -27,10 +27,12 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
     dispatchError({ type: RESET_ERROR });
     try {
       await signIn({ email, password });
-    } catch (e) {
-      if (e.response?.status === 401) {
-        dispatchError({ type: SET_ERROR, payload: 'L\'e-mail et/ou le mot de passe est incorrect.' });
-      } else dispatchError({ type: SET_ERROR, payload: 'Impossible de se connecter.' });
+    } catch (e: unknown) {
+      if (e instanceof AxiosError) {
+        if (e.response?.status === 401) {
+          dispatchError({ type: SET_ERROR, payload: 'L\'e-mail et/ou le mot de passe est incorrect.' });
+        } else dispatchError({ type: SET_ERROR, payload: 'Impossible de se connecter.' });
+      }
     }
   };
 
@@ -45,7 +47,7 @@ const Authentication = ({ navigation }: AuthenticationProps) => {
         <Text testID='authentication' style={styles.title}>Identifiez-vous pour accéder aux informations</Text>
         <NiInput caption='Email' type={EMAIL} onChangeText={value => setEmail(formatEmail(value))}
           value={email} darkMode />
-        <NiInput caption='Mot de Passe' type={PASSWORD} onChangeText={setPassword} value={password} darkMode />
+        <NiInput caption='Mot de passe' type={PASSWORD} onChangeText={setPassword} value={password} darkMode />
         {error.value && <NiErrorMessage message={error.message} />}
         <TouchableOpacity style={styles.forgotPassword} onPress={goToForgotPassword} hitSlop={hitSlop}>
           <Text style={styles.forgotPasswordText}>Mot de passe oublié ?</Text>

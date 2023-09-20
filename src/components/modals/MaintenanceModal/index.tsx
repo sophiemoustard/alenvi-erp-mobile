@@ -3,12 +3,8 @@ import Modal from '../Modal';
 import styles from './styles';
 import modalStyles from '../modalStyles';
 
-interface MaintenanceModalProps {
-  visible: boolean,
-}
-
-const MaintenanceModal = ({ visible }: MaintenanceModalProps) => (
-  <Modal visible={visible}>
+const MaintenanceModal = () => (
+  <Modal visible={true}>
     <>
       <Text style={modalStyles.title}> L&apos;application est en maintenance !</Text>
       <Text style={[modalStyles.body, styles.body]}>

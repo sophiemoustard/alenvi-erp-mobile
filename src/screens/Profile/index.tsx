@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Text, View, Image, ImageSourcePropType, ScrollView } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import NiSecondaryButton from '../../components/form/SecondaryButton';
 import { Context as AuthContext } from '../../context/AuthContext';
 import commonStyle from '../../styles/common';
@@ -9,8 +10,8 @@ import styles from './styles';
 
 const Profile = () => {
   const { signOut, loggedUser } = useContext(AuthContext);
-  const [source, setSource] = useState<ImageSourcePropType>({});
-  const navigation = useNavigation();
+  const [source, setSource] = useState<ImageSourcePropType>(require('../../../assets/images/default_avatar.png'));
+  const navigation = useNavigation<StackNavigationProp<any>>();
 
   const goToPasswordReset = () => (
     navigation.navigate('PasswordEdition', { userId: loggedUser?._id })
@@ -20,7 +21,6 @@ const Profile = () => {
 
   useEffect(() => {
     if (loggedUser?.picture?.link) setSource({ uri: loggedUser.picture.link });
-    else setSource(require('../../../assets/images/default_avatar.png'));
   }, [loggedUser?.picture?.link]);
 
   return (

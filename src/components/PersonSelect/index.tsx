@@ -36,12 +36,12 @@ const PersonSelect = ({
   displayAvatar = true,
   containerStyle = {},
 }: PersonSelectProps) => {
-  const [personPicture, setPersonPicture] = useState<ImageSourcePropType>({});
+  const [personPicture, setPersonPicture] =
+    useState<ImageSourcePropType>(require('../../../assets/images/default_avatar.png'));
   const [personEditionModal, setPersonEditionModal] = useState<boolean>(false);
 
   useEffect(() => {
     if (person?.picture?.link) setPersonPicture({ uri: person.picture.link });
-    else setPersonPicture(require('../../../assets/images/default_avatar.png'));
   }, [person?.picture?.link]);
 
   const onPress = () => (isEditable

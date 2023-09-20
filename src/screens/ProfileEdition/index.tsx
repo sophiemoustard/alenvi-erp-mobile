@@ -1,6 +1,7 @@
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { useContext, useEffect, useReducer, useState } from 'react';
-import { ScrollView, View, Text, KeyboardAvoidingView, BackHandler } from 'react-native';
+import { ScrollView, View, Text, Keyboard, KeyboardAvoidingView, BackHandler } from 'react-native';
 import FeatherButton from '../../components/FeatherButton';
 import ConfirmationModal from '../../components/modals/ConfirmationModal';
 import NiInput from '../../components/form/Input';
@@ -34,7 +35,16 @@ const ProfileEdition = () => {
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
   const [isValid, setIsValid] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
+
+  const keyboardDidHide = () => Keyboard.dismiss();
+
+  useEffect(() => {
+    const hideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+    return () => {
+      hideListener.remove();
+    };
+  }, []);
 
   const goBack = () => {
     if (exitConfirmationModal) setExitConfirmationModal(false);

@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useContext, useCallback } from 'react';
-import { AppState } from 'react-native';
+import { StatusBar, AppState, View } from 'react-native';
 import { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import axiosNotLogged from '../api/axios/notLogged';
 import axiosLogged from '../api/axios/logged';
 import Version from '../api/Versions';
@@ -10,8 +11,14 @@ import asyncStorage from '../core/helpers/asyncStorage';
 import UpdateAppModal from '../components/modals/UpdateAppModal';
 import MaintenanceModal from '../components/modals/MaintenanceModal';
 import AppNavigation from '../navigation/AppNavigation';
+import { WHITE } from '../styles/colors';
+import styles from './styles';
 
-const AppContainer = () => {
+type AppContainerProps = {
+  onLayout: () => void,
+}
+
+const AppContainer = ({ onLayout }: AppContainerProps) => {
   const [updateAppVisible, setUpdateAppVisible] = useState<boolean>(false);
   const [maintenanceModaleVisible, setMaintenanceModalVisible] = useState<boolean>(false);
   const [axiosInitialized, setAxiosInitialized] = useState<boolean>(false);
@@ -56,9 +63,9 @@ const AppContainer = () => {
     initializeAxiosNotLogged();
     setAxiosInitialized(true);
     shouldUpdate(ACTIVE_STATE);
-    AppState.addEventListener('change', shouldUpdate);
+    const { remove } = AppState.addEventListener('change', shouldUpdate);
 
-    return () => { AppState.removeEventListener('change', shouldUpdate); };
+    return () => { remove(); };
   }, [initializeAxiosNotLogged]);
 
   const handleUnauthorizedRequest = useCallback(async (error: AxiosError) => {
@@ -130,11 +137,17 @@ const AppContainer = () => {
 
   if (!axiosInitialized) return null;
 
+  if (maintenanceModaleVisible) return <MaintenanceModal />;
+  if (updateAppVisible) return <UpdateAppModal />;
+
   return (
     <>
-      <MaintenanceModal visible={maintenanceModaleVisible} />
-      <UpdateAppModal visible={updateAppVisible} />
-      <AppNavigation />
+      <View style={styles().statusBar}>
+        <StatusBar translucent barStyle="dark-content" backgroundColor={WHITE} />
+      </View>
+      <SafeAreaProvider onLayout={onLayout}>
+        <AppNavigation />
+      </SafeAreaProvider>
     </>
   );
 };

@@ -31,16 +31,15 @@ const Home = () => {
 
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        style: unfocusedStyle.tabBar,
-        activeTintColor: COPPER[600],
-        inactiveTintColor: COPPER_GREY[800],
-        labelStyle: unfocusedStyle.labelStyle,
-        showLabel: false,
-      }}
-    >
-      <Tab.Screen name='Agenda' component={Agenda}
-        options={{ tabBarIcon: agendaIcon }} />
+      screenOptions={{
+        tabBarStyle: unfocusedStyle.tabBar,
+        tabBarActiveTintColor: COPPER[600],
+        tabBarInactiveTintColor: COPPER_GREY[800],
+        tabBarLabelStyle: unfocusedStyle.labelStyle,
+        tabBarShowLabel: false,
+        headerShown: false,
+      }}>
+      <Tab.Screen name='Agenda' component={Agenda} options={{ tabBarIcon: agendaIcon }} />
       <Tab.Screen name='Profile' component={Profile} options={{ tabBarIcon: profileIcon }} />
     </Tab.Navigator>
   );
