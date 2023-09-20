@@ -43,7 +43,7 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
       hideListener.remove();
       showListener.remove();
     };
-  });
+  }, []);
 
   useEffect(() => {
     const isCodeInvalid = code.some(char => char === '' || !Number.isInteger(Number(char)));
