@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useCallback, useReducer } from 'react';
+import { createRef, useState, useEffect, useCallback, useReducer } from 'react';
 import { Text, View, ScrollView, TextInput, Keyboard } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import Authentication from '../../../api/Authentication';
 import NiPrimaryButton from '../../form/PrimaryButton';
 import FeatherButton from '../../FeatherButton';
@@ -22,25 +23,25 @@ const ForgotPasswordModal = ({ visible, email, setForgotPasswordModal }: ForgotP
   const [error, dispatchError] = useReducer(errorReducer, initialErrorState);
   const [recipient, setRecipient] = useState<string>('');
   const inputRefs: Array<any> = [
-    React.createRef(),
-    React.createRef(),
-    React.createRef(),
-    React.createRef(),
+    createRef(),
+    createRef(),
+    createRef(),
+    createRef(),
   ];
   const [code, setCode] = useState<Array<string>>(['', '', '', '']);
   const [isValidationAttempted, setIsValidationAttempted] = useState<boolean>(false);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState<boolean>(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<any>>();
 
   const keyboardDidHide = () => setIsKeyboardOpen(false);
   const keyboardDidShow = () => setIsKeyboardOpen(true);
 
   useEffect(() => {
-    Keyboard.addListener('keyboardDidHide', keyboardDidHide);
-    Keyboard.addListener('keyboardDidShow', keyboardDidShow);
+    const hideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+    const showListener = Keyboard.addListener('keyboardDidShow', keyboardDidShow);
     return () => {
-      Keyboard.removeListener('keyboardDidHide', keyboardDidHide);
-      Keyboard.removeListener('keyboardDidShow', keyboardDidShow);
+      hideListener.remove();
+      showListener.remove();
     };
   }, []);
 

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import { useContext, useEffect, useState, useCallback } from 'react';
 import { Text, View, ScrollView, AppState, AppStateStatus } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import commonStyle from '../../../styles/common';
@@ -31,11 +31,11 @@ const Agenda = () => {
 
   useEffect(() => {
     const interval = setInterval(() => { setDisplayedDate(CompaniDate().toISO()); }, 60000);
-    AppState.addEventListener('change', handleBackground);
+    const { remove } = AppState.addEventListener('change', handleBackground);
 
     return () => {
       clearInterval(interval);
-      AppState.removeEventListener('change', handleBackground);
+      remove();
     };
   }, [handleBackground]);
 

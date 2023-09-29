@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, Modal } from 'react-native';
+import { View, Modal, KeyboardAvoidingView } from 'react-native';
 import styles from './styles';
+import { isIOS } from '../../../core/data/constants';
 
 interface NiModalProps {
   visible: boolean,
@@ -12,11 +12,11 @@ interface NiModalProps {
 
 const NiModal = ({ visible, children, style, contentStyle, onRequestClose }: NiModalProps) => (
   <Modal visible={visible} transparent={true} onRequestClose={onRequestClose}>
-    <View style={[styles.modalContainer, style]}>
+    <KeyboardAvoidingView style={[styles.modalContainer, style]} behavior={isIOS ? 'padding' : 'height'}>
       <View style={[styles.modalContent, contentStyle]}>
         {children}
       </View>
-    </View>
+    </KeyboardAvoidingView>
   </Modal>
 );
 

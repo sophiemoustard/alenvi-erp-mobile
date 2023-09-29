@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useReducer } from 'react';
+import { useEffect, useState, useRef, useReducer } from 'react';
 import { Text, ScrollView, View, Keyboard, KeyboardAvoidingView, BackHandler } from 'react-native';
 import FeatherButton from '../FeatherButton';
 import NiErrorMessage from '../ErrorMessage';
@@ -34,12 +34,12 @@ const PasswordForm = ({ goBack, onPress }: PasswordFormProps) => {
 
   useEffect(() => {
     const keyboardDidHide = () => Keyboard.dismiss();
-    Keyboard.addListener('keyboardDidHide', keyboardDidHide);
+    const hideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide);
     BackHandler.addEventListener('hardwareBackPress', hardwareBackPress);
 
     return () => {
       BackHandler.removeEventListener('hardwareBackPress', hardwareBackPress);
-      Keyboard.removeListener('keyboardDidHide', keyboardDidHide);
+      hideListener.remove();
     };
   }, []);
 

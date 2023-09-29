@@ -10,7 +10,7 @@ export default (focused: Boolean = false) => StyleSheet.create({
   iconContainer: {
     alignItems: 'center',
     width: TAB_BAR_LABEL_WIDTH,
-    marginVertical: MARGIN.SM,
+    marginTop: MARGIN.MD,
   },
   labelStyle: {
     ...FIRA_SANS_BOLD.MD,

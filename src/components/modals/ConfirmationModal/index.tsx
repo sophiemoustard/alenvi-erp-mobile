@@ -1,4 +1,3 @@
-import React from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { COPPER, COPPER_GREY } from '../../../styles/colors';
 import { ICON } from '../../../styles/metrics';

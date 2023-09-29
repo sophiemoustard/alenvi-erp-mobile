@@ -1,0 +1,49 @@
+{
+  "cli": {
+    "version": ">= 0.57.0",
+    "requireCommit": "true"
+  },
+  "build": {
+    "local": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "PROFILE": "local",
+        "APP_ENV": "development"
+      }
+    },
+    "local-simulator": {
+      "extends": "local",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "development": {
+      "releaseChannel": "dev",
+      "distribution": "internal",
+      "env": {
+        "APP_ENV": "development",
+        "PROFILE": "development"
+      },
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "development-simulator": {
+      "extends": "development",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "prod": {
+      "releaseChannel": "prod-1.12.0",
+      "env": {
+        "APP_ENV": "production",
+        "PROFILE": "production"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

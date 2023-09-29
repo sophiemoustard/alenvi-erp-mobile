@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { TouchableWithoutFeedback, View, Animated, LayoutChangeEvent } from 'react-native';
 import { COPPER_GREY } from '../../styles/colors';
 import { MARGIN } from '../../styles/metrics';
