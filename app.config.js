@@ -37,7 +37,7 @@ export default {
     slug: 'erp-mobile',
     description: 'Interface auxiliaire de l\'ERP Compani',
     platforms: ['ios', 'android'],
-    version: '1.12.0',
+    version: '1.13.0',
     orientation: 'portrait',
     primaryColor: '#FFFFFF',
     icon: './assets/images/ios_icon.png',
@@ -73,7 +73,7 @@ export default {
       color: '#FFFFFF',
     },
     ios: {
-      buildNumber: '1.12.0',
+      buildNumber: '1.13.0',
       bundleIdentifier: variables.bundleIdentifier,
       requireFullScreen: true,
       icon: './assets/images/ios_icon.png',
@@ -90,7 +90,7 @@ export default {
         foregroundImage: './assets/images/android_icon.png',
         backgroundColor: '#FFFFFF',
       },
-      versionCode: 30,
+      versionCode: 40,
     },
     plugins: [
       ['expo-build-properties', { ios: { useFrameworks: 'static' } }],
